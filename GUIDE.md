@@ -68,16 +68,16 @@ The file is created on first run with sensible defaults.
 ### `config.toml`
 
 ```toml
-[modules]
-mechanics = true
+[layers]
+layers = true
 ```
 
-| Key                | Description                                     | Default |
-| ------------------ | ----------------------------------------------- | ------- |
-| `modules.mechanics`| Master toggle for all mechanic modules          | `true`  |
+| Key              | Description                          | Default |
+| ---------------- | ------------------------------------ | ------- |
+| `layers.layers`  | Master toggle for all Abyss layers   | `true`  |
 
-As modules are added, each group gains its own `<group>.toml` file with a
-per-module `enabled` toggle.
+As layers are added, each gains its own `enabled` toggle in `layers.toml`,
+grouped by the depth stratum it belongs to.
 
 ## Installation
 
@@ -91,7 +91,7 @@ per-module `enabled` toggle.
 
 The plugin is currently a **stub**: it boots, loads its config, and registers
 nothing yet. Gameplay content (the Abyss, relics, delvers, layer curses, ...)
-will land in `src/modules/`.
+will land in `src/layers/`, under the stratum folder it belongs to.
 
 ## Troubleshooting
 

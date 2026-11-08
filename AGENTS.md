@@ -64,38 +64,54 @@ cargo clippy --all-targets --all-features --target wasm32-wasip2 -- -W clippy::p
 1. **Registration**: Via `register_plugin!(MineInAbyss)` macro
 2. **`on_load`**:
     - Initializes `ConfigManager` (loads/creates `config.toml`)
-    - No mechanics are registered yet — this is a stub
+    - No layers are registered yet — this is a stub
 3. **`on_unload`**: Logs farewell message
 
-### Module System
+### Layer System
 
-Every feature implements the **`Mechanic`** trait (`src/modules/mechanics/mechanic.rs`):
+The Abyss is a vertical world, so every feature implements the **`Layer`** trait
+(`src/layers/layer.rs`) and declares which stratum it belongs to.
 
 | Method       | Purpose                                          | Default     |
 | ------------ | ------------------------------------------------ | ----------- |
-| `enabled()`  | Returns whether module is active                 | Required    |
+| `depth()`    | Returns the `Depth` stratum this layer belongs to | First       |
+| `enabled()`  | Returns whether the layer is active              | Required    |
 | `cmds()`     | Returns `Vec<Command>` to register               | Empty vec   |
-| `perms()`    | Returns `HashSet<String>` permission nodes       | Empty set   |
+| `perms()`    | Returns `Vec<Permission>` permission nodes       | Empty vec   |
 | `events()`   | Registers event handlers via `Context`           | No-op       |
 | `register()` | Calls `events()`, registers commands/permissions | Implemented |
 
-Modules are plain structs (not singletons) instantiated with `Default::default()` and passed to `register()` in `on_load`.
+`Depth` names the strata from the surface down, and is purely descriptive:
+
+| Variant     | Range (m)         | Notes                     |
+| ----------- | ----------------- | ------------------------- |
+| `First`     | 0 – 1350          | Top of the Abyss          |
+| `Second`    | 1350 – 2600       | The Forest of Temptation  |
+| `Third`     | 2600 – 7000       | The Great Fault           |
+| `Fourth`    | 7000 – 12000      | The Goblets of Giants     |
+| `Fifth`     | 12000 – 13000     | The Sea of Corpses        |
+| `Sixth`     | 13000 – 15500     | The Capital of the Unreturned |
+| `Seventh`   | 15500 and below   | The Final Maelstrom       |
+
+`Depth::start_depth()` and `Depth::from_depth()` convert between a stratum and meters.
+
+Layers are plain structs (not singletons) instantiated with `Default::default()` and passed
+to `register()` in `on_load`.
 
 ### Configuration
 
 **`ConfigManager`** (`src/config.rs`) — TOML-backed config using the [`config`](https://crates.io/crates/config) crate:
 
-- Master toggles live in `{data_folder}/config.toml` under a `[modules]` section
-- Each module group has its own file: `mechanics.toml`, `enchantments.toml`, `recipes.toml`
-- On first load: creates all files with module defaults
+- Master toggles live in `{data_folder}/config.toml` under a `[layers]` table
+- Per-layer files (e.g. `layers.toml`) will be added alongside the group they belong to
+- On first load: creates all files with defaults
 - On subsequent loads: merges user values with defaults and preserves extra fields
-- All module configs live in a single `PluginConfig` struct in memory; modules access their section via `ConfigManager::get().map(|cm| cm.section)`
-- Setting a master toggle to `false` skips loading that group's file entirely
+- All layer configs live in a single `PluginConfig` struct in memory; layers access their table via `ConfigManager::get().and_then(|cm| cm.layers.<name>.enabled)`
+- Setting the master toggle to `false` skips loading that group entirely
 
-### Active Modules
+### Active Layers
 
-None yet — `src/` is an empty scaffold. Modules will be added under
-`src/modules/mechanics/`.
+None yet — `src/` is an empty scaffold. Layers will be added under `src/layers/`.
 
 ### Project Structure
 
@@ -103,9 +119,8 @@ None yet — `src/` is an empty scaffold. Modules will be added under
 src/
 ├── lib.rs                    # Plugin entry point, `MineInAbyss` struct
 ├── config.rs                 # `ConfigManager` — TOML config load/save
-└── modules/
-    └── mechanics/
-        └── mechanic.rs       # `Mechanic` trait + `MechanicsConfig`
+└── layers/
+    └── layer.rs              # `Layer` trait, `Depth` strata + `LayersConfig`
 ```
 
 ### Key Conventions
@@ -115,28 +130,27 @@ src/
 - Config structs: `Debug`, `Clone`, `Default`, `Serialize`, `Deserialize`
 - Config fields documented with `///` comments
 - Permission pattern: `{PLUGIN_ID}:command.{name}` (e.g., `mine_in_abyss:command.example`)
-- Module configs accessed via `ConfigManager::get().and_then(|cm| cm.mechanics.example.enabled).unwrap_or(false)`
+- Layer configs accessed via `ConfigManager::get().and_then(|cm| cm.layers.example.enabled).unwrap_or(false)`
 - Event handlers return `EventData<T>` (may modify event)
 - Release profile: LTO + strip for minimal WASM size
 - **Before checking API availability, run `cargo update` to fetch the latest `pumpkin-plugin-api` revision.** The API is git-tracked and may have added new events or types since the last local checkout.
 
 ### Code Style
 
-**Order of items in modules:**
+**Order of items in layers:**
 
 1. **`//!`** — Module-level documentation
 2. **`use`** — imports (external, crate, std)
 3. **`const`** — module constants (e.g., `PLUGIN_ID`)
 4. **`struct`**/`enum`** definitions (documented fields)
-5. **`impl Module`** — module trait implementation
+5. **`impl Layer`** — layer trait implementation
 6. **`impl EventHandler<T>`** — event handler implementations
 7. **`impl OtherTrait`** — other trait implementations
-8. **Type alias** — `pub type ModuleConfig = Config;`
-9. **`Config` struct** — module config (at bottom)
+8. **`Config` struct** — layer config (at bottom)
 
 **Documentation:**
 
-- Module-level docs with `//!` describing module purpose and config table
+- Module-level docs with `//!` describing layer purpose, config table, and `Depth`
 - All `pub` items have `///` rustdoc comments
 - Config fields documented inline
 - Placeholder tables for user-facing strings
@@ -196,26 +210,27 @@ GitHub Actions workflows in `.github/workflows/`:
 - **rust.yml** — Lints, builds the WASM plugin on push/PR, uploads the artifact and publishes the nightly release
 - **enforce_pr_title.yml** — Validates PR titles follow conventional commits
 
-## Adding a New Module
+## Adding a New Layer
 
-To add a new module, follow these steps:
+To add a new layer, follow these steps:
 
-1. Create new file in `src/modules/mechanics/{module}.rs`
-2. Add module-level docs `//!` with description and config table
-3. Define `{Module}Config` struct with `enabled: bool` + module fields
+1. Create new file in `src/layers/{layer}.rs`
+2. Add module-level docs `//!` with description, config table, and `Depth`
+3. Define `{Layer}Config` struct with `enabled: bool` + layer fields
 4. Implement `Default` for config with sensible defaults
-5. Create `{Module}` struct deriving `Default`
-6. Implement `Mechanic` trait:
-    - `enabled()` — check config via `ConfigManager::get().is_some_and(|cm| cm.{section}.enabled)`
+5. Create `{Layer}` struct deriving `Default`
+6. Implement `Layer` trait:
+    - `depth()` — return the `Depth` stratum it belongs to
+    - `enabled()` — check config via `ConfigManager::get().and_then(|cm| cm.layers.{name}.enabled).unwrap_or(false)`
     - `events()` — register event handlers (if needed)
     - `cmds()` — return commands (if needed)
     - `perms()` — return permission nodes (if commands)
 7. Implement `EventHandler<T>` for each event (if needed)
-8. In `src/modules/mechanics/mechanic.rs`:
-    - Add a `pub {section}: {Module}Config` field to `MechanicsConfig`
+8. In `src/layers/layer.rs`:
+    - Add a `pub {name}: {Layer}Config` field to `LayersConfig`
 9. In `src/lib.rs`:
-    - Declare the module in the `mod modules` tree
-    - Instantiate and register it in `on_load`, gated on the module group toggle
+    - Declare the layer in the `mod layers` tree
+    - Instantiate and register it in `on_load`, gated on `config.layers.layers`
 10. Run `cargo build --target wasm32-wasip2` to verify
 
 ## Memory System

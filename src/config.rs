@@ -4,7 +4,7 @@
 //!
 //! | File          | Purpose                              |
 //! |---------------|--------------------------------------|
-//! | `config.toml` | Master toggles for each module group |
+//! | `config.toml` | Master toggles for the layers group  |
 //!
 //! Each file is merged layered onto its typed defaults using the
 //! [`config`](https://crates.io/crates/config) crate, so missing keys fall back
@@ -23,31 +23,31 @@ thread_local! {
     static CONFIG: RefCell<Option<PluginConfig>> = const { RefCell::new(None) };
 }
 
-/// Master module group toggles stored in `config.toml`.
+/// Master group toggles stored in `config.toml`.
 ///
-/// Each group will gain its own `<group>.toml` file as modules are added.
+/// Each group will gain its own `<group>.toml` file as layers are added.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default)]
-pub struct ModuleToggles {
-    /// Master toggle for all mechanic modules.
-    pub mechanics: bool,
+pub struct LayerToggles {
+    /// Master toggle for all Abyss layers.
+    pub layers: bool,
 }
 
-impl Default for ModuleToggles {
+impl Default for LayerToggles {
     fn default() -> Self {
-        Self { mechanics: true }
+        Self { layers: true }
     }
 }
 
 /// Top-level plugin configuration.
 ///
-/// The `modules` field is read from `config.toml` and controls whether each
-/// module group is registered on load.
+/// The `layers` table is read from `config.toml` and controls whether the
+/// layers group is registered on load.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct PluginConfig {
-    /// Master toggles for each module group (from `config.toml`).
-    pub modules: ModuleToggles,
+    /// Master toggles for the layers group (from `config.toml`).
+    pub layers: LayerToggles,
 }
 
 /// Loads and provides access to the plugin configuration.
@@ -58,7 +58,7 @@ impl ConfigManager {
     /// Loads `config.toml`, stores the merged result globally, and persists the
     /// merged file back to disk.
     ///
-    /// Call this once in `Plugin::on_load` after all modules are ready.
+    /// Call this once in `Plugin::on_load` after all layers are ready.
     pub fn load(context: &Context) -> PluginConfig {
         let data_folder = PathBuf::from(context.get_data_folder());
         let config: PluginConfig = load_section(&data_folder, "config.toml");

@@ -8,7 +8,6 @@ use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::{Player, Server};
 
 use crate::layers::layer::Layer;
-use crate::{TITLE_FADE_IN, TITLE_FADE_OUT, TITLE_STAY};
 
 /// Handles a player joining a layer's world.
 #[derive(Debug, Default, Clone, Copy)]
@@ -29,6 +28,13 @@ impl EventHandler<PlayerChangedWorldEvent> for LayerJoin {
         event
     }
 }
+
+/// Title fade-in time in ticks (half a second).
+const TITLE_FADE_IN: i32 = 10;
+/// How long the title stays on screen in ticks (two seconds).
+const TITLE_STAY: i32 = 40;
+/// Title fade-out time in ticks (half a second).
+const TITLE_FADE_OUT: i32 = 10;
 
 /// Shows a layer's name as a gradient title, with an "Entered …" subtitle.
 fn show_entry_title(layer: &dyn Layer, player: &Player) {

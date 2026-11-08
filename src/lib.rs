@@ -52,13 +52,6 @@ use crate::layers::third::Third;
 /// is flattened to its underscore form.
 pub const PLUGIN_ID: &str = "mine_in_abyss";
 
-/// Title fade-in time in ticks (half a second).
-pub const TITLE_FADE_IN: i32 = 10;
-/// How long the title stays on screen in ticks (two seconds).
-pub const TITLE_STAY: i32 = 40;
-/// Title fade-out time in ticks (half a second).
-pub const TITLE_FADE_OUT: i32 = 10;
-
 /// Every layer, from the surface down.
 ///
 /// This is the single source of truth for which layers exist: registration, world

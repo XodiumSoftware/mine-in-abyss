@@ -46,8 +46,7 @@ fn up(server: &Server, player: &Player, section: Option<crate::section::Section>
         return;
     };
 
-    // TODO: punish the player for ascending (the Curse of the Abyss), scaled by
-    // how many layers they climbed.
+    super::curse::apply(player, section);
 
     let (x, _, z) = player.get_position();
     player.teleport((x, VOID_Y + 1.0, z), None, None, world);

@@ -63,4 +63,21 @@ impl Section {
         }
         None
     }
+
+    /// Returns this section's depth index, starting at 0 for the surface.
+    #[must_use]
+    pub fn index(self) -> usize {
+        Self::iter()
+            .position(|section| section == self)
+            .unwrap_or(0)
+    }
+
+    /// Returns the severity of the Curse of the Abyss when ascending out of this
+    /// section, from 0 (no ill effect) to 6 (fatal).
+    ///
+    /// Derived from the section's depth so it can never drift from the enum order.
+    #[must_use]
+    pub fn curse(self) -> u8 {
+        u8::try_from(self.index()).unwrap_or(u8::MAX)
+    }
 }

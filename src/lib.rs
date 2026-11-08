@@ -23,6 +23,7 @@ mod worlds;
 
 /// Event handlers for `mine-in-abyss`.
 mod events {
+    pub mod curse;
     pub mod layer_join;
     pub mod layer_leave;
 }

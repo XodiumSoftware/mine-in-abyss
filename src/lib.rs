@@ -52,7 +52,18 @@ impl EventHandler<PlayerChangedWorldEvent> for LayerEntryTitle {
     ) -> PlayerChangedWorldEventData {
         let world_name = event.to_world.get_name();
         if let Some(depth) = Depth::from_world_name(&world_name) {
-            depth.announce_entry(&event.player);
+            let layer: &dyn Layer = match depth {
+                Depth::First => &First,
+                Depth::Second => &Second,
+                Depth::Third => &Third,
+                Depth::Fourth => &Fourth,
+                Depth::Fifth => &Fifth,
+                Depth::Sixth => &Sixth,
+                Depth::Seventh => &Seventh,
+            };
+            if layer.enabled() {
+                depth.announce_entry(&event.player);
+            }
         }
         event
     }

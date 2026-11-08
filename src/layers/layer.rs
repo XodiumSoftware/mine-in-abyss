@@ -17,23 +17,26 @@ use tracing::error;
 ///
 /// A layer's [`Depth`] is purely descriptive: it documents where a feature sits in
 /// the world and gives the plugin one place to reason about depth ranges.
+///
+/// Ranges are expressed as Minecraft world Y coordinates, spanning the full playable
+/// column from the world floor (Y -64) up to the build limit (Y 319).
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Depth {
-    /// The top of the Abyss (0–1350 m).
+    /// The top of the Abyss (Y 195–319).
     #[default]
     First,
-    /// The Forest of Temptation (1350–2600 m).
+    /// The Forest of Temptation (Y 126–194).
     Second,
-    /// The Great Fault (2600–7000 m).
+    /// The Great Fault (Y 66–125).
     Third,
-    /// The Goblets of Giants (7000–12000 m).
+    /// The Goblets of Giants (Y 6–65).
     Fourth,
-    /// The Sea of Corpses (12000–13000 m).
+    /// The Sea of Corpses (Y -24 to 5).
     Fifth,
-    /// The Capital of the Unreturned (13000–15500 m).
+    /// The Capital of the Unreturned (Y -50 to -25).
     Sixth,
-    /// The Final Maelstrom (15500 m and below).
+    /// The Final Maelstrom (Y -64 to -51).
     Seventh,
 }
 
@@ -118,36 +121,6 @@ impl Depth {
             Self::Seventh => "mine_in_abyss_seventh",
         }
     }
-
-    /// Returns the shallowest depth (in meters) at which this stratum begins.
-    #[must_use]
-    pub const fn start_depth(self) -> i32 {
-        match self {
-            Self::First => 0,
-            Self::Second => 1350,
-            Self::Third => 2600,
-            Self::Fourth => 7000,
-            Self::Fifth => 12000,
-            Self::Sixth => 13000,
-            Self::Seventh => 15500,
-        }
-    }
-
-    /// Returns the stratum a given depth in meters falls into.
-    ///
-    /// Depths above the surface clamp to [`Depth::First`].
-    #[must_use]
-    pub const fn from_depth(depth: i32) -> Self {
-        match depth {
-            i32::MIN..=1349 => Self::First,
-            1350..=2599 => Self::Second,
-            2600..=6999 => Self::Third,
-            7000..=11999 => Self::Fourth,
-            12000..=12999 => Self::Fifth,
-            13000..=15499 => Self::Sixth,
-            _ => Self::Seventh,
-        }
-    }
 }
 
 #[cfg(test)]
@@ -178,31 +151,6 @@ mod tests {
                 assert_ne!(a.name(), b.name(), "{a:?} and {b:?} share a name");
             }
         }
-    }
-
-    #[test]
-    fn start_depths_are_strictly_increasing() {
-        for pair in ALL.windows(2) {
-            assert!(
-                pair[0].start_depth() < pair[1].start_depth(),
-                "{:?} should start above {:?}",
-                pair[0],
-                pair[1]
-            );
-        }
-    }
-
-    #[test]
-    fn from_depth_matches_each_stratum_start() {
-        for depth in ALL {
-            assert_eq!(Depth::from_depth(depth.start_depth()), depth);
-        }
-    }
-
-    #[test]
-    fn from_depth_clamps_above_the_surface() {
-        assert_eq!(Depth::from_depth(i32::MIN), Depth::First);
-        assert_eq!(Depth::from_depth(-1), Depth::First);
     }
 
     #[test]

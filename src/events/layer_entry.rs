@@ -12,9 +12,9 @@ use crate::{TITLE_FADE_IN, TITLE_FADE_OUT, TITLE_STAY};
 
 /// Announces a layer's name when a player enters its world.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct LayerEntryTitle;
+pub struct LayerEntry;
 
-impl EventHandler<PlayerChangedWorldEvent> for LayerEntryTitle {
+impl EventHandler<PlayerChangedWorldEvent> for LayerEntry {
     fn handle(
         &self,
         _server: Server,

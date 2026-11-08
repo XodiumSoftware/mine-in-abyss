@@ -82,7 +82,7 @@ impl MineInAbyss {
     fn register_events(context: &Context) {
         context
             .register_event_handler::<PlayerChangedWorldEvent, _>(
-                events::layer_entry::LayerEntryTitle,
+                events::layer_entry::LayerEntry,
                 EventPriority::Normal,
                 false,
             )

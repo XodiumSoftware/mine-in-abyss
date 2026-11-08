@@ -94,8 +94,15 @@ The Abyss is a vertical world, so every feature implements the **`Layer`** trait
 | `Seventh`   | 15500 and below   | The Final Maelstrom       |
 
 `Depth::start_depth()` and `Depth::from_depth()` convert between a stratum and meters.
-`Depth::name()` / `Depth::color()` / `Depth::colored_name()` provide display text (the last
-returns unparsed `MiniMessage`), and `Depth::world_name()` returns the stable world identifier.
+`Depth::name()` provides display text and `Depth::world_name()` returns the stable world
+identifier; `Depth::from_world_name()` inverts it. `Depth::gradient_colors()` returns the
+stratum's two-stop palette, and `Depth::title()` builds a gradient-styled `TextComponent`
+from it. `Depth::announce_entry()` shows that title to a player.
+
+When a player enters a layer world, `LayerEntryTitle` (in `src/lib.rs`) listens for
+`PlayerChangedWorldEvent`, resolves the stratum from the destination world name, and shows
+the entered-layer title. Titles are built as `TextComponent`s directly — the plugin API has
+no `MiniMessage` parser, so avoid emitting `MiniMessage` strings.
 
 Layers are plain structs (not singletons) instantiated with `Default::default()` and passed
 to `register()` in `on_load`.

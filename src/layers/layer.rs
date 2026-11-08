@@ -6,12 +6,21 @@
 //!
 //! Layers can register event handlers, commands, and permission nodes.
 
-use pumpkin_plugin_api::Context;
 use pumpkin_plugin_api::command::Command;
+use pumpkin_plugin_api::common::RgbColor;
 use pumpkin_plugin_api::events::{EventHandler, EventPriority, FromIntoEvent};
 use pumpkin_plugin_api::permission::Permission;
+use pumpkin_plugin_api::text::TextComponent;
+use pumpkin_plugin_api::{Context, Player};
 use serde::{Deserialize, Serialize};
 use tracing::error;
+
+/// Title fade-in time in ticks (half a second).
+pub const TITLE_FADE_IN: i32 = 10;
+/// How long the title stays on screen in ticks (two seconds).
+pub const TITLE_STAY: i32 = 40;
+/// Title fade-out time in ticks (half a second).
+pub const TITLE_FADE_OUT: i32 = 10;
 
 /// The known strata of the Abyss, from the surface down.
 ///
@@ -71,36 +80,128 @@ impl Depth {
         }
     }
 
-    /// Returns the `MiniMessage` colour tag used to render this stratum's name.
+    /// Returns this stratum's name as a gradient-styled [`TextComponent`].
     ///
-    /// This is a raw, unparsed `MiniMessage` tag (a gradient between two hex colours),
-    /// not rendered text. Pair it with [`name`](Self::name) — or use
-    /// [`colored_name`](Self::colored_name) — and let the renderer turn it into a
-    /// component.
+    /// The name from [`name`](Self::name), coloured with the palette from
+    /// [`gradient_colors`](Self::gradient_colors).
+    #[must_use]
+    pub fn title(self) -> TextComponent {
+        let colors = self.gradient_colors();
+        TextComponent::text(self.name()).gradient(&colors[..])
+    }
+
+    /// Shows the "entered this layer" title to a player.
+    ///
+    /// The title is [`Depth::title`] and the subtitle is a short `Entered <name>`
+    /// line. Shared by every layer so the presentation stays consistent.
+    pub fn announce_entry(self, player: &Player) {
+        player.show_title(self.title());
+        player.show_subtitle(TextComponent::text(&format!("Entered {}", self.name())));
+        player.send_title_animation(TITLE_FADE_IN, TITLE_STAY, TITLE_FADE_OUT);
+    }
+
+    /// Returns the gradient stop colours of this stratum's palette.
     ///
     /// The palette runs from warm daylight at the surface to cold, lightless colours
     /// in the depths.
     #[must_use]
-    pub const fn color(self) -> &'static str {
+    pub fn gradient_colors(self) -> [RgbColor; 2] {
         match self {
-            Self::First => "<gradient:#87CEEB:#5BA85B>",
-            Self::Second => "<gradient:#5BA85B:#2E8B57>",
-            Self::Third => "<gradient:#8B7355:#6B5B4A>",
-            Self::Fourth => "<gradient:#6B5B4A:#4A3F5C>",
-            Self::Fifth => "<gradient:#4A3F5C:#2E2A45>",
-            Self::Sixth => "<gradient:#2E2A45:#1A1728>",
-            Self::Seventh => "<gradient:#1A1728:#6B0000>",
+            Self::First => [
+                RgbColor {
+                    r: 0x87,
+                    g: 0xCE,
+                    b: 0xEB,
+                },
+                RgbColor {
+                    r: 0x5B,
+                    g: 0xA8,
+                    b: 0x5B,
+                },
+            ],
+            Self::Second => [
+                RgbColor {
+                    r: 0x5B,
+                    g: 0xA8,
+                    b: 0x5B,
+                },
+                RgbColor {
+                    r: 0x2E,
+                    g: 0x8B,
+                    b: 0x57,
+                },
+            ],
+            Self::Third => [
+                RgbColor {
+                    r: 0x8B,
+                    g: 0x73,
+                    b: 0x55,
+                },
+                RgbColor {
+                    r: 0x6B,
+                    g: 0x5B,
+                    b: 0x4A,
+                },
+            ],
+            Self::Fourth => [
+                RgbColor {
+                    r: 0x6B,
+                    g: 0x5B,
+                    b: 0x4A,
+                },
+                RgbColor {
+                    r: 0x4A,
+                    g: 0x3F,
+                    b: 0x5C,
+                },
+            ],
+            Self::Fifth => [
+                RgbColor {
+                    r: 0x4A,
+                    g: 0x3F,
+                    b: 0x5C,
+                },
+                RgbColor {
+                    r: 0x2E,
+                    g: 0x2A,
+                    b: 0x45,
+                },
+            ],
+            Self::Sixth => [
+                RgbColor {
+                    r: 0x2E,
+                    g: 0x2A,
+                    b: 0x45,
+                },
+                RgbColor {
+                    r: 0x1A,
+                    g: 0x17,
+                    b: 0x28,
+                },
+            ],
+            Self::Seventh => [
+                RgbColor {
+                    r: 0x1A,
+                    g: 0x17,
+                    b: 0x28,
+                },
+                RgbColor {
+                    r: 0x6B,
+                    g: 0x00,
+                    b: 0x00,
+                },
+            ],
         }
     }
 
-    /// Returns this stratum's name wrapped in its `MiniMessage` colour tag.
+    /// Returns the stratum whose world is called `name`, if any.
     ///
-    /// The result is still unparsed `MiniMessage`, ready to be handed to a `MiniMessage`
-    /// renderer: the tag from [`color`](Self::color), then the name from
-    /// [`name`](Self::name), then a closing gradient tag.
+    /// This is the inverse of [`world_name`](Self::world_name).
     #[must_use]
-    pub fn colored_name(self) -> String {
-        format!("{}{}</gradient>", self.color(), self.name())
+    pub fn from_world_name(name: &str) -> Option<Self> {
+        Self::ALL
+            .into_iter()
+            .find(|depth| depth.world_name() == name)
     }
 
     /// Returns the name of the Minecraft world that holds this stratum.
@@ -154,31 +255,22 @@ mod tests {
     }
 
     #[test]
-    fn every_stratum_has_a_color_tag() {
+    fn from_world_name_inverts_world_name() {
         for depth in ALL {
-            let color = depth.color();
-            assert!(
-                color.starts_with("<gradient:#") && color.ends_with('>'),
-                "{depth:?} has a malformed colour tag: {color}"
-            );
+            assert_eq!(Depth::from_world_name(depth.world_name()), Some(depth));
         }
+        assert_eq!(Depth::from_world_name("world"), None);
+        assert_eq!(Depth::from_world_name(""), None);
     }
 
     #[test]
-    fn colored_name_wraps_the_name_in_its_tag() {
+    fn every_stratum_has_a_two_stop_gradient() {
         for depth in ALL {
-            let colored = depth.colored_name();
-            assert!(
-                colored.starts_with(depth.color()),
-                "{depth:?} does not start with its colour tag"
-            );
-            assert!(
-                colored.contains(depth.name()),
-                "{depth:?} coloured name is missing the plain name"
-            );
-            assert!(
-                colored.ends_with("</gradient>"),
-                "{depth:?} coloured name is not closed"
+            let [start, end] = depth.gradient_colors();
+            assert_ne!(
+                (start.r, start.g, start.b),
+                (end.r, end.g, end.b),
+                "{depth:?} has a flat gradient"
             );
         }
     }

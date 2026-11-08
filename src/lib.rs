@@ -25,17 +25,38 @@ pub use config::*;
 pub use layers::*;
 pub use world_manager::*;
 
-use pumpkin_plugin_api::{Context, Plugin, PluginMetadata};
+use pumpkin_plugin_api::events::player::player_changed_world::PlayerChangedWorldEvent;
+use pumpkin_plugin_api::events::{EventHandler, EventPriority};
+use pumpkin_plugin_api::events_wit::PlayerChangedWorldEventData;
+use pumpkin_plugin_api::{Context, Plugin, PluginMetadata, Server};
 use tracing::info;
 
 use crate::layers::fifth::Fifth;
 use crate::layers::first::First;
 use crate::layers::fourth::Fourth;
-use crate::layers::layer::Layer;
+use crate::layers::layer::{Depth, Layer};
 use crate::layers::second::Second;
 use crate::layers::seventh::Seventh;
 use crate::layers::sixth::Sixth;
 use crate::layers::third::Third;
+
+/// Announces a layer's name when a player enters its world.
+#[derive(Debug, Default, Clone, Copy)]
+struct LayerEntryTitle;
+
+impl EventHandler<PlayerChangedWorldEvent> for LayerEntryTitle {
+    fn handle(
+        &self,
+        _server: Server,
+        event: PlayerChangedWorldEventData,
+    ) -> PlayerChangedWorldEventData {
+        let world_name = event.to_world.get_name();
+        if let Some(depth) = Depth::from_world_name(&world_name) {
+            depth.announce_entry(&event.player);
+        }
+        event
+    }
+}
 
 /// The plugin identifier used for namespaced ids and permission nodes.
 ///
@@ -58,6 +79,17 @@ impl MineInAbyss {
         }
 
         info!("Registered {enabled} layer(s)");
+    }
+
+    /// Registers the event that announces a layer when a player enters its world.
+    fn register_events(context: &Context) {
+        context
+            .register_event_handler::<PlayerChangedWorldEvent, _>(
+                LayerEntryTitle,
+                EventPriority::Normal,
+                false,
+            )
+            .expect("failed to register PlayerChangedWorldEvent handler");
     }
 }
 
@@ -88,6 +120,7 @@ impl Plugin for MineInAbyss {
 
         if config.layers.layers {
             Self::register_layers(&context);
+            Self::register_events(&context);
         }
 
         let worlds = WorldManager::setup(&context);

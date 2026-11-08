@@ -94,10 +94,13 @@ The Abyss is a vertical world, so every feature implements the **`Layer`** trait
 | `Seventh`   | 15500 and below   | The Final Maelstrom       |
 
 `Depth::start_depth()` and `Depth::from_depth()` convert between a stratum and meters.
-`Depth::name()` provides display text and `Depth::world_name()` returns the stable world
-identifier; `Depth::from_world_name()` inverts it. `Depth::gradient_colors()` returns the
-stratum's two-stop palette, and `Depth::title()` builds a gradient-styled `TextComponent`
-from it. `Depth::announce_entry()` shows that title to a player.
+`Depth::name()` returns the layer's effective display name — the per-layer `name` from
+`config.toml`, falling back to the layer's own `Default` when blank or unset (each layer
+defines its name in its `{Name}Config::default`, so there is one source of truth).
+`Depth::world_name()` returns the stable world identifier and `Depth::from_world_name()`
+inverts it. `Depth::gradient_colors()` reads the layer's `gradient_start` / `gradient_end`
+hex strings and parses them into `RgbColor`s, and `Depth::title()` builds a gradient-styled
+`TextComponent` from them. `Depth::announce_entry()` shows that title to a player.
 
 When a player enters a layer world, `LayerEntryTitle` (in `src/lib.rs`) listens for
 `PlayerChangedWorldEvent`, resolves the stratum from the destination world name, and shows
@@ -124,12 +127,12 @@ to `register()` in `on_load`.
 
 **`ConfigManager`** (`src/config.rs`) — TOML-backed config using the [`config`](https://crates.io/crates/config) crate:
 
-- Master toggles live in `{data_folder}/config.toml` under a `[layers]` table
-- Per-layer files (e.g. `layers.toml`) will be added alongside the group they belong to
+- All configuration lives under a `[layers]` table in `{data_folder}/config.toml`
+- Per-layer files (e.g. `layers.toml`) will be added alongside the section they belong to
 - On first load: creates all files with defaults
 - On subsequent loads: merges user values with defaults and preserves extra fields
 - All layer configs live in a single `PluginConfig` struct in memory; layers access their own section via `cm.layers.config.for_depth(Depth::X).enabled`, or `cm.layers.config.is_enabled(Depth::X)`
-- Setting the master toggle to `false` skips loading that group entirely
+- Gating is **per layer only** — there is no group-wide master toggle
 
 ### Active Layers
 
@@ -146,9 +149,12 @@ surface down. None implement gameplay yet.
 | `src/layers/sixth.rs`    | `Sixth`   | `Sixth`   |
 | `src/layers/seventh.rs`  | `Seventh` | `Seventh` |
 
-Each stub's `enabled()` reads its own `LayerConfig` from `LayersConfig`
-(`src/layers/layer.rs`) via `is_enabled(Depth::X)`. Every layer defaults to disabled;
-the `layers.layers` master toggle still gates whether the group is registered at all.
+Each stub's `enabled()` reads its own config section (e.g. `cm.layers.config.first.enabled`).
+Every layer defaults to disabled and decides for itself whether it activates.
+
+Each layer's config struct (`FirstConfig`, `SecondConfig`, …) lives **in its own layer
+file**, next to the logic that uses it. `LayersConfig` in `layer.rs` aggregates them and
+offers `is_enabled(depth)` / `name(depth)` lookups so callers never match on fields.
 
 ### Project Structure
 
@@ -202,8 +208,7 @@ src/
 
 ## Testing
 
-- Unit tests in `src/config.rs` under `#[cfg(test)]`
-- Run with: `cargo test`
+- The project intentionally has **no unit tests**
 - Integration testing: build WASM and load in Pumpkin server
 
 ## Important Notes
@@ -266,10 +271,10 @@ To add a new layer, follow these steps:
     - `perms()` — return permission nodes (if commands)
 7. Implement `EventHandler<T>` for each event (if needed)
 8. In `src/layers/layer.rs`:
-    - Add a `pub {name}: LayerConfig` field to `LayersConfig`
+    - Add a `pub {name}: {Name}Config` field to `LayersConfig`
 9. In `src/lib.rs`:
     - Declare the layer in the `mod layers` tree
-    - Instantiate and register it in `on_load`, gated on `config.layers.layers`
+    - Instantiate and register it in `on_load` via `register_layers`
 10. Run `cargo build --target wasm32-wasip2` to verify
 
 ## Memory System

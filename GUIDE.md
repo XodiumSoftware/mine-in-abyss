@@ -68,14 +68,17 @@ The file is created on first run with sensible defaults.
 ### `config.toml`
 
 ```toml
-[layers]
-layers = true
-
 [layers.config.first]
 enabled = false
+name = "The Top of the Abyss"
+gradient_start = "#87CEEB"
+gradient_end = "#5BA85B"
 
 [layers.config.second]
 enabled = false
+name = "The Forest of Temptation"
+gradient_start = "#5BA85B"
+gradient_end = "#2E8B57"
 
 # ... one [layers.config.<stratum>] table per layer
 
@@ -95,15 +98,19 @@ seventh = true
 
 | Key                        | Description                             | Default     |
 | -------------------------- | --------------------------------------- | ----------- |
-| `layers.layers`            | Master toggle for all Abyss layers      | `true`      |
 | `layers.config.<stratum>.enabled` | Enable an individual layer       | `false`     |
+| `layers.config.<stratum>.name`    | Display name for the layer       | stratum's built-in name |
+| `layers.config.<stratum>.gradient_start` | Title gradient start (`#RRGGBB`) | stratum's built-in colour |
+| `layers.config.<stratum>.gradient_end`   | Title gradient end (`#RRGGBB`)   | stratum's built-in colour |
 | `layers.worlds.enabled`    | Create one Minecraft world per stratum  | `false`     |
 | `layers.worlds.dimension`  | Dimension for the layer worlds          | `overworld` |
 | `layers.worlds.strata.*`   | Per-stratum world toggles               | `true`      |
 
 `<stratum>` is one of `first`, `second`, `third`, `fourth`, `fifth`, `sixth`,
-`seventh`. Every layer is disabled by default; the `layers.layers` master toggle
-gates whether the group is registered at all.
+`seventh`. Every layer is disabled by default and is toggled individually — there is
+no group-wide master switch. Setting `name` renames the layer in titles and messages;
+leave it blank to use the built-in name. The two gradient colours drive the colour of the
+entrance title; invalid hex values are logged and fall back to the built-in palette.
 
 ## Installation
 

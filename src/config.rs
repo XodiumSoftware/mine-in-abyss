@@ -26,38 +26,24 @@ thread_local! {
     static CONFIG: RefCell<Option<PluginConfig>> = const { RefCell::new(None) };
 }
 
-/// Master group toggles stored in `config.toml`.
+/// The top-level `[layers]` table in `config.toml`.
 ///
-/// Each group will gain its own `<group>.toml` file as layers are added.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+/// Gating is per layer: each stratum decides whether it is active via its own config.
+/// There is no group-wide master toggle.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct LayerToggles {
-    /// Master toggle for all Abyss layers.
-    pub layers: bool,
     /// Per-layer settings, keyed by stratum.
     pub config: LayersConfig,
     /// Per-layer world creation settings.
     pub worlds: WorldsConfig,
 }
 
-impl Default for LayerToggles {
-    fn default() -> Self {
-        Self {
-            layers: true,
-            config: LayersConfig::default(),
-            worlds: WorldsConfig::default(),
-        }
-    }
-}
-
 /// Top-level plugin configuration.
-///
-/// The `layers` table is read from `config.toml` and controls whether the
-/// layers group is registered on load.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct PluginConfig {
-    /// Master toggles for the layers group (from `config.toml`).
+    /// The `[layers]` table (from `config.toml`).
     pub layers: LayerToggles,
 }
 

@@ -127,12 +127,10 @@ impl Plugin for MineInAbyss {
     }
 
     fn on_load(&self, context: Context) -> pumpkin_plugin_api::Result<()> {
-        let config = ConfigManager::load(&context);
+        ConfigManager::load(&context);
 
-        if config.layers.layers {
-            Self::register_layers(&context);
-            Self::register_events(&context);
-        }
+        Self::register_layers(&context);
+        Self::register_events(&context);
 
         let worlds = WorldManager::setup(&context);
         info!("Mine in Abyss loaded ({worlds} layer world(s)).");

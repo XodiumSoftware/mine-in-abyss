@@ -1,7 +1,7 @@
 //! The sections of the Abyss, from the surface down.
 
 use crate::PLUGIN_ID;
-use strum::{EnumIter, IntoStaticStr};
+use strum::{EnumIter, IntoEnumIterator, IntoStaticStr};
 
 /// A section of the Abyss.
 ///
@@ -43,5 +43,24 @@ impl Section {
     #[must_use]
     pub fn world(self) -> String {
         format!("{PLUGIN_ID}_{}", self.id())
+    }
+
+    /// Returns the section directly below this one, if any.
+    #[must_use]
+    pub fn next(self) -> Option<Self> {
+        Self::iter().skip_while(|s| *s != self).nth(1)
+    }
+
+    /// Returns the section directly above this one, if any.
+    #[must_use]
+    pub fn prev(self) -> Option<Self> {
+        let mut previous = None;
+        for section in Self::iter() {
+            if section == self {
+                return previous;
+            }
+            previous = Some(section);
+        }
+        None
     }
 }

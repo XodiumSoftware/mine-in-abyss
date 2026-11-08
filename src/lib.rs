@@ -28,6 +28,15 @@ pub use world_manager::*;
 use pumpkin_plugin_api::{Context, Plugin, PluginMetadata};
 use tracing::info;
 
+use crate::layers::fifth::Fifth;
+use crate::layers::first::First;
+use crate::layers::fourth::Fourth;
+use crate::layers::layer::Layer;
+use crate::layers::second::Second;
+use crate::layers::seventh::Seventh;
+use crate::layers::sixth::Sixth;
+use crate::layers::third::Third;
+
 /// The plugin identifier used for namespaced ids and permission nodes.
 ///
 /// Must be a valid Minecraft identifier, so the crate name (`mine-in-abyss`)
@@ -36,6 +45,21 @@ pub const PLUGIN_ID: &str = "mine_in_abyss";
 
 /// Entry point of the plugin.
 pub struct MineInAbyss {}
+
+impl MineInAbyss {
+    /// Registers every stratum's layer, from the surface down.
+    fn register_layers(context: &Context) {
+        let layers: Vec<&dyn Layer> =
+            vec![&First, &Second, &Third, &Fourth, &Fifth, &Sixth, &Seventh];
+
+        let enabled = layers.iter().filter(|l| l.enabled()).count();
+        for layer in layers {
+            layer.register(context);
+        }
+
+        info!("Registered {enabled} layer(s)");
+    }
+}
 
 impl Plugin for MineInAbyss {
     fn new() -> Self {
@@ -60,7 +84,11 @@ impl Plugin for MineInAbyss {
     }
 
     fn on_load(&self, context: Context) -> pumpkin_plugin_api::Result<()> {
-        let _config = ConfigManager::load(&context);
+        let config = ConfigManager::load(&context);
+
+        if config.layers.layers {
+            Self::register_layers(&context);
+        }
 
         let worlds = WorldManager::setup(&context);
         info!("Mine in Abyss loaded ({worlds} layer world(s)).");

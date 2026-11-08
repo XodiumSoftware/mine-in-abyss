@@ -121,12 +121,26 @@ to `register()` in `on_load`.
 - Per-layer files (e.g. `layers.toml`) will be added alongside the group they belong to
 - On first load: creates all files with defaults
 - On subsequent loads: merges user values with defaults and preserves extra fields
-- All layer configs live in a single `PluginConfig` struct in memory; layers access their table via `ConfigManager::get().and_then(|cm| cm.layers.<name>.enabled)`
+- All layer configs live in a single `PluginConfig` struct in memory; layers access their table via `ConfigManager::get().and_then(|cm| cm.layers.<name>.enabled)` once per-layer config exists (today the stubs read the `layers.layers` group toggle)
 - Setting the master toggle to `false` skips loading that group entirely
 
 ### Active Layers
 
-None yet — `src/` is an empty scaffold. Layers will be added under `src/layers/`.
+All seven strata exist as empty stubs, registered in `MineInAbyss::register_layers` from the
+surface down. None implement gameplay yet.
+
+| Module              | Struct    | `Depth`   |
+| ------------------- | --------- | --------- |
+| `src/layers/first.rs`    | `First`   | `First`   |
+| `src/layers/second.rs`   | `Second`  | `Second`  |
+| `src/layers/third.rs`    | `Third`   | `Third`   |
+| `src/layers/fourth.rs`   | `Fourth`  | `Fourth`  |
+| `src/layers/fifth.rs`    | `Fifth`   | `Fifth`   |
+| `src/layers/sixth.rs`    | `Sixth`   | `Sixth`   |
+| `src/layers/seventh.rs`  | `Seventh` | `Seventh` |
+
+Each stub's `enabled()` reads the `layers.layers` master toggle; per-layer configs land in
+`LayersConfig` (`src/layers/layer.rs`) as features are added.
 
 ### Project Structure
 

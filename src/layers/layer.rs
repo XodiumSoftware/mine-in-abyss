@@ -6,6 +6,14 @@
 //!
 //! Layers can register event handlers, commands, and permission nodes.
 
+use crate::config::ConfigManager;
+use crate::layers::fifth::FifthConfig;
+use crate::layers::first::FirstConfig;
+use crate::layers::fourth::FourthConfig;
+use crate::layers::second::SecondConfig;
+use crate::layers::seventh::SeventhConfig;
+use crate::layers::sixth::SixthConfig;
+use crate::layers::third::ThirdConfig;
 use pumpkin_plugin_api::command::Command;
 use pumpkin_plugin_api::common::RgbColor;
 use pumpkin_plugin_api::events::{EventHandler, EventPriority, FromIntoEvent};
@@ -13,7 +21,7 @@ use pumpkin_plugin_api::permission::Permission;
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::{Context, Player};
 use serde::{Deserialize, Serialize};
-use tracing::error;
+use tracing::{error, warn};
 
 /// Title fade-in time in ticks (half a second).
 pub const TITLE_FADE_IN: i32 = 10;
@@ -21,6 +29,23 @@ pub const TITLE_FADE_IN: i32 = 10;
 pub const TITLE_STAY: i32 = 40;
 /// Title fade-out time in ticks (half a second).
 pub const TITLE_FADE_OUT: i32 = 10;
+
+/// Parses a `#RRGGBB` (or `RRGGBB`) hex string into an [`RgbColor`].
+///
+/// Returns `None` for any other shape, so callers can fall back to a default.
+#[must_use]
+fn parse_hex(value: &str) -> Option<RgbColor> {
+    let hex = value.trim().trim_start_matches('#');
+    if hex.len() != 6 {
+        return None;
+    }
+    let channel = |i: usize| u8::from_str_radix(&hex[i..i + 2], 16).ok();
+    Some(RgbColor {
+        r: channel(0)?,
+        g: channel(2)?,
+        b: channel(4)?,
+    })
+}
 
 /// The known strata of the Abyss, from the surface down.
 ///
@@ -60,24 +85,17 @@ impl Depth {
         Self::Sixth,
         Self::Seventh,
     ];
-    /// Returns the human-readable name of this stratum.
+    /// Returns the layer's effective display name, as configured.
     ///
-    /// This is the display/identity name (e.g. `"The Forest of Temptation"`), as
-    /// opposed to the ordinal variant name used for serialization.
-    ///
-    /// [`Depth::First`] has no separate name in the source material, so it returns
-    /// a descriptive fallback of `"The Top of the Abyss"`.
+    /// Reads the layer's `name` from config. Each layer defines that name as the
+    /// default in its own `Default` impl, so there is a single source of truth; a
+    /// blank or missing name falls back to the same default.
     #[must_use]
-    pub const fn name(self) -> &'static str {
-        match self {
-            Self::First => "The Top of the Abyss",
-            Self::Second => "The Forest of Temptation",
-            Self::Third => "The Great Fault",
-            Self::Fourth => "The Goblets of Giants",
-            Self::Fifth => "The Sea of Corpses",
-            Self::Sixth => "The Capital of the Unreturned",
-            Self::Seventh => "The Final Maelstrom",
-        }
+    pub fn name(self) -> String {
+        ConfigManager::get()
+            .map(|cm| cm.layers.config.name(self).to_owned())
+            .filter(|name| !name.trim().is_empty())
+            .unwrap_or_else(|| LayersConfig::default().name(self).to_owned())
     }
 
     /// Returns this stratum's name as a gradient-styled [`TextComponent`].
@@ -87,7 +105,7 @@ impl Depth {
     #[must_use]
     pub fn title(self) -> TextComponent {
         let colors = self.gradient_colors();
-        TextComponent::text(self.name()).gradient(&colors[..])
+        TextComponent::text(&self.name()).gradient(&colors[..])
     }
 
     /// Shows the "entered this layer" title to a player.
@@ -102,96 +120,41 @@ impl Depth {
 
     /// Returns the gradient stop colours of this stratum's palette.
     ///
-    /// The palette runs from warm daylight at the surface to cold, lightless colours
-    /// in the depths.
+    /// Reads `gradient_start` / `gradient_end` from the layer's config, falling back to
+    /// the layer's own defaults when the config is not loaded or a colour is malformed.
     #[must_use]
     pub fn gradient_colors(self) -> [RgbColor; 2] {
-        match self {
-            Self::First => [
-                RgbColor {
-                    r: 0x87,
-                    g: 0xCE,
-                    b: 0xEB,
-                },
-                RgbColor {
-                    r: 0x5B,
-                    g: 0xA8,
-                    b: 0x5B,
-                },
-            ],
-            Self::Second => [
-                RgbColor {
-                    r: 0x5B,
-                    g: 0xA8,
-                    b: 0x5B,
-                },
-                RgbColor {
-                    r: 0x2E,
-                    g: 0x8B,
-                    b: 0x57,
-                },
-            ],
-            Self::Third => [
-                RgbColor {
-                    r: 0x8B,
-                    g: 0x73,
-                    b: 0x55,
-                },
-                RgbColor {
-                    r: 0x6B,
-                    g: 0x5B,
-                    b: 0x4A,
-                },
-            ],
-            Self::Fourth => [
-                RgbColor {
-                    r: 0x6B,
-                    g: 0x5B,
-                    b: 0x4A,
-                },
-                RgbColor {
-                    r: 0x4A,
-                    g: 0x3F,
-                    b: 0x5C,
-                },
-            ],
-            Self::Fifth => [
-                RgbColor {
-                    r: 0x4A,
-                    g: 0x3F,
-                    b: 0x5C,
-                },
-                RgbColor {
-                    r: 0x2E,
-                    g: 0x2A,
-                    b: 0x45,
-                },
-            ],
-            Self::Sixth => [
-                RgbColor {
-                    r: 0x2E,
-                    g: 0x2A,
-                    b: 0x45,
-                },
-                RgbColor {
-                    r: 0x1A,
-                    g: 0x17,
-                    b: 0x28,
-                },
-            ],
-            Self::Seventh => [
-                RgbColor {
-                    r: 0x1A,
-                    g: 0x17,
-                    b: 0x28,
-                },
-                RgbColor {
-                    r: 0x6B,
-                    g: 0x00,
-                    b: 0x00,
-                },
-            ],
-        }
+        let [start, end] = self.configured_gradient();
+        let [default_start, default_end] = self.default_gradient();
+
+        [
+            parse_hex(&start).unwrap_or_else(|| {
+                warn!("Invalid gradient_start '{start}' for {self:?}; using default");
+                default_start
+            }),
+            parse_hex(&end).unwrap_or_else(|| {
+                warn!("Invalid gradient_end '{end}' for {self:?}; using default");
+                default_end
+            }),
+        ]
+    }
+
+    /// Returns the configured gradient hex strings.
+    fn configured_gradient(self) -> [String; 2] {
+        let config = ConfigManager::get().unwrap_or_default();
+        [
+            config.layers.config.gradient_start(self).to_owned(),
+            config.layers.config.gradient_end(self).to_owned(),
+        ]
+    }
+
+    /// Returns the layer's built-in gradient colours.
+    fn default_gradient(self) -> [RgbColor; 2] {
+        let config = LayersConfig::default();
+        [
+            parse_hex(config.gradient_start(self)).unwrap_or(RgbColor { r: 0, g: 0, b: 0 }),
+            parse_hex(config.gradient_end(self)).unwrap_or(RgbColor { r: 0, g: 0, b: 0 }),
+        ]
     }
 
     /// Returns the stratum whose world is called `name`, if any.
@@ -297,56 +260,82 @@ pub trait Layer {
 
 /// Configuration for every layer, keyed by stratum.
 ///
-/// Each field configures one layer. Add new layers here, grouped by the
-/// [`Depth`] they belong to. Use [`LayersConfig::for_depth`] to look a layer up
-/// from its stratum instead of matching on the fields directly.
+/// Each field holds one layer's own config, defined alongside that layer. Use
+/// [`LayersConfig::is_enabled`], [`LayersConfig::name`], and the gradient accessors to
+/// look a layer up from its stratum instead of matching on the fields directly.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct LayersConfig {
     /// The First Layer (Y 195–319).
-    pub first: LayerConfig,
+    pub first: FirstConfig,
     /// The Second Layer (Y 126–194).
-    pub second: LayerConfig,
+    pub second: SecondConfig,
     /// The Third Layer (Y 66–125).
-    pub third: LayerConfig,
+    pub third: ThirdConfig,
     /// The Fourth Layer (Y 6–65).
-    pub fourth: LayerConfig,
+    pub fourth: FourthConfig,
     /// The Fifth Layer (Y -24 to 5).
-    pub fifth: LayerConfig,
+    pub fifth: FifthConfig,
     /// The Sixth Layer (Y -50 to -25).
-    pub sixth: LayerConfig,
+    pub sixth: SixthConfig,
     /// The Seventh Layer (Y -64 to -51).
-    pub seventh: LayerConfig,
+    pub seventh: SeventhConfig,
 }
 
 impl LayersConfig {
-    /// Returns the configuration for `depth`.
-    #[must_use]
-    pub const fn for_depth(&self, depth: Depth) -> &LayerConfig {
-        match depth {
-            Depth::First => &self.first,
-            Depth::Second => &self.second,
-            Depth::Third => &self.third,
-            Depth::Fourth => &self.fourth,
-            Depth::Fifth => &self.fifth,
-            Depth::Sixth => &self.sixth,
-            Depth::Seventh => &self.seventh,
-        }
-    }
-
     /// Returns whether the layer for `depth` is enabled.
     #[must_use]
     pub const fn is_enabled(&self, depth: Depth) -> bool {
-        self.for_depth(depth).enabled
+        match depth {
+            Depth::First => self.first.enabled,
+            Depth::Second => self.second.enabled,
+            Depth::Third => self.third.enabled,
+            Depth::Fourth => self.fourth.enabled,
+            Depth::Fifth => self.fifth.enabled,
+            Depth::Sixth => self.sixth.enabled,
+            Depth::Seventh => self.seventh.enabled,
+        }
     }
-}
 
-/// Configuration for a single layer.
-///
-/// Shared by every stratum; add per-layer fields here as features land.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-pub struct LayerConfig {
-    /// Whether this layer is active.
-    pub enabled: bool,
+    /// Returns the configured display name for `depth`.
+    #[must_use]
+    pub fn name(&self, depth: Depth) -> &str {
+        match depth {
+            Depth::First => &self.first.name,
+            Depth::Second => &self.second.name,
+            Depth::Third => &self.third.name,
+            Depth::Fourth => &self.fourth.name,
+            Depth::Fifth => &self.fifth.name,
+            Depth::Sixth => &self.sixth.name,
+            Depth::Seventh => &self.seventh.name,
+        }
+    }
+
+    /// Returns the configured gradient start colour for `depth`.
+    #[must_use]
+    pub fn gradient_start(&self, depth: Depth) -> &str {
+        match depth {
+            Depth::First => &self.first.gradient_start,
+            Depth::Second => &self.second.gradient_start,
+            Depth::Third => &self.third.gradient_start,
+            Depth::Fourth => &self.fourth.gradient_start,
+            Depth::Fifth => &self.fifth.gradient_start,
+            Depth::Sixth => &self.sixth.gradient_start,
+            Depth::Seventh => &self.seventh.gradient_start,
+        }
+    }
+
+    /// Returns the configured gradient end colour for `depth`.
+    #[must_use]
+    pub fn gradient_end(&self, depth: Depth) -> &str {
+        match depth {
+            Depth::First => &self.first.gradient_end,
+            Depth::Second => &self.second.gradient_end,
+            Depth::Third => &self.third.gradient_end,
+            Depth::Fourth => &self.fourth.gradient_end,
+            Depth::Fifth => &self.fifth.gradient_end,
+            Depth::Sixth => &self.sixth.gradient_end,
+            Depth::Seventh => &self.seventh.gradient_end,
+        }
+    }
 }

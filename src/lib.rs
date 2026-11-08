@@ -33,6 +33,7 @@ pub use worlds::*;
 
 use pumpkin_plugin_api::events::EventPriority;
 use pumpkin_plugin_api::events::player::player_changed_world::PlayerChangedWorldEvent;
+use pumpkin_plugin_api::events::player::player_move::PlayerMoveEvent;
 use pumpkin_plugin_api::{Context, Plugin, PluginMetadata};
 use tracing::info;
 
@@ -88,6 +89,14 @@ impl MineInAbyss {
                 false,
             )
             .expect("failed to register PlayerChangedWorldEvent handler");
+
+        context
+            .register_event_handler::<PlayerMoveEvent, _>(
+                events::layer_leave::LayerLeave,
+                EventPriority::Normal,
+                false,
+            )
+            .expect("failed to register PlayerMoveEvent handler");
     }
 }
 

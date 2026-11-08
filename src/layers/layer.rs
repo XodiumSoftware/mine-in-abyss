@@ -12,7 +12,7 @@ pub trait Layer {
     fn enabled(&self) -> bool;
 
     /// Returns this layer's display name.
-    fn name(&self) -> &str;
+    fn name(&self) -> &'static str;
 
     /// Returns the gradient stop colours of this layer's palette.
     fn color(&self) -> [RgbColor; 2];

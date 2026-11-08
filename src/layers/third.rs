@@ -19,7 +19,7 @@ impl Layer for Third {
         false
     }
 
-    fn name(&self) -> &str {
+    fn name(&self) -> &'static str {
         "The Great Fault"
     }
 

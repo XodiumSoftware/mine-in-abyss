@@ -19,7 +19,7 @@ impl Layer for First {
         false
     }
 
-    fn name(&self) -> &str {
+    fn name(&self) -> &'static str {
         "The Top of the Abyss"
     }
 

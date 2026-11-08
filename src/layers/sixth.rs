@@ -19,7 +19,7 @@ impl Layer for Sixth {
         false
     }
 
-    fn name(&self) -> &str {
+    fn name(&self) -> &'static str {
         "The Capital of the Unreturned"
     }
 

@@ -19,7 +19,7 @@ impl Layer for Seventh {
         false
     }
 
-    fn name(&self) -> &str {
+    fn name(&self) -> &'static str {
         "The Final Maelstrom"
     }
 

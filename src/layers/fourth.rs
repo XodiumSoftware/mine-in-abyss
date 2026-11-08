@@ -19,7 +19,7 @@ impl Layer for Fourth {
         false
     }
 
-    fn name(&self) -> &str {
+    fn name(&self) -> &'static str {
         "The Goblets of Giants"
     }
 

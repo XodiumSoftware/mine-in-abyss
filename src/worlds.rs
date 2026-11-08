@@ -46,7 +46,7 @@ impl Worlds {
 
             if server.has_world(&name) {
                 info!("World '{name}' ready for {}", layer.name());
-                READY.with(|r| r.borrow_mut().insert(name.to_owned()));
+                READY.with(|r| r.borrow_mut().insert(name.clone()));
             } else {
                 warn!("World '{name}' was not created for {}", layer.name());
             }

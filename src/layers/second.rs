@@ -19,7 +19,7 @@ impl Layer for Second {
         false
     }
 
-    fn name(&self) -> &str {
+    fn name(&self) -> &'static str {
         "The Forest of Temptation"
     }
 

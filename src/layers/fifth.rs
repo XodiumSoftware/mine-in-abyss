@@ -19,7 +19,7 @@ impl Layer for Fifth {
         false
     }
 
-    fn name(&self) -> &str {
+    fn name(&self) -> &'static str {
         "The Sea of Corpses"
     }
 

@@ -25,20 +25,46 @@ pub use layers::*;
 pub use section::*;
 pub use worlds::*;
 
+use pumpkin_plugin_api::common::RgbColor;
 use pumpkin_plugin_api::events::player::player_changed_world::PlayerChangedWorldEvent;
 use pumpkin_plugin_api::events::{EventHandler, EventPriority};
 use pumpkin_plugin_api::events_wit::PlayerChangedWorldEventData;
+use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::{Context, Plugin, PluginMetadata, Server};
 use tracing::info;
 
 use crate::layers::fifth::Fifth;
 use crate::layers::first::First;
 use crate::layers::fourth::Fourth;
-use crate::layers::layer::{Depth, Layer};
+use crate::layers::layer::Layer;
 use crate::layers::second::Second;
 use crate::layers::seventh::Seventh;
 use crate::layers::sixth::Sixth;
 use crate::layers::third::Third;
+
+/// The plugin identifier used for namespaced ids and permission nodes.
+///
+/// Must be a valid Minecraft identifier, so the crate name (`mine-in-abyss`)
+/// is flattened to its underscore form.
+pub const PLUGIN_ID: &str = "mine_in_abyss";
+
+/// Title fade-in time in ticks (half a second).
+pub const TITLE_FADE_IN: i32 = 10;
+/// How long the title stays on screen in ticks (two seconds).
+pub const TITLE_STAY: i32 = 40;
+/// Title fade-out time in ticks (half a second).
+pub const TITLE_FADE_OUT: i32 = 10;
+
+/// Every layer, from the surface down.
+///
+/// This is the single source of truth for which layers exist: registration, world
+/// creation and the entry title all read from it.
+pub const LAYERS: [&dyn Layer; 7] = [&First, &Second, &Third, &Fourth, &Fifth, &Sixth, &Seventh];
+
+/// Returns the layer whose world is called `name`, if any.
+fn layer_for_world(name: &str) -> Option<&'static dyn Layer> {
+    LAYERS.into_iter().find(|layer| layer.id().world() == name)
+}
 
 /// Announces a layer's name when a player enters its world.
 #[derive(Debug, Default, Clone, Copy)]
@@ -51,44 +77,32 @@ impl EventHandler<PlayerChangedWorldEvent> for LayerEntryTitle {
         event: PlayerChangedWorldEventData,
     ) -> PlayerChangedWorldEventData {
         let world_name = event.to_world.get_name();
-        if let Some(depth) = Depth::from_world_name(&world_name) {
-            let layer: &dyn Layer = match depth {
-                Depth::First => &First,
-                Depth::Second => &Second,
-                Depth::Third => &Third,
-                Depth::Fourth => &Fourth,
-                Depth::Fifth => &Fifth,
-                Depth::Sixth => &Sixth,
-                Depth::Seventh => &Seventh,
-            };
-            if layer.enabled() {
-                depth.announce_entry(&event.player);
-            }
+        if let Some(layer) = layer_for_world(&world_name)
+            && layer.enabled()
+        {
+            show_entry_title(layer, &event.player);
         }
         event
     }
 }
 
-/// The plugin identifier used for namespaced ids and permission nodes.
-///
-/// Must be a valid Minecraft identifier, so the crate name (`mine-in-abyss`)
-/// is flattened to its underscore form.
-pub const PLUGIN_ID: &str = "mine_in_abyss";
+/// Shows a layer's name as a gradient title, with an "Entered …" subtitle.
+fn show_entry_title(layer: &dyn Layer, player: &pumpkin_plugin_api::Player) {
+    let colors: [RgbColor; 2] = layer.color();
+    let title = TextComponent::text(layer.name()).gradient(&colors[..]);
+
+    player.show_title(title);
+    player.show_subtitle(TextComponent::text(&format!("Entered {}", layer.name())));
+    player.send_title_animation(TITLE_FADE_IN, TITLE_STAY, TITLE_FADE_OUT);
+}
 
 /// Entry point of the plugin.
 pub struct MineInAbyss {}
 
 impl MineInAbyss {
-    /// Registers every stratum's layer, from the surface down.
-    fn register_layers(context: &Context) {
-        let layers: Vec<&dyn Layer> =
-            vec![&First, &Second, &Third, &Fourth, &Fifth, &Sixth, &Seventh];
-
-        let enabled = layers.iter().filter(|l| l.enabled()).count();
-        for layer in layers {
-            layer.register(context);
-        }
-
+    /// Registers every layer, from the surface down.
+    fn register_layers() {
+        let enabled = LAYERS.iter().filter(|layer| layer.enabled()).count();
         info!("Registered {enabled} layer(s)");
     }
 
@@ -127,10 +141,10 @@ impl Plugin for MineInAbyss {
     }
 
     fn on_load(&self, context: Context) -> pumpkin_plugin_api::Result<()> {
-        Self::register_layers(&context);
+        Self::register_layers();
         Self::register_events(&context);
 
-        let worlds = WorldManager::setup(&context);
+        let worlds = Worlds::setup(&context, &LAYERS);
         info!("Mine in Abyss loaded ({worlds} layer world(s)).");
         Ok(())
     }

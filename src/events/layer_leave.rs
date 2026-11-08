@@ -53,8 +53,12 @@ fn up(server: &Server, player: &Player, section: Option<crate::section::Section>
 }
 
 /// Sends a player down to `section`, keeping their X and Z position.
+///
+/// If there is no section below — the player fell out of the bottom of the Abyss —
+/// they die in the void instead.
 fn down(server: &Server, player: &Player, section: Option<crate::section::Section>) {
     let Some(section) = section else {
+        player.kill();
         return;
     };
     let Some(world) = server.get_world_by_name(&section.world()) else {

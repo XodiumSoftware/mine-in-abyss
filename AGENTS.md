@@ -63,8 +63,8 @@ cargo clippy --all-targets --all-features --target wasm32-wasip2 -- -W clippy::p
 
 1. **Registration**: Via `register_plugin!(MineInAbyss)` macro
 2. **`on_load`**:
-    - Initializes `ConfigManager` (loads/creates `config.toml`)
-    - No layers are registered yet — this is a stub
+    - Registers the event handlers (see [Events](#events))
+    - Creates one world per layer via `Worlds::setup`
 3. **`on_unload`**: Logs farewell message
 
 ### Layer System
@@ -72,100 +72,107 @@ cargo clippy --all-targets --all-features --target wasm32-wasip2 -- -W clippy::p
 The Abyss is a vertical world, so every feature implements the **`Layer`** trait
 (`src/layers/layer.rs`) and declares which stratum it belongs to.
 
-| Method       | Purpose                                          | Default     |
-| ------------ | ------------------------------------------------ | ----------- |
-| `depth()`    | Returns the `Depth` stratum this layer belongs to | First       |
-| `enabled()`  | Returns whether the layer is active              | Required    |
-| `cmds()`     | Returns `Vec<Command>` to register               | Empty vec   |
-| `perms()`    | Returns `Vec<Permission>` permission nodes       | Empty vec   |
-| `events()`   | Registers event handlers via `Context`           | No-op       |
-| `register()` | Calls `events()`, registers commands/permissions | Implemented |
+| Method      | Purpose                                       |
+| ----------- | --------------------------------------------- |
+| `id()`      | Returns the `Section` this layer lives in     |
+| `enabled()` | Returns whether the layer is active           |
+| `name()`    | Returns the layer's display name              |
+| `color()`   | Returns the two gradient stops of its palette |
 
-`Depth` names the strata from the surface down, and is purely descriptive:
+`Section` (`src/section.rs`) names the strata from the surface down and is the
+single enum everything derives from:
 
-| Variant     | Range (m)         | Notes                     |
-| ----------- | ----------------- | ------------------------- |
-| `First`     | 0 – 1350          | Top of the Abyss          |
-| `Second`    | 1350 – 2600       | The Forest of Temptation  |
-| `Third`     | 2600 – 7000       | The Great Fault           |
-| `Fourth`    | 7000 – 12000      | The Goblets of Giants     |
-| `Fifth`     | 12000 – 13000     | The Sea of Corpses        |
-| `Sixth`     | 13000 – 15500     | The Capital of the Unreturned |
-| `Seventh`   | 15500 and below   | The Final Maelstrom       |
+| Variant   | `id()`    | World                  | Notes                         |
+| --------- | --------- | ---------------------- | ----------------------------- |
+| `First`   | `first`   | `mine_in_abyss_first`  | The Top of the Abyss          |
+| `Second`  | `second`  | `mine_in_abyss_second` | The Forest of Temptation      |
+| `Third`   | `third`   | `mine_in_abyss_third`  | The Great Fault               |
+| `Fourth`  | `fourth`  | `mine_in_abyss_fourth` | The Goblets of Giants         |
+| `Fifth`   | `fifth`   | `mine_in_abyss_fifth`  | The Sea of Corpses            |
+| `Sixth`   | `sixth`   | `mine_in_abyss_sixth`  | The Capital of the Unreturned |
+| `Seventh` | `seventh` | `mine_in_abyss_seventh`| The Final Maelstrom           |
 
-`Depth::start_depth()` and `Depth::from_depth()` convert between a stratum and meters.
-`Depth::name()` returns the layer's effective display name — the per-layer `name` from
-`config.toml`, falling back to the layer's own `Default` when blank or unset (each layer
-defines its name in its `{Name}Config::default`, so there is one source of truth).
-`Depth::world_name()` returns the stable world identifier and `Depth::from_world_name()`
-inverts it. `Depth::gradient_colors()` reads the layer's `gradient_start` / `gradient_end`
-hex strings and parses them into `RgbColor`s, and `Depth::title()` builds a gradient-styled
-`TextComponent` from them. `Depth::announce_entry()` shows that title to a player.
+It derives `EnumIter` + `IntoStaticStr` (with `serialize_all = "lowercase"`), so
+`id()` is just `self.into()` — variant names are never hand-written twice. Built on
+that:
 
-When a player enters a layer world, `LayerEntryTitle` (in `src/lib.rs`) listens for
-`PlayerChangedWorldEvent`, resolves the stratum from the destination world name, and shows
-the entered-layer title. Titles are built as `TextComponent`s directly — the plugin API has
-no `MiniMessage` parser, so avoid emitting `MiniMessage` strings.
+- `world()` — `format!("{PLUGIN_ID}_{}", self.id())`
+- `next()` / `prev()` — neighbouring strata, `None` at the ends
+- `index()` — depth index, `0` at the surface
+- `curse()` — Curse of the Abyss severity, derived from `index()`
 
-Layers are plain structs (not singletons) instantiated with `Default::default()` and passed
-to `register()` in `on_load`.
+Display names and gradient colours are **not** on `Section`; each layer provides them
+through the `Layer` trait.
 
-### World Manager
+Layers are zero-sized plain structs (`First`, `Second`, …) exposed through
+`LAYERS: [&dyn Layer; 7]` in `src/lib.rs`, which is the single source of truth for
+registration, world creation and world-name lookup (`layer_for_world`).
 
-**`WorldManager`** (`src/world_manager.rs`) — creates one Minecraft world per stratum on load.
+### Events
 
-- `WorldManager::setup(context)` runs from `on_load`, right after config is loaded
-- World names come from `Depth::world_name()` (`mine_in_abyss_first`, ...) so they stay
-  stable even if a stratum's display name changes
+Handlers live in `src/events/`, declared inline in the `mod events` block in `lib.rs`:
+
+| Handler      | Event                      | Behaviour                                    |
+| ------------ | -------------------------- | -------------------------------------------- |
+| `LayerJoin`  | `PlayerChangedWorldEvent`  | Shows the entered layer's gradient title     |
+| `LayerLeave` | `PlayerMoveEvent`          | Void/ceiling detection, teleport, curse      |
+
+`LayerLeave` uses two Y thresholds (`VOID_Y = -128.0`, `MAX_Y = 320.0`): below the
+void → next layer down at `MAX_Y - 2.0`; above the ceiling → previous layer up at
+`VOID_Y + 1.0`. Both keep X/Z. Falling out of `Seventh` (no `next()`) kills the player.
+Ascending calls `curse::apply`, which inflicts effects by `Section::curse()` severity.
+
+Titles are built as `TextComponent`s directly — the plugin API has no `MiniMessage`
+parser, so **never emit `MiniMessage` strings**.
+
+### Worlds
+
+**`Worlds`** (`src/worlds.rs`) — creates one Minecraft world per layer on load.
+
+- `Worlds::setup(context, layers)` runs from `on_load`
+- World names come from `Section::world()`, so they stay stable across renames
 - `create_world` is create-or-load: an existing world is reused, never reset
-- `World` is a non-cloneable WIT resource, so only the set of ready strata is cached;
-  `WorldManager::world(context, depth)` re-resolves the handle from the server
-- Configured under `[layers.worlds]` in `config.toml` (`enabled`, `dimension`, `strata.*`);
-  disabled by default
+- `World` is a non-cloneable WIT resource, so only the set of ready world names is
+  cached in a `thread_local`; `Worlds::world` re-resolves the handle from the server
+- A failure for one layer is logged and does not stop the others
 
 ### Configuration
 
-**`ConfigManager`** (`src/config.rs`) — TOML-backed config using the [`config`](https://crates.io/crates/config) crate:
-
-- All configuration lives under a `[layers]` table in `{data_folder}/config.toml`
-- Per-layer files (e.g. `layers.toml`) will be added alongside the section they belong to
-- On first load: creates all files with defaults
-- On subsequent loads: merges user values with defaults and preserves extra fields
-- All layer configs live in a single `PluginConfig` struct in memory; layers access their own section via `cm.layers.config.for_depth(Depth::X).enabled`, or `cm.layers.config.is_enabled(Depth::X)`
-- Gating is **per layer only** — there is no group-wide master toggle
+**None.** The TOML config system was removed; there is no `config.rs`, no
+`config.toml`, and layers do not gate on config. `Layer::enabled()` currently
+returns `false` for every layer and is the seam a future config layer would plug into.
 
 ### Active Layers
 
-All seven strata exist as empty stubs, registered in `MineInAbyss::register_layers` from the
-surface down. None implement gameplay yet.
+All seven layers exist as stubs (identity, name, gradient colour) with no gameplay yet.
 
-| Module              | Struct    | `Depth`   |
-| ------------------- | --------- | --------- |
-| `src/layers/first.rs`    | `First`   | `First`   |
-| `src/layers/second.rs`   | `Second`  | `Second`  |
-| `src/layers/third.rs`    | `Third`   | `Third`   |
-| `src/layers/fourth.rs`   | `Fourth`  | `Fourth`  |
-| `src/layers/fifth.rs`    | `Fifth`   | `Fifth`   |
-| `src/layers/sixth.rs`    | `Sixth`   | `Sixth`   |
-| `src/layers/seventh.rs`  | `Seventh` | `Seventh` |
+| Module                  | Struct    | `Section` |
+| ----------------------- | --------- | --------- |
+| `src/layers/first.rs`   | `First`   | `First`   |
+| `src/layers/second.rs`  | `Second`  | `Second`  |
+| `src/layers/third.rs`   | `Third`   | `Third`   |
+| `src/layers/fourth.rs`  | `Fourth`  | `Fourth`  |
+| `src/layers/fifth.rs`   | `Fifth`   | `Fifth`   |
+| `src/layers/sixth.rs`   | `Sixth`   | `Sixth`   |
+| `src/layers/seventh.rs` | `Seventh` | `Seventh` |
 
-Each stub's `enabled()` reads its own config section (e.g. `cm.layers.config.first.enabled`).
-Every layer defaults to disabled and decides for itself whether it activates.
-
-Each layer's config struct (`FirstConfig`, `SecondConfig`, …) lives **in its own layer
-file**, next to the logic that uses it. `LayersConfig` in `layer.rs` aggregates them and
-offers `is_enabled(depth)` / `name(depth)` lookups so callers never match on fields.
+Each layer implements `Layer` with its own `id()`, `enabled()`, `name()` and
+`color()`. Names and colours are hardcoded per layer, next to the layer they describe.
 
 ### Project Structure
 
 ```
 src/
-├── lib.rs                    # Plugin entry point, `MineInAbyss` struct
-├── config.rs                 # `ConfigManager` — TOML config load/save
-├── world_manager.rs          # `WorldManager`, `WorldsConfig` — one world per stratum
+├── lib.rs              # `PLUGIN_ID`, `LAYERS`, `layer_for_world`, `Plugin` impl
+├── section.rs          # `Section` enum + id/world/next/prev/index/curse
+├── worlds.rs           # `Worlds` — one world per layer
+├── events/
+│   ├── curse.rs        # Curse of the Abyss severity ladder
+│   ├── layer_join.rs   # `LayerJoin` — entry title
+│   └── layer_leave.rs  # `LayerLeave` — void/ceiling teleport + curse
 └── layers/
-    ├── layer.rs              # `Layer` trait, `Depth` strata + `LayersConfig`
-    └── first.rs .. seventh.rs  # per-stratum feature modules
+    ├── layer.rs        # `Layer` trait
+    └── first.rs .. seventh.rs
 ```
 
 ### Key Conventions
@@ -175,7 +182,7 @@ src/
 - Config structs: `Debug`, `Clone`, `Default`, `Serialize`, `Deserialize`
 - Config fields documented with `///` comments
 - Permission pattern: `{PLUGIN_ID}:command.{name}` (e.g., `mine_in_abyss:command.example`)
-- Layer configs accessed via `ConfigManager::get().and_then(|cm| cm.layers.example.enabled).unwrap_or(false)`
+- No config system — `Layer::enabled()` is the seam a future one would plug into
 - Event handlers return `EventData<T>` (may modify event)
 - Release profile: LTO + strip for minimal WASM size
 - **Before checking API availability, run `cargo update` to fetch the latest `pumpkin-plugin-api` revision.** The API is git-tracked and may have added new events or types since the last local checkout.
@@ -187,24 +194,20 @@ src/
 1. **`//!`** — Module-level documentation
 2. **`use`** — imports (external, crate, std)
 3. **`const`** — module constants (e.g., `PLUGIN_ID`)
-4. **`struct`**/`enum`** definitions (documented fields)
+4. **`struct`**/**`enum`** definitions (documented fields)
 5. **`impl Layer`** — layer trait implementation
 6. **`impl EventHandler<T>`** — event handler implementations
 7. **`impl OtherTrait`** — other trait implementations
-8. **`Config` struct** — layer config (at bottom)
 
 **Documentation:**
 
-- Module-level docs with `//!` describing layer purpose, config table, and `Depth`
+- Module-level docs with `//!` describing the layer's purpose and its Y range
 - All `pub` items have `///` rustdoc comments
-- Config fields documented inline
-- Placeholder tables for user-facing strings
 
 **Error Handling:**
 
-- Use `tracing::error!` for logging, not `println!`
+- Use `tracing::{info, warn, error}!` for logging, not `println!`
 - Event handler failures use `.expect()` for critical registrations
-- Config parsing errors logged gracefully, fall back to defaults
 
 ## Testing
 
@@ -214,7 +217,7 @@ src/
 ## Important Notes
 
 - A crate name with a hyphen (`mine-in-abyss`) can't be a Minecraft namespace, so `PLUGIN_ID` is the literal `"mine_in_abyss"`
-- Config file auto-created with defaults on first load
+- There is no config file; the plugin has no persisted settings
 - WASM output must be copied to server's `plugins/` folder
 - Pumpkin server must support WASM plugins (WASI Preview 2)
 - Plugin API is unstable and may change
@@ -259,23 +262,21 @@ GitHub Actions workflows in `.github/workflows/`:
 To add a new layer, follow these steps:
 
 1. Create new file in `src/layers/{layer}.rs`
-2. Add module-level docs `//!` with description, config table, and `Depth`
-3. Define `{Layer}Config` struct with `enabled: bool` + layer fields
-4. Implement `Default` for config with sensible defaults
-5. Create `{Layer}` struct deriving `Default`
-6. Implement `Layer` trait:
-    - `depth()` — return the `Depth` stratum it belongs to
-    - `enabled()` — check config via `ConfigManager::get().and_then(|cm| cm.layers.{name}.enabled).unwrap_or(false)`
-    - `events()` — register event handlers (if needed)
-    - `cmds()` — return commands (if needed)
-    - `perms()` — return permission nodes (if commands)
-7. Implement `EventHandler<T>` for each event (if needed)
-8. In `src/layers/layer.rs`:
-    - Add a `pub {name}: {Name}Config` field to `LayersConfig`
-9. In `src/lib.rs`:
+2. Add module-level docs `//!` with a description and the layer's Y range
+3. Create the `{Layer}` struct deriving `Debug, Default, Clone, Copy`
+4. Implement `Layer`:
+    - `id()` — return the `Section` variant it belongs to
+    - `enabled()` — return `false` until the layer has content to gate
+    - `name()` — return the layer's display name
+    - `color()` — return the two gradient stops as `RgbColor`s
+5. Implement `EventHandler<T>` for each event (if needed), and register it in
+   `MineInAbyss::register_events`
+6. In `src/section.rs`: add a variant to the `Section` enum (keep it in depth order —
+   `next`/`prev`/`index`/`curse` all derive from the variant order)
+7. In `src/lib.rs`:
     - Declare the layer in the `mod layers` tree
-    - Instantiate and register it in `on_load` via `register_layers`
-10. Run `cargo build --target wasm32-wasip2` to verify
+    - Add it to `LAYERS` **in depth order**
+8. Run `cargo clippy --target wasm32-wasip2 -- -W clippy::pedantic -D warnings` to verify
 
 ## Memory System
 

@@ -5,8 +5,7 @@
 - [Prerequisites](#prerequisites)
 - [Download Nightly Build](#download-nightly-build)
 - [Build from Source](#build-from-source)
-- [Configuration](#configuration)
-- [Installation](#installation-1)
+- [Installation](#installation)
 - [Usage](#usage)
 - [Troubleshooting](#troubleshooting)
 
@@ -60,72 +59,60 @@ Build the plugin yourself using Rust.
     target/wasm32-wasip2/release/mine-in-abyss.wasm
     ```
 
-## Configuration
-
-The plugin stores its configuration in `config.toml` inside the plugin's data folder.
-The file is created on first run with sensible defaults.
-
-### `config.toml`
-
-```toml
-[layers.config.first]
-enabled = false
-name = "The Top of the Abyss"
-gradient_start = "#87CEEB"
-gradient_end = "#5BA85B"
-
-[layers.config.second]
-enabled = false
-name = "The Forest of Temptation"
-gradient_start = "#5BA85B"
-gradient_end = "#2E8B57"
-
-# ... one [layers.config.<stratum>] table per layer
-
-[layers.worlds]
-enabled = false
-dimension = "overworld"
-
-[layers.worlds.strata]
-first = true
-second = true
-third = true
-fourth = true
-fifth = true
-sixth = true
-seventh = true
-```
-
-| Key                        | Description                             | Default     |
-| -------------------------- | --------------------------------------- | ----------- |
-| `layers.config.<stratum>.enabled` | Enable an individual layer       | `false`     |
-| `layers.config.<stratum>.name`    | Display name for the layer       | stratum's built-in name |
-| `layers.config.<stratum>.gradient_start` | Title gradient start (`#RRGGBB`) | stratum's built-in colour |
-| `layers.config.<stratum>.gradient_end`   | Title gradient end (`#RRGGBB`)   | stratum's built-in colour |
-| `layers.worlds.enabled`    | Create one Minecraft world per stratum  | `false`     |
-| `layers.worlds.dimension`  | Dimension for the layer worlds          | `overworld` |
-| `layers.worlds.strata.*`   | Per-stratum world toggles               | `true`      |
-
-`<stratum>` is one of `first`, `second`, `third`, `fourth`, `fifth`, `sixth`,
-`seventh`. Every layer is disabled by default and is toggled individually — there is
-no group-wide master switch. Setting `name` renames the layer in titles and messages;
-leave it blank to use the built-in name. The two gradient colours drive the colour of the
-entrance title; invalid hex values are logged and fall back to the built-in palette.
-
 ## Installation
 
 1. Place `mine-in-abyss.wasm` in your Pumpkin server's `plugins/` directory
 2. Start the server
-3. The plugin will load and create `config.toml` in the plugin data folder
-4. Stop the server and edit `config.toml` as needed
-5. Restart the server
+3. The plugin creates one Minecraft world per layer on load
 
 ## Usage
 
-The plugin currently only manages worlds: when `layers.worlds.enabled` is set, it creates
-one Minecraft world per stratum on startup (`mine_in_abyss_first`, ...). Gameplay content
-(the Abyss, relics, delvers, layer curses, ...) will land in `src/layers/`, under the
-stratum folder it belongs to.
+The Abyss is a vertical world, so every layer is its own Minecraft world
+(`mine_in_abyss_first`, `mine_in_abyss_second`, …). All seven layers are created on
+startup.
+
+### Layers
+
+| Layer     | World                     | Name                          |
+| --------- | ------------------------- | ----------------------------- |
+| `First`   | `mine_in_abyss_first`     | The Top of the Abyss          |
+| `Second`  | `mine_in_abyss_second`    | The Forest of Temptation      |
+| `Third`   | `mine_in_abyss_third`     | The Great Fault               |
+| `Fourth`  | `mine_in_abyss_fourth`    | The Goblets of Giants         |
+| `Fifth`   | `mine_in_abyss_fifth`     | The Sea of Corpses            |
+| `Sixth`   | `mine_in_abyss_sixth`     | The Capital of the Unreturned |
+| `Seventh` | `mine_in_abyss_seventh`   | The Final Maelstrom           |
+
+World names are derived from the layer's ordinal, so they stay stable across releases
+even if a layer is renamed.
+
+### Descending and ascending
+
+- **Descending** — falling below `Y = -128` in a layer teleports the player into the
+  next layer down, at `Y = 318`, keeping their X and Z position.
+- **Ascending** — rising above `Y = 320` teleports the player into the layer above, at
+  `Y = -127`. Ascending inflicts the **Curse of the Abyss** (see below).
+- **The bottom of the Abyss** — falling below `Y = -128` in `Seventh` kills the player
+  in the void.
+
+### Curse of the Abyss
+
+Ascending out of a layer inflicts symptoms that worsen with depth. Severity is derived
+from the layer's index, starting at `0` for the surface:
+
+| Layer     | Symptoms                                              |
+| --------- | ----------------------------------------------------- |
+| `First`   | None                                                  |
+| `Second`  | Nausea                                                |
+| `Third`   | Nausea, weakness                                      |
+| `Fourth`  | Nausea, blindness, slowness                           |
+| `Fifth`   | Nausea, blindness, weakness, minor magic damage       |
+| `Sixth`   | Blindness, weakness, magic damage, health clamped to 1 |
+| `Seventh` | Death                                                 |
+
+### Other behaviour
+
+Entering a layer's world shows a gradient title with that layer's name.
 
 ## Troubleshooting
 
@@ -135,15 +122,10 @@ stratum folder it belongs to.
 - Check server logs for detailed error messages
 - Ensure the `.wasm` file is not corrupted (re-download if needed)
 
-### "Config not loading"
-
-- Check that the offending `.toml` file is valid TOML
-- The plugin will regenerate a config file if it's invalid and fall back to defaults
-- Stop the server before editing config files
-
 ### Nothing happens in-game
 
-- The plugin is a stub right now — no gameplay modules are registered yet
+- The layer stubs have no gameplay content yet — only worlds, layer transitions, entry
+  titles and the curse are implemented
 - Verify the plugin loaded successfully in server logs (`Mine in Abyss loaded.`)
 
 ### Build errors

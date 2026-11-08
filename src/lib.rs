@@ -1,9 +1,9 @@
 //! `mine-in-abyss` is a [Pumpkin](https://github.com/Pumpkin-MC/Pumpkin) Minecraft plugin written in
 //! Rust that recreates ***Made in Abyss*** inside Minecraft.
 //!
-//! This crate is currently a **stub**: the plugin boots and exposes the layer
-//! registration pipeline that future content (the Abyss layers, relics, curses, delvers, ...) will
-//! plug into.
+//! Each layer of the Abyss is its own Minecraft world, and players descend by falling
+//! through the void of the layer above. Gameplay content for individual layers is still
+//! a stub; the Curse of the Abyss and layer transitions are implemented.
 //!
 //! See [`GUIDE.md`](../GUIDE.md) for installation.
 #![allow(clippy::must_use_candidate)]

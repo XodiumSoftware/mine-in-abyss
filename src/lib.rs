@@ -21,16 +21,18 @@ mod layers {
 mod section;
 mod worlds;
 
+/// Event handlers for `mine-in-abyss`.
+mod events {
+    pub mod layer_entry;
+}
+
 pub use layers::*;
 pub use section::*;
 pub use worlds::*;
 
-use pumpkin_plugin_api::common::RgbColor;
+use pumpkin_plugin_api::events::EventPriority;
 use pumpkin_plugin_api::events::player::player_changed_world::PlayerChangedWorldEvent;
-use pumpkin_plugin_api::events::{EventHandler, EventPriority};
-use pumpkin_plugin_api::events_wit::PlayerChangedWorldEventData;
-use pumpkin_plugin_api::text::TextComponent;
-use pumpkin_plugin_api::{Context, Plugin, PluginMetadata, Server};
+use pumpkin_plugin_api::{Context, Plugin, PluginMetadata};
 use tracing::info;
 
 use crate::layers::fifth::Fifth;
@@ -62,38 +64,8 @@ pub const TITLE_FADE_OUT: i32 = 10;
 pub const LAYERS: [&dyn Layer; 7] = [&First, &Second, &Third, &Fourth, &Fifth, &Sixth, &Seventh];
 
 /// Returns the layer whose world is called `name`, if any.
-fn layer_for_world(name: &str) -> Option<&'static dyn Layer> {
+pub(crate) fn layer_for_world(name: &str) -> Option<&'static dyn Layer> {
     LAYERS.into_iter().find(|layer| layer.id().world() == name)
-}
-
-/// Announces a layer's name when a player enters its world.
-#[derive(Debug, Default, Clone, Copy)]
-struct LayerEntryTitle;
-
-impl EventHandler<PlayerChangedWorldEvent> for LayerEntryTitle {
-    fn handle(
-        &self,
-        _server: Server,
-        event: PlayerChangedWorldEventData,
-    ) -> PlayerChangedWorldEventData {
-        let world_name = event.to_world.get_name();
-        if let Some(layer) = layer_for_world(&world_name)
-            && layer.enabled()
-        {
-            show_entry_title(layer, &event.player);
-        }
-        event
-    }
-}
-
-/// Shows a layer's name as a gradient title, with an "Entered …" subtitle.
-fn show_entry_title(layer: &dyn Layer, player: &pumpkin_plugin_api::Player) {
-    let colors: [RgbColor; 2] = layer.color();
-    let title = TextComponent::text(layer.name()).gradient(&colors[..]);
-
-    player.show_title(title);
-    player.show_subtitle(TextComponent::text(&format!("Entered {}", layer.name())));
-    player.send_title_animation(TITLE_FADE_IN, TITLE_STAY, TITLE_FADE_OUT);
 }
 
 /// Entry point of the plugin.
@@ -110,7 +82,7 @@ impl MineInAbyss {
     fn register_events(context: &Context) {
         context
             .register_event_handler::<PlayerChangedWorldEvent, _>(
-                LayerEntryTitle,
+                events::layer_entry::LayerEntryTitle,
                 EventPriority::Normal,
                 false,
             )

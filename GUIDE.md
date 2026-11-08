@@ -71,6 +71,14 @@ The file is created on first run with sensible defaults.
 [layers]
 layers = true
 
+[layers.config.first]
+enabled = false
+
+[layers.config.second]
+enabled = false
+
+# ... one [layers.config.<stratum>] table per layer
+
 [layers.worlds]
 enabled = false
 dimension = "overworld"
@@ -85,15 +93,17 @@ sixth = true
 seventh = true
 ```
 
-| Key                    | Description                                | Default     |
-| ---------------------- | ------------------------------------------ | ----------- |
-| `layers.layers`        | Master toggle for all Abyss layers         | `true`      |
-| `layers.worlds.enabled`| Create one Minecraft world per stratum     | `false`     |
-| `layers.worlds.dimension` | Dimension for the layer worlds          | `overworld` |
-| `layers.worlds.strata.*`  | Per-stratum toggles                     | `true`      |
+| Key                        | Description                             | Default     |
+| -------------------------- | --------------------------------------- | ----------- |
+| `layers.layers`            | Master toggle for all Abyss layers      | `true`      |
+| `layers.config.<stratum>.enabled` | Enable an individual layer       | `false`     |
+| `layers.worlds.enabled`    | Create one Minecraft world per stratum  | `false`     |
+| `layers.worlds.dimension`  | Dimension for the layer worlds          | `overworld` |
+| `layers.worlds.strata.*`   | Per-stratum world toggles               | `true`      |
 
-As layers are added, each gains its own `enabled` toggle in `layers.toml`,
-grouped by the depth stratum it belongs to.
+`<stratum>` is one of `first`, `second`, `third`, `fourth`, `fifth`, `sixth`,
+`seventh`. Every layer is disabled by default; the `layers.layers` master toggle
+gates whether the group is registered at all.
 
 ## Installation
 

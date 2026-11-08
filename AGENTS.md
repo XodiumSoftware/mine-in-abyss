@@ -128,7 +128,7 @@ to `register()` in `on_load`.
 - Per-layer files (e.g. `layers.toml`) will be added alongside the group they belong to
 - On first load: creates all files with defaults
 - On subsequent loads: merges user values with defaults and preserves extra fields
-- All layer configs live in a single `PluginConfig` struct in memory; layers access their table via `ConfigManager::get().and_then(|cm| cm.layers.<name>.enabled)` once per-layer config exists (today the stubs read the `layers.layers` group toggle)
+- All layer configs live in a single `PluginConfig` struct in memory; layers access their own section via `cm.layers.config.for_depth(Depth::X).enabled`, or `cm.layers.config.is_enabled(Depth::X)`
 - Setting the master toggle to `false` skips loading that group entirely
 
 ### Active Layers
@@ -146,8 +146,9 @@ surface down. None implement gameplay yet.
 | `src/layers/sixth.rs`    | `Sixth`   | `Sixth`   |
 | `src/layers/seventh.rs`  | `Seventh` | `Seventh` |
 
-Each stub's `enabled()` reads the `layers.layers` master toggle; per-layer configs land in
-`LayersConfig` (`src/layers/layer.rs`) as features are added.
+Each stub's `enabled()` reads its own `LayerConfig` from `LayersConfig`
+(`src/layers/layer.rs`) via `is_enabled(Depth::X)`. Every layer defaults to disabled;
+the `layers.layers` master toggle still gates whether the group is registered at all.
 
 ### Project Structure
 
@@ -265,7 +266,7 @@ To add a new layer, follow these steps:
     - `perms()` — return permission nodes (if commands)
 7. Implement `EventHandler<T>` for each event (if needed)
 8. In `src/layers/layer.rs`:
-    - Add a `pub {name}: {Layer}Config` field to `LayersConfig`
+    - Add a `pub {name}: LayerConfig` field to `LayersConfig`
 9. In `src/lib.rs`:
     - Declare the layer in the `mod layers` tree
     - Instantiate and register it in `on_load`, gated on `config.layers.layers`

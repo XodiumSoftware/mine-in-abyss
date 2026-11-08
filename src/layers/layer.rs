@@ -226,7 +226,7 @@ impl Depth {
 
 #[cfg(test)]
 mod tests {
-    use super::Depth;
+    use super::{Depth, LayersConfig};
 
     const ALL: [Depth; 7] = [
         Depth::First,
@@ -261,6 +261,41 @@ mod tests {
         }
         assert_eq!(Depth::from_world_name("world"), None);
         assert_eq!(Depth::from_world_name(""), None);
+    }
+
+    #[test]
+    fn layers_default_to_disabled() {
+        let config = LayersConfig::default();
+        for depth in ALL {
+            assert!(!config.is_enabled(depth), "{depth:?} should default off");
+        }
+    }
+
+    #[test]
+    fn for_depth_returns_the_matching_section() {
+        let mut config = LayersConfig::default();
+        config.fourth.enabled = true;
+
+        assert!(config.is_enabled(Depth::Fourth));
+        assert!(config.for_depth(Depth::Fourth).enabled);
+        for depth in ALL.into_iter().filter(|d| *d != Depth::Fourth) {
+            assert!(!config.is_enabled(depth), "{depth:?} should stay off");
+        }
+    }
+
+    #[test]
+    fn layers_config_parses_from_toml() {
+        let config: LayersConfig = toml::from_str(
+            r"
+            first.enabled = true
+            seventh.enabled = true
+            ",
+        )
+        .expect("valid toml");
+
+        assert!(config.is_enabled(Depth::First));
+        assert!(config.is_enabled(Depth::Seventh));
+        assert!(!config.is_enabled(Depth::Second));
     }
 
     #[test]
@@ -347,10 +382,58 @@ pub trait Layer {
     }
 }
 
-/// Top-level configuration for all layers (stored in `layers.toml`).
+/// Configuration for every layer, keyed by stratum.
 ///
-/// Each field toggles one layer. Add new layers here, grouped by the [`Depth`]
-/// they belong to.
+/// Each field configures one layer. Add new layers here, grouped by the
+/// [`Depth`] they belong to. Use [`LayersConfig::for_depth`] to look a layer up
+/// from its stratum instead of matching on the fields directly.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
-pub struct LayersConfig {}
+pub struct LayersConfig {
+    /// The First Layer (Y 195–319).
+    pub first: LayerConfig,
+    /// The Second Layer (Y 126–194).
+    pub second: LayerConfig,
+    /// The Third Layer (Y 66–125).
+    pub third: LayerConfig,
+    /// The Fourth Layer (Y 6–65).
+    pub fourth: LayerConfig,
+    /// The Fifth Layer (Y -24 to 5).
+    pub fifth: LayerConfig,
+    /// The Sixth Layer (Y -50 to -25).
+    pub sixth: LayerConfig,
+    /// The Seventh Layer (Y -64 to -51).
+    pub seventh: LayerConfig,
+}
+
+impl LayersConfig {
+    /// Returns the configuration for `depth`.
+    #[must_use]
+    pub const fn for_depth(&self, depth: Depth) -> &LayerConfig {
+        match depth {
+            Depth::First => &self.first,
+            Depth::Second => &self.second,
+            Depth::Third => &self.third,
+            Depth::Fourth => &self.fourth,
+            Depth::Fifth => &self.fifth,
+            Depth::Sixth => &self.sixth,
+            Depth::Seventh => &self.seventh,
+        }
+    }
+
+    /// Returns whether the layer for `depth` is enabled.
+    #[must_use]
+    pub const fn is_enabled(&self, depth: Depth) -> bool {
+        self.for_depth(depth).enabled
+    }
+}
+
+/// Configuration for a single layer.
+///
+/// Shared by every stratum; add per-layer fields here as features land.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(default)]
+pub struct LayerConfig {
+    /// Whether this layer is active.
+    pub enabled: bool,
+}

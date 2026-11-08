@@ -16,6 +16,6 @@ impl Layer for Seventh {
     }
 
     fn enabled(&self) -> bool {
-        ConfigManager::get().is_some_and(|cm| cm.layers.layers)
+        ConfigManager::get().is_some_and(|cm| cm.layers.config.is_enabled(Depth::Seventh))
     }
 }

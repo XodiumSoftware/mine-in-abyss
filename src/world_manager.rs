@@ -75,8 +75,6 @@ impl WorldManager {
             let name = depth.world_name();
             let _world = server.create_world(name, dimension);
 
-            // `create_world` is create-or-load: it returns the existing world when the
-            // name is already taken, so an existing world is reused, not reset.
             if server.has_world(name) {
                 info!("World '{name}' ready for {}", depth.name());
                 READY.with(|r| r.borrow_mut().insert(depth));

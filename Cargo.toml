@@ -12,6 +12,7 @@ crate-type = ["cdylib"]
 pumpkin-plugin-api = "0.2.1+26.3-26.51"
 tracing = "0.1.44"
 serde = { version = "1.0.229", features = ["derive"] }
+strum = { version = "0.28.0", features = ["derive"] }
 
 [profile.release]
 lto = true

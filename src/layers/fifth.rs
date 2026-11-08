@@ -3,6 +3,7 @@
 //! Features that only apply here belong in this module.
 
 use crate::layers::layer::Layer;
+use crate::section::Section;
 use pumpkin_plugin_api::common::RgbColor;
 
 /// Stub for the Fifth Layer. Gameplay content is not implemented yet.
@@ -10,12 +11,16 @@ use pumpkin_plugin_api::common::RgbColor;
 pub struct Fifth;
 
 impl Layer for Fifth {
-    fn name(&self) -> &str {
-        "The Sea of Corpses"
+    fn id(&self) -> Section {
+        Section::Fifth
     }
 
-    fn world(&self) -> &str {
-        "mine_in_abyss_fifth"
+    fn enabled(&self) -> bool {
+        false
+    }
+
+    fn name(&self) -> &str {
+        "The Sea of Corpses"
     }
 
     fn color(&self) -> [RgbColor; 2] {
@@ -31,9 +36,5 @@ impl Layer for Fifth {
                 b: 0x45,
             },
         ]
-    }
-
-    fn enabled(&self) -> bool {
-        false
     }
 }

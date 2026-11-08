@@ -3,6 +3,7 @@
 //! Features that only apply here belong in this module.
 
 use crate::layers::layer::Layer;
+use crate::section::Section;
 use pumpkin_plugin_api::common::RgbColor;
 
 /// Stub for the Fourth Layer. Gameplay content is not implemented yet.
@@ -10,12 +11,16 @@ use pumpkin_plugin_api::common::RgbColor;
 pub struct Fourth;
 
 impl Layer for Fourth {
-    fn name(&self) -> &str {
-        "The Goblets of Giants"
+    fn id(&self) -> Section {
+        Section::Fourth
     }
 
-    fn world(&self) -> &str {
-        "mine_in_abyss_fourth"
+    fn enabled(&self) -> bool {
+        false
+    }
+
+    fn name(&self) -> &str {
+        "The Goblets of Giants"
     }
 
     fn color(&self) -> [RgbColor; 2] {
@@ -31,9 +36,5 @@ impl Layer for Fourth {
                 b: 0x5C,
             },
         ]
-    }
-
-    fn enabled(&self) -> bool {
-        false
     }
 }

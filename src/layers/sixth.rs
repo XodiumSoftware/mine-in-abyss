@@ -3,6 +3,7 @@
 //! Features that only apply here belong in this module.
 
 use crate::layers::layer::Layer;
+use crate::section::Section;
 use pumpkin_plugin_api::common::RgbColor;
 
 /// Stub for the Sixth Layer. Gameplay content is not implemented yet.
@@ -10,12 +11,16 @@ use pumpkin_plugin_api::common::RgbColor;
 pub struct Sixth;
 
 impl Layer for Sixth {
-    fn name(&self) -> &str {
-        "The Capital of the Unreturned"
+    fn id(&self) -> Section {
+        Section::Sixth
     }
 
-    fn world(&self) -> &str {
-        "mine_in_abyss_sixth"
+    fn enabled(&self) -> bool {
+        false
+    }
+
+    fn name(&self) -> &str {
+        "The Capital of the Unreturned"
     }
 
     fn color(&self) -> [RgbColor; 2] {
@@ -31,9 +36,5 @@ impl Layer for Sixth {
                 b: 0x28,
             },
         ]
-    }
-
-    fn enabled(&self) -> bool {
-        false
     }
 }

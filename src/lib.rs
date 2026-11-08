@@ -18,9 +18,11 @@ mod layers {
     pub mod sixth;
     pub mod third;
 }
+mod section;
 mod worlds;
 
 pub use layers::*;
+pub use section::*;
 pub use worlds::*;
 
 use pumpkin_plugin_api::events::player::player_changed_world::PlayerChangedWorldEvent;

@@ -3,6 +3,7 @@
 //! Features that only apply here belong in this module.
 
 use crate::layers::layer::Layer;
+use crate::section::Section;
 use pumpkin_plugin_api::common::RgbColor;
 
 /// Stub for the Third Layer. Gameplay content is not implemented yet.
@@ -10,12 +11,16 @@ use pumpkin_plugin_api::common::RgbColor;
 pub struct Third;
 
 impl Layer for Third {
-    fn name(&self) -> &str {
-        "The Great Fault"
+    fn id(&self) -> Section {
+        Section::Third
     }
 
-    fn world(&self) -> &str {
-        "mine_in_abyss_third"
+    fn enabled(&self) -> bool {
+        false
+    }
+
+    fn name(&self) -> &str {
+        "The Great Fault"
     }
 
     fn color(&self) -> [RgbColor; 2] {
@@ -31,9 +36,5 @@ impl Layer for Third {
                 b: 0x4A,
             },
         ]
-    }
-
-    fn enabled(&self) -> bool {
-        false
     }
 }

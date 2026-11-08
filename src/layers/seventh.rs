@@ -3,6 +3,7 @@
 //! Features that only apply here belong in this module.
 
 use crate::layers::layer::Layer;
+use crate::section::Section;
 use pumpkin_plugin_api::common::RgbColor;
 
 /// Stub for the Seventh Layer. Gameplay content is not implemented yet.
@@ -10,12 +11,16 @@ use pumpkin_plugin_api::common::RgbColor;
 pub struct Seventh;
 
 impl Layer for Seventh {
-    fn name(&self) -> &str {
-        "The Final Maelstrom"
+    fn id(&self) -> Section {
+        Section::Seventh
     }
 
-    fn world(&self) -> &str {
-        "mine_in_abyss_seventh"
+    fn enabled(&self) -> bool {
+        false
+    }
+
+    fn name(&self) -> &str {
+        "The Final Maelstrom"
     }
 
     fn color(&self) -> [RgbColor; 2] {
@@ -31,9 +36,5 @@ impl Layer for Seventh {
                 b: 0x00,
             },
         ]
-    }
-
-    fn enabled(&self) -> bool {
-        false
     }
 }

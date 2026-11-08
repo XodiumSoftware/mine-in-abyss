@@ -3,6 +3,7 @@
 //! Features that only apply near the surface belong here.
 
 use crate::layers::layer::Layer;
+use crate::section::Section;
 use pumpkin_plugin_api::common::RgbColor;
 
 /// Stub for the First Layer. Gameplay content is not implemented yet.
@@ -10,12 +11,16 @@ use pumpkin_plugin_api::common::RgbColor;
 pub struct First;
 
 impl Layer for First {
-    fn name(&self) -> &str {
-        "The Top of the Abyss"
+    fn id(&self) -> Section {
+        Section::First
     }
 
-    fn world(&self) -> &str {
-        "mine_in_abyss_first"
+    fn enabled(&self) -> bool {
+        false
+    }
+
+    fn name(&self) -> &str {
+        "The Top of the Abyss"
     }
 
     fn color(&self) -> [RgbColor; 2] {
@@ -31,9 +36,5 @@ impl Layer for First {
                 b: 0x5B,
             },
         ]
-    }
-
-    fn enabled(&self) -> bool {
-        false
     }
 }

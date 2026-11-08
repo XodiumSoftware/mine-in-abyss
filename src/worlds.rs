@@ -1,84 +1,79 @@
-//! World manager for `mine-in-abyss`.
+//! Worlds for `mine-in-abyss`.
 //!
-//! Each stratum of the Abyss lives in its own Minecraft world, so players physically
-//! descend a layer by moving between worlds. This module is responsible for creating
-//! (or re-attaching to) those worlds on startup.
+//! Each layer of the Abyss lives in its own Minecraft world, so players physically
+//! descend by moving between worlds. This module is responsible for creating (or
+//! re-attaching to) those worlds on startup.
 //!
-//! | World name                      | Stratum |
-//! | ------------------------------- | ------- |
-//! | `mine_in_abyss_first`           | First   |
-//! | `mine_in_abyss_second`          | Second  |
-//! | ...                             | ...     |
-//!
-//! World names come from [`Depth::world_name`] and are stable across releases: they
-//! are derived from the stratum ordinal, not its display name.
+//! World names come from [`Section::world`](crate::section::Section::world) and are
+//! stable across releases: they are derived from the layer's ordinal, not its display
+//! name.
 
-use crate::layers::layer::Depth;
+use crate::layers::layer::Layer;
 use pumpkin_plugin_api::{Context, Dimension, World};
 use std::cell::RefCell;
 use std::collections::HashSet;
 use tracing::{info, warn};
 
 thread_local! {
-    /// Strata whose world was created (or attached to) by [`WorldManager::setup`].
+    /// World names created (or attached to) by [`Worlds::setup`].
     ///
-    /// Only the set of ready strata is cached; the `World` handle itself is a
-    /// non-cloneable resource, so it is re-resolved on demand via
-    /// [`WorldManager::world`].
-    static READY: RefCell<HashSet<Depth>> = RefCell::new(HashSet::new());
+    /// Only the set of ready world names is cached; the `World` handle itself is a
+    /// non-cloneable resource, so it is re-resolved on demand via [`Worlds::world`].
+    static READY: RefCell<HashSet<String>> = RefCell::new(HashSet::new());
 }
 
-/// Creates and tracks one Minecraft world per Abyss stratum.
+/// Creates and tracks one Minecraft world per layer.
 ///
 /// Worlds are created once during plugin load and kept for the lifetime of the
-/// server; callers look them up with [`WorldManager::world`] rather than creating
-/// them on demand.
+/// server; callers look them up with [`Worlds::world`] rather than creating them on
+/// demand.
 #[derive(Debug, Clone, Copy, Default)]
-pub struct WorldManager;
+pub struct Worlds;
 
-impl WorldManager {
-    /// Creates a world for every stratum and remembers it.
+impl Worlds {
+    /// Creates a world for every layer in `layers` and remembers it.
     ///
     /// Safe to call more than once: existing worlds are re-attached rather than
-    /// duplicated, and a failure for one stratum does not stop the others.
+    /// duplicated, and a failure for one layer does not stop the others.
     ///
     /// Returns the number of worlds that are available after the call.
-    pub fn setup(context: &Context) -> usize {
+    pub fn setup(context: &Context, layers: &[&dyn Layer]) -> usize {
         let server = context.get_server();
 
-        for depth in Depth::ALL {
-            let name = depth.world_name();
+        for layer in layers {
+            let name = layer.id().world();
             let _world = server.create_world(&name, Dimension::Overworld);
 
             if server.has_world(&name) {
-                info!("World '{name}' ready");
-                READY.with(|r| r.borrow_mut().insert(depth));
+                info!("World '{name}' ready for {}", layer.name());
+                READY.with(|r| r.borrow_mut().insert(name.to_owned()));
             } else {
-                warn!("World '{name}' was not created");
+                warn!("World '{name}' was not created for {}", layer.name());
             }
         }
 
         let count = READY.with(|r| r.borrow().len());
-        info!("World manager: {count} layer world(s) available");
+        info!("Worlds: {count} layer world(s) available");
         count
     }
 
-    /// Returns the world for `depth`, if [`WorldManager::setup`] made it available.
+    /// Returns the world for `layer`, if [`Worlds::setup`] made it available.
     ///
     /// The handle is resolved from the server on each call, so the returned world
     /// reflects the world's current state.
     #[must_use]
-    pub fn world(context: &Context, depth: Depth) -> Option<World> {
-        if !Self::is_ready(depth) {
+    pub fn world(context: &Context, layer: &dyn Layer) -> Option<World> {
+        let name = layer.id().world();
+        if !Self::is_ready(&name) {
             return None;
         }
-        context.get_server().get_world_by_name(&depth.world_name())
+        context.get_server().get_world_by_name(&name)
     }
 
-    /// Returns whether `depth`'s world was made available by [`WorldManager::setup`].
+    /// Returns whether the world called `name` was made available by [`Worlds::setup`].
     #[must_use]
-    pub fn is_ready(depth: Depth) -> bool {
-        READY.with(|r| r.borrow().contains(&depth))
+    pub fn is_ready(name: &str) -> bool {
+        READY.with(|r| r.borrow().contains(name))
     }
 
     /// Returns the number of worlds currently tracked.

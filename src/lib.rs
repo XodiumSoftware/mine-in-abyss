@@ -1,14 +1,13 @@
 //! `mine-in-abyss` is a [Pumpkin](https://github.com/Pumpkin-MC/Pumpkin) Minecraft plugin written in
 //! Rust that recreates ***Made in Abyss*** inside Minecraft.
 //!
-//! This crate is currently a **stub**: the plugin boots, loads its config, and exposes the layer
+//! This crate is currently a **stub**: the plugin boots and exposes the layer
 //! registration pipeline that future content (the Abyss layers, relics, curses, delvers, ...) will
 //! plug into.
 //!
-//! See [`GUIDE.md`](../GUIDE.md) for installation and configuration.
+//! See [`GUIDE.md`](../GUIDE.md) for installation.
 #![allow(clippy::must_use_candidate)]
 
-mod config;
 mod layers {
     pub mod fifth;
     pub mod first;
@@ -19,11 +18,10 @@ mod layers {
     pub mod sixth;
     pub mod third;
 }
-mod world_manager;
+mod worlds;
 
-pub use config::*;
 pub use layers::*;
-pub use world_manager::*;
+pub use worlds::*;
 
 use pumpkin_plugin_api::events::player::player_changed_world::PlayerChangedWorldEvent;
 use pumpkin_plugin_api::events::{EventHandler, EventPriority};
@@ -127,8 +125,6 @@ impl Plugin for MineInAbyss {
     }
 
     fn on_load(&self, context: Context) -> pumpkin_plugin_api::Result<()> {
-        ConfigManager::load(&context);
-
         Self::register_layers(&context);
         Self::register_events(&context);
 

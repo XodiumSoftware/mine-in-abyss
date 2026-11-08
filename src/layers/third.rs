@@ -2,52 +2,38 @@
 //!
 //! Features that only apply here belong in this module.
 
-use crate::config::ConfigManager;
-use crate::layers::layer::{Depth, Layer};
-use serde::{Deserialize, Serialize};
+use crate::layers::layer::Layer;
+use pumpkin_plugin_api::common::RgbColor;
 
 /// Stub for the Third Layer. Gameplay content is not implemented yet.
 #[derive(Debug, Default, Clone, Copy)]
 pub struct Third;
 
 impl Layer for Third {
-    fn depth(&self) -> Depth {
-        Depth::Third
+    fn name(&self) -> &str {
+        "The Great Fault"
+    }
+
+    fn world(&self) -> &str {
+        "mine_in_abyss_third"
+    }
+
+    fn color(&self) -> [RgbColor; 2] {
+        [
+            RgbColor {
+                r: 0x8B,
+                g: 0x73,
+                b: 0x55,
+            },
+            RgbColor {
+                r: 0x6B,
+                g: 0x5B,
+                b: 0x4A,
+            },
+        ]
     }
 
     fn enabled(&self) -> bool {
-        ConfigManager::get().is_some_and(|cm| cm.layers.config.third.enabled)
-    }
-}
-
-/// Configuration for the Third Layer.
-///
-/// | Field            | Default              | Description                        |
-/// | ---------------- | -------------------- | ---------------------------------- |
-/// | `enabled`        | `false`              | Whether this layer is active       |
-/// | `name`           | `"The Great Fault"`| Display name used in titles        |
-/// | `gradient_start` | `"#8B7355"` | Gradient start colour (`#RRGGBB`)  |
-/// | `gradient_end`   | `"#6B5B4A"` | Gradient end colour (`#RRGGBB`)    |
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(default)]
-pub struct ThirdConfig {
-    /// Whether this layer is active.
-    pub enabled: bool,
-    /// Display name; falls back to the built-in name when blank.
-    pub name: String,
-    /// Start colour of the title gradient, as a `#RRGGBB` hex string.
-    pub gradient_start: String,
-    /// End colour of the title gradient, as a `#RRGGBB` hex string.
-    pub gradient_end: String,
-}
-
-impl Default for ThirdConfig {
-    fn default() -> Self {
-        Self {
-            enabled: false,
-            name: "The Great Fault".to_owned(),
-            gradient_start: "#8B7355".to_owned(),
-            gradient_end: "#6B5B4A".to_owned(),
-        }
+        false
     }
 }

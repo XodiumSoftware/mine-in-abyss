@@ -2,52 +2,38 @@
 //!
 //! Features that only apply near the surface belong here.
 
-use crate::config::ConfigManager;
-use crate::layers::layer::{Depth, Layer};
-use serde::{Deserialize, Serialize};
+use crate::layers::layer::Layer;
+use pumpkin_plugin_api::common::RgbColor;
 
 /// Stub for the First Layer. Gameplay content is not implemented yet.
 #[derive(Debug, Default, Clone, Copy)]
 pub struct First;
 
 impl Layer for First {
-    fn depth(&self) -> Depth {
-        Depth::First
+    fn name(&self) -> &str {
+        "The Top of the Abyss"
+    }
+
+    fn world(&self) -> &str {
+        "mine_in_abyss_first"
+    }
+
+    fn color(&self) -> [RgbColor; 2] {
+        [
+            RgbColor {
+                r: 0x87,
+                g: 0xCE,
+                b: 0xEB,
+            },
+            RgbColor {
+                r: 0x5B,
+                g: 0xA8,
+                b: 0x5B,
+            },
+        ]
     }
 
     fn enabled(&self) -> bool {
-        ConfigManager::get().is_some_and(|cm| cm.layers.config.first.enabled)
-    }
-}
-
-/// Configuration for the First Layer.
-///
-/// | Field            | Default              | Description                        |
-/// | ---------------- | -------------------- | ---------------------------------- |
-/// | `enabled`        | `false`              | Whether this layer is active       |
-/// | `name`           | `"The Top of the Abyss"`| Display name used in titles        |
-/// | `gradient_start` | `"#87CEEB"` | Gradient start colour (`#RRGGBB`)  |
-/// | `gradient_end`   | `"#5BA85B"` | Gradient end colour (`#RRGGBB`)    |
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(default)]
-pub struct FirstConfig {
-    /// Whether this layer is active.
-    pub enabled: bool,
-    /// Display name; falls back to the built-in name when blank.
-    pub name: String,
-    /// Start colour of the title gradient, as a `#RRGGBB` hex string.
-    pub gradient_start: String,
-    /// End colour of the title gradient, as a `#RRGGBB` hex string.
-    pub gradient_end: String,
-}
-
-impl Default for FirstConfig {
-    fn default() -> Self {
-        Self {
-            enabled: false,
-            name: "The Top of the Abyss".to_owned(),
-            gradient_start: "#87CEEB".to_owned(),
-            gradient_end: "#5BA85B".to_owned(),
-        }
+        false
     }
 }

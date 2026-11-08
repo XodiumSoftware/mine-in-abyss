@@ -19,6 +19,8 @@ use std::path::{Path, PathBuf};
 use toml::Value;
 use tracing::error;
 
+use crate::world_manager::WorldsConfig;
+
 thread_local! {
     static CONFIG: RefCell<Option<PluginConfig>> = const { RefCell::new(None) };
 }
@@ -31,11 +33,16 @@ thread_local! {
 pub struct LayerToggles {
     /// Master toggle for all Abyss layers.
     pub layers: bool,
+    /// Per-layer world creation settings.
+    pub worlds: WorldsConfig,
 }
 
 impl Default for LayerToggles {
     fn default() -> Self {
-        Self { layers: true }
+        Self {
+            layers: true,
+            worlds: WorldsConfig::default(),
+        }
     }
 }
 

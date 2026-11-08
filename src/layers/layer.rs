@@ -38,6 +38,16 @@ pub enum Depth {
 }
 
 impl Depth {
+    /// Every stratum, in order from the surface down.
+    pub const ALL: [Self; 7] = [
+        Self::First,
+        Self::Second,
+        Self::Third,
+        Self::Fourth,
+        Self::Fifth,
+        Self::Sixth,
+        Self::Seventh,
+    ];
     /// Returns the human-readable name of this stratum.
     ///
     /// This is the display/identity name (e.g. `"The Forest of Temptation"`), as
@@ -88,6 +98,25 @@ impl Depth {
     #[must_use]
     pub fn colored_name(self) -> String {
         format!("{}{}</gradient>", self.color(), self.name())
+    }
+
+    /// Returns the name of the Minecraft world that holds this stratum.
+    ///
+    /// The world name is a valid, filesystem-safe identifier: the plugin id
+    /// followed by the stratum's ordinal (`mine_in_abyss_first`, ...). It is
+    /// stable, so changing a layer's display [`name`](Self::name) never
+    /// invalidates an existing world on disk.
+    #[must_use]
+    pub const fn world_name(self) -> &'static str {
+        match self {
+            Self::First => "mine_in_abyss_first",
+            Self::Second => "mine_in_abyss_second",
+            Self::Third => "mine_in_abyss_third",
+            Self::Fourth => "mine_in_abyss_fourth",
+            Self::Fifth => "mine_in_abyss_fifth",
+            Self::Sixth => "mine_in_abyss_sixth",
+            Self::Seventh => "mine_in_abyss_seventh",
+        }
     }
 
     /// Returns the shallowest depth (in meters) at which this stratum begins.

@@ -70,11 +70,27 @@ The file is created on first run with sensible defaults.
 ```toml
 [layers]
 layers = true
+
+[layers.worlds]
+enabled = false
+dimension = "overworld"
+
+[layers.worlds.strata]
+first = true
+second = true
+third = true
+fourth = true
+fifth = true
+sixth = true
+seventh = true
 ```
 
-| Key              | Description                          | Default |
-| ---------------- | ------------------------------------ | ------- |
-| `layers.layers`  | Master toggle for all Abyss layers   | `true`  |
+| Key                    | Description                                | Default     |
+| ---------------------- | ------------------------------------------ | ----------- |
+| `layers.layers`        | Master toggle for all Abyss layers         | `true`      |
+| `layers.worlds.enabled`| Create one Minecraft world per stratum     | `false`     |
+| `layers.worlds.dimension` | Dimension for the layer worlds          | `overworld` |
+| `layers.worlds.strata.*`  | Per-stratum toggles                     | `true`      |
 
 As layers are added, each gains its own `enabled` toggle in `layers.toml`,
 grouped by the depth stratum it belongs to.
@@ -89,9 +105,10 @@ grouped by the depth stratum it belongs to.
 
 ## Usage
 
-The plugin is currently a **stub**: it boots, loads its config, and registers
-nothing yet. Gameplay content (the Abyss, relics, delvers, layer curses, ...)
-will land in `src/layers/`, under the stratum folder it belongs to.
+The plugin currently only manages worlds: when `layers.worlds.enabled` is set, it creates
+one Minecraft world per stratum on startup (`mine_in_abyss_first`, ...). Gameplay content
+(the Abyss, relics, delvers, layer curses, ...) will land in `src/layers/`, under the
+stratum folder it belongs to.
 
 ## Troubleshooting
 

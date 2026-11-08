@@ -19,9 +19,11 @@ mod layers {
     pub mod sixth;
     pub mod third;
 }
+mod world_manager;
 
 pub use config::*;
 pub use layers::*;
+pub use world_manager::*;
 
 use pumpkin_plugin_api::{Context, Plugin, PluginMetadata};
 use tracing::info;
@@ -60,8 +62,8 @@ impl Plugin for MineInAbyss {
     fn on_load(&self, context: Context) -> pumpkin_plugin_api::Result<()> {
         let _config = ConfigManager::load(&context);
 
-        // TODO: register layers once real content exists.
-        info!("Mine in Abyss loaded.");
+        let worlds = WorldManager::setup(&context);
+        info!("Mine in Abyss loaded ({worlds} layer world(s)).");
         Ok(())
     }
 

@@ -94,9 +94,24 @@ The Abyss is a vertical world, so every feature implements the **`Layer`** trait
 | `Seventh`   | 15500 and below   | The Final Maelstrom       |
 
 `Depth::start_depth()` and `Depth::from_depth()` convert between a stratum and meters.
+`Depth::name()` / `Depth::color()` / `Depth::colored_name()` provide display text (the last
+returns unparsed `MiniMessage`), and `Depth::world_name()` returns the stable world identifier.
 
 Layers are plain structs (not singletons) instantiated with `Default::default()` and passed
 to `register()` in `on_load`.
+
+### World Manager
+
+**`WorldManager`** (`src/world_manager.rs`) — creates one Minecraft world per stratum on load.
+
+- `WorldManager::setup(context)` runs from `on_load`, right after config is loaded
+- World names come from `Depth::world_name()` (`mine_in_abyss_first`, ...) so they stay
+  stable even if a stratum's display name changes
+- `create_world` is create-or-load: an existing world is reused, never reset
+- `World` is a non-cloneable WIT resource, so only the set of ready strata is cached;
+  `WorldManager::world(context, depth)` re-resolves the handle from the server
+- Configured under `[layers.worlds]` in `config.toml` (`enabled`, `dimension`, `strata.*`);
+  disabled by default
 
 ### Configuration
 
@@ -119,8 +134,10 @@ None yet — `src/` is an empty scaffold. Layers will be added under `src/layers
 src/
 ├── lib.rs                    # Plugin entry point, `MineInAbyss` struct
 ├── config.rs                 # `ConfigManager` — TOML config load/save
+├── world_manager.rs          # `WorldManager`, `WorldsConfig` — one world per stratum
 └── layers/
-    └── layer.rs              # `Layer` trait, `Depth` strata + `LayersConfig`
+    ├── layer.rs              # `Layer` trait, `Depth` strata + `LayersConfig`
+    └── first.rs .. seventh.rs  # per-stratum feature modules
 ```
 
 ### Key Conventions

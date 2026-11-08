@@ -1,4 +1,4 @@
-//! Announces the entered layer when a player changes world.
+//! Handles a player joining a layer world.
 
 use pumpkin_plugin_api::common::RgbColor;
 use pumpkin_plugin_api::events::EventHandler;
@@ -10,11 +10,11 @@ use pumpkin_plugin_api::{Player, Server};
 use crate::layers::layer::Layer;
 use crate::{TITLE_FADE_IN, TITLE_FADE_OUT, TITLE_STAY};
 
-/// Announces a layer's name when a player enters its world.
+/// Handles a player joining a layer's world.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct LayerEntry;
+pub struct LayerJoin;
 
-impl EventHandler<PlayerChangedWorldEvent> for LayerEntry {
+impl EventHandler<PlayerChangedWorldEvent> for LayerJoin {
     fn handle(
         &self,
         _server: Server,

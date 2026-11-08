@@ -23,7 +23,8 @@ mod worlds;
 
 /// Event handlers for `mine-in-abyss`.
 mod events {
-    pub mod layer_entry;
+    pub mod layer_join;
+    pub mod layer_leave;
 }
 
 pub use layers::*;
@@ -82,7 +83,7 @@ impl MineInAbyss {
     fn register_events(context: &Context) {
         context
             .register_event_handler::<PlayerChangedWorldEvent, _>(
-                events::layer_entry::LayerEntry,
+                events::layer_join::LayerJoin,
                 EventPriority::Normal,
                 false,
             )

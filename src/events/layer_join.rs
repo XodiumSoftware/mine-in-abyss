@@ -8,6 +8,7 @@ use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::{Player, Server};
 
 use crate::layers::layer::Layer;
+use crate::section::Section;
 
 /// Handles a player joining a layer's world.
 #[derive(Debug, Default, Clone, Copy)]
@@ -25,6 +26,11 @@ impl EventHandler<PlayerChangedWorldEvent> for LayerJoin {
         {
             show_entry_title(layer, &event.player);
         }
+
+        if world_name == Section::First.world() {
+            super::curse::cure(&event.player);
+        }
+
         event
     }
 }

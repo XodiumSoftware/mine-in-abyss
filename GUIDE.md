@@ -97,18 +97,25 @@ even if a layer is renamed.
 
 ### Curse of the Abyss
 
-Ascending out of a layer inflicts symptoms that worsen with depth. Severity is derived
-from the layer's index, starting at `0` for the surface:
+The curse is **cumulative**: each ascent adds strain, so climbing back up through
+several layers is worse than climbing up one. The strain is saved on the player, so it
+survives a relog. It is only cleared by reaching the surface (`First`), or by dying.
 
-| Layer     | Symptoms                                              |
-| --------- | ----------------------------------------------------- |
-| `First`   | None                                                  |
-| `Second`  | Nausea                                                |
-| `Third`   | Nausea, weakness                                      |
-| `Fourth`  | Nausea, blindness, slowness                           |
-| `Fifth`   | Nausea, blindness, weakness, minor magic damage       |
-| `Sixth`   | Blindness, weakness, magic damage, health clamped to 1 |
-| `Seventh` | Death                                                 |
+Severity is derived from the layer's index, starting at `0` for the surface, and is
+added to the player's current strain (capped at 6):
+
+| Total strain | Symptoms                                              |
+| ------------ | ----------------------------------------------------- |
+| `0`          | None                                                  |
+| `1`          | Nausea                                                |
+| `2`          | Nausea, weakness                                      |
+| `3`          | Nausea, blindness, slowness                           |
+| `4`          | Nausea, blindness, weakness, minor magic damage       |
+| `5`          | Blindness, weakness, magic damage, health clamped to 1 |
+| `6`          | Death                                                 |
+
+Ascending out of `First` adds nothing (index `0`). Ascending out of `Seventh` adds
+`6`, which is fatal on its own.
 
 ### Other behaviour
 

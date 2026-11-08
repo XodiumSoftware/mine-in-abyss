@@ -112,18 +112,31 @@ registration, world creation and world-name lookup (`layer_for_world`).
 
 Handlers live in `src/events/`, declared inline in the `mod events` block in `lib.rs`:
 
-| Handler      | Event                      | Behaviour                                    |
-| ------------ | -------------------------- | -------------------------------------------- |
-| `LayerJoin`  | `PlayerChangedWorldEvent`  | Shows the entered layer's gradient title     |
-| `LayerLeave` | `PlayerMoveEvent`          | Void/ceiling detection, teleport, curse      |
+| Handler        | Event                      | Behaviour                                    |
+| -------------- | -------------------------- | -------------------------------------------- |
+| `LayerJoin`    | `PlayerChangedWorldEvent`  | Shows the entered layer's gradient title; cures the curse on the surface |
+| `LayerLeave`   | `PlayerMoveEvent`          | Void/ceiling detection, teleport, curse      |
+| `LayerRespawn` | `PlayerRespawnEvent`       | Clears the curse strain                      |
 
 `LayerLeave` uses two Y thresholds (`VOID_Y = -128.0`, `MAX_Y = 320.0`): below the
 void → next layer down at `MAX_Y - 2.0`; above the ceiling → previous layer up at
 `VOID_Y + 1.0`. Both keep X/Z. Falling out of `Seventh` (no `next()`) kills the player.
-Ascending calls `curse::apply`, which inflicts effects by `Section::curse()` severity.
+Ascending calls `curse::apply`, which adds to the player's accumulated strain.
 
 Titles are built as `TextComponent`s directly — the plugin API has no `MiniMessage`
 parser, so **never emit `MiniMessage` strings**.
+
+### Curse of the Abyss
+
+`src/events/curse.rs` stores a `curse` strain byte on the player via
+`PersistentDataHolder` (namespaced NBT, persisted to disk), so it survives relogs.
+
+- `strain(player)` / `cure(player)` read and clear it
+- `apply(player, from)` adds `from.curse()` to the strain, saturating at `MAX_STRAIN`
+  (6), then inflicts the symptoms for the **total**
+- Ascending several layers in a row therefore compounds: the curse is cumulative
+- Reaching `First`, or respawning, calls `cure`
+- Strain 6 is fatal — `inflict` kills rather than applying effects
 
 ### Worlds
 
@@ -167,9 +180,10 @@ src/
 ├── section.rs          # `Section` enum + id/world/next/prev/index/curse
 ├── worlds.rs           # `Worlds` — one world per layer
 ├── events/
-│   ├── curse.rs        # Curse of the Abyss severity ladder
-│   ├── layer_join.rs   # `LayerJoin` — entry title
-│   └── layer_leave.rs  # `LayerLeave` — void/ceiling teleport + curse
+│   ├── curse.rs        # Curse of the Abyss: strain storage + severity ladder
+│   ├── layer_join.rs   # `LayerJoin` — entry title, cure on the surface
+│   ├── layer_leave.rs  # `LayerLeave` — void/ceiling teleport + curse
+│   └── layer_respawn.rs# `LayerRespawn` — clears the curse on respawn
 └── layers/
     ├── layer.rs        # `Layer` trait
     └── first.rs .. seventh.rs

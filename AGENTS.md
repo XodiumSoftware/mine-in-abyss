@@ -8,7 +8,8 @@
 - **MC Version:** Latest Pumpkin (tracks nightly)
 - **Language:** Rust (Edition 2024)
 - **Build Tool:** Cargo
-- **Output:** `mine-in-abyss.wasm` (WASI Preview 2)
+- **Output:** `mine_in_abyss.wasm` (WASI Preview 2 — named after the `[lib]` target, so
+  underscores, not the package name)
 - **Target:** `wasm32-wasip2`
 - **Worlds:** One Minecraft world per layer, each a **custom hand-built map** authored
   for this project — not generated terrain. See [Each layer is a hand-built map](#each-layer-is-a-hand-built-map).

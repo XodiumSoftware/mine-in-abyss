@@ -25,21 +25,21 @@ build:
 
 # Build release WASM and copy the plugin to .server/plugins/
 #
+# The artifact is named after the target (`mine_in_abyss.wasm`), not the package,
+# so the recipe globs for it rather than hardcoding a name.
+#
 # NOTE: Debug builds fail to load in the Pumpkin runtime due to a wasmtime
 # locals limit in the wit-bindgen `handle-event` export. Always use release.
 [unix]
 build-copy:
     cargo build --release --target wasm32-wasip2
     mkdir -p .server/plugins
-    cp target/wasm32-wasip2/release/mine-in-abyss.wasm .server/plugins/mine-in-abyss.wasm
-    echo "Copied target/wasm32-wasip2/release/mine-in-abyss.wasm -> .server/plugins/mine-in-abyss.wasm"
+    sh -c 'set -- target/wasm32-wasip2/release/*.wasm; if [ "$#" -ne 1 ]; then echo "expected exactly one *.wasm in target/wasm32-wasip2/release, found $#" >&2; exit 1; fi; cp "$1" .server/plugins/; echo "Copied $1 -> .server/plugins/"'
 
 [windows]
 build-copy:
     cargo build --release --target wasm32-wasip2
-    New-Item -ItemType Directory -Force -Path .server/plugins | Out-Null
-    Copy-Item target/wasm32-wasip2/release/mine-in-abyss.wasm .server/plugins/mine-in-abyss.wasm -Force
-    Write-Host "Copied target/wasm32-wasip2/release/mine-in-abyss.wasm -> .server/plugins/mine-in-abyss.wasm"
+    New-Item -ItemType Directory -Force -Path .server/plugins | Out-Null; & { $wasm = @(Get-ChildItem target/wasm32-wasip2/release/*.wasm); if ($wasm.Count -ne 1) { throw "expected exactly one *.wasm in target/wasm32-wasip2/release, found $($wasm.Count)" }; Copy-Item $wasm[0].FullName .server/plugins/ -Force; Write-Host "Copied $($wasm[0].FullName) -> .server/plugins/$($wasm[0].Name)" }
 
 # Generate rustdoc for the WASI target
 doc:

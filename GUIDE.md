@@ -26,7 +26,7 @@ Download pre-built WASM binaries from GitHub releases.
 1. Download the latest nightly release:
 
     ```bash
-    curl -L -o mine-in-abyss.wasm https://github.com/XodiumSoftware/mine-in-abyss/releases/download/nightly/mine-in-abyss-wasm32-wasip2
+    curl -L -o mine_in_abyss.wasm https://github.com/XodiumSoftware/mine-in-abyss/releases/download/nightly/mine_in_abyss-wasm32-wasip2
     ```
 
 2. Place the `.wasm` file in your Pumpkin server's `plugins/` directory
@@ -63,7 +63,7 @@ This project uses `just` for every task — run `just` with no arguments to list
 
 3. The output file is at:
     ```
-    target/wasm32-wasip2/release/mine-in-abyss.wasm
+    target/wasm32-wasip2/release/mine_in_abyss.wasm
     ```
 
 ### Local Development Server
@@ -79,7 +79,7 @@ cd .server && ./pumpkin      # pumpkin.exe on Windows
 
 ## Installation
 
-1. Place `mine-in-abyss.wasm` in your Pumpkin server's `plugins/` directory
+1. Place `mine_in_abyss.wasm` in your Pumpkin server's `plugins/` directory
 2. Start the server
 3. The plugin creates one Minecraft world per layer on load
 

@@ -2,9 +2,9 @@ name: Xodium CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -104,7 +104,7 @@ jobs:
 
       - id: get_name
         name: Get Name
-        run: echo "NAME=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].name')" >> $GITHUB_OUTPUT
+        run: echo "NAME=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].targets[0].name')" >> $GITHUB_OUTPUT
         shell: bash
 
       - id: get_version
@@ -118,12 +118,15 @@ jobs:
         uses: actions/upload-artifact@v7.0.2
         with:
           name: ${{ steps.get_name.outputs.NAME }}-wasm32-wasip2
-          path: target/wasm32-wasip2/release/${{ steps.get_name.outputs.NAME }}.wasm
+          path: |
+            target/wasm32-wasip2/release/${{ steps.get_name.outputs.NAME }}.wasm
+            target/wasm32-wasip2/release/${{ steps.get_name.outputs.NAME }}.d
+          if-no-files-found: error
           retention-days: 7
 
   nightly_release:
     name: Nightly Release
-    needs: [ build ]
+    needs: [build]
     runs-on: ubuntu-latest
     environment:
       name: "${{ github.ref_name }}"

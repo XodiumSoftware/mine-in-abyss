@@ -8,6 +8,10 @@
 //! prevents a player standing inside the void or ceiling band from being teleported (and
 //! cursed) again and again.
 //!
+//! A successful transition also **cancels** the move event: the teleport has already
+//! placed the player, and the original move describes a position inside the band of the
+//! world they just left.
+//!
 //! If the destination world is unavailable — because
 //! [`Worlds::setup`](crate::Worlds::setup) failed for that layer — the failure is logged
 //! rather than swallowed, so the player being stuck in the void leaves a trace.
@@ -49,22 +53,32 @@ impl EventHandler<PlayerMoveEvent> for LayerLeave {
             return event;
         }
 
-        match direction {
+        let moved = match direction {
             Direction::Down => {
-                if let Some(section) = layer.id().next() {
-                    down(&server, &event.player, section);
-                }
                 // Below `Seventh` there is nowhere to go: vanilla void damage kills them.
+                layer
+                    .id()
+                    .next()
+                    .is_some_and(|section| down(&server, &event.player, section))
             }
-            Direction::Up => {
-                if let Some(section) = layer.id().prev() {
-                    up(&server, &event.player, section);
-                }
-            }
-        }
+            Direction::Up => layer
+                .id()
+                .prev()
+                .is_some_and(|section| up(&server, &event.player, section)),
+        };
         end_transition(&event.player);
 
-        event
+        if moved {
+            // The teleport already put the player where they belong, so the original
+            // move must not also be applied: it describes a position inside the void or
+            // ceiling band of the world they just left.
+            PlayerMoveEventData {
+                cancelled: true,
+                ..event
+            }
+        } else {
+            event
+        }
     }
 }
 
@@ -78,25 +92,31 @@ enum Direction {
 }
 
 /// Sends a player up to `section`, keeping their X and Z position.
-fn up(server: &Server, player: &Player, section: Section) {
+///
+/// Returns `false` if the destination world is unavailable, leaving the event untouched.
+fn up(server: &Server, player: &Player, section: Section) -> bool {
     let Some(world) = world_for(server, section) else {
-        return;
+        return false;
     };
 
     super::curse::apply(player, section);
 
     let (x, _, z) = player.get_position();
     player.teleport((x, section.exit_y(), z), None, None, world);
+    true
 }
 
 /// Sends a player down to `section`, keeping their X and Z position.
-fn down(server: &Server, player: &Player, section: Section) {
+///
+/// Returns `false` if the destination world is unavailable, leaving the event untouched.
+fn down(server: &Server, player: &Player, section: Section) -> bool {
     let Some(world) = world_for(server, section) else {
-        return;
+        return false;
     };
 
     let (x, _, z) = player.get_position();
     player.teleport((x, section.entry_y(), z), None, None, world);
+    true
 }
 
 /// Resolves the world for `section`, logging when it cannot be found.

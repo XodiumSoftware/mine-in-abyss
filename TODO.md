@@ -18,25 +18,25 @@ Findings from an audit of `src/events/layer_leave.rs`, checked against the
 
 ## Edge cases
 
-| Done | #   | Scenario                                               | Behavior today                                                     | Severity | Cause |
-| ---- | --- | ------------------------------------------------------ | ------------------------------------------------------------------ | -------- | ----- |
-| [x]  | 1   | Player below `VOID_Y` (spawn, `/tp`, portal)           | Latch: one teleport per transition                                 | Low      | —     |
-| [x]  | 2   | Player in `Seventh` void band                          | Nothing happens; vanilla void damage kills them                    | Low      | —     |
-| [ ]  | 3   | Falling out of `Seventh` above Y `-128`                | Never triggers; can stand on the `Seventh` floor forever           | Medium   | —     |
-| [ ]  | 4   | Ascending into `First`                                 | Lands at `-127` — below the terrain, but the intended entry height | Low      | —     |
-| [ ]  | 5   | Descending into any layer                              | Lands at `318` — above the terrain, then falls in                  | Low      | —     |
-| [ ]  | 6   | Any transition                                         | X/Z preserved but no safe-position fallback; can land in terrain   | Medium   | —     |
-| [x]  | 7   | Re-entering the layer you just left                    | Latch stops the ping-pong loop                                     | Low      | —     |
-| [ ]  | 8   | Curse applied on a re-entry loop                       | Latch prevents the loop, so strain cannot escalate                 | Low      | —     |
-| [ ]  | 9   | Another `PlayerMoveEvent` queued in the same tick      | Stale `to_position` compared against the wrong world's frame       | Medium   | R3    |
-| [x]  | 10  | `get_world_by_name` returns `None`                     | `warn!` names the missing world; the teleport is skipped           | Low      | —     |
-| [x]  | 11  | Layer disabled (`enabled() == false`, all seven today) | `enabled()` removed — every layer is live                          | Low      | —     |
-| [ ]  | 12  | Player in a non-Abyss world                            | Correctly ignored                                                  | —        | —     |
-| [ ]  | 13  | Manual `/tp` above `MAX_Y`                             | Treated as an ascent and cursed                                    | Medium   | —     |
-| [ ]  | 14  | `up()` from `First`                                    | Silent `prev() == None` return; no feedback                        | Low      | —     |
-| [ ]  | 15  | Player dies from strain 6 inside the move handler      | Latch is released after the move, so no re-entry while dying       | Low      | —     |
-| [x]  | 16  | Creative / spectator player                            | `layer_leave` skips both (no teleport, no curse)                   | Low      | —     |
-| [ ]  | 17  | `Seventh` boundaries                                   | No layer-specific boundaries — all layers share the vanilla limits | Low      | —     |
+| Done | #   | Scenario                                               | Behavior today                                                        | Severity | Cause |
+| ---- | --- | ------------------------------------------------------ | --------------------------------------------------------------------- | -------- | ----- |
+| [x]  | 1   | Player below `VOID_Y` (spawn, `/tp`, portal)           | Latch: one teleport per transition                                    | Low      | —     |
+| [x]  | 2   | Player in `Seventh` void band                          | Nothing happens; vanilla void damage kills them                       | Low      | —     |
+| [ ]  | 3   | Falling out of `Seventh` above Y `-128`                | Never triggers; can stand on the `Seventh` floor forever              | Medium   | —     |
+| [ ]  | 4   | Ascending into `First`                                 | Lands at `-127` — below the terrain, but the intended entry height    | Low      | —     |
+| [ ]  | 5   | Descending into any layer                              | Lands at `318` — above the terrain, then falls in                     | Low      | —     |
+| [ ]  | 6   | Any transition                                         | X/Z preserved but no safe-position fallback; can land in terrain      | Medium   | —     |
+| [x]  | 7   | Re-entering the layer you just left                    | Latch stops the ping-pong loop                                        | Low      | —     |
+| [ ]  | 8   | Curse applied on a re-entry loop                       | Latch prevents the loop, so strain cannot escalate                    | Low      | —     |
+| [x]  | 9   | Another `PlayerMoveEvent` queued in the same tick      | Successful transition cancels the event, so the stale move is dropped | Low      | —     |
+| [x]  | 10  | `get_world_by_name` returns `None`                     | `warn!` names the missing world; the teleport is skipped              | Low      | —     |
+| [x]  | 11  | Layer disabled (`enabled() == false`, all seven today) | `enabled()` removed — every layer is live                             | Low      | —     |
+| [ ]  | 12  | Player in a non-Abyss world                            | Correctly ignored                                                     | —        | —     |
+| [ ]  | 13  | Manual `/tp` above `MAX_Y`                             | Treated as an ascent and cursed                                       | Medium   | —     |
+| [ ]  | 14  | `up()` from `First`                                    | Silent `prev() == None` return; no feedback                           | Low      | —     |
+| [ ]  | 15  | Player dies from strain 6 inside the move handler      | Latch is released after the move, so no re-entry while dying          | Low      | —     |
+| [x]  | 16  | Creative / spectator player                            | `layer_leave` skips both (no teleport, no curse)                      | Low      | —     |
+| [ ]  | 17  | `Seventh` boundaries                                   | No layer-specific boundaries — all layers share the vanilla limits    | Low      | —     |
 
 ## Fixes, in priority order
 
@@ -48,8 +48,9 @@ Findings from an audit of `src/events/layer_leave.rs`, checked against the
       (`utils::begin_transition` / `end_transition`) makes each transition fire once.
       Not persistent data: the latch only describes an in-flight transition, and a
       stale entry must never survive a restart. Addresses #1, #7, #8, #15. _(R2)_
-- [ ] **F3 — Cancel the move event.** Set `event.cancelled = true` after
-      teleporting so the stale position is not processed. Addresses #9. _(R3)_
+- [x] **F3 — Cancel the move event.** _(done)_ `up`/`down` report whether the teleport
+      happened, and a successful transition returns the event with `cancelled: true`, so
+      the stale `to_position` is not applied. Addresses #9. _(R3)_
 - [x] **F4 — Log missing worlds.** _(done)_ `world_for` in `layer_leave.rs` warns when
       the destination world is unavailable instead of returning silently. Addresses #10.
 - [x] **F5 — `enabled()` semantics.** _(removed)_ `Layer::enabled()` was a display-only

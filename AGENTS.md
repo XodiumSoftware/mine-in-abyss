@@ -138,6 +138,10 @@ currently transitioning; the second call returns `false` and the handler bails. 
 is released immediately after the move and is deliberately **not** persistent, so a stale
 entry can never lock a player out of transitions.
 
+A successful transition also returns the move event with `cancelled: true`, so the
+server does not apply the original `to_position` — which would move the player back into
+the band of the world they just left.
+
 Titles are built as `TextComponent`s directly — the plugin API has no `MiniMessage`
 parser, so **never emit `MiniMessage` strings**.
 

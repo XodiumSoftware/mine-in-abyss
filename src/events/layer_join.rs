@@ -4,12 +4,13 @@
 //! the player latched after teleporting them, and this handler releases that latch once
 //! they are really in the new world.
 
+use pumpkin_plugin_api::Server;
 use pumpkin_plugin_api::common::RgbColor;
 use pumpkin_plugin_api::events::EventHandler;
 use pumpkin_plugin_api::events::player::player_changed_world::PlayerChangedWorldEvent;
 use pumpkin_plugin_api::events_wit::PlayerChangedWorldEventData;
 use pumpkin_plugin_api::text::TextComponent;
-use pumpkin_plugin_api::{Player, Server};
+use pumpkin_plugin_api::wit::pumpkin::plugin::sounds::{Sound, SoundCategory};
 
 use crate::layer::Layer;
 use crate::utils::{end_transition, ordinal, rgb};
@@ -26,7 +27,24 @@ impl EventHandler<PlayerChangedWorldEvent> for LayerJoin {
     ) -> PlayerChangedWorldEventData {
         let world_name = event.to_world.get_name();
         if let Some(layer) = crate::layer_for_world(&world_name) {
-            show_entry_title(layer, &event.player);
+            let subtitle = format!("Entered the {} layer", ordinal(layer.number()));
+            let subtitle_colors: [RgbColor; 2] = [rgb(0xFF, 0xA7, 0x51), rgb(0xFF, 0xE2, 0x59)];
+
+            event.player.show_title(
+                TextComponent::text(layer.name())
+                    .gradient(&layer.color())
+                    .bold(true),
+            );
+            event
+                .player
+                .show_subtitle(TextComponent::text(&subtitle).gradient(&subtitle_colors));
+            event.player.send_title_animation(20, 100, 30);
+            event.player.play_sound(
+                Sound::UiToastChallengeComplete,
+                SoundCategory::Master,
+                1.0,
+                1.0,
+            );
         }
 
         end_transition(&event.player);
@@ -37,20 +55,4 @@ impl EventHandler<PlayerChangedWorldEvent> for LayerJoin {
 
         event
     }
-}
-
-/// Shows a layer's name as a bold gradient title, with an "Entered …" subtitle.
-fn show_entry_title(layer: Layer, player: &Player) {
-    let colors: [RgbColor; 2] = layer.color();
-    let title = TextComponent::text(layer.name())
-        .gradient(&colors[..])
-        .bold(true);
-
-    let subtitle_colors: [RgbColor; 2] = [rgb(0xFF, 0xA7, 0x51), rgb(0xFF, 0xE2, 0x59)];
-    let subtitle = format!("Entered the {} layer", ordinal(layer.number()));
-    let subtitle = TextComponent::text(&subtitle).gradient(&subtitle_colors[..]);
-
-    player.show_title(title);
-    player.show_subtitle(subtitle);
-    player.send_title_animation(20, 60, 30);
 }

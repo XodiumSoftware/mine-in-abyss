@@ -23,6 +23,7 @@ mod commands {
 /// Event handlers for `mine-in-abyss`.
 mod events {
     pub mod curse;
+    pub mod fall_damage;
     pub mod layer_join;
     pub mod layer_leave;
     pub mod layer_respawn;
@@ -83,6 +84,14 @@ impl MineInAbyss {
                 false,
             )
             .expect("failed to register PlayerMoveEvent handler");
+
+        context
+            .register_event_handler::<PlayerMoveEvent, _>(
+                events::fall_damage::FallDamage,
+                EventPriority::Normal,
+                false,
+            )
+            .expect("failed to register fall distance handler");
 
         context
             .register_event_handler::<PlayerRespawnEvent, _>(

@@ -12,6 +12,7 @@ from one layer to the next. For installation and player-facing behaviour see
 - [Leaving a layer](#leaving-a-layer)
 - [The transition handshake](#the-transition-handshake)
 - [Why the latch exists](#why-the-latch-exists)
+- [Fall damage across layers](#fall-damage-across-layers)
 - [The Curse of the Abyss](#the-curse-of-the-abyss)
 - [Commands](#commands)
 - [Known constraints](#known-constraints)
@@ -208,6 +209,53 @@ transition.
 It is deliberately **in-memory only**. A stale entry after a restart would lock a player
 out of transitions permanently, so nothing about it is persisted.
 
+## Fall damage across layers
+
+Vanilla resets a player's fall distance every time they change world, and a layer world is
+only 384 blocks tall. A drop that spans several layers would therefore be a series of
+separate falls, each far too short to hurt — falling from `First` to `Sixth` would cost
+nothing.
+
+`Entity::get_fall_distance` and `set_fall_distance` are what make this fixable:
+
+```mermaid
+sequenceDiagram
+    participant L1 as Layer N
+    participant MV as LayerLeave
+    participant C as utils carry
+    participant FD as FallDamage<br/>PlayerMoveEvent
+    participant L2 as Layer N+1
+    MV->>L1: move below -64
+    MV->>C: carry_fall(get_fall_distance)
+    MV->>L2: teleport (X, 318, Z)
+    Note over L2: vanilla resets distance to 0
+    L2->>FD: move, still airborne
+    FD->>C: carried_fall(layer, distance)
+    FD->>L2: set_fall_distance(carried + distance)
+    L2->>FD: move, below -64
+    FD->>C: take_fall (landing phase started)
+    Note over L2: vanilla tracks the rest and damages on impact
+```
+
+Two details carry the design:
+
+- **The carry is added while falling, not on impact.** Adding it on impact would depend on
+  vanilla's own accounting, which the handler has already replaced; adding it every move
+  means the distance vanilla finally sees is the whole descent. The landing phase starts
+  at [`Layer::MIN_Y`](src/layer.rs), where the carry is dropped and vanilla takes over.
+- **The distance is measured before the teleport.** It is read from the layer being left,
+  where it still describes the drop so far; the world change is what would erase it.
+
+Damage is never applied directly — vanilla still decides the impact, so water, hay bales,
+beds, slow falling and feather falling all behave as they do in vanilla.
+
+**A fall that leaves a layer airborne is not joined up.** If the player never reaches ground
+in an empty layer, the next swap records the segment of that world only, over the previous
+carry. Joining them would need the damage to be applied where the player is not — see the
+comment on [`resume_fall`](src/utils.rs). The baseline stays vanilla's per-world damage.
+
+A teleport or a respawn clears the carry: the drop it described is over.
+
 ## The Curse of the Abyss
 
 Ascending adds strain; the strain is cumulative and stored as namespaced NBT on the player,
@@ -242,7 +290,8 @@ its own.
 | --------------- | ------------------------- | ----------------------------------------------- |
 | `LayerJoin`     | `PlayerChangedWorldEvent` | Entry title; release latch; cure on the surface |
 | `LayerLeave`    | `PlayerMoveEvent`         | Void/ceiling detection, teleport, curse         |
-| `LayerRespawn`  | `PlayerRespawnEvent`      | Clear the curse strain                          |
+| `FallDamage`    | `PlayerMoveEvent`         | Adds the carried descent to the fall distance   |
+| `LayerRespawn`  | `PlayerRespawnEvent`      | Clear the curse strain and any carried fall     |
 | `LayerTeleport` | `PlayerTeleportEvent`     | Record where a teleport put the player          |
 
 A **player** running `/abyss` is always the one moved; `[player]` is only consulted from
@@ -270,6 +319,10 @@ These are host or design limits the plugin works within, not bugs to fix casuall
   arrivals must be driven by the transition code or by map data.
 - **Difficulty is server-wide** and has no setter, so peaceful behaviour is expressed as
   per-world game rules (`First` disables `spawn-monsters`).
+- **A fall is only carried one layer.** A descent resets the fall distance at every world
+  boundary, and the carry described above is measured in the layer the player arrives in.
+  Someone who falls from `First` without ever landing is hurt by the last segment, not the
+  whole drop.
 - **Only players change layers.** Players have `PlayerMoveEvent` and
   `PlayerChangedWorldEvent`; no other entity has a move or world-change event, so a falling
   item or mob stays in the layer it was in. See the section below before "fixing" this.

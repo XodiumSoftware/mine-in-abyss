@@ -123,7 +123,8 @@ Handlers live in `src/events/`, declared inline in the `mod events` block in `li
 | --------------- | ------------------------- | ------------------------------------------------------------------------ |
 | `LayerJoin`     | `PlayerChangedWorldEvent` | Shows the entered layer's gradient title; cures the curse on the surface |
 | `LayerLeave`    | `PlayerMoveEvent`         | Void/ceiling detection, teleport, curse                                  |
-| `LayerRespawn`  | `PlayerRespawnEvent`      | Clears the curse strain                                                  |
+| `FallDamage`    | `PlayerMoveEvent`         | Adds a carried descent to the fall distance in the layer arrived in      |
+| `LayerRespawn`  | `PlayerRespawnEvent`      | Clears the curse strain and any carried fall                             |
 | `LayerTeleport` | `PlayerTeleportEvent`     | Records where a teleport put the player, so it is not read as a climb    |
 
 `LayerLeave` compares against the bounds shared by every layer
@@ -166,6 +167,16 @@ the band of the world they just left.
 **Leaving the Abyss at either end tells the player.** Rising above `First` or falling
 below `Seventh` has nowhere to go, so `LayerLeave` sends a grey system message instead of
 silently doing nothing.
+
+**A descent carries its fall distance.** Changing world resets `get_fall_distance`, and a
+layer is only 384 blocks tall, so per-world falls would never reach a damaging distance.
+`LayerLeave::down` measures the distance before the teleport and
+`utils::carry_fall` keeps it; `FallDamage` (`src/events/fall_damage.rs`) then adds it to
+the fall in the layer arrived in on every move until the player passes `Layer::MIN_Y`,
+where `utils::take_fall` drops it and vanilla damages on impact. Damage is never applied
+directly, so water, hay bales and feather falling keep working. A teleport or respawn
+clears the carry. **Only one layer is carried**: a player who falls from `First` without
+landing is hurt by the last segment, not the whole drop.
 
 **Only players change layers.** There is no entity move event or entity world-change event
 in the plugin API, so an item or mob thrown into the void does not descend — it falls to
@@ -324,6 +335,7 @@ src/
 │   └── abyss.rs        # `/abyss` — ops teleport into a layer, curse-free
 ├── events/
 │   ├── curse.rs        # Curse of the Abyss: strain storage + severity ladder
+│   ├── fall_damage.rs  # `FallDamage` — carries a descent's fall distance one layer
 │   ├── layer_join.rs   # `LayerJoin` — entry title, cure on the surface
 │   ├── layer_leave.rs  # `LayerLeave` — void/ceiling teleport + curse
 │   ├── layer_respawn.rs# `LayerRespawn` — clears the curse on respawn

@@ -17,8 +17,16 @@
 //! [`Worlds::setup`](crate::Worlds::setup) failed for that layer — the failure is logged
 //! rather than swallowed, so the player being stuck in the void leaves a trace.
 //!
+//! A descent **carries its fall distance** into the next layer. Vanilla resets the
+//! distance when the world changes, so the descent would otherwise end the fall: the
+//! player would fall out of `First` unhurt, and only the last layer would hurt them. The
+//! distance is measured at the moment of the swap and handed to
+//! [`FallDamage`](super::fall_damage), which restores it once the player lands.
+//!
 //! Leaving the Abyss at either end — above `First` or below `Seventh` — tells the player
-//! there is nowhere to go, rather than doing nothing.
+//! there is nowhere to go, rather than doing nothing. Below `Seventh` the carry is
+//! dropped instead: there is no layer for it to be resumed into, and vanilla's void
+//! damage is the death the drop already deserves.
 
 use pumpkin_plugin_api::common::NamedColor;
 use pumpkin_plugin_api::events::EventHandler;
@@ -29,7 +37,9 @@ use pumpkin_plugin_api::{Player, Server};
 use tracing::warn;
 
 use crate::layer::Layer;
-use crate::utils::{begin_transition, consume_teleport, end_transition, ignores_transitions};
+use crate::utils::{
+    begin_transition, carry_fall, clear_fall, consume_teleport, end_transition, ignores_transitions,
+};
 
 /// Detects a player leaving a layer through its void or ceiling.
 #[derive(Debug, Default, Clone, Copy)]
@@ -66,6 +76,7 @@ impl EventHandler<PlayerMoveEvent> for LayerLeave {
                     down(&server, &event.player, layer)
                 } else {
                     tell(&event.player, "There is nothing below the Abyss.");
+                    clear_fall(&event.player);
                     false
                 }
             }
@@ -74,6 +85,7 @@ impl EventHandler<PlayerMoveEvent> for LayerLeave {
                     up(&server, &event.player, layer)
                 } else {
                     tell(&event.player, "There is nothing above the Abyss.");
+                    clear_fall(&event.player);
                     false
                 }
             }
@@ -141,8 +153,12 @@ fn down(server: &Server, player: &Player, layer: Layer) -> bool {
         return false;
     };
 
+    let fallen_before_world_change = player.as_entity().get_fall_distance();
+
     let (x, _, z) = player.get_position();
     player.teleport((x, Layer::entry_y(), z), None, None, world);
+
+    carry_fall(player, fallen_before_world_change, layer);
     true
 }
 

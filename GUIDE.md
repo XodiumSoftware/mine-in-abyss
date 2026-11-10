@@ -140,7 +140,9 @@ is not shared.
 ### Descending and ascending
 
 - **Descending** — falling below the world floor (`Y = -64`) in a layer teleports the player
-  into the next layer down, at `Y = 318`, keeping their X and Z position.
+  into the next layer down, at `Y = 318`, keeping their X and Z position. The fall distance
+  so far is kept, so landing on the next layer's map hurts for the whole drop — a descent
+  from high up is not a free ride.
 - **Ascending** — rising above `Y = 320` teleports the player into the layer above, at
   `Y = -63`. Ascending inflicts the **Curse of the Abyss** (see below).
 - **The bottom of the Abyss** — there is no layer below `Seventh`, so falling below the

@@ -9,7 +9,8 @@ use pumpkin_plugin_api::events::player::player_move::PlayerMoveEvent;
 use pumpkin_plugin_api::events_wit::PlayerMoveEventData;
 use pumpkin_plugin_api::{Player, Server};
 
-use crate::utils::{MAX_Y, VOID_Y, ignores_transitions};
+use crate::section::Section;
+use crate::utils::ignores_transitions;
 
 /// Detects a player leaving a layer through its void or ceiling.
 #[derive(Debug, Default, Clone, Copy)]
@@ -27,8 +28,8 @@ impl EventHandler<PlayerMoveEvent> for LayerLeave {
         };
 
         match event.to_position.1 {
-            y if y < VOID_Y => down(&server, &event.player, layer.id().next()),
-            y if y > MAX_Y => up(&server, &event.player, layer.id().prev()),
+            y if y < Section::VOID_Y => down(&server, &event.player, layer.id().next()),
+            y if y > Section::MAX_Y => up(&server, &event.player, layer.id().prev()),
             _ => {}
         }
 
@@ -37,7 +38,7 @@ impl EventHandler<PlayerMoveEvent> for LayerLeave {
 }
 
 /// Sends a player up to `section`, keeping their X and Z position.
-fn up(server: &Server, player: &Player, section: Option<crate::section::Section>) {
+fn up(server: &Server, player: &Player, section: Option<Section>) {
     let Some(section) = section else {
         return;
     };
@@ -48,14 +49,14 @@ fn up(server: &Server, player: &Player, section: Option<crate::section::Section>
     super::curse::apply(player, section);
 
     let (x, _, z) = player.get_position();
-    player.teleport((x, VOID_Y + 1.0, z), None, None, world);
+    player.teleport((x, section.exit_y(), z), None, None, world);
 }
 
 /// Sends a player down to `section`, keeping their X and Z position.
 ///
 /// If there is no section below — the player fell out of the bottom of the Abyss —
 /// they die in the void instead.
-fn down(server: &Server, player: &Player, section: Option<crate::section::Section>) {
+fn down(server: &Server, player: &Player, section: Option<Section>) {
     let Some(section) = section else {
         player.kill();
         return;
@@ -65,5 +66,5 @@ fn down(server: &Server, player: &Player, section: Option<crate::section::Sectio
     };
 
     let (x, _, z) = player.get_position();
-    player.teleport((x, MAX_Y - 2.0, z), None, None, world);
+    player.teleport((x, section.entry_y(), z), None, None, world);
 }

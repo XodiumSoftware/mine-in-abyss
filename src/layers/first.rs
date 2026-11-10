@@ -1,4 +1,4 @@
-//! The First Layer (Y 195–319) — the top of the Abyss.
+//! The First Layer — the top of the Abyss.
 //!
 //! Features that only apply near the surface belong here.
 

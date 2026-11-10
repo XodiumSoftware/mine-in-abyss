@@ -1,4 +1,4 @@
-//! The Fourth Layer (Y 6–65) — the Goblets of Giants.
+//! The Fourth Layer — the Goblets of Giants.
 //!
 //! Features that only apply here belong in this module.
 

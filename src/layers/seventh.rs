@@ -1,4 +1,4 @@
-//! The Seventh Layer (Y -64 to -51) — the Final Maelstrom.
+//! The Seventh Layer — the Final Maelstrom.
 //!
 //! Features that only apply here belong in this module.
 

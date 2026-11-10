@@ -118,11 +118,12 @@ Handlers live in `src/events/`, declared inline in the `mod events` block in `li
 | `LayerLeave`   | `PlayerMoveEvent`         | Void/ceiling detection, teleport, curse                                  |
 | `LayerRespawn` | `PlayerRespawnEvent`      | Clears the curse strain                                                  |
 
-`LayerLeave` uses two Y thresholds from `src/utils.rs` (`VOID_Y = -128.0`,
-`MAX_Y = 320.0`): below the void → next layer down at `MAX_Y - 2.0`; above the ceiling
-→ previous layer up at `VOID_Y + 1.0`. Both keep X/Z. Falling out of `Seventh` (no
-`next()`) kills the player. Ascending calls `curse::apply`, which adds to the player's
-accumulated strain.
+`LayerLeave` compares against the thresholds shared by every section
+(`Section::VOID_Y = -128.0`, `Section::MAX_Y = 320.0` — each layer is its own
+full-height world, so they all use the vanilla Overworld limits): below the void → next
+layer down at `entry_y()` (`MAX_Y - 2.0`); above the ceiling → previous layer up at
+`exit_y()` (`VOID_Y + 1.0`). Both keep X/Z. Falling out of `Seventh` (no `next()`) kills
+the player. Ascending calls `curse::apply`, which adds to the player's accumulated strain.
 
 **Creative and spectator players are skipped**: a player in `GameMode::Creative` or
 `GameMode::Spectator` returns from the handler untouched, so they can fly through the
@@ -201,9 +202,9 @@ Each layer implements `Layer` with its own `id()`, `enabled()`, `name()` and
 ```
 src/
 ├── lib.rs              # `PLUGIN_ID`, `LAYERS`, `layer_for_world`, `Plugin` impl
-├── section.rs          # `Section` enum + id/world/next/prev/index/curse
-├── utils.rs            # Shared helpers (`ignores_transitions`) and Y thresholds
-│                       # (`VOID_Y`, `MAX_Y`)
+├── section.rs          # `Section` enum + id/world/next/prev/index/curse,
+│                       # plus shared `VOID_Y`/`MAX_Y` and entry/exit heights
+├── utils.rs            # Shared helpers (`ignores_transitions`)
 ├── worlds.rs           # `Worlds` — one world per layer
 ├── commands/
 │   └── abyss.rs        # `/abyss` — ops teleport into a layer, curse-free

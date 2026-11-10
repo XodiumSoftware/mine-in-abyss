@@ -1,4 +1,4 @@
-//! The Sixth Layer (Y -50 to -25) — the Capital of the Unreturned.
+//! The Sixth Layer — the Capital of the Unreturned.
 //!
 //! Features that only apply here belong in this module.
 

@@ -40,6 +40,19 @@ impl Section {
         Self::Seventh,
     ];
 
+    /// Y coordinate below which a player is considered to have fallen into the void.
+    ///
+    /// Every section is its own full-height world, so they all share the vanilla
+    /// Overworld thresholds. The floor is -64, so this sits a few dozen blocks below it:
+    /// enough time to react before the player takes void damage, but shallow enough to
+    /// trigger promptly.
+    pub const VOID_Y: f64 = -128.0;
+
+    /// Y coordinate above which a player is considered to have left through the ceiling.
+    ///
+    /// The build limit is 319, so this is just above it.
+    pub const MAX_Y: f64 = 320.0;
+
     /// Returns this section's stable identifier (`first`, `second`, ...).
     ///
     /// This is the segment used to build the section's Minecraft world name. It is
@@ -96,7 +109,16 @@ impl Section {
     /// the fall into the section is visible.
     #[must_use]
     pub fn entry_y(self) -> f64 {
-        crate::utils::MAX_Y - 2.0
+        Self::MAX_Y - 2.0
+    }
+
+    /// Returns the Y coordinate a player is placed at when leaving this section upward.
+    ///
+    /// They arrive just above the floor, inside the void band, so they climb out into the
+    /// section rather than falling through it again.
+    #[must_use]
+    pub fn exit_y(self) -> f64 {
+        Self::VOID_Y + 1.0
     }
 
     /// Returns the severity of the Curse of the Abyss when ascending out of this

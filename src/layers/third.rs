@@ -1,4 +1,4 @@
-//! The Third Layer (Y 66–125) — the Great Fault.
+//! The Third Layer — the Great Fault.
 //!
 //! Features that only apply here belong in this module.
 

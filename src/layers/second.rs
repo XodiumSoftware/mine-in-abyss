@@ -1,4 +1,4 @@
-//! The Second Layer (Y 126–194) — the Forest of Temptation.
+//! The Second Layer — the Forest of Temptation.
 //!
 //! Features that only apply here belong in this module.
 

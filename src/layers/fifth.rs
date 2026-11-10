@@ -1,4 +1,4 @@
-//! The Fifth Layer (Y -24 to 5) — the Sea of Corpses.
+//! The Fifth Layer — the Sea of Corpses.
 //!
 //! Features that only apply here belong in this module.
 

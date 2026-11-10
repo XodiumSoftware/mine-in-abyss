@@ -90,6 +90,18 @@ Each layer world is a **custom map built for this project**. The plugin only cre
 loads the world containers — the terrain, structures and points of interest live in the
 world data on disk.
 
+### Per-layer game rules
+
+World settings are applied on every startup, so a world folder saved with different
+settings cannot override them. `First` runs without hostile mobs:
+
+| Layer   | Game rules                 |
+| ------- | -------------------------- |
+| `First` | `spawn-monsters` = `false` |
+
+Minecraft's _difficulty_ is server-wide and cannot be set by a plugin, so "peaceful" is
+expressed as game rules instead.
+
 ### Descending and ascending
 
 - **Descending** — falling below `Y = -128` in a layer teleports the player into the

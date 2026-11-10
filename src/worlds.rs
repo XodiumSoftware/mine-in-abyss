@@ -32,7 +32,9 @@ impl Worlds {
     /// Creates a world for every layer in `layers` and remembers it.
     ///
     /// Safe to call more than once: existing worlds are re-attached rather than
-    /// duplicated, and a failure for one layer does not stop the others.
+    /// duplicated, and a failure for one layer does not stop the others. Each layer's
+    /// [`Section::game_rules`] are applied every time, so they cannot be lost to a world
+    /// folder that was saved with different rules.
     ///
     /// Returns the number of worlds that are available after the call.
     pub fn setup(context: &Context, layers: &[Section]) -> usize {
@@ -40,9 +42,12 @@ impl Worlds {
 
         for layer in layers {
             let name = layer.world();
-            let _world = server.create_world(&name, Dimension::Overworld);
+            let world = server.create_world(&name, Dimension::Overworld);
 
             if server.has_world(&name) {
+                for &(rule, value) in layer.game_rules() {
+                    world.set_game_rule(rule, value);
+                }
                 info!("World '{name}' ready for {}", layer.name());
                 READY.with(|r| r.borrow_mut().insert(name.clone()));
             } else {

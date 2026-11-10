@@ -96,6 +96,7 @@ that:
 - `next()` / `prev()` — neighbouring strata, `None` at the ends
 - `index()` / `number()` — depth index, `0`/`1` at the surface
 - `curse()` — Curse of the Abyss severity, derived from `index()`
+- `game_rules()` — per-world game rules, applied on world setup
 - `entry_y()` / `exit_y()` — the shared spawn heights (see below)
 
 `Section::ALL` is the source of truth for which layers exist, and `LAYERS: [Section; 7]`
@@ -193,8 +194,23 @@ implement `pumpkin_plugin_api::commands::CommandHandler` and return `Ok(1)` on s
 - World names come from `Section::world()`, so they stay stable across renames
 - `create_world` is create-or-load: an existing world is reused, never reset
 - `World` is a non-cloneable WIT resource, so only the set of ready world names is
-  cached in a `thread_local`; `Worlds::world` re-resolves the handle from the server
+  cached in a `thread_local`; callers re-resolve the handle from the server
 - A failure for one layer is logged and does not stop the others
+
+#### Per-section content
+
+Per-section **data** belongs on `Section` as a `const fn` with a `match`, the way
+`name()`, `color()` and `game_rules()` do; per-section **behaviour** belongs in one
+event handler that matches on the section (as `LayerLeave` does). Terrain, structures and
+points of interest are neither — they are world data.
+
+`Section::game_rules()` is the worked example: `First` disables `spawn-monsters`, the
+rest return an empty slice. `Worlds::setup` applies the rules on every load, so a world
+folder saved with different rules cannot override them.
+
+Minecraft's **difficulty** is a server-wide setting and the plugin API exposes no setter
+for it (`Server::get_difficulty` only reads), so peaceful behaviour is expressed as
+per-world game rules instead.
 
 #### Each layer is a hand-built map
 

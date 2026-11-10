@@ -2,6 +2,7 @@
 
 use crate::PLUGIN_ID;
 use pumpkin_plugin_api::common::RgbColor;
+use pumpkin_plugin_api::{GameRule, GameRuleValue};
 use strum::{EnumIter, IntoEnumIterator, IntoStaticStr};
 
 /// A section of the Abyss.
@@ -103,6 +104,25 @@ impl Section {
             Self::Fifth => [rgb(0x4A, 0x3F, 0x5C), rgb(0x2E, 0x2A, 0x45)],
             Self::Sixth => [rgb(0x2E, 0x2A, 0x45), rgb(0x1A, 0x17, 0x28)],
             Self::Seventh => [rgb(0x1A, 0x17, 0x28), rgb(0x6B, 0x00, 0x00)],
+        }
+    }
+
+    /// Returns the game rules this section's world runs with.
+    ///
+    /// Applied by [`Worlds::setup`](crate::Worlds::setup) whenever the world is created or
+    /// re-attached, so the rules win over whatever the world folder was saved with. This is
+    /// per-world state: Minecraft's *difficulty* is a server-wide setting with no setter in
+    /// the plugin API, so peaceful behaviour is expressed as game rules instead.
+    #[must_use]
+    pub const fn game_rules(self) -> &'static [(GameRule, GameRuleValue)] {
+        match self {
+            Self::First => &[(GameRule::SpawnMonsters, GameRuleValue::Bool(false))],
+            Self::Second
+            | Self::Third
+            | Self::Fourth
+            | Self::Fifth
+            | Self::Sixth
+            | Self::Seventh => &[],
         }
     }
 

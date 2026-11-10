@@ -21,7 +21,7 @@ Findings from an audit of `src/events/layer_leave.rs`, checked against the
 | Done | #   | Scenario                                               | Behavior today                                                        | Severity | Cause |
 | ---- | --- | ------------------------------------------------------ | --------------------------------------------------------------------- | -------- | ----- |
 | [ ]  | 1   | Player below `VOID_Y` (spawn, `/tp`, portal)           | Every move re-arms `down()`; teleports repeatedly to an arbitrary X/Z | High     | R2    |
-| [ ]  | 2   | Player in `Seventh` void band                          | `player.kill()` fires on every move event, incl. during death         | High     | R2    |
+| [x]  | 2   | Player in `Seventh` void band                          | Nothing happens; vanilla void damage kills them                       | Low      | —     |
 | [ ]  | 3   | Falling out of `Seventh` above Y `-128`                | Never triggers; can stand on the `Seventh` floor forever              | Medium   | —     |
 | [ ]  | 4   | Ascending into `First`                                 | Lands at `-127` — below the terrain, but the intended entry height    | Low      | —     |
 | [ ]  | 5   | Descending into any layer                              | Lands at `318` — above the terrain, then falls in                     | Low      | —     |
@@ -46,7 +46,7 @@ Findings from an audit of `src/events/layer_leave.rs`, checked against the
       shared; the misleading per-layer Y ranges were removed from the layer docs.
 - [ ] **F2 — One-shot latch.** Track a per-player "in transition" byte (alongside
       the curse strain in persistent data) and skip the handler while set.
-      Addresses #1, #2, #7, #8, #15. _(R2)_
+      Addresses #1, #7, #8, #15. _(R2)_
 - [ ] **F3 — Cancel the move event.** Set `event.cancelled = true` after
       teleporting so the stale position is not processed. Addresses #9. _(R3)_
 - [ ] **F4 — Log missing worlds.** `warn!` when `get_world_by_name` fails instead

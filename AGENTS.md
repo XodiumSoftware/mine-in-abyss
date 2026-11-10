@@ -122,8 +122,9 @@ Handlers live in `src/events/`, declared inline in the `mod events` block in `li
 (`Section::VOID_Y = -128.0`, `Section::MAX_Y = 320.0` — each layer is its own
 full-height world, so they all use the vanilla Overworld limits): below the void → next
 layer down at `entry_y()` (`MAX_Y - 2.0`); above the ceiling → previous layer up at
-`exit_y()` (`VOID_Y + 1.0`). Both keep X/Z. Falling out of `Seventh` (no `next()`) kills
-the player. Ascending calls `curse::apply`, which adds to the player's accumulated strain.
+`exit_y()` (`VOID_Y + 1.0`). Both keep X/Z. Falling out of `Seventh` (no `next()`) is
+left alone — vanilla void damage kills the player. Ascending calls `curse::apply`, which
+adds to the player's accumulated strain.
 
 **Creative and spectator players are skipped**: a player in `GameMode::Creative` or
 `GameMode::Spectator` returns from the handler untouched, so they can fly through the

@@ -55,10 +55,11 @@ fn up(server: &Server, player: &Player, section: Option<Section>) {
 /// Sends a player down to `section`, keeping their X and Z position.
 ///
 /// If there is no section below — the player fell out of the bottom of the Abyss —
-/// they die in the void instead.
+/// nothing happens: the void below the world floor kills them, as it would anywhere else.
+/// Killing them here would instead fire on every move event while they are still in the
+/// void band.
 fn down(server: &Server, player: &Player, section: Option<Section>) {
     let Some(section) = section else {
-        player.kill();
         return;
     };
     let Some(world) = server.get_world_by_name(&section.world()) else {

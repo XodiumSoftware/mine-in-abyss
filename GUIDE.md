@@ -92,8 +92,8 @@ even if a layer is renamed.
   next layer down, at `Y = 318`, keeping their X and Z position.
 - **Ascending** — rising above `Y = 320` teleports the player into the layer above, at
   `Y = -127`. Ascending inflicts the **Curse of the Abyss** (see below).
-- **The bottom of the Abyss** — falling below `Y = -128` in `Seventh` kills the player
-  in the void.
+- **The bottom of the Abyss** — there is no layer below `Seventh`, so falling below
+  `Y = -128` there is left to vanilla: void damage kills the player.
 
 ### Curse of the Abyss
 

@@ -23,6 +23,7 @@ mod events {
     pub mod curse;
     pub mod layer_join;
     pub mod layer_leave;
+    pub mod layer_mob_spawn;
     pub mod layer_respawn;
     pub mod layer_teleport;
 }
@@ -31,6 +32,7 @@ pub use layer::*;
 pub use worlds::*;
 
 use pumpkin_plugin_api::events::EventPriority;
+use pumpkin_plugin_api::events::entity::creature_spawn::CreatureSpawnEvent;
 use pumpkin_plugin_api::events::player::player_changed_world::PlayerChangedWorldEvent;
 use pumpkin_plugin_api::events::player::player_move::PlayerMoveEvent;
 use pumpkin_plugin_api::events::player::player_respawn::PlayerRespawnEvent;
@@ -97,6 +99,14 @@ impl MineInAbyss {
                 false,
             )
             .expect("failed to register PlayerTeleportEvent handler");
+
+        context
+            .register_event_handler::<CreatureSpawnEvent, _>(
+                events::layer_mob_spawn::LayerMobSpawn,
+                EventPriority::Normal,
+                false,
+            )
+            .expect("failed to register CreatureSpawnEvent handler");
     }
 }
 

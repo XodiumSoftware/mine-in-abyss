@@ -7,11 +7,16 @@
 //! A transition is **one-shot**: the move event fires on every movement, so a latch
 //! prevents a player standing inside the void or ceiling band from being teleported (and
 //! cursed) again and again.
+//!
+//! If the destination world is unavailable — because
+//! [`Worlds::setup`](crate::Worlds::setup) failed for that layer — the failure is logged
+//! rather than swallowed, so the player being stuck in the void leaves a trace.
 
 use pumpkin_plugin_api::events::EventHandler;
 use pumpkin_plugin_api::events::player::player_move::PlayerMoveEvent;
 use pumpkin_plugin_api::events_wit::PlayerMoveEventData;
 use pumpkin_plugin_api::{Player, Server};
+use tracing::warn;
 
 use crate::section::Section;
 use crate::utils::{begin_transition, end_transition, ignores_transitions};
@@ -74,7 +79,7 @@ enum Direction {
 
 /// Sends a player up to `section`, keeping their X and Z position.
 fn up(server: &Server, player: &Player, section: Section) {
-    let Some(world) = server.get_world_by_name(&section.world()) else {
+    let Some(world) = world_for(server, section) else {
         return;
     };
 
@@ -86,10 +91,26 @@ fn up(server: &Server, player: &Player, section: Section) {
 
 /// Sends a player down to `section`, keeping their X and Z position.
 fn down(server: &Server, player: &Player, section: Section) {
-    let Some(world) = server.get_world_by_name(&section.world()) else {
+    let Some(world) = world_for(server, section) else {
         return;
     };
 
     let (x, _, z) = player.get_position();
     player.teleport((x, section.entry_y(), z), None, None, world);
+}
+
+/// Resolves the world for `section`, logging when it cannot be found.
+///
+/// A missing world means [`Worlds::setup`](crate::Worlds::setup) failed for that layer;
+/// without a log the player would simply stay in the void with no trace of why.
+fn world_for(server: &Server, section: Section) -> Option<pumpkin_plugin_api::World> {
+    let name = section.world();
+    let world = server.get_world_by_name(&name);
+    if world.is_none() {
+        warn!(
+            "World '{name}' is unavailable; {} cannot be entered",
+            section.id()
+        );
+    }
+    world
 }

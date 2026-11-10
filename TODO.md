@@ -29,7 +29,7 @@ Findings from an audit of `src/events/layer_leave.rs`, checked against the
 | [x]  | 7   | Re-entering the layer you just left                    | Latch stops the ping-pong loop                                     | Low      | —     |
 | [ ]  | 8   | Curse applied on a re-entry loop                       | Latch prevents the loop, so strain cannot escalate                 | Low      | —     |
 | [ ]  | 9   | Another `PlayerMoveEvent` queued in the same tick      | Stale `to_position` compared against the wrong world's frame       | Medium   | R3    |
-| [ ]  | 10  | `get_world_by_name` returns `None`                     | Silent `return`; player stays in the void, no log                  | Medium   | —     |
+| [x]  | 10  | `get_world_by_name` returns `None`                     | `warn!` names the missing world; the teleport is skipped           | Low      | —     |
 | [x]  | 11  | Layer disabled (`enabled() == false`, all seven today) | `enabled()` removed — every layer is live                          | Low      | —     |
 | [ ]  | 12  | Player in a non-Abyss world                            | Correctly ignored                                                  | —        | —     |
 | [ ]  | 13  | Manual `/tp` above `MAX_Y`                             | Treated as an ascent and cursed                                    | Medium   | —     |
@@ -50,8 +50,8 @@ Findings from an audit of `src/events/layer_leave.rs`, checked against the
       stale entry must never survive a restart. Addresses #1, #7, #8, #15. _(R2)_
 - [ ] **F3 — Cancel the move event.** Set `event.cancelled = true` after
       teleporting so the stale position is not processed. Addresses #9. _(R3)_
-- [ ] **F4 — Log missing worlds.** `warn!` when `get_world_by_name` fails instead
-      of `return`ing silently. Addresses #10.
+- [x] **F4 — Log missing worlds.** _(done)_ `world_for` in `layer_leave.rs` warns when
+      the destination world is unavailable instead of returning silently. Addresses #10.
 - [x] **F5 — `enabled()` semantics.** _(removed)_ `Layer::enabled()` was a display-only
       gate that did nothing, so it is gone: every layer is live and every layer world
       shows its entry title. Resolves #11.

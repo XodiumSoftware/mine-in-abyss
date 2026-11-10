@@ -46,21 +46,21 @@ bare commands miss — most importantly that `build` is **release** only, becaus
 fail to load in the Pumpkin runtime (a wasmtime locals limit in the wit-bindgen `handle-event`
 export). Run `just` with no arguments to list every recipe.
 
-| Task                               | Command           |
-| ---------------------------------- | ----------------- |
-| Everything CI runs                 | `just validate`   |
-| Lint, pedantic, warnings-as-errors | `just lint`       |
-| Check formatting                   | `just fmt-check`  |
-| Format                             | `just fmt`        |
-| Build the release WASM             | `just build`      |
-| Build, fetch Pumpkin, deploy       | `just build-copy` |
-| Generate rustdoc                   | `just doc`        |
+| Task                                | Command           |
+| ----------------------------------- | ----------------- |
+| Everything CI runs                  | `just validate`   |
+| Lint, pedantic, warnings-as-errors  | `just lint`       |
+| Check formatting                    | `just fmt-check`  |
+| Format                              | `just fmt`        |
+| Build the release WASM              | `just build`      |
+| Build, deploy to `.server/plugins/` | `just build-copy` |
+| Generate rustdoc                    | `just doc`        |
 
 ```bash
 # Validate exactly as CI does: lint + format check + release build
 just validate
 
-# Build, fetch the Pumpkin nightly server, and copy the plugin to .server/plugins/
+# Build, and copy the plugin to .server/plugins/
 just build-copy
 ```
 

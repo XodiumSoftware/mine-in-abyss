@@ -5,6 +5,7 @@
 - [Prerequisites](#prerequisites)
 - [Download Nightly Build](#download-nightly-build)
 - [Build from Source](#build-from-source)
+- [Local Development Server](#local-development-server)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Troubleshooting](#troubleshooting)
@@ -37,9 +38,12 @@ Build the plugin yourself using Rust.
 ### Prerequisites
 
 - [Rust](https://rustup.rs/) (latest stable version)
+- [`just`](https://github.com/casey/just) task runner
 - `wasm32-wasip2` target: `rustup target add wasm32-wasip2`
 
 ### Setup
+
+This project uses `just` for every task — run `just` with no arguments to list the recipes.
 
 1. Clone the repository:
 
@@ -51,13 +55,27 @@ Build the plugin yourself using Rust.
 2. Build the plugin:
 
     ```bash
-    cargo build --release --target wasm32-wasip2
+    just build
     ```
+
+    (equivalent to `cargo build --release --target wasm32-wasip2`; always build in **release**,
+    since debug builds fail to load in the Pumpkin runtime)
 
 3. The output file is at:
     ```
     target/wasm32-wasip2/release/mine-in-abyss.wasm
     ```
+
+### Local Development Server
+
+`just build-copy` builds the plugin and copies it into `.server/plugins/`, but it does **not**
+download the server for you — put the Pumpkin binary in `.server/` yourself (grab it from the
+[Pumpkin releases](https://github.com/Pumpkin-MC/Pumpkin/releases/tag/nightly)), then:
+
+```bash
+just build-copy
+cd .server && ./pumpkin      # pumpkin.exe on Windows
+```
 
 ## Installation
 

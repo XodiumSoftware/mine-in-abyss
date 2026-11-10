@@ -1,12 +1,13 @@
 //! Detects a player leaving a layer through its void or ceiling.
 //!
-//! Players in **creative or spectator mode** are left alone: they fly freely and can
-//! pass through the void and ceiling without being teleported between layers or
-//! afflicted by the curse.
+//! Players in **creative or spectator mode** are left alone, as are **dead** players: they
+//! are never teleported between layers or afflicted by the curse.
 //!
 //! A transition is **one-shot**: the move event fires on every movement, so a latch
 //! prevents a player standing inside the void or ceiling band from being teleported (and
-//! cursed) again and again.
+//! cursed) again and again. The latch is taken here and released by
+//! [`LayerJoin`](super::layer_join) once the world change lands, so only a transition that
+//! starts but cannot finish releases it here.
 //!
 //! A successful transition also **cancels** the move event: the teleport has already
 //! placed the player, and the original move describes a position inside the band of the
@@ -73,14 +74,17 @@ impl EventHandler<PlayerMoveEvent> for LayerLeave {
                 }
             }
         };
-        end_transition(&event.player);
 
         if moved {
+            // The latch stays taken: `LayerJoin` releases it once the player is actually in
+            // the destination world, so the moves and the world change that follow the
+            // teleport cannot re-trigger the transition.
             PlayerMoveEventData {
                 cancelled: true,
                 ..event
             }
         } else {
+            end_transition(&event.player);
             event
         }
     }

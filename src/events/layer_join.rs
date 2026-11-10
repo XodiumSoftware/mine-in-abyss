@@ -1,4 +1,8 @@
 //! Handles a player joining a layer world.
+//!
+//! This is also where a layer transition finishes: [`LayerLeave`](super::layer_leave) leaves
+//! the player latched after teleporting them, and this handler releases that latch once
+//! they are really in the new world.
 
 use pumpkin_plugin_api::common::RgbColor;
 use pumpkin_plugin_api::events::EventHandler;
@@ -9,6 +13,7 @@ use pumpkin_plugin_api::{Player, Server};
 
 use crate::layers::layer::Layer;
 use crate::section::Section;
+use crate::utils::end_transition;
 
 /// Handles a player joining a layer's world.
 #[derive(Debug, Default, Clone, Copy)]
@@ -24,6 +29,8 @@ impl EventHandler<PlayerChangedWorldEvent> for LayerJoin {
         if let Some(layer) = crate::layer_for_world(&world_name) {
             show_entry_title(layer, &event.player);
         }
+
+        end_transition(&event.player);
 
         if world_name == Section::First.world() {
             super::curse::cure(&event.player);

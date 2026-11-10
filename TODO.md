@@ -9,18 +9,18 @@ Findings from an audit of `src/events/layer_leave.rs`, checked against the
       layer is its own full-height world, so the thresholds are intentionally shared:
       `Section::VOID_Y` / `Section::MAX_Y`, with `entry_y()` / `exit_y()` deriving the
       spawn heights. The misleading per-layer Y ranges were removed from the layer docs.
-- [ ] **R2 — Handler is not one-shot.** `PlayerMoveEvent` fires every tick while a
-      player stays in the trigger band, so `down()` / `up()` / `kill()` /
-      `curse::apply` can run many times for a single intended transition.
-- [ ] **R3 — Stale event after teleport.** The handler teleports from inside the
-      move handler and returns the event uncancelled, so the server can process the
-      original `to_position` against the new world.
+- [x] **R2 — Handler is not one-shot.** `PlayerMoveEvent` fires every tick while a
+      player stays in the trigger band, so `down()` / `up()` / `curse::apply` could run
+      many times for one intended transition. _(fixed by F2: the latch is taken in
+      `LayerLeave` and released by `LayerJoin` on the world change.)_
+- [x] **R3 — Stale event after teleport.** The handler teleported from inside the
+      move handler and returned the event uncancelled. _(fixed by F3.)_
 
 ## Edge cases
 
 | Done | #   | Scenario                                               | Behavior today                                                        | Severity | Cause |
 | ---- | --- | ------------------------------------------------------ | --------------------------------------------------------------------- | -------- | ----- |
-| [x]  | 1   | Player below `VOID_Y` (spawn, `/tp`, portal)           | Latch: one teleport per transition                                    | Low      | —     |
+| [x]  | 1   | Player below `VOID_Y` (spawn, `/tp`, portal)           | Latch holds until the world change, so one teleport per transition    | Low      | —     |
 | [x]  | 2   | Player in `Seventh` void band                          | Nothing happens; vanilla void damage kills them                       | Low      | —     |
 | [x]  | 3   | Falling out of `Seventh` above Y `-128`                | Grey message: there is nothing below the Abyss                        | Low      | —     |
 | [ ]  | 4   | Ascending into `First`                                 | Lands at `-127` — below the terrain, but the intended entry height    | Low      | —     |
@@ -46,8 +46,10 @@ Findings from an audit of `src/events/layer_leave.rs`, checked against the
       shared; the misleading per-layer Y ranges were removed from the layer docs.
 - [x] **F2 — One-shot latch.** _(done)_ A thread-local set of player ids
       (`utils::begin_transition` / `end_transition`) makes each transition fire once.
-      Not persistent data: the latch only describes an in-flight transition, and a
-      stale entry must never survive a restart. Addresses #1, #7, #8, #15. _(R2)_
+      **Held until `PlayerChangedWorldEvent`** (`LayerJoin` releases it), so the moves
+      that follow a teleport cannot re-trigger it; a transition that cannot finish
+      releases the latch itself. Not persistent data: a stale entry must never survive a
+      restart. Addresses #1, #7, #8, #15. _(R2)_
 - [x] **F3 — Cancel the move event.** _(done)_ `up`/`down` report whether the teleport
       happened, and a successful transition returns the event with `cancelled: true`, so
       the stale `to_position` is not applied. Addresses #9. _(R3)_

@@ -134,9 +134,13 @@ handler untouched, so they are never teleported or cursed.
 **Transitions are one-shot.** `PlayerMoveEvent` fires on every movement, so without a
 latch a player inside the void or ceiling band would be teleported (and cursed) on every
 tick. `utils::{begin_transition, end_transition}` keep a thread-local set of player ids
-currently transitioning; the second call returns `false` and the handler bails. The latch
-is released immediately after the move and is deliberately **not** persistent, so a stale
-entry can never lock a player out of transitions.
+currently transitioning; the second call returns `false` and the handler bails.
+
+The latch is taken in `LayerLeave` and released in `LayerJoin` on
+`PlayerChangedWorldEvent` — not immediately after the teleport — so the moves and world
+change that follow cannot re-trigger the transition. A transition that starts but cannot
+finish (missing world, or a terminal layer) releases the latch itself. It is deliberately
+**not** persistent, so a stale entry can never survive a restart.
 
 A successful transition also returns the move event with `cancelled: true`, so the
 server does not apply the original `to_position` — which would move the player back into

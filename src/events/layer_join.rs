@@ -12,7 +12,7 @@ use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::{Player, Server};
 
 use crate::layer::Layer;
-use crate::utils::end_transition;
+use crate::utils::{end_transition, ordinal, rgb};
 
 /// Handles a player joining a layer's world.
 #[derive(Debug, Default, Clone, Copy)]
@@ -39,12 +39,18 @@ impl EventHandler<PlayerChangedWorldEvent> for LayerJoin {
     }
 }
 
-/// Shows a layer's name as a gradient title, with an "Entered …" subtitle.
+/// Shows a layer's name as a bold gradient title, with an "Entered …" subtitle.
 fn show_entry_title(layer: Layer, player: &Player) {
     let colors: [RgbColor; 2] = layer.color();
-    let title = TextComponent::text(layer.name()).gradient(&colors[..]);
+    let title = TextComponent::text(layer.name())
+        .gradient(&colors[..])
+        .bold(true);
+
+    let subtitle_colors: [RgbColor; 2] = [rgb(0xFF, 0xA7, 0x51), rgb(0xFF, 0xE2, 0x59)];
+    let subtitle = format!("Entered the {} layer", ordinal(layer.number()));
+    let subtitle = TextComponent::text(&subtitle).gradient(&subtitle_colors[..]);
 
     player.show_title(title);
-    player.show_subtitle(TextComponent::text(&format!("Entered {}", layer.name())));
+    player.show_subtitle(subtitle);
     player.send_title_animation(10, 40, 10);
 }

@@ -171,14 +171,19 @@ and never afflicted by the curse, so they can fly through the void and ceiling f
 
 Alias: `/mia`. Requires permission level 3 (admin) or above.
 
-`<layer>` is `first` … `seventh` or `1` … `7`, case-insensitive. `[player]` defaults
-to the sender, so console must name one. The command teleports the player straight into
-the layer, so **no curse strain is added** — unlike a real ascent.
+`<layer>` is `first` … `seventh` or `1` … `7`, case-insensitive. The command teleports
+the player straight into the layer, so **no curse strain is added** — unlike a real ascent.
+
+A **player** running the command is always the one moved. `[player]` is only used from
+console, where the sender is not a player:
 
 ```text
 /abyss third
 /abyss 5 Steve
 ```
+
+Tab-completion for `<layer>` is currently unavailable: enabling it crashes the current
+Pumpkin build, so it is disabled until the server is fixed.
 
 ## Troubleshooting
 

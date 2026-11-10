@@ -45,6 +45,25 @@ pub const fn rgb(r: u8, g: u8, b: u8) -> RgbColor {
     RgbColor { r, g, b }
 }
 
+/// Renders `number` with its English ordinal suffix (`1st`, `2nd`, `3rd`, `4th`, …).
+///
+/// Callers pass what they already have — a layer's [`number`](crate::Layer::number), for
+/// instance — rather than the plugin storing a formatted ordinal anywhere, so a renamed
+/// or reordered list cannot leave a stale suffix behind.
+#[must_use]
+pub fn ordinal(number: usize) -> String {
+    let suffix = match number {
+        11..=13 => "th",
+        _ => match number % 10 {
+            1 => "st",
+            2 => "nd",
+            3 => "rd",
+            _ => "th",
+        },
+    };
+    format!("{number}{suffix}")
+}
+
 /// Records that `player` was teleported to `y`, so the next move is not read as a climb.
 pub fn note_teleport(player: &Player, y: f64) {
     TELEPORTED.with(|map| map.borrow_mut().insert(key(player), y));

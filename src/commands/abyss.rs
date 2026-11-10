@@ -10,7 +10,11 @@
 //! ```
 //!
 //! - `<layer>` — `first` … `seventh`, or `1` … `7`, case-insensitive
-//! - `[player]` — who to move; defaults to the sender, so console must name a player
+//! - `[player]` — who to move; only used when the command comes from **console**, since a
+//!   player sender is always moved themselves
+//!
+//! Tab-completion for `<layer>` is implemented but disabled: the Pumpkin host panics on
+//! any suggestion request (see [`LayerSuggestions`]).
 //!
 //! # Permissions
 //!
@@ -21,7 +25,11 @@
 use pumpkin_plugin_api::command::{
     Arg, ArgumentType, Command, CommandError, CommandNode, CommandSender, ConsumedArgs, StringType,
 };
+#[cfg(any())]
+use pumpkin_plugin_api::command::{CommandSuggestion, CommandSuggestions, SuggestionRequest};
 use pumpkin_plugin_api::commands::CommandHandler;
+#[cfg(any())]
+use pumpkin_plugin_api::commands::CommandSuggestionHandler;
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::permission::{
     Permission, PermissionDefault, PermissionLevel,
@@ -91,15 +99,16 @@ impl CommandHandler for AbyssCommand {
             return Ok(0);
         };
 
-        let target = match args.get_value("player") {
-            Arg::Simple(name) => server.get_player_by_name(&name),
-            _ => sender.as_player(),
+        let target = match sender.as_player() {
+            Some(player) => Some(player),
+            None => match args.get_value("player") {
+                Arg::Simple(name) if !name.is_empty() => server.get_player_by_name(&name),
+                _ => None,
+            },
         };
 
         let Some(player) = target else {
-            sender.send_error(TextComponent::text(
-                "That player is not online, or you must name one when running this from console.",
-            ));
+            sender.send_error(TextComponent::text("Console must name the player to move."));
             return Ok(0);
         };
 
@@ -138,4 +147,46 @@ fn layer_names() -> String {
         .map(|layer| layer.id())
         .collect::<Vec<_>>()
         .join(", ")
+}
+
+/// Suggests layer names for the `<layer>` argument.
+///
+/// **Disabled.** Attaching this with `CommandNode::suggest` makes the server panic on the
+/// first tab-completion request: Pumpkin's host calls `block_in_place` from the
+/// `Simulation` thread, which has no Tokio reactor, and panics before the plugin is
+/// reached. The handler is kept, and gated behind `cfg(any())` — which is never true — so
+/// it still compiles as part of `cargo check`, and enabling it is a matter of restoring
+/// the two `.suggest(LayerSuggestions)` calls in [`register`] and dropping the gates.
+///
+/// It cannot be exercised until the host is fixed. See the notes in `AGENTS.md`.
+#[cfg(any())]
+#[derive(Debug, Default, Clone, Copy)]
+struct LayerSuggestions;
+
+#[cfg(any())]
+impl CommandSuggestionHandler for LayerSuggestions {
+    fn suggest(
+        &self,
+        _sender: CommandSender,
+        _server: Server,
+        request: SuggestionRequest,
+    ) -> CommandSuggestions {
+        let prefix = request.remaining.to_ascii_lowercase();
+
+        let values = Layer::ALL
+            .into_iter()
+            .flat_map(|layer| [layer.id().to_string(), layer.number().to_string()])
+            .filter(|candidate| candidate.starts_with(&prefix))
+            .map(|value| CommandSuggestion {
+                value,
+                tooltip: None,
+            })
+            .collect();
+
+        CommandSuggestions {
+            start: request.start,
+            length: u32::try_from(request.remaining.len()).unwrap_or(0),
+            values,
+        }
+    }
 }

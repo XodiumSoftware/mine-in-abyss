@@ -181,9 +181,14 @@ block in `lib.rs`. Each module exposes `register(context)`, which is called from
 | -------- | ------- | ----------------------------- | ------------------------------------------------------------ |
 | `/abyss` | `/mia`  | `mine_in_abyss:command.abyss` | Moves a player into a layer without the curse (ops level 3+) |
 
-`/abyss <layer> [player]` accepts `first` … `seventh` or `1` … `7`, case-insensitive,
-and defaults the target to the sender. It teleports straight into the layer, so no
-curse strain is added — unlike a real ascent.
+`/abyss <layer> [player]` accepts `first` … `seventh` or `1` … `7`, case-insensitive.
+A player running it is always the one moved; `[player]` is only consulted from console.
+It teleports straight into the layer, so no curse strain is added — unlike a real ascent.
+
+Tab-completion for `<layer>` is **disabled**: attaching it makes the Pumpkin host panic on
+the first suggestion request (`block_in_place` from the simulation thread, which has no
+Tokio reactor). The `LayerSuggestions` handler is kept in `src/commands/abyss.rs` behind
+`cfg(any())` for when that is fixed.
 
 Registration goes through the raw `Context::register_command(command, node)` plus
 `Context::register_permission(&Permission)`. Permission nodes are built from

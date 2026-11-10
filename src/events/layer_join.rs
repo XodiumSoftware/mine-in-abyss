@@ -52,5 +52,5 @@ fn show_entry_title(layer: Layer, player: &Player) {
 
     player.show_title(title);
     player.show_subtitle(subtitle);
-    player.send_title_animation(10, 40, 10);
+    player.send_title_animation(20, 60, 30);
 }

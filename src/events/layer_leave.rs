@@ -1,20 +1,15 @@
 //! Detects a player leaving a layer through its void or ceiling.
+//!
+//! Players in **creative or spectator mode** are left alone: they fly freely and can
+//! pass through the void and ceiling without being teleported between layers or
+//! afflicted by the curse.
 
 use pumpkin_plugin_api::events::EventHandler;
 use pumpkin_plugin_api::events::player::player_move::PlayerMoveEvent;
 use pumpkin_plugin_api::events_wit::PlayerMoveEventData;
 use pumpkin_plugin_api::{Player, Server};
 
-/// Y coordinate below which a player is considered to have fallen into the void.
-///
-/// The world floor is -64, so this is a few dozen blocks below it: enough time to
-/// react before the player takes void damage, but shallow enough to trigger promptly.
-pub const VOID_Y: f64 = -128.0;
-
-/// Y coordinate above which a player is considered to have left through the ceiling.
-///
-/// The build limit is 319, so this is just above it.
-pub const MAX_Y: f64 = 320.0;
+use crate::utils::{MAX_Y, VOID_Y, ignores_transitions};
 
 /// Detects a player leaving a layer through its void or ceiling.
 #[derive(Debug, Default, Clone, Copy)]
@@ -22,6 +17,10 @@ pub struct LayerLeave;
 
 impl EventHandler<PlayerMoveEvent> for LayerLeave {
     fn handle(&self, server: Server, event: PlayerMoveEventData) -> PlayerMoveEventData {
+        if ignores_transitions(&event.player) {
+            return event;
+        }
+
         let world_name = event.player.get_world().get_name();
         let Some(layer) = crate::layer_for_world(&world_name) else {
             return event;

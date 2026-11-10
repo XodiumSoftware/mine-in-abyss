@@ -19,7 +19,13 @@ mod layers {
     pub mod third;
 }
 mod section;
+mod utils;
 mod worlds;
+
+/// The `/abyss` command.
+mod commands {
+    pub mod abyss;
+}
 
 /// Event handlers for `mine-in-abyss`.
 mod events {
@@ -129,6 +135,7 @@ impl Plugin for MineInAbyss {
     fn on_load(&self, context: Context) -> pumpkin_plugin_api::Result<()> {
         Self::register_layers();
         Self::register_events(&context);
+        commands::abyss::register(&context);
 
         let worlds = Worlds::setup(&context, &LAYERS);
         info!("Mine in Abyss loaded ({worlds} layer world(s)).");

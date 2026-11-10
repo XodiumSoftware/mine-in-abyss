@@ -35,13 +35,6 @@ impl EventHandler<PlayerChangedWorldEvent> for LayerJoin {
     }
 }
 
-/// Title fade-in time in ticks (half a second).
-const TITLE_FADE_IN: i32 = 10;
-/// How long the title stays on screen in ticks (two seconds).
-const TITLE_STAY: i32 = 40;
-/// Title fade-out time in ticks (half a second).
-const TITLE_FADE_OUT: i32 = 10;
-
 /// Shows a layer's name as a gradient title, with an "Entered …" subtitle.
 fn show_entry_title(layer: &dyn Layer, player: &Player) {
     let colors: [RgbColor; 2] = layer.color();
@@ -49,5 +42,5 @@ fn show_entry_title(layer: &dyn Layer, player: &Player) {
 
     player.show_title(title);
     player.show_subtitle(TextComponent::text(&format!("Entered {}", layer.name())));
-    player.send_title_animation(TITLE_FADE_IN, TITLE_STAY, TITLE_FADE_OUT);
+    player.send_title_animation(10, 40, 10);
 }

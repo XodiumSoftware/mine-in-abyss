@@ -29,6 +29,17 @@ pub enum Section {
 }
 
 impl Section {
+    /// Every section, from the surface down.
+    pub const ALL: [Self; 7] = [
+        Self::First,
+        Self::Second,
+        Self::Third,
+        Self::Fourth,
+        Self::Fifth,
+        Self::Sixth,
+        Self::Seventh,
+    ];
+
     /// Returns this section's stable identifier (`first`, `second`, ...).
     ///
     /// This is the segment used to build the section's Minecraft world name. It is
@@ -70,6 +81,22 @@ impl Section {
         Self::iter()
             .position(|section| section == self)
             .unwrap_or(0)
+    }
+
+    /// Returns this section's one-based number (`1` for the surface, `7` at the
+    /// bottom), as shown to players.
+    #[must_use]
+    pub fn number(self) -> usize {
+        self.index() + 1
+    }
+
+    /// Returns the Y coordinate a player is placed at when entering this section.
+    ///
+    /// Entering from above (descending) lands them near the ceiling of the world, so
+    /// the fall into the section is visible.
+    #[must_use]
+    pub fn entry_y(self) -> f64 {
+        crate::utils::MAX_Y - 2.0
     }
 
     /// Returns the severity of the Curse of the Abyss when ascending out of this

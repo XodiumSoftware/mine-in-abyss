@@ -82,15 +82,15 @@ The Abyss is a vertical world, so every feature implements the **`Layer`** trait
 `Section` (`src/section.rs`) names the strata from the surface down and is the
 single enum everything derives from:
 
-| Variant   | `id()`    | World                  | Notes                         |
-| --------- | --------- | ---------------------- | ----------------------------- |
-| `First`   | `first`   | `mine_in_abyss_first`  | The Top of the Abyss          |
-| `Second`  | `second`  | `mine_in_abyss_second` | The Forest of Temptation      |
-| `Third`   | `third`   | `mine_in_abyss_third`  | The Great Fault               |
-| `Fourth`  | `fourth`  | `mine_in_abyss_fourth` | The Goblets of Giants         |
-| `Fifth`   | `fifth`   | `mine_in_abyss_fifth`  | The Sea of Corpses            |
-| `Sixth`   | `sixth`   | `mine_in_abyss_sixth`  | The Capital of the Unreturned |
-| `Seventh` | `seventh` | `mine_in_abyss_seventh`| The Final Maelstrom           |
+| Variant   | `id()`    | World                   | Notes                         |
+| --------- | --------- | ----------------------- | ----------------------------- |
+| `First`   | `first`   | `mine_in_abyss_first`   | The Top of the Abyss          |
+| `Second`  | `second`  | `mine_in_abyss_second`  | The Forest of Temptation      |
+| `Third`   | `third`   | `mine_in_abyss_third`   | The Great Fault               |
+| `Fourth`  | `fourth`  | `mine_in_abyss_fourth`  | The Goblets of Giants         |
+| `Fifth`   | `fifth`   | `mine_in_abyss_fifth`   | The Sea of Corpses            |
+| `Sixth`   | `sixth`   | `mine_in_abyss_sixth`   | The Capital of the Unreturned |
+| `Seventh` | `seventh` | `mine_in_abyss_seventh` | The Final Maelstrom           |
 
 It derives `EnumIter` + `IntoStaticStr` (with `serialize_all = "lowercase"`), so
 `id()` is just `self.into()` — variant names are never hand-written twice. Built on
@@ -112,19 +112,43 @@ registration, world creation and world-name lookup (`layer_for_world`).
 
 Handlers live in `src/events/`, declared inline in the `mod events` block in `lib.rs`:
 
-| Handler        | Event                      | Behaviour                                    |
-| -------------- | -------------------------- | -------------------------------------------- |
-| `LayerJoin`    | `PlayerChangedWorldEvent`  | Shows the entered layer's gradient title; cures the curse on the surface |
-| `LayerLeave`   | `PlayerMoveEvent`          | Void/ceiling detection, teleport, curse      |
-| `LayerRespawn` | `PlayerRespawnEvent`       | Clears the curse strain                      |
+| Handler        | Event                     | Behaviour                                                                |
+| -------------- | ------------------------- | ------------------------------------------------------------------------ |
+| `LayerJoin`    | `PlayerChangedWorldEvent` | Shows the entered layer's gradient title; cures the curse on the surface |
+| `LayerLeave`   | `PlayerMoveEvent`         | Void/ceiling detection, teleport, curse                                  |
+| `LayerRespawn` | `PlayerRespawnEvent`      | Clears the curse strain                                                  |
 
-`LayerLeave` uses two Y thresholds (`VOID_Y = -128.0`, `MAX_Y = 320.0`): below the
-void → next layer down at `MAX_Y - 2.0`; above the ceiling → previous layer up at
-`VOID_Y + 1.0`. Both keep X/Z. Falling out of `Seventh` (no `next()`) kills the player.
-Ascending calls `curse::apply`, which adds to the player's accumulated strain.
+`LayerLeave` uses two Y thresholds from `src/utils.rs` (`VOID_Y = -128.0`,
+`MAX_Y = 320.0`): below the void → next layer down at `MAX_Y - 2.0`; above the ceiling
+→ previous layer up at `VOID_Y + 1.0`. Both keep X/Z. Falling out of `Seventh` (no
+`next()`) kills the player. Ascending calls `curse::apply`, which adds to the player's
+accumulated strain.
+
+**Creative and spectator players are skipped**: a player in `GameMode::Creative` or
+`GameMode::Spectator` returns from the handler untouched, so they can fly through the
+void and ceiling without being teleported or cursed.
 
 Titles are built as `TextComponent`s directly — the plugin API has no `MiniMessage`
 parser, so **never emit `MiniMessage` strings**.
+
+### Commands
+
+Commands live in `src/commands/<name>.rs` and are declared inline in the `mod commands`
+block in `lib.rs`. Each module exposes `register(context)`, which is called from
+`on_load`.
+
+| Command  | Aliases | Permission                    | Behaviour                                                    |
+| -------- | ------- | ----------------------------- | ------------------------------------------------------------ |
+| `/abyss` | `/mia`  | `mine_in_abyss:command.abyss` | Moves a player into a layer without the curse (ops level 3+) |
+
+`/abyss <layer> [player]` accepts `first` … `seventh` or `1` … `7`, case-insensitive,
+and defaults the target to the sender. It teleports straight into the section, so no
+curse strain is added — unlike a real ascent.
+
+Registration goes through the raw `Context::register_command(command, node)` plus
+`Context::register_permission(&Permission)`. Permission nodes are built from
+`PLUGIN_ID` (`abyss::permission_node()`), never hand-formatted. Handler structs
+implement `pumpkin_plugin_api::commands::CommandHandler` and return `Ok(1)` on success.
 
 ### Curse of the Abyss
 
@@ -178,7 +202,11 @@ Each layer implements `Layer` with its own `id()`, `enabled()`, `name()` and
 src/
 ├── lib.rs              # `PLUGIN_ID`, `LAYERS`, `layer_for_world`, `Plugin` impl
 ├── section.rs          # `Section` enum + id/world/next/prev/index/curse
+├── utils.rs            # Shared helpers (`ignores_transitions`) and Y thresholds
+│                       # (`VOID_Y`, `MAX_Y`)
 ├── worlds.rs           # `Worlds` — one world per layer
+├── commands/
+│   └── abyss.rs        # `/abyss` — ops teleport into a layer, curse-free
 ├── events/
 │   ├── curse.rs        # Curse of the Abyss: strain storage + severity ladder
 │   ├── layer_join.rs   # `LayerJoin` — entry title, cure on the surface

@@ -5,60 +5,60 @@ description: Adds a slash command (with aliases, args, and permission wiring) to
 
 # Add a Command
 
-Use this skill when the user wants to add a chat command to an existing registered feature
-(whatever the current registration trait is called).
+Use this skill when the user wants to add a chat command to `mine-in-abyss`.
 
-**Discover, don't assume.** Command wiring lives in the registration trait's `cmds()`/
-`perms()` methods. Read the trait definition and an existing command implementation first;
-if this skill disagrees with the code, trust the code and update this skill.
+**Discover, don't assume.** There is no `cmds()`/`perms()` registration trait in this
+project (an earlier version of this skill claimed there was). Commands are plain
+modules with a `register(context)` function called from `MineInAbyss::on_load`.
 
-## Step 0 — Discover the current pattern
+## Step 0 — Read the current pattern
 
-1. Read the registration trait (found from `src/lib.rs` `on_load`). Note the exact
-   signatures of `cmds()` and `perms()` and how `register()` consumes them.
-2. Find an existing command in `src/` and copy its executor style, argument reading, and
-   message sending. If none exists yet, use the Pumpkin API docs below and say so.
-3. Find how permission nodes are constructed. Use the existing helper/constant if there is
-   one (`PLUGIN_ID`, a `default_permission`-style helper, etc.) — never hand-format nodes.
-
-Reference: https://docs.rs/pumpkin-plugin-api
-
-## Before Writing Code
-
-Ask for:
-
-- Which feature owns the command (run the `add-layer` skill first if it doesn't exist).
-- Command name and aliases (e.g. `["nickname", "nick"]`).
-- Argument shape: literals (`/cmd clear`) vs. typed arguments (`/cmd <name>`), and the
-  argument types available in the API version in use.
-- Whether one executor struct can serve all subcommands, or each needs its own.
-- Permission description text.
+1. Read `src/lib.rs` (`on_load`, the `mod commands` block).
+2. Read `src/commands/abyss.rs` — the only existing command. Copy its structure.
+3. Build permission nodes with `abyss::permission_node()`-style helpers derived from
+   `PLUGIN_ID`; never hand-format the namespace.
 
 ## Implementation
 
-1. Add the command(s) to `cmds()`, building the tree with the API's command/node builders.
-2. Implement `CommandHandler` for an executor struct below the trait impl.
-3. Add the matching permission to `perms()`, using the project's existing node helper.
+1. Add `src/commands/<name>.rs` with:
+    - `//!` module docs including a `# Usage` block and a permissions table
+    - `NAMES` (primary name first, then aliases)
+    - a `permission_node()` helper built from `PLUGIN_ID`
+    - `pub fn register(context: &Context)` that builds the tree, calls
+      `context.register_command(command, &permission_node())` and
+      `context.register_permission(&Permission { .. })`
+    - an executor struct implementing
+      `pumpkin_plugin_api::commands::CommandHandler`
+2. Declare it in the `mod commands` block in `src/lib.rs` and call
+   `commands::<name>::register(&context)` from `on_load`.
 
-## Important Constraints
+## API facts verified against `pumpkin-plugin-api` 0.2.1
 
-- **`cmds()` and `perms()` are paired by index** in the trait's `register()` — the Nth
-  permission belongs to the Nth command. Keep both vecs the same length and order.
-- Read arguments with the API's accessor; destructure variants with or-patterns as the
-  existing code does rather than assuming a single shape.
-- Commands that need a player should fail cleanly (`CommandError::PermissionDenied`) for
-  console senders — match the existing convention.
-- Handlers return `Ok(i32)`; match the value other handlers return.
-- Import types from `pumpkin_plugin_api` modules actually in use; check the crate's re-exports
-  rather than guessing paths.
+- `Command::new(&names, description)` takes `&[String]`.
+- `CommandNode::argument(name, &ArgumentType::String(StringType::SingleWord))`.
+- `CommandNode`/`Command` builders take `self` and are **not `Clone`** — build a
+  separate node per branch when a prefix is shared (see `abyss.rs`).
+- `Context::register_command` takes `&str`; `Context::register_permission` takes
+  `&Permission`.
+- `CommandSender::has_permission_level` uses
+  `wit::pumpkin::plugin::command::PermissionLevel`, **not** the `permission` interface's
+  same-named enum.
+- `ConsumedArgs::get_value` returns `Arg`; match `Arg::Simple(..)` and prefer
+  `let ... else` (pedantic clippy rejects the `match` form).
+- `TextComponent::text(..)` exists; there is no `MiniMessage` parser.
+
+## Constraints
+
+- Guard commands that act on a player: `sender.as_player()` is `None` for console.
+- Send user-facing failures with `sender.send_error(..)` and return `Ok(0)` rather than
+  `Err`, so the failure reads as a message instead of a command error.
+- Return `Ok(1)` on success, matching `abyss.rs`.
 
 ## Docs & Verification
 
-1. Add a `## Commands` table to the feature's `//!` header: command, aliases, permission
-   node, description.
-2. Verify with the `just` recipes (or the cargo equivalents):
-   - `just build`
-   - `just lint` (warnings are errors)
-   - `just doc`
+1. Add the command to the `### Commands` table in `AGENTS.md`.
+2. Verify: `cargo clippy --all-targets --all-features --target wasm32-wasip2 -- -W
+clippy::pedantic -D warnings`, `cargo build --target wasm32-wasip2`, `cargo doc
+--no-deps --target wasm32-wasip2`.
 
 After finishing, summarize the changes and ask the user whether to commit.

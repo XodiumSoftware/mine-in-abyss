@@ -73,15 +73,15 @@ startup.
 
 ### Layers
 
-| Layer     | World                     | Name                          |
-| --------- | ------------------------- | ----------------------------- |
-| `First`   | `mine_in_abyss_first`     | The Top of the Abyss          |
-| `Second`  | `mine_in_abyss_second`    | The Forest of Temptation      |
-| `Third`   | `mine_in_abyss_third`     | The Great Fault               |
-| `Fourth`  | `mine_in_abyss_fourth`    | The Goblets of Giants         |
-| `Fifth`   | `mine_in_abyss_fifth`     | The Sea of Corpses            |
-| `Sixth`   | `mine_in_abyss_sixth`     | The Capital of the Unreturned |
-| `Seventh` | `mine_in_abyss_seventh`   | The Final Maelstrom           |
+| Layer     | World                   | Name                          |
+| --------- | ----------------------- | ----------------------------- |
+| `First`   | `mine_in_abyss_first`   | The Top of the Abyss          |
+| `Second`  | `mine_in_abyss_second`  | The Forest of Temptation      |
+| `Third`   | `mine_in_abyss_third`   | The Great Fault               |
+| `Fourth`  | `mine_in_abyss_fourth`  | The Goblets of Giants         |
+| `Fifth`   | `mine_in_abyss_fifth`   | The Sea of Corpses            |
+| `Sixth`   | `mine_in_abyss_sixth`   | The Capital of the Unreturned |
+| `Seventh` | `mine_in_abyss_seventh` | The Final Maelstrom           |
 
 World names are derived from the layer's ordinal, so they stay stable across releases
 even if a layer is renamed.
@@ -104,15 +104,15 @@ survives a relog. It is only cleared by reaching the surface (`First`), or by dy
 Severity is derived from the layer's index, starting at `0` for the surface, and is
 added to the player's current strain (capped at 6):
 
-| Total strain | Symptoms                                              |
-| ------------ | ----------------------------------------------------- |
-| `0`          | None                                                  |
-| `1`          | Nausea                                                |
-| `2`          | Nausea, weakness                                      |
-| `3`          | Nausea, blindness, slowness                           |
-| `4`          | Nausea, blindness, weakness, minor magic damage       |
+| Total strain | Symptoms                                               |
+| ------------ | ------------------------------------------------------ |
+| `0`          | None                                                   |
+| `1`          | Nausea                                                 |
+| `2`          | Nausea, weakness                                       |
+| `3`          | Nausea, blindness, slowness                            |
+| `4`          | Nausea, blindness, weakness, minor magic damage        |
 | `5`          | Blindness, weakness, magic damage, health clamped to 1 |
-| `6`          | Death                                                 |
+| `6`          | Death                                                  |
 
 Ascending out of `First` adds nothing (index `0`). Ascending out of `Seventh` adds
 `6`, which is fatal on its own.
@@ -120,6 +120,26 @@ Ascending out of `First` adds nothing (index `0`). Ascending out of `Seventh` ad
 ### Other behaviour
 
 Entering a layer's world shows a gradient title with that layer's name.
+
+Creative and spectator players are exempt: they are never teleported between layers
+and never afflicted by the curse, so they can fly through the void and ceiling freely.
+
+## Commands
+
+| Command                   | Permission                    |
+| ------------------------- | ----------------------------- |
+| `/abyss <layer> [player]` | `mine_in_abyss:command.abyss` |
+
+Alias: `/mia`. Requires permission level 3 (admin) or above.
+
+`<layer>` is `first` … `seventh` or `1` … `7`, case-insensitive. `[player]` defaults
+to the sender, so console must name one. The command teleports the player straight into
+the layer, so **no curse strain is added** — unlike a real ascent.
+
+```text
+/abyss third
+/abyss 5 Steve
+```
 
 ## Troubleshooting
 

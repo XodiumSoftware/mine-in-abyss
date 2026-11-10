@@ -62,7 +62,7 @@ impl EventHandler<PlayerMoveEvent> for LayerLeave {
 
         let moved = match direction {
             Direction::Down => {
-                if let Some(section) = layer.id().next() {
+                if let Some(section) = layer.next() {
                     down(&server, &event.player, section)
                 } else {
                     tell(&event.player, "There is nothing below the Abyss.");
@@ -70,7 +70,7 @@ impl EventHandler<PlayerMoveEvent> for LayerLeave {
                 }
             }
             Direction::Up => {
-                if let Some(section) = layer.id().prev() {
+                if let Some(section) = layer.prev() {
                     up(&server, &event.player, section)
                 } else {
                     tell(&event.player, "There is nothing above the Abyss.");

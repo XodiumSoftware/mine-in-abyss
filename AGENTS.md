@@ -71,21 +71,13 @@ cargo clippy --all-targets --all-features --target wasm32-wasip2 -- -W clippy::p
 
 ### Layer System
 
-The Abyss is a vertical world, so every feature implements the **`Layer`** trait
-(`src/layers/layer.rs`) and declares which stratum it belongs to.
+The Abyss is a vertical world, and each layer **is** a [`Section`] variant. There is no
+separate layer trait: identifiers, names, palettes and world names all live on `Section`,
+so a layer cannot be described in two places that drift apart.
 
-| Method | Purpose                                   |
-| ------ | ----------------------------------------- |
-| `id()` | Returns the `Section` this layer lives in |
+`Section` (`src/section.rs`) names the strata from the surface down:
 
-Display data — the name and the two gradient stops — lives on `Section`
-(`Section::name()`, `Section::color()`), so a layer only declares which section it is.
-The trait exists so layers can grow behaviour of their own; it carries no display data.
-
-`Section` (`src/section.rs`) names the strata from the surface down and is the
-single enum everything derives from:
-
-| Variant   | `id()`    | World                   | Notes                         |
+| Variant   | `id()`    | World                   | `name()`                      |
 | --------- | --------- | ----------------------- | ----------------------------- |
 | `First`   | `first`   | `mine_in_abyss_first`   | The Top of the Abyss          |
 | `Second`  | `second`  | `mine_in_abyss_second`  | The Forest of Temptation      |
@@ -100,16 +92,15 @@ It derives `EnumIter` + `IntoStaticStr` (with `serialize_all = "lowercase"`), so
 that:
 
 - `world()` — `format!("{PLUGIN_ID}_{}", self.id())`
+- `name()` / `color()` — display title and the two gradient stops
 - `next()` / `prev()` — neighbouring strata, `None` at the ends
-- `index()` — depth index, `0` at the surface
+- `index()` / `number()` — depth index, `0`/`1` at the surface
 - `curse()` — Curse of the Abyss severity, derived from `index()`
+- `entry_y()` / `exit_y()` — the shared spawn heights (see below)
 
-Display names and gradient colours are **not** on `Section`; each layer provides them
-through the `Layer` trait.
-
-Layers are zero-sized plain structs (`First`, `Second`, …) exposed through
-`LAYERS: [&dyn Layer; 7]` in `src/lib.rs`, which is the single source of truth for
-registration, world creation and world-name lookup (`layer_for_world`).
+`Section::ALL` is the source of truth for which layers exist, and `LAYERS: [Section; 7]`
+in `src/lib.rs` is `Section::ALL`. Registration, world creation and world-name lookup
+(`layer_for_world`) all read from it.
 
 ### Events
 
@@ -233,21 +224,11 @@ keep it in mind whenever you touch transitions or placement:
 
 ### Active Layers
 
-All seven layers exist as stubs (identity, name, gradient colour) with no gameplay yet.
+All seven layers exist as `Section` variants (identifier, world, name, gradient colour)
+with no gameplay content yet. See the table under [Layer System](#layer-system).
 
-| Module                  | Struct    | `Section` |
-| ----------------------- | --------- | --------- |
-| `src/layers/first.rs`   | `First`   | `First`   |
-| `src/layers/second.rs`  | `Second`  | `Second`  |
-| `src/layers/third.rs`   | `Third`   | `Third`   |
-| `src/layers/fourth.rs`  | `Fourth`  | `Fourth`  |
-| `src/layers/fifth.rs`   | `Fifth`   | `Fifth`   |
-| `src/layers/sixth.rs`   | `Sixth`   | `Sixth`   |
-| `src/layers/seventh.rs` | `Seventh` | `Seventh` |
-
-Each layer implements `Layer` with `id()` alone. Names and colours are single-sourced on
-`Section` (`Section::name()`, `Section::color()`), so they cannot drift between the layer
-module and the section enum.
+There are no per-layer modules or structs: everything a layer needs is on its `Section`
+variant, so adding a layer means adding a variant rather than a file.
 
 ### Project Structure
 
@@ -266,9 +247,6 @@ src/
 │   ├── layer_leave.rs  # `LayerLeave` — void/ceiling teleport + curse
 │   ├── layer_respawn.rs# `LayerRespawn` — clears the curse on respawn
 │   └── layer_teleport.rs # `LayerTeleport` — teleports are not climbs
-└── layers/
-    ├── layer.rs        # `Layer` trait
-    └── first.rs .. seventh.rs
 ```
 
 ### Key Conventions
@@ -359,22 +337,15 @@ GitHub Actions workflows in `.github/workflows/`:
 
 To add a new layer, follow these steps:
 
-1. Create new file in `src/layers/{layer}.rs`
-2. Add module-level docs `//!` describing the layer and what belongs there
-3. Create the `{Layer}` struct deriving `Debug, Default, Clone, Copy`
-4. Implement `Layer`:
-    - `id()` — return the `Section` variant it belongs to
-    - a display name and palette are **not** defined here: add them to `Section::name()`
-      and `Section::color()` instead, so the name has one home
-5. Implement `EventHandler<T>` for each event (if needed), and register it in
-   `MineInAbyss::register_events`
-6. In `src/section.rs`: add a variant to the `Section` enum (keep it in depth order —
-   `next`/`prev`/`index`/`curse` all derive from the variant order), and fill in its arm
-   in `Section::name()`, `Section::color()` and `Section::ALL`
-7. In `src/lib.rs`:
-    - Declare the layer in the `mod layers` tree
-    - Add it to `LAYERS` **in depth order**
-8. Run `cargo clippy --target wasm32-wasip2 -- -W clippy::pedantic -D warnings` to verify
+1. In `src/section.rs`: add a variant to the `Section` enum (keep it in depth order —
+   `next`/`prev`/`index`/`curse` all derive from the variant order)
+2. Fill in its arm in `Section::name()`, `Section::color()` and `Section::ALL`
+3. In `src/lib.rs`: `LAYERS` is `Section::ALL`, so nothing to change unless the layer
+   needs its own behaviour
+4. If the layer needs behaviour of its own, implement `EventHandler<T>` in
+   `src/events/` and register it in `MineInAbyss::register_events` — prefer one handler
+   for all layers (as `LayerLeave` does) over per-layer registration
+5. Run `cargo clippy --target wasm32-wasip2 -- -W clippy::pedantic -D warnings`
 
 ## Memory System
 

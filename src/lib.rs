@@ -2,22 +2,13 @@
 //! Rust that recreates ***Made in Abyss*** inside Minecraft.
 //!
 //! Each layer of the Abyss is its own Minecraft world, and players descend by falling
-//! through the void of the layer above. Gameplay content for individual layers is still
-//! a stub; the Curse of the Abyss and layer transitions are implemented.
+//! through the void of the layer above. Layers are [`Section`] variants, which carry
+//! their identifier, display name and palette; gameplay content for individual layers is
+//! still a stub, but the Curse of the Abyss and layer transitions are implemented.
 //!
 //! See [`GUIDE.md`](../GUIDE.md) for installation.
 #![allow(clippy::must_use_candidate)]
 
-mod layers {
-    pub mod fifth;
-    pub mod first;
-    pub mod fourth;
-    pub mod layer;
-    pub mod second;
-    pub mod seventh;
-    pub mod sixth;
-    pub mod third;
-}
 mod section;
 mod utils;
 mod worlds;
@@ -36,7 +27,6 @@ mod events {
     pub mod layer_teleport;
 }
 
-pub use layers::*;
 pub use section::*;
 pub use worlds::*;
 
@@ -48,15 +38,6 @@ use pumpkin_plugin_api::events::player::player_teleport::PlayerTeleportEvent;
 use pumpkin_plugin_api::{Context, Plugin, PluginMetadata};
 use tracing::info;
 
-use crate::layers::fifth::Fifth;
-use crate::layers::first::First;
-use crate::layers::fourth::Fourth;
-use crate::layers::layer::Layer;
-use crate::layers::second::Second;
-use crate::layers::seventh::Seventh;
-use crate::layers::sixth::Sixth;
-use crate::layers::third::Third;
-
 /// The plugin identifier used for namespaced ids and permission nodes.
 ///
 /// Must be a valid Minecraft identifier, so the crate name (`mine-in-abyss`)
@@ -66,12 +47,12 @@ pub const PLUGIN_ID: &str = "mine_in_abyss";
 /// Every layer, from the surface down.
 ///
 /// This is the single source of truth for which layers exist: registration, world
-/// creation and the entry title all read from it.
-pub const LAYERS: [&dyn Layer; 7] = [&First, &Second, &Third, &Fourth, &Fifth, &Sixth, &Seventh];
+/// creation and the entry title all read from it. Identical to [`Section::ALL`].
+pub const LAYERS: [Section; 7] = Section::ALL;
 
 /// Returns the layer whose world is called `name`, if any.
-pub(crate) fn layer_for_world(name: &str) -> Option<&'static dyn Layer> {
-    LAYERS.into_iter().find(|layer| layer.id().world() == name)
+pub(crate) fn layer_for_world(name: &str) -> Option<Section> {
+    LAYERS.into_iter().find(|layer| layer.world() == name)
 }
 
 /// Entry point of the plugin.

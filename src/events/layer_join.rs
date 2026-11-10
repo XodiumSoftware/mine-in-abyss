@@ -25,8 +25,8 @@ impl EventHandler<PlayerChangedWorldEvent> for LayerJoin {
         event: PlayerChangedWorldEventData,
     ) -> PlayerChangedWorldEventData {
         let world_name = event.to_world.get_name();
-        if let Some(layer) = crate::layer_for_world(&world_name) {
-            show_entry_title(layer.id(), &event.player);
+        if let Some(section) = crate::layer_for_world(&world_name) {
+            show_entry_title(section, &event.player);
         }
 
         end_transition(&event.player);

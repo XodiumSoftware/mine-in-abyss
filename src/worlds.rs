@@ -8,8 +8,8 @@
 //! stable across releases: they are derived from the layer's ordinal, not its display
 //! name.
 
-use crate::layers::layer::Layer;
-use pumpkin_plugin_api::{Context, Dimension, World};
+use crate::section::Section;
+use pumpkin_plugin_api::{Context, Dimension};
 use std::cell::RefCell;
 use std::collections::HashSet;
 use tracing::{info, warn};
@@ -18,15 +18,13 @@ thread_local! {
     /// World names created (or attached to) by [`Worlds::setup`].
     ///
     /// Only the set of ready world names is cached; the `World` handle itself is a
-    /// non-cloneable resource, so it is re-resolved on demand via [`Worlds::world`].
+    /// non-cloneable resource, so it is re-resolved from the server on demand.
     static READY: RefCell<HashSet<String>> = RefCell::new(HashSet::new());
 }
 
 /// Creates and tracks one Minecraft world per layer.
 ///
-/// Worlds are created once during plugin load and kept for the lifetime of the
-/// server; callers look them up with [`Worlds::world`] rather than creating them on
-/// demand.
+/// Worlds are created once during plugin load and kept for the lifetime of the server.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Worlds;
 
@@ -37,37 +35,24 @@ impl Worlds {
     /// duplicated, and a failure for one layer does not stop the others.
     ///
     /// Returns the number of worlds that are available after the call.
-    pub fn setup(context: &Context, layers: &[&dyn Layer]) -> usize {
+    pub fn setup(context: &Context, layers: &[Section]) -> usize {
         let server = context.get_server();
 
         for layer in layers {
-            let name = layer.id().world();
+            let name = layer.world();
             let _world = server.create_world(&name, Dimension::Overworld);
 
             if server.has_world(&name) {
-                info!("World '{name}' ready for {}", layer.id().name());
+                info!("World '{name}' ready for {}", layer.name());
                 READY.with(|r| r.borrow_mut().insert(name.clone()));
             } else {
-                warn!("World '{name}' was not created for {}", layer.id().name());
+                warn!("World '{name}' was not created for {}", layer.name());
             }
         }
 
         let count = READY.with(|r| r.borrow().len());
         info!("Worlds: {count} layer world(s) available");
         count
-    }
-
-    /// Returns the world for `layer`, if [`Worlds::setup`] made it available.
-    ///
-    /// The handle is resolved from the server on each call, so the returned world
-    /// reflects the world's current state.
-    #[must_use]
-    pub fn world(context: &Context, layer: &dyn Layer) -> Option<World> {
-        let name = layer.id().world();
-        if !Self::is_ready(&name) {
-            return None;
-        }
-        context.get_server().get_world_by_name(&name)
     }
 
     /// Returns whether the world called `name` was made available by [`Worlds::setup`].

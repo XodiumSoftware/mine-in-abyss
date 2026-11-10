@@ -34,7 +34,7 @@ Findings from an audit of `src/events/layer_leave.rs`, checked against the
 | [ ]  | 12  | Player in a non-Abyss world                            | Correctly ignored                                                     | —        | —     |
 | [ ]  | 13  | Manual `/tp` above `MAX_Y`                             | Treated as an ascent and cursed                                       | Medium   | —     |
 | [x]  | 14  | `up()` from `First`                                    | Grey message: there is nothing above the Abyss                        | Low      | —     |
-| [ ]  | 15  | Player dies from strain 6 inside the move handler      | Latch is released after the move, so no re-entry while dying          | Low      | —     |
+| [x]  | 15  | Player dies from strain 6 inside the move handler      | Dead players are skipped, and the latch releases after the move       | Low      | —     |
 | [x]  | 16  | Creative / spectator player                            | `layer_leave` skips both (no teleport, no curse)                      | Low      | —     |
 | [ ]  | 17  | `Seventh` boundaries                                   | No layer-specific boundaries — all layers share the vanilla limits    | Low      | —     |
 
@@ -56,10 +56,9 @@ Findings from an audit of `src/events/layer_leave.rs`, checked against the
 - [x] **F5 — `enabled()` semantics.** _(removed)_ `Layer::enabled()` was a display-only
       gate that did nothing, so it is gone: every layer is live and every layer world
       shows its entry title. Resolves #11.
-- [ ] **F6 — Skip dead (and optionally creative/spectator) players.** Addresses
-      #15, #16.
-      _Creative and spectator are now skipped by `LayerLeave` (`utils::ignores_transitions`);
-      dead-player handling remains._
+- [x] **F6 — Skip dead and creative/spectator players.** _(done)_
+      `utils::ignores_transitions` covers `GameMode::Creative`, `GameMode::Spectator`
+      and dead players (`Player::as_entity().as_living().is_dead()`). Resolves #15, #16.
 - [x] **F7 — Feedback on terminal transitions.** _(done)_ `tell` sends a grey system
       message when leaving `First` upward or `Seventh` downward. Addresses #14 and #3.
 

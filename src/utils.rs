@@ -38,15 +38,29 @@ pub fn end_transition(player: &Player) {
     TRANSITING.with(|set| set.borrow_mut().remove(&key(player)));
 }
 
-/// Returns `true` if `player` is exempt from layer transitions.
+/// Returns `true` if `player` is in a state where a layer transition must not run.
 ///
-/// Players in **creative** or **spectator** mode move freely: they are never
-/// teleported between layers and never afflicted by the curse, so builders and
-/// onlookers can pass through the void and ceiling without being pulled around.
+/// Players in **creative** or **spectator** mode move freely: they are never teleported
+/// between layers and never afflicted by the curse, so builders and onlookers can pass
+/// through the void and ceiling without being pulled around.
+///
+/// **Dead** players are skipped too: the curse can kill inside the move handler, and the
+/// move events that follow a death must not teleport a corpse or re-apply the curse.
 #[must_use]
 pub fn ignores_transitions(player: &Player) -> bool {
-    matches!(
+    let exempt_gamemode = matches!(
         player.get_gamemode(),
         GameMode::Creative | GameMode::Spectator
-    )
+    );
+
+    exempt_gamemode || is_dead(player)
+}
+
+/// Returns `true` if `player` has died and has not respawned yet.
+#[must_use]
+fn is_dead(player: &Player) -> bool {
+    player
+        .as_entity()
+        .as_living()
+        .is_some_and(|living| living.is_dead())
 }

@@ -127,9 +127,9 @@ layer down at `entry_y()` (`MAX_Y - 2.0`); above the ceiling → previous layer 
 left alone — vanilla void damage kills the player. Ascending calls `curse::apply`, which
 adds to the player's accumulated strain.
 
-**Creative and spectator players are skipped**: a player in `GameMode::Creative` or
-`GameMode::Spectator` returns from the handler untouched, so they can fly through the
-void and ceiling without being teleported or cursed.
+**Creative and spectator players are skipped**, as are **dead** players: a player in
+`GameMode::Creative`, `GameMode::Spectator`, or with `is_dead()` true returns from the
+handler untouched, so they are never teleported or cursed.
 
 **Transitions are one-shot.** `PlayerMoveEvent` fires on every movement, so without a
 latch a player inside the void or ceiling band would be teleported (and cursed) on every

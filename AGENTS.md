@@ -273,6 +273,20 @@ with no gameplay content yet. See the table under [Layer System](#layer-system).
 There are no per-layer modules or structs: everything a layer needs is on its `Layer`
 variant, so adding a layer means adding a variant rather than a file.
 
+`utils.rs` also holds `ordinal`, the English ordinal-suffix formatter used for the entry
+subtitle.
+
+### Documentation
+
+| File              | Audience      | Contents                                                       |
+| ----------------- | ------------- | -------------------------------------------------------------- |
+| `ARCHITECTURE.md` | developers    | Mermaid diagrams of the layer model, transitions, latch, curse |
+| `GUIDE.md`        | server owners | Install, build, player-facing behaviour, troubleshooting       |
+| `AGENTS.md`       | agents        | This file: conventions and invariants                          |
+
+`ARCHITECTURE.md` is the place to update whenever a transition, the latch or the curse
+changes shape — the diagrams are the fastest way to see the design at a glance.
+
 ### Project Structure
 
 ```

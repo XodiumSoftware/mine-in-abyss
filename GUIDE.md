@@ -10,6 +10,9 @@
 - [Usage](#usage)
 - [Troubleshooting](#troubleshooting)
 
+> For how the layers, transitions and the curse actually work, see
+> [`ARCHITECTURE.md`](ARCHITECTURE.md).
+
 ---
 
 ## Prerequisites
@@ -127,7 +130,7 @@ expressed as game rules instead.
 - **Descending** — falling below the world floor (`Y = -64`) in a layer teleports the player
   into the next layer down, at `Y = 318`, keeping their X and Z position.
 - **Ascending** — rising above `Y = 320` teleports the player into the layer above, at
-  `Y = -127`. Ascending inflicts the **Curse of the Abyss** (see below).
+  `Y = -63`. Ascending inflicts the **Curse of the Abyss** (see below).
 - **The bottom of the Abyss** — there is no layer below `Seventh`, so falling below the
   world floor (`Y = -64`) there is left to vanilla: void damage kills the player. A grey
   message warns them first.

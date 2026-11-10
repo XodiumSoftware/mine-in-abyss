@@ -131,6 +131,13 @@ adds to the player's accumulated strain.
 `GameMode::Spectator` returns from the handler untouched, so they can fly through the
 void and ceiling without being teleported or cursed.
 
+**Transitions are one-shot.** `PlayerMoveEvent` fires on every movement, so without a
+latch a player inside the void or ceiling band would be teleported (and cursed) on every
+tick. `utils::{begin_transition, end_transition}` keep a thread-local set of player ids
+currently transitioning; the second call returns `false` and the handler bails. The latch
+is released immediately after the move and is deliberately **not** persistent, so a stale
+entry can never lock a player out of transitions.
+
 Titles are built as `TextComponent`s directly — the plugin API has no `MiniMessage`
 parser, so **never emit `MiniMessage` strings**.
 
@@ -226,7 +233,7 @@ src/
 ├── lib.rs              # `PLUGIN_ID`, `LAYERS`, `layer_for_world`, `Plugin` impl
 ├── section.rs          # `Section` enum + id/world/next/prev/index/curse,
 │                       # plus shared `VOID_Y`/`MAX_Y` and entry/exit heights
-├── utils.rs            # Shared helpers (`ignores_transitions`)
+├── utils.rs            # Shared helpers (`ignores_transitions`, `begin_transition`)
 ├── worlds.rs           # `Worlds` — one world per layer
 ├── commands/
 │   └── abyss.rs        # `/abyss` — ops teleport into a layer, curse-free

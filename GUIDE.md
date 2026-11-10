@@ -125,6 +125,18 @@ settings cannot override them. `First` runs without hostile mobs:
 Minecraft's _difficulty_ is server-wide and cannot be set by a plugin, so "peaceful" is
 expressed as game rules instead.
 
+### Time of day
+
+Each layer keeps its own clock, so they would drift apart and the sun would jump as you
+descend. The plugin copies `First`'s clock to the other six layers once a minute, and once
+immediately on startup.
+
+Change the time in `First` (e.g. `/time set night`) and the rest of the Abyss follows
+within a minute. Changing it in any other layer has no lasting effect — the next sync
+overwrites it. The **day number** follows as well, so `/time set 24000` in `First` puts
+every layer on day 1. A world's _age_ is a separate counter the plugin cannot set, so it
+is not shared.
+
 ### Descending and ascending
 
 - **Descending** — falling below the world floor (`Y = -64`) in a layer teleports the player

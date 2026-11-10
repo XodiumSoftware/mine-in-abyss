@@ -11,6 +11,7 @@
 
 mod generator;
 mod layer;
+mod time_sync;
 mod utils;
 mod worlds;
 
@@ -126,6 +127,8 @@ impl Plugin for MineInAbyss {
         commands::abyss::register(&context);
 
         let worlds = Worlds::setup(&context, &LAYERS);
+        time_sync::schedule(&context);
+
         info!("Mine in Abyss loaded ({worlds} layer world(s)).");
         Ok(())
     }

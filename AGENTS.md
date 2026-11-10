@@ -167,6 +167,13 @@ the band of the world they just left.
 below `Seventh` has nowhere to go, so `LayerLeave` sends a grey system message instead of
 silently doing nothing.
 
+**Only players change layers.** There is no entity move event or entity world-change event
+in the plugin API, so an item or mob thrown into the void does not descend — it falls to
+the world floor and takes vanilla void damage. This is deferred deliberately, **not** a
+missing feature to fix with a scheduler poll over `World::get_entities()`, which would scan
+every entity in all seven worlds on a repeating task. `ARCHITECTURE.md` records what an
+implementation would need, and why `EntityMoveEvent` upstream is the trigger to revisit it.
+
 Titles are built as `TextComponent`s directly — the plugin API has no `MiniMessage`
 parser, so **never emit `MiniMessage` strings**. `color_named` and friends are
 consuming builders: reassign the result (`let t = TextComponent::text(..).color_named(..)`)
@@ -233,6 +240,21 @@ Minecraft's **difficulty** is a server-wide setting and the plugin API exposes n
 for it (`Server::get_difficulty` only reads), so peaceful behaviour is expressed as
 per-world game rules instead.
 
+### Time of day
+
+Every layer world keeps its own clock, so left alone they drift apart and a descending
+player would watch the sun jump. `src/time_sync.rs` copies `First`'s clock to the other six
+worlds on a one-minute repeating task, which runs once immediately on load.
+
+`First` is the source because it is the surface, the layer an operator is most likely to
+change the time in, and the start of every descent. Change the time there and the rest of
+the Abyss follows within a minute.
+
+The copied value is the full clock, not just the time within a day, so the **day number**
+follows as well — `/time set 24000` in `First` puts the other layers on day 1 too. A
+world's **age** is a separate counter with no setter in the plugin API, so it cannot be
+shared; nothing in vanilla depends on age and time of day agreeing.
+
 #### Each layer is a hand-built map
 
 Every layer world is a **custom map made specifically for this project** — an authored
@@ -296,6 +318,7 @@ src/
 │                       # plus shared `MIN_Y`/`MAX_Y` and entry/exit heights
 ├── utils.rs            # Shared helpers (`ignores_transitions`, `begin_transition`)
 ├── generator.rs        # `Void` chunk generator — layer worlds generate empty
+├── time_sync.rs        # Keeps every layer world on `First`'s clock
 ├── worlds.rs           # `Worlds` — one void world per layer
 ├── commands/
 │   └── abyss.rs        # `/abyss` — ops teleport into a layer, curse-free

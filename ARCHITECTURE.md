@@ -15,6 +15,7 @@ from one layer to the next. For installation and player-facing behaviour see
 - [The Curse of the Abyss](#the-curse-of-the-abyss)
 - [Commands](#commands)
 - [Known constraints](#known-constraints)
+- [Entity transitions (not implemented)](#entity-transitions-not-implemented)
 
 ---
 
@@ -269,3 +270,33 @@ These are host or design limits the plugin works within, not bugs to fix casuall
   arrivals must be driven by the transition code or by map data.
 - **Difficulty is server-wide** and has no setter, so peaceful behaviour is expressed as
   per-world game rules (`First` disables `spawn-monsters`).
+- **Only players change layers.** Players have `PlayerMoveEvent` and
+  `PlayerChangedWorldEvent`; no other entity has a move or world-change event, so a falling
+  item or mob stays in the layer it was in. See the section below before "fixing" this.
+
+## Entity transitions (not implemented)
+
+An item or mob thrown into the void does **not** descend; it falls to the world floor and
+is then subject to vanilla void damage. This is a deliberate deferment, not an oversight.
+
+What an implementation would need, and why it was declined for now:
+
+- The plugin is never told that a non-player entity crossed a boundary. There is no
+  entity move event and no entity world-change event in `pumpkin-plugin-api`, so the only
+  route is polling `World::get_entities()` across all seven worlds on a repeating task.
+- `get_entities()` clones every entity in the world into WASM resources on each pass, so
+  the poll costs `entity count × poll rate` regardless of whether anything is falling.
+  A per-move entity event would be expensive at the WASM boundary, which is plausibly why
+  the API exposes `player-move` and `vehicle-move` but nothing general.
+- `Entity::teleport` does take a world, and `EntitySpawnEvent` supplies an entity id, so
+  the primitives exist. An `Entity` PDC marker would survive the world change and a
+  restart, which makes it the right place for "this entity descends".
+- The item entity's own `ItemStack` is **not** readable, so an item cannot be destroyed and
+  re-created faithfully. It must be moved with `Entity::teleport`, which is also why its
+  contents are preserved for free.
+
+If `EntityMoveEvent` lands upstream, prefer it: it would let entity transitions mirror
+[`layer_leave`](src/events/layer_leave.rs) — reactive, no poll, no marker, no scheduler
+entry. Note that Paper's own `EntityMoveEvent` is not fired for every entity, which is why
+`DeeperWorld`, the equivalent plugin for Paper, still keeps separate `PlayerMoveEvent` and
+`VehicleMoveEvent` listeners alongside it.

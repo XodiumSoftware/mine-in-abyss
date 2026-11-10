@@ -74,11 +74,13 @@ cargo clippy --all-targets --all-features --target wasm32-wasip2 -- -W clippy::p
 The Abyss is a vertical world, so every feature implements the **`Layer`** trait
 (`src/layers/layer.rs`) and declares which stratum it belongs to.
 
-| Method    | Purpose                                       |
-| --------- | --------------------------------------------- |
-| `id()`    | Returns the `Section` this layer lives in     |
-| `name()`  | Returns the layer's display name              |
-| `color()` | Returns the two gradient stops of its palette |
+| Method | Purpose                                   |
+| ------ | ----------------------------------------- |
+| `id()` | Returns the `Section` this layer lives in |
+
+Display data — the name and the two gradient stops — lives on `Section`
+(`Section::name()`, `Section::color()`), so a layer only declares which section it is.
+The trait exists so layers can grow behaviour of their own; it carries no display data.
 
 `Section` (`src/section.rs`) names the strata from the surface down and is the
 single enum everything derives from:
@@ -113,11 +115,12 @@ registration, world creation and world-name lookup (`layer_for_world`).
 
 Handlers live in `src/events/`, declared inline in the `mod events` block in `lib.rs`:
 
-| Handler        | Event                     | Behaviour                                                                |
-| -------------- | ------------------------- | ------------------------------------------------------------------------ |
-| `LayerJoin`    | `PlayerChangedWorldEvent` | Shows the entered layer's gradient title; cures the curse on the surface |
-| `LayerLeave`   | `PlayerMoveEvent`         | Void/ceiling detection, teleport, curse                                  |
-| `LayerRespawn` | `PlayerRespawnEvent`      | Clears the curse strain                                                  |
+| Handler         | Event                     | Behaviour                                                                |
+| --------------- | ------------------------- | ------------------------------------------------------------------------ |
+| `LayerJoin`     | `PlayerChangedWorldEvent` | Shows the entered layer's gradient title; cures the curse on the surface |
+| `LayerLeave`    | `PlayerMoveEvent`         | Void/ceiling detection, teleport, curse                                  |
+| `LayerRespawn`  | `PlayerRespawnEvent`      | Clears the curse strain                                                  |
+| `LayerTeleport` | `PlayerTeleportEvent`     | Records where a teleport put the player, so it is not read as a climb    |
 
 `LayerLeave` compares against the thresholds shared by every section
 (`Section::VOID_Y = -128.0`, `Section::MAX_Y = 320.0` — each layer is its own
@@ -130,6 +133,12 @@ adds to the player's accumulated strain.
 **Creative and spectator players are skipped**, as are **dead** players: a player in
 `GameMode::Creative`, `GameMode::Spectator`, or with `is_dead()` true returns from the
 handler untouched, so they are never teleported or cursed.
+
+**Teleports are not climbs.** `PlayerTeleportEvent` has no world field, so `LayerTeleport`
+records only the destination Y via `utils::note_teleport`. `LayerLeave` then consumes that
+record once: if the next move is within `TELEPORT_TOLERANCE` of it, the move is ignored
+rather than treated as an ascent. An operator teleporting overhead is therefore not
+cursed, while a real climb afterwards still is.
 
 **Transitions are one-shot.** `PlayerMoveEvent` fires on every movement, so without a
 latch a player inside the void or ceiling band would be teleported (and cursed) on every
@@ -236,8 +245,9 @@ All seven layers exist as stubs (identity, name, gradient colour) with no gamepl
 | `src/layers/sixth.rs`   | `Sixth`   | `Sixth`   |
 | `src/layers/seventh.rs` | `Seventh` | `Seventh` |
 
-Each layer implements `Layer` with its own `id()`, `name()` and `color()`. Names and
-colours are hardcoded per layer, next to the layer they describe.
+Each layer implements `Layer` with `id()` alone. Names and colours are single-sourced on
+`Section` (`Section::name()`, `Section::color()`), so they cannot drift between the layer
+module and the section enum.
 
 ### Project Structure
 
@@ -254,7 +264,8 @@ src/
 │   ├── curse.rs        # Curse of the Abyss: strain storage + severity ladder
 │   ├── layer_join.rs   # `LayerJoin` — entry title, cure on the surface
 │   ├── layer_leave.rs  # `LayerLeave` — void/ceiling teleport + curse
-│   └── layer_respawn.rs# `LayerRespawn` — clears the curse on respawn
+│   ├── layer_respawn.rs# `LayerRespawn` — clears the curse on respawn
+│   └── layer_teleport.rs # `LayerTeleport` — teleports are not climbs
 └── layers/
     ├── layer.rs        # `Layer` trait
     └── first.rs .. seventh.rs
@@ -349,16 +360,17 @@ GitHub Actions workflows in `.github/workflows/`:
 To add a new layer, follow these steps:
 
 1. Create new file in `src/layers/{layer}.rs`
-2. Add module-level docs `//!` with a description and the layer's Y range
+2. Add module-level docs `//!` describing the layer and what belongs there
 3. Create the `{Layer}` struct deriving `Debug, Default, Clone, Copy`
 4. Implement `Layer`:
     - `id()` — return the `Section` variant it belongs to
-    - `name()` — return the layer's display name
-    - `color()` — return the two gradient stops as `RgbColor`s
+    - a display name and palette are **not** defined here: add them to `Section::name()`
+      and `Section::color()` instead, so the name has one home
 5. Implement `EventHandler<T>` for each event (if needed), and register it in
    `MineInAbyss::register_events`
 6. In `src/section.rs`: add a variant to the `Section` enum (keep it in depth order —
-   `next`/`prev`/`index`/`curse` all derive from the variant order)
+   `next`/`prev`/`index`/`curse` all derive from the variant order), and fill in its arm
+   in `Section::name()`, `Section::color()` and `Section::ALL`
 7. In `src/lib.rs`:
     - Declare the layer in the `mod layers` tree
     - Add it to `LAYERS` **in depth order**

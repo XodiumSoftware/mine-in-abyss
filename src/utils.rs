@@ -4,7 +4,7 @@ use pumpkin_plugin_api::Player;
 use pumpkin_plugin_api::common::GameMode;
 use pumpkin_plugin_api::wit::pumpkin::plugin::uuid;
 use std::cell::RefCell;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 thread_local! {
     /// Players currently being moved between layers, keyed by player id.
@@ -23,11 +23,33 @@ thread_local! {
     /// Deliberately **not** persistent: it only describes an in-flight transition, and
     /// a stale entry after a restart would lock a player out of transitions forever.
     static TRANSITING: RefCell<HashSet<String>> = RefCell::new(HashSet::new());
+
+    /// Players who arrived at their current position by teleport, keyed by player id.
+    ///
+    /// A teleport is not a climb, so the first move event after one must not be read as
+    /// an ascent out of the Abyss. `LayerTeleport` records the destination, and
+    /// [`consume_teleport`] hands that Y back once so `LayerLeave` can ignore it.
+    ///
+    /// Consumed on first read, so it cannot suppress a real ascent later.
+    static TELEPORTED: RefCell<HashMap<String, f64>> = RefCell::new(HashMap::new());
 }
 
 /// Returns a stable key for `player`, usable across separate WIT handles.
 fn key(player: &Player) -> String {
     uuid::to_string(player.get_id())
+}
+
+/// Records that `player` was teleported to `y`, so the next move is not read as a climb.
+pub fn note_teleport(player: &Player, y: f64) {
+    TELEPORTED.with(|map| map.borrow_mut().insert(key(player), y));
+}
+
+/// Returns the Y a teleport put `player` at, clearing the record.
+///
+/// Returns `None` when the player reached their position by moving normally.
+#[must_use]
+pub fn consume_teleport(player: &Player) -> Option<f64> {
+    TELEPORTED.with(|map| map.borrow_mut().remove(&key(player)))
 }
 
 /// Marks `player` as transitioning, returning `false` if they already were.

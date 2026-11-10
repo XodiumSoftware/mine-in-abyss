@@ -29,7 +29,7 @@ use pumpkin_plugin_api::{Player, Server};
 use tracing::warn;
 
 use crate::section::Section;
-use crate::utils::{begin_transition, end_transition, ignores_transitions};
+use crate::utils::{begin_transition, consume_teleport, end_transition, ignores_transitions};
 
 /// Detects a player leaving a layer through its void or ceiling.
 #[derive(Debug, Default, Clone, Copy)]
@@ -45,6 +45,10 @@ impl EventHandler<PlayerMoveEvent> for LayerLeave {
         let Some(layer) = crate::layer_for_world(&world_name) else {
             return event;
         };
+
+        if arrived_by_teleport(&event.player, event.to_position.1) {
+            return event;
+        }
 
         let direction = match event.to_position.1 {
             y if y < Section::VOID_Y => Direction::Down,
@@ -89,6 +93,21 @@ impl EventHandler<PlayerMoveEvent> for LayerLeave {
         }
     }
 }
+
+/// Returns `true` if this move merely reports a position a teleport already placed the
+/// player at.
+///
+/// Being teleported above the ceiling is not an ascent, and must not be cursed. The
+/// record is consumed either way, so a genuine climb afterwards still counts; the Y
+/// comparison stops a stale record swallowing an unrelated move.
+fn arrived_by_teleport(player: &Player, y: f64) -> bool {
+    consume_teleport(player)
+        .is_some_and(|teleported_y| (teleported_y - y).abs() < TELEPORT_TOLERANCE)
+}
+
+/// How far a move may differ from a teleport destination and still count as the same
+/// arrival, in blocks. Covers the drift between the requested and applied position.
+const TELEPORT_TOLERANCE: f64 = 2.0;
 
 /// Which way out of a layer a player is heading.
 #[derive(Debug, Clone, Copy)]

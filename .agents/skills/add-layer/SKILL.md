@@ -1,95 +1,69 @@
 ---
 name: add-layer
-description: Scaffolds a new mine-in-abyss feature by extending whatever layer/extension pattern the src/ tree currently uses.
+description: Scaffolds a new mine-in-abyss layer by adding a Section variant, a Layer impl, and registering it in LAYERS.
 ---
 
-# Add a Feature (Layer)
+# Add a Layer
 
-Use this skill when the user wants to add a new gameplay feature to `mine-in-abyss`.
+Every layer of the Abyss is a struct implementing the `Layer` trait in
+`src/layers/layer.rs`. Layers are zero-sized stubs that declare _which_ section they are;
+display data lives on `Section`.
 
-Every feature is a struct that the plugin registers with the server. The trait that defines
-that contract changes as the project evolves, so **do not assume names — discover them.**
+**Discover, don't assume.** Read `src/layers/layer.rs`, `src/section.rs` and
+`src/layers/first.rs` before writing anything. There is **no config system** — an earlier
+version of this skill described `src/config.rs`, `enabled()` gates and a `cmds()`/`perms()`
+registration trait, none of which exist.
 
-## Step 0 — Discover the current pattern (always do this first)
+## The trait
 
-Before writing anything, read the codebase and answer:
+```rust
+pub trait Layer {
+    fn id(&self) -> Section;
+}
+```
 
-1. **What is the registration trait?** Read `src/lib.rs`, note the `mod` tree and the
-   `register_*` calls in `on_load`. The trait used there is the one to implement.
-   Find its definition file and read it in full.
-2. **What are its required and default methods?** Note the exact signatures (e.g. a stratum
-   selector, `enabled()`, `events()`, `cmds()`, `perms()`, `register()`). If a method has a
-   default that isn't wanted, you must override it.
-3. **Where do features live?** Note the directory convention under `src/` (subfolders by
-   stratum/category, flat files, etc.) and mirror it.
-4. **How is config wired?** Find the config struct that holds per-feature settings
-   (usually alongside the trait, plus `src/config.rs`). Note its field style (`{Name}Config`
-   structs vs. plain `bool`s) and how `enabled()` reads it.
-5. **How is a feature registered?** Find the exact list/vec the trait objects are collected
-   into and the `on_load` guard that gates it (a config toggle).
+That is the whole required contract. Names and palettes are `Section::name()` and
+`Section::color()`, so they are never repeated in a layer module.
 
-If any of the above contradicts this skill, **trust the code**, follow it, and update this
-skill afterwards so it stays accurate.
+## Steps
 
-## Step 1 — Gather requirements
+1. **`src/section.rs`** — add the variant to the `Section` enum, in depth order
+   (`next`/`prev`/`index`/`curse` all derive from variant order). Then fill in its arm in:
+    - `Section::ALL`
+    - `Section::name()`
+    - `Section::color()`
 
-Ask for:
+2. **`src/layers/{layer}.rs`** — new module:
+    - `//!` docs describing the layer and what belongs there
+    - `use crate::layers::layer::Layer;` and `use crate::section::Section;`
+    - `#[derive(Debug, Default, Clone, Copy)] pub struct {Layer};`
+    - `impl Layer for {Layer} { fn id(&self) -> Section { Section::{Layer} } }`
 
-- The feature name (e.g. `relic_detector`, `CurseOfTheAbyss`).
-- Which group it belongs to (stratum/category folder), if the layout uses grouping.
-- Whether it needs commands, permissions, or event handlers.
-- Whether its config is only an `enabled` toggle or has extra fields.
+3. **`src/lib.rs`** — declare the module in the `mod layers` tree and add it to `LAYERS`
+   **in depth order**.
 
-## Naming
+4. **Event handlers**, if the layer needs behaviour: implement `EventHandler<T>` in the
+   layer module and register it from `MineInAbyss::register_events`. Prefer adding the
+   handler once for all layers (as `LayerLeave` does) over per-layer registration.
 
-- File/module: `snake_case`, matching the file name.
-- Struct: `PascalCase`.
-- Config struct: match the convention already in the codebase (commonly `{Name}Config`).
-- Namespaced ids and permission nodes: use the existing `PLUGIN_ID` constant/helper found in
-  `src/lib.rs` — never hardcode a namespace or re-derive it from the crate name.
-- Config field name matches the file name.
+## Constraints
 
-## Implementation
-
-Follow the item order documented in `AGENTS.md` (§ Code Style). In outline:
-
-1. Module docs (`//!`) describing the feature, its config fields, and its position in the
-   world. Include a config table when there are fields.
-2. `use` imports.
-3. `const`s (ids, permission nodes).
-4. `#[derive(Default)] pub struct {Name};` — features are plain structs, not singletons.
-5. `impl {Trait} for {Name}` — implement every **required** method, and override the optional
-   ones the feature actually needs.
-6. `impl EventHandler<T> for {Name}` blocks, registered from `events()` via the trait's
-   `register_event` helper (or the equivalent the trait provides).
-7. Private helpers.
-8. The config struct, at the bottom.
-
-Never log with `println!` — use `tracing::{info, debug, error}`.
-
-## Wiring
-
-Three places typically need updating — confirm each against the current tree:
-
-1. **The trait's config struct** — add the feature's config field (and a `pub use` re-export
-   if the file re-exports other feature configs).
-2. **`src/lib.rs` `mod` tree** — declare the module in the right branch.
-3. **`src/lib.rs` `on_load`** — add the feature to the registration list, gated on the
-   existing group toggle, and log the enabled count if that's the established pattern.
-
-Then update `AGENTS.md` if the tree/registration description changed.
+- **No `//` line comments.** Explain intent with `///` and `//!`, or in names.
+- Modules are ordered: `//!`, `use`, `const`, `struct`/`enum`, `impl Layer`,
+  `impl EventHandler<T>`, other impls.
+- Never log with `println!` — use `tracing::{info, warn, error}`.
+- Do not repeat a layer's display name or palette in its module; it belongs to `Section`.
+- Each layer world is a **hand-built map**. Do not assume ground at any coordinate, and
+  never regenerate layer world data on startup.
 
 ## Verification
 
-Use the `just` recipes where they exist, otherwise the equivalent cargo commands:
+```bash
+cargo clippy --all-targets --all-features --target wasm32-wasip2 -- -W clippy::pedantic -D warnings
+cargo build --target wasm32-wasip2
+cargo doc --no-deps --target wasm32-wasip2
+```
 
-1. `just lint` (or `cargo clippy --all-targets --all-features --target wasm32-wasip2 -- -W clippy::pedantic -D warnings`)
-   — warnings are errors here.
-2. `just fmt-check` (or `cargo fmt --all -- --check`).
-3. `just build` (or `cargo build --release --target wasm32-wasip2`).
-4. `just doc` (or `cargo doc --no-deps --target wasm32-wasip2`) — fix any warnings.
-5. Features should default to disabled unless the project says otherwise; config files are
-   regenerated with defaults on next load.
-6. If a new API is needed, run `cargo update` first — `pumpkin-plugin-api` is git-tracked.
+Then update `AGENTS.md` (§ Active Layers, § Adding a New Layer) if the tree changed.
 
-After finishing, summarize the files changed and ask the user whether to commit (per `AGENTS.md`).
+After finishing, summarize the files changed and ask the user whether to commit.

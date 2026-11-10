@@ -1,6 +1,7 @@
 //! The sections of the Abyss, from the surface down.
 
 use crate::PLUGIN_ID;
+use pumpkin_plugin_api::common::RgbColor;
 use strum::{EnumIter, IntoEnumIterator, IntoStaticStr};
 
 /// A section of the Abyss.
@@ -26,6 +27,11 @@ pub enum Section {
     Sixth,
     /// The Final Maelstrom.
     Seventh,
+}
+
+/// Builds an [`RgbColor`] from its channels, so palettes can be written inline.
+const fn rgb(r: u8, g: u8, b: u8) -> RgbColor {
+    RgbColor { r, g, b }
 }
 
 impl Section {
@@ -69,6 +75,37 @@ impl Section {
         format!("{PLUGIN_ID}_{}", self.id())
     }
 
+    /// Returns this section's display name, as shown to players.
+    ///
+    /// This is the single source of truth for the name: the layer module docs describe
+    /// each layer's purpose rather than repeating its title.
+    #[must_use]
+    pub const fn name(self) -> &'static str {
+        match self {
+            Self::First => "The Top of the Abyss",
+            Self::Second => "The Forest of Temptation",
+            Self::Third => "The Great Fault",
+            Self::Fourth => "The Goblets of Giants",
+            Self::Fifth => "The Sea of Corpses",
+            Self::Sixth => "The Capital of the Unreturned",
+            Self::Seventh => "The Final Maelstrom",
+        }
+    }
+
+    /// Returns the two gradient stop colours of this section's palette.
+    #[must_use]
+    pub const fn color(self) -> [RgbColor; 2] {
+        match self {
+            Self::First => [rgb(0x87, 0xCE, 0xEB), rgb(0x5B, 0xA8, 0x5B)],
+            Self::Second => [rgb(0x5B, 0xA8, 0x5B), rgb(0x2E, 0x8B, 0x57)],
+            Self::Third => [rgb(0x8B, 0x73, 0x55), rgb(0x6B, 0x5B, 0x4A)],
+            Self::Fourth => [rgb(0x6B, 0x5B, 0x4A), rgb(0x4A, 0x3F, 0x5C)],
+            Self::Fifth => [rgb(0x4A, 0x3F, 0x5C), rgb(0x2E, 0x2A, 0x45)],
+            Self::Sixth => [rgb(0x2E, 0x2A, 0x45), rgb(0x1A, 0x17, 0x28)],
+            Self::Seventh => [rgb(0x1A, 0x17, 0x28), rgb(0x6B, 0x00, 0x00)],
+        }
+    }
+
     /// Returns the section directly below this one, if any.
     #[must_use]
     pub fn next(self) -> Option<Self> {
@@ -78,14 +115,7 @@ impl Section {
     /// Returns the section directly above this one, if any.
     #[must_use]
     pub fn prev(self) -> Option<Self> {
-        let mut previous = None;
-        for section in Self::iter() {
-            if section == self {
-                return previous;
-            }
-            previous = Some(section);
-        }
-        None
+        Self::iter().take_while(|section| *section != self).last()
     }
 
     /// Returns this section's depth index, starting at 0 for the surface.

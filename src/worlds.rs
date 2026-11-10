@@ -45,10 +45,10 @@ impl Worlds {
             let _world = server.create_world(&name, Dimension::Overworld);
 
             if server.has_world(&name) {
-                info!("World '{name}' ready for {}", layer.name());
+                info!("World '{name}' ready for {}", layer.id().name());
                 READY.with(|r| r.borrow_mut().insert(name.clone()));
             } else {
-                warn!("World '{name}' was not created for {}", layer.name());
+                warn!("World '{name}' was not created for {}", layer.id().name());
             }
         }
 

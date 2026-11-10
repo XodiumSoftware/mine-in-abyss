@@ -114,17 +114,21 @@ Handlers live in `src/events/`, declared inline in the `mod events` block in `li
 | `LayerRespawn`  | `PlayerRespawnEvent`      | Clears the curse strain                                                  |
 | `LayerTeleport` | `PlayerTeleportEvent`     | Records where a teleport put the player, so it is not read as a climb    |
 
-`LayerLeave` compares against the thresholds shared by every section
-(`Section::VOID_Y = -128.0`, `Section::MAX_Y = 320.0` — each layer is its own
-full-height world, so they all use the vanilla Overworld limits): below the void → next
-layer down at `entry_y()` (`MAX_Y - 2.0`); above the ceiling → previous layer up at
-`exit_y()` (`VOID_Y + 1.0`). Both keep X/Z. Falling out of `Seventh` (no `next()`) is
+`LayerLeave` compares against the bounds shared by every section
+(`Section::MIN_Y = -64` — the world floor, which is also where a player counts as having
+left the layer — and `Section::MAX_Y = 320`, just above the build limit): below the floor
+→ next layer down at `entry_y()` (`MAX_Y - 2.0`); above the ceiling → previous layer up at
+`exit_y()` (`MIN_Y + 1.0`). Both keep X/Z. Falling out of `Seventh` (no `next()`) is
 left alone — vanilla void damage kills the player. Ascending calls `curse::apply`, which
 adds to the player's accumulated strain.
 
 **Creative and spectator players are skipped**, as are **dead** players: a player in
 `GameMode::Creative`, `GameMode::Spectator`, or with `is_dead()` true returns from the
 handler untouched, so they are never teleported or cursed.
+
+**Thresholds are plain constants.** `MIN_Y` and `MAX_Y` are read on every move, so they
+are `f64` constants rather than world queries. The world floor is `-64` for every layer,
+which is the Overworld dimension height every layer world uses.
 
 **Teleports are not climbs.** `PlayerTeleportEvent` has no world field, so `LayerTeleport`
 records only the destination Y via `utils::note_teleport`. `LayerLeave` then consumes that
@@ -229,9 +233,9 @@ keep it in mind whenever you touch transitions or placement:
   whether that lands on solid ground depends entirely on the map at those coordinates.
 - If a layer needs a guaranteed arrival point, that must be map data (a spawn point or a
   marker) or an explicit safe-position lookup — never a hardcoded coordinate.
-- Void and ceiling thresholds (`Section::VOID_Y` / `Section::MAX_Y`) are vanilla world
-  limits, which is why every layer can be a full-height world without interfering with
-  its neighbours.
+- Void and ceiling thresholds (`Section::MIN_Y` / `Section::MAX_Y`) are the world floor
+  and the build limit, which is why every layer can be a full-height world without
+  interfering with its neighbours.
 
 ### Configuration
 
@@ -252,7 +256,7 @@ variant, so adding a layer means adding a variant rather than a file.
 src/
 ├── lib.rs              # `PLUGIN_ID`, `LAYERS`, `layer_for_world`, `Plugin` impl
 ├── section.rs          # `Section` enum + id/world/next/prev/index/curse,
-│                       # plus shared `VOID_Y`/`MAX_Y` and entry/exit heights
+│                       # plus shared `MIN_Y`/`MAX_Y` and entry/exit heights
 ├── utils.rs            # Shared helpers (`ignores_transitions`, `begin_transition`)
 ├── worlds.rs           # `Worlds` — one world per layer
 ├── commands/

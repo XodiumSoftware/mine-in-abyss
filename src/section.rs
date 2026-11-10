@@ -47,13 +47,11 @@ impl Section {
         Self::Seventh,
     ];
 
-    /// Y coordinate below which a player is considered to have fallen into the void.
+    /// The world floor, and the Y coordinate below which a player has left the layer.
     ///
-    /// Every section is its own full-height world, so they all share the vanilla
-    /// Overworld thresholds. The floor is -64, so this sits a few dozen blocks below it:
-    /// enough time to react before the player takes void damage, but shallow enough to
-    /// trigger promptly.
-    pub const VOID_Y: f64 = -128.0;
+    /// Every layer is its own full-height Overworld-dimension world, so this is `-64`.
+    /// Falling past it hands the player to vanilla void damage.
+    pub const MIN_Y: f64 = -64.0;
 
     /// Y coordinate above which a player is considered to have left through the ceiling.
     ///
@@ -171,7 +169,7 @@ impl Section {
     /// is the same for every section.
     #[must_use]
     pub const fn exit_y() -> f64 {
-        Self::VOID_Y + 1.0
+        Self::MIN_Y + 1.0
     }
 
     /// Returns the severity of the Curse of the Abyss when ascending out of this

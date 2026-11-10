@@ -48,6 +48,7 @@ impl Worlds {
                 for &(rule, value) in layer.game_rules() {
                     world.set_game_rule(rule, value);
                 }
+
                 info!("World '{name}' ready for {}", layer.name());
                 READY.with(|r| r.borrow_mut().insert(name.clone()));
             } else {

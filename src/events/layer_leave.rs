@@ -51,7 +51,7 @@ impl EventHandler<PlayerMoveEvent> for LayerLeave {
         }
 
         let direction = match event.to_position.1 {
-            y if y < Section::VOID_Y => Direction::Down,
+            y if y < Section::MIN_Y => Direction::Down,
             y if y > Section::MAX_Y => Direction::Up,
             _ => return event,
         };

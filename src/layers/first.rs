@@ -15,10 +15,6 @@ impl Layer for First {
         Section::First
     }
 
-    fn enabled(&self) -> bool {
-        false
-    }
-
     fn name(&self) -> &'static str {
         "The Top of the Abyss"
     }

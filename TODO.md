@@ -30,7 +30,7 @@ Findings from an audit of `src/events/layer_leave.rs`, checked against the
 | [ ]  | 8   | Curse applied on a re-entry loop                       | Strain escalates to death within 6 iterations without intent          | High     | R2    |
 | [ ]  | 9   | Another `PlayerMoveEvent` queued in the same tick      | Stale `to_position` compared against the wrong world's frame          | Medium   | R3    |
 | [ ]  | 10  | `get_world_by_name` returns `None`                     | Silent `return`; player stays in the void, no log                     | Medium   | —     |
-| [ ]  | 11  | Layer disabled (`enabled() == false`, all seven today) | Transitions still fire; only the title is gated                       | Low      | —     |
+| [x]  | 11  | Layer disabled (`enabled() == false`, all seven today) | `enabled()` removed — every layer is live                             | Low      | —     |
 | [ ]  | 12  | Player in a non-Abyss world                            | Correctly ignored                                                     | —        | —     |
 | [ ]  | 13  | Manual `/tp` above `MAX_Y`                             | Treated as an ascent and cursed                                       | Medium   | —     |
 | [ ]  | 14  | `up()` from `First`                                    | Silent `prev() == None` return; no feedback                           | Low      | —     |
@@ -51,8 +51,9 @@ Findings from an audit of `src/events/layer_leave.rs`, checked against the
       teleporting so the stale position is not processed. Addresses #9. _(R3)_
 - [ ] **F4 — Log missing worlds.** `warn!` when `get_world_by_name` fails instead
       of `return`ing silently. Addresses #10.
-- [ ] **F5 — Define `enabled()` semantics.** Decide whether it gates transitions
-      or display only, and document it. Addresses #11.
+- [x] **F5 — `enabled()` semantics.** _(removed)_ `Layer::enabled()` was a display-only
+      gate that did nothing, so it is gone: every layer is live and every layer world
+      shows its entry title. Resolves #11.
 - [ ] **F6 — Skip dead (and optionally creative/spectator) players.** Addresses
       #15, #16.
       _Creative and spectator are now skipped by `LayerLeave` (`utils::ignores_transitions`);

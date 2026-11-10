@@ -74,12 +74,11 @@ cargo clippy --all-targets --all-features --target wasm32-wasip2 -- -W clippy::p
 The Abyss is a vertical world, so every feature implements the **`Layer`** trait
 (`src/layers/layer.rs`) and declares which stratum it belongs to.
 
-| Method      | Purpose                                       |
-| ----------- | --------------------------------------------- |
-| `id()`      | Returns the `Section` this layer lives in     |
-| `enabled()` | Returns whether the layer is active           |
-| `name()`    | Returns the layer's display name              |
-| `color()`   | Returns the two gradient stops of its palette |
+| Method    | Purpose                                       |
+| --------- | --------------------------------------------- |
+| `id()`    | Returns the `Section` this layer lives in     |
+| `name()`  | Returns the layer's display name              |
+| `color()` | Returns the two gradient stops of its palette |
 
 `Section` (`src/section.rs`) names the strata from the surface down and is the
 single enum everything derives from:
@@ -201,8 +200,7 @@ keep it in mind whenever you touch transitions or placement:
 ### Configuration
 
 **None.** The TOML config system was removed; there is no `config.rs`, no
-`config.toml`, and layers do not gate on config. `Layer::enabled()` currently
-returns `false` for every layer and is the seam a future config layer would plug into.
+`config.toml`, and layers do not gate on config.
 
 ### Active Layers
 
@@ -218,8 +216,8 @@ All seven layers exist as stubs (identity, name, gradient colour) with no gamepl
 | `src/layers/sixth.rs`   | `Sixth`   | `Sixth`   |
 | `src/layers/seventh.rs` | `Seventh` | `Seventh` |
 
-Each layer implements `Layer` with its own `id()`, `enabled()`, `name()` and
-`color()`. Names and colours are hardcoded per layer, next to the layer they describe.
+Each layer implements `Layer` with its own `id()`, `name()` and `color()`. Names and
+colours are hardcoded per layer, next to the layer they describe.
 
 ### Project Structure
 
@@ -249,7 +247,7 @@ src/
 - Config structs: `Debug`, `Clone`, `Default`, `Serialize`, `Deserialize`
 - Config fields documented with `///` comments
 - Permission pattern: `{PLUGIN_ID}:command.{name}` (e.g., `mine_in_abyss:command.example`)
-- No config system — `Layer::enabled()` is the seam a future one would plug into
+- No config system
 - Event handlers return `EventData<T>` (may modify event)
 - Release profile: LTO + strip for minimal WASM size
 - **Before checking API availability, run `cargo update` to fetch the latest `pumpkin-plugin-api` revision.** The API is git-tracked and may have added new events or types since the last local checkout.
@@ -333,7 +331,6 @@ To add a new layer, follow these steps:
 3. Create the `{Layer}` struct deriving `Debug, Default, Clone, Copy`
 4. Implement `Layer`:
     - `id()` — return the `Section` variant it belongs to
-    - `enabled()` — return `false` until the layer has content to gate
     - `name()` — return the layer's display name
     - `color()` — return the two gradient stops as `RgbColor`s
 5. Implement `EventHandler<T>` for each event (if needed), and register it in

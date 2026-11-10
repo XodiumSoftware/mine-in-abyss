@@ -15,10 +15,6 @@ impl Layer for Third {
         Section::Third
     }
 
-    fn enabled(&self) -> bool {
-        false
-    }
-
     fn name(&self) -> &'static str {
         "The Great Fault"
     }

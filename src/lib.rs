@@ -78,8 +78,7 @@ pub struct MineInAbyss {}
 impl MineInAbyss {
     /// Registers every layer, from the surface down.
     fn register_layers() {
-        let enabled = LAYERS.iter().filter(|layer| layer.enabled()).count();
-        info!("Registered {enabled} layer(s)");
+        info!("Registered {} layer(s)", LAYERS.len());
     }
 
     /// Registers the event that announces a layer when a player enters its world.

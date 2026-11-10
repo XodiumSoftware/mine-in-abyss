@@ -15,10 +15,6 @@ impl Layer for Sixth {
         Section::Sixth
     }
 
-    fn enabled(&self) -> bool {
-        false
-    }
-
     fn name(&self) -> &'static str {
         "The Capital of the Unreturned"
     }

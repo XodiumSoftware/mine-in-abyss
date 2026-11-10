@@ -15,10 +15,6 @@ impl Layer for Fifth {
         Section::Fifth
     }
 
-    fn enabled(&self) -> bool {
-        false
-    }
-
     fn name(&self) -> &'static str {
         "The Sea of Corpses"
     }

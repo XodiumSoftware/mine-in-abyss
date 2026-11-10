@@ -15,10 +15,6 @@ impl Layer for Second {
         Section::Second
     }
 
-    fn enabled(&self) -> bool {
-        false
-    }
-
     fn name(&self) -> &'static str {
         "The Forest of Temptation"
     }

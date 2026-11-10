@@ -15,10 +15,6 @@ impl Layer for Fourth {
         Section::Fourth
     }
 
-    fn enabled(&self) -> bool {
-        false
-    }
-
     fn name(&self) -> &'static str {
         "The Goblets of Giants"
     }

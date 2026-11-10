@@ -15,10 +15,6 @@ impl Layer for Seventh {
         Section::Seventh
     }
 
-    fn enabled(&self) -> bool {
-        false
-    }
-
     fn name(&self) -> &'static str {
         "The Final Maelstrom"
     }

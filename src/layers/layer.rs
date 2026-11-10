@@ -8,9 +8,6 @@ pub trait Layer {
     /// Returns the section of the Abyss this layer lives in.
     fn id(&self) -> Section;
 
-    /// Returns `true` if this layer is enabled, `false` otherwise.
-    fn enabled(&self) -> bool;
-
     /// Returns this layer's display name.
     fn name(&self) -> &'static str;
 

@@ -112,7 +112,7 @@ impl CommandHandler for AbyssCommand {
         };
 
         let (x, _, z) = player.get_position();
-        player.teleport((x, section.entry_y(), z), None, None, world);
+        player.teleport((x, Section::entry_y(), z), None, None, world);
 
         sender.send_message(TextComponent::text(&format!(
             "Moved {} to {}.",

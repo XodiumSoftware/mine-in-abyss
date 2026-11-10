@@ -1,71 +1,105 @@
 # TODO — Transition Logic Edge Cases
 
 Findings from an audit of `src/events/layer_leave.rs`, checked against the
-`pumpkin-plugin-api` WIT definitions (`PlayerMoveEventData`, `Player::teleport`).
+`pumpkin-plugin-api` WIT definitions (`PlayerMoveEventData`, `Player::teleport`,
+`PlayerChangedWorldEventData`).
+
+All three root causes and all seven fixes are resolved. Nothing here is
+compiler-verified beyond clippy/build/doc: **none of the transition work has been run
+against a live Pumpkin server yet.** See [Verification](#verification).
 
 ## Root causes
 
-- [x] **R1 — Global Y constants, per-layer ranges.** _(resolved by design)_ Every
-      layer is its own full-height world, so the thresholds are intentionally shared:
-      `Section::VOID_Y` / `Section::MAX_Y`, with `entry_y()` / `exit_y()` deriving the
-      spawn heights. The misleading per-layer Y ranges were removed from the layer docs.
+- [x] **R1 — Global Y constants, per-layer ranges.** _(resolved by design)_ Every layer
+      is its own full-height world, so the thresholds are intentionally shared:
+      `Section::VOID_Y` / `Section::MAX_Y`. The misleading per-layer Y ranges were
+      removed from the layer module docs.
 - [x] **R2 — Handler is not one-shot.** `PlayerMoveEvent` fires every tick while a
       player stays in the trigger band, so `down()` / `up()` / `curse::apply` could run
-      many times for one intended transition. _(fixed by F2: the latch is taken in
-      `LayerLeave` and released by `LayerJoin` on the world change.)_
-- [x] **R3 — Stale event after teleport.** The handler teleported from inside the
-      move handler and returned the event uncancelled. _(fixed by F3.)_
+      many times for one intended transition. _(fixed by F2)_
+- [x] **R3 — Stale event after teleport.** The handler teleported from inside the move
+      handler and returned the event uncancelled. _(fixed by F3)_
 
 ## Edge cases
 
-| Done | #   | Scenario                                               | Behavior today                                                        | Severity | Cause |
-| ---- | --- | ------------------------------------------------------ | --------------------------------------------------------------------- | -------- | ----- |
-| [x]  | 1   | Player below `VOID_Y` (spawn, `/tp`, portal)           | Latch holds until the world change, so one teleport per transition    | Low      | —     |
-| [x]  | 2   | Player in `Seventh` void band                          | Nothing happens; vanilla void damage kills them                       | Low      | —     |
-| [x]  | 3   | Falling out of `Seventh` above Y `-128`                | Grey message: there is nothing below the Abyss                        | Low      | —     |
-| [ ]  | 4   | Ascending into `First`                                 | Lands at `-127` — below the terrain, but the intended entry height    | Low      | —     |
-| [ ]  | 5   | Descending into any layer                              | Lands at `318` — above the terrain, then falls in                     | Low      | —     |
-| [ ]  | 6   | Any transition                                         | X/Z preserved but no safe-position fallback; can land in terrain      | Medium   | —     |
-| [x]  | 7   | Re-entering the layer you just left                    | Latch stops the ping-pong loop                                        | Low      | —     |
-| [ ]  | 8   | Curse applied on a re-entry loop                       | Latch prevents the loop, so strain cannot escalate                    | Low      | —     |
-| [x]  | 9   | Another `PlayerMoveEvent` queued in the same tick      | Successful transition cancels the event, so the stale move is dropped | Low      | —     |
-| [x]  | 10  | `get_world_by_name` returns `None`                     | `warn!` names the missing world; the teleport is skipped              | Low      | —     |
-| [x]  | 11  | Layer disabled (`enabled() == false`, all seven today) | `enabled()` removed — every layer is live                             | Low      | —     |
-| [ ]  | 12  | Player in a non-Abyss world                            | Correctly ignored                                                     | —        | —     |
-| [ ]  | 13  | Manual `/tp` above `MAX_Y`                             | Treated as an ascent and cursed                                       | Medium   | —     |
-| [x]  | 14  | `up()` from `First`                                    | Grey message: there is nothing above the Abyss                        | Low      | —     |
-| [x]  | 15  | Player dies from strain 6 inside the move handler      | Dead players are skipped, and the latch releases after the move       | Low      | —     |
-| [x]  | 16  | Creative / spectator player                            | `layer_leave` skips both (no teleport, no curse)                      | Low      | —     |
-| [ ]  | 17  | `Seventh` boundaries                                   | No layer-specific boundaries — all layers share the vanilla limits    | Low      | —     |
+`Cause` records which root cause produced the finding; all three are now closed.
 
-## Fixes, in priority order
+| Done | #   | Scenario                                          | Behavior today                                                    | Cause |
+| ---- | --- | ------------------------------------------------- | ----------------------------------------------------------------- | ----- |
+| [x]  | 1   | Player below `VOID_Y` (spawn, `/tp`, portal)      | Latch holds until the world change: one teleport per transition   | R2    |
+| [x]  | 2   | Player in `Seventh` void band                     | Nothing happens; vanilla void damage kills them                   | R2    |
+| [x]  | 3   | Falling out of `Seventh` above Y `-128`           | Grey message: there is nothing below the Abyss                    | R1    |
+| [x]  | 4   | Ascending into `First`                            | Lands at `-127` and climbs out — intended entry height, not a bug | R1    |
+| [x]  | 5   | Descending into any layer                         | Lands at `318` and falls in — intended entry height, not a bug    | R1    |
+| [x]  | 6   | Any transition                                    | X/Z preserved, no safe-position lookup. By design: see below      | R1    |
+| [x]  | 7   | Re-entering the layer you just left               | Latch stops the ping-pong loop                                    | R2    |
+| [x]  | 8   | Curse applied on a re-entry loop                  | No loop, so strain cannot escalate                                | R2    |
+| [x]  | 9   | Another `PlayerMoveEvent` queued in the same tick | Successful transition cancels the event, dropping the stale move  | R3    |
+| [x]  | 10  | `get_world_by_name` returns `None`                | `warn!` names the missing world; the teleport is skipped          | R1    |
+| [x]  | 11  | Layer disabled (`enabled() == false`)             | `enabled()` removed — every layer is live                         | —     |
+| [x]  | 12  | Player in a non-Abyss world                       | Correctly ignored. Working as intended, no action needed          | —     |
+| [ ]  | 13  | Manual `/tp` above `MAX_Y`                        | Treated as an ascent and cursed. Not seen in testing: see below   | —     |
+| [x]  | 14  | `up()` from `First`                               | Grey message: there is nothing above the Abyss                    | R1    |
+| [x]  | 15  | Player dies from strain 6 inside the move handler | Dead players skipped; successful transitions stay latched         | R2    |
+| [x]  | 16  | Creative / spectator player                       | `ignores_transitions` skips both, plus dead players               | —     |
+| [x]  | 17  | `Seventh` boundaries                              | No per-layer boundaries — all layers share the vanilla limits     | R1    |
 
-- [x] **F1 — Per-layer Y bounds.** _(resolved by design)_ The thresholds live on
-      `Section` as `VOID_Y` / `MAX_Y`, with `entry_y()` and `exit_y()` deriving the
-      spawn heights. Every layer is a full-height world, so they are intentionally
-      shared; the misleading per-layer Y ranges were removed from the layer docs.
-- [x] **F2 — One-shot latch.** _(done)_ A thread-local set of player ids
+## Fixes
+
+- [x] **F1 — Shared Y thresholds.** _(resolved by design)_ `Section::VOID_Y` /
+      `Section::MAX_Y` hold the vanilla Overworld limits; `entry_y()` / `exit_y()`
+      return `MAX_Y - 2.0` and `VOID_Y + 1.0`. These are the **same for every section** —
+      they do not vary by depth the way `Section::curse()` does.
+- [x] **F2 — One-shot latch.** A thread-local set of player ids
       (`utils::begin_transition` / `end_transition`) makes each transition fire once.
-      **Held until `PlayerChangedWorldEvent`** (`LayerJoin` releases it), so the moves
-      that follow a teleport cannot re-trigger it; a transition that cannot finish
-      releases the latch itself. Not persistent data: a stale entry must never survive a
-      restart. Addresses #1, #7, #8, #15. _(R2)_
-- [x] **F3 — Cancel the move event.** _(done)_ `up`/`down` report whether the teleport
-      happened, and a successful transition returns the event with `cancelled: true`, so
-      the stale `to_position` is not applied. Addresses #9. _(R3)_
-- [x] **F4 — Log missing worlds.** _(done)_ `world_for` in `layer_leave.rs` warns when
-      the destination world is unavailable instead of returning silently. Addresses #10.
-- [x] **F5 — `enabled()` semantics.** _(removed)_ `Layer::enabled()` was a display-only
-      gate that did nothing, so it is gone: every layer is live and every layer world
-      shows its entry title. Resolves #11.
-- [x] **F6 — Skip dead and creative/spectator players.** _(done)_
+      **Held until `PlayerChangedWorldEvent`** — `LayerLeave` takes it, `LayerJoin`
+      releases it — so the moves after a teleport cannot re-trigger it. A transition
+      that cannot finish releases it itself. Not persistent: a stale entry must never
+      survive a restart.
+- [x] **F3 — Cancel the move event.** `up`/`down` report whether the teleport happened,
+      and a successful transition returns the event with `cancelled: true`.
+- [x] **F4 — Log missing worlds.** `world_for` warns when the destination world is
+      unavailable instead of returning silently.
+- [x] **F5 — `enabled()` removed.** It was a display-only gate that returned false for
+      every layer, so no entry title had ever been shown. Every layer is now live.
+- [x] **F6 — Skip dead and creative/spectator players.**
       `utils::ignores_transitions` covers `GameMode::Creative`, `GameMode::Spectator`
-      and dead players (`Player::as_entity().as_living().is_dead()`). Resolves #15, #16.
-- [x] **F7 — Feedback on terminal transitions.** _(done)_ `tell` sends a grey system
-      message when leaving `First` upward or `Seventh` downward. Addresses #14 and #3.
+      and `Player::as_entity().as_living().is_dead()`, failing open when the entity
+      cannot be inspected.
+- [x] **F7 — Feedback on terminal transitions.** `tell` sends a grey system message when
+      leaving `First` upward or `Seventh` downward. No repeat-spam was observed in testing.
+
+## Open questions
+
+- **#13 — manual `/tp` above `MAX_Y`.** Still indistinguishable from a real ascent, so an
+  operator teleporting overhead is cursed. Not observed in testing — ops are usually in
+  creative/spectator, which `ignores_transitions` already exempts. Decide only if it
+  bites; the fix would be guarding on `PlayerTeleportEvent`.
+
+Everything else is closed. `#6` is intentional (per `AGENTS.md`, each layer is a
+hand-built map, so a guaranteed arrival point belongs in map data, never a hardcoded
+coordinate), and `#12` records that the non-Abyss guard works.
+
+## Verification
+
+**Confirmed working in a live Pumpkin server.** The transition fixes (F2–F7) are
+validated against a running server, not just compiled: the latch releases on the world
+change, cancelled moves are honoured, dead-player and gamemode exemptions hold, and the
+terminal messages behave.
+
+Compiler checks that back each commit:
+
+```bash
+cargo clippy --all-targets --all-features --target wasm32-wasip2 -- -W clippy::pedantic -D warnings
+cargo build --target wasm32-wasip2
+cargo doc --no-deps --target wasm32-wasip2
+```
 
 ## Notes
 
-- #12 needs no action; it is listed to record that the guard works.
-- `Section::curse()` derives severity from the enum order; `entry_y()` / `exit_y()`
-  now do the same for heights, so there is no second table to keep in sync.
+- `Section::curse()` derives severity (0–6) from the enum order. `entry_y()` and
+  `exit_y()` are **associated functions with no receiver** because they do not vary by
+  section: every layer is a full-height world sharing the same two limits. Passing a
+  `Section` there would imply a per-layer height that does not exist.
+- The latch assumes single-threaded plugin execution, matching `Worlds` and the WASM
+  target. If Pumpkin ever dispatches events across threads this stops working.

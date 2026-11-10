@@ -103,21 +103,24 @@ impl Section {
         self.index() + 1
     }
 
-    /// Returns the Y coordinate a player is placed at when entering this section.
+    /// Returns the Y coordinate a player is placed at when entering a section.
     ///
-    /// Entering from above (descending) lands them near the ceiling of the world, so
-    /// the fall into the section is visible.
+    /// Entering from above (descending) lands them near the ceiling of the world, so the
+    /// fall into the section is visible. This is the same for every section: each is its
+    /// own full-height world, so the height comes from the shared world limits rather than
+    /// from the section's depth.
     #[must_use]
-    pub fn entry_y(self) -> f64 {
+    pub const fn entry_y() -> f64 {
         Self::MAX_Y - 2.0
     }
 
-    /// Returns the Y coordinate a player is placed at when leaving this section upward.
+    /// Returns the Y coordinate a player is placed at when leaving a section upward.
     ///
     /// They arrive just above the floor, inside the void band, so they climb out into the
-    /// section rather than falling through it again.
+    /// section rather than falling through it again. Like [`entry_y`](Self::entry_y), this
+    /// is the same for every section.
     #[must_use]
-    pub fn exit_y(self) -> f64 {
+    pub const fn exit_y() -> f64 {
         Self::VOID_Y + 1.0
     }
 

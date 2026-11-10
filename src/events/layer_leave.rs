@@ -110,7 +110,7 @@ fn up(server: &Server, player: &Player, section: Section) -> bool {
     super::curse::apply(player, section);
 
     let (x, _, z) = player.get_position();
-    player.teleport((x, section.exit_y(), z), None, None, world);
+    player.teleport((x, Section::exit_y(), z), None, None, world);
     true
 }
 
@@ -123,7 +123,7 @@ fn down(server: &Server, player: &Player, section: Section) -> bool {
     };
 
     let (x, _, z) = player.get_position();
-    player.teleport((x, section.entry_y(), z), None, None, world);
+    player.teleport((x, Section::entry_y(), z), None, None, world);
     true
 }
 

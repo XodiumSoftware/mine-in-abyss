@@ -231,20 +231,26 @@ per-world game rules instead.
 #### Each layer is a hand-built map
 
 Every layer world is a **custom map made specifically for this project** — an authored
-region with real terrain, structures and points of interest, not a generated world and
-not a plain void platform. This is the central assumption behind the whole design, so
-keep it in mind whenever you touch transitions or placement:
+region with real terrain, structures and points of interest, not a generated world. This
+is the central assumption behind the whole design, so keep it in mind whenever you touch
+transitions or placement:
 
 - `create_world` only takes a name and dimension — there is no generator, seed or
   level-type argument. The map **is** the world folder on disk, so shipping a layer means
   shipping its world data.
-- Create-or-load means a map that already exists on disk is reused untouched. Never write
+- Worlds are generated **empty**, not left to the default generator: `Worlds::setup`
+  registers the [`Void`](src/generator.rs) `ChunkGenerator` and attaches it with
+  `World::set_chunk_generator` before the world is used. Generation is the only way to
+  pick what a layer starts as, since `create_world` offers no level-type argument.
+- A world that already has chunks keeps them, so an authored map is safe across restarts
+  and the generator only decides what a not-yet-existing world looks like. Never write
   code that resets, regenerates or overwrites layer world data on startup.
 - Because the terrain is authored, **do not assume there is ground at a given X/Z**. The
   transition code preserves X/Z and picks a Y from `Layer::entry_y()` / `exit_y()`;
   whether that lands on solid ground depends entirely on the map at those coordinates.
 - If a layer needs a guaranteed arrival point, that must be map data (a spawn point or a
-  marker) or an explicit safe-position lookup — never a hardcoded coordinate.
+  marker) or an explicit safe-position lookup — never a hardcoded coordinate. An empty
+  layer has no ground at all, so nothing keeps a player from falling straight through.
 - Void and ceiling thresholds (`Layer::MIN_Y` / `Layer::MAX_Y`) are the world floor
   and the build limit, which is why every layer can be a full-height world without
   interfering with its neighbours.
@@ -270,7 +276,8 @@ src/
 ├── layer.rs            # `Layer` enum + id/world/next/prev/index/curse,
 │                       # plus shared `MIN_Y`/`MAX_Y` and entry/exit heights
 ├── utils.rs            # Shared helpers (`ignores_transitions`, `begin_transition`)
-├── worlds.rs           # `Worlds` — one world per layer
+├── generator.rs        # `Void` chunk generator — layer worlds generate empty
+├── worlds.rs           # `Worlds` — one void world per layer
 ├── commands/
 │   └── abyss.rs        # `/abyss` — ops teleport into a layer, curse-free
 ├── events/

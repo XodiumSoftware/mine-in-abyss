@@ -81,7 +81,7 @@ cd .server && ./pumpkin      # pumpkin.exe on Windows
 
 1. Place `mine_in_abyss.wasm` in your Pumpkin server's `plugins/` directory
 2. Start the server
-3. The plugin creates one Minecraft world per layer on load
+3. The plugin creates one Minecraft world per layer on load, each generated empty
 
 ## Usage
 
@@ -104,9 +104,11 @@ startup.
 World names are derived from the layer's ordinal, so they stay stable across releases
 even if a layer is renamed.
 
-Each layer world is a **custom map built for this project**. The plugin only creates or
-loads the world containers — the terrain, structures and points of interest live in the
-world data on disk.
+Each layer world is a **custom map built for this project**. The plugin creates the world
+containers and generates them **empty** — a void world with no terrain, blocks or
+structures — so that an authored map can be added to that world without competing with
+generated terrain. An empty world has no ground, so a player entering a layer that has no
+map yet falls straight through it and continues to the layer below.
 
 ### Per-layer game rules
 

@@ -9,6 +9,7 @@
 //! See [`GUIDE.md`](../GUIDE.md) for installation.
 #![allow(clippy::must_use_candidate)]
 
+mod generator;
 mod layer;
 mod utils;
 mod worlds;

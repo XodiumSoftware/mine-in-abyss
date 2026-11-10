@@ -1,7 +1,7 @@
 //! Small helpers shared across the plugin's events and layers.
 
 use pumpkin_plugin_api::Player;
-use pumpkin_plugin_api::common::GameMode;
+use pumpkin_plugin_api::common::{GameMode, RgbColor};
 use pumpkin_plugin_api::wit::pumpkin::plugin::uuid;
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
@@ -37,6 +37,12 @@ thread_local! {
 /// Returns a stable key for `player`, usable across separate WIT handles.
 fn key(player: &Player) -> String {
     uuid::to_string(player.get_id())
+}
+
+/// Builds an [`RgbColor`] from its channels, so palettes can be written inline.
+#[must_use]
+pub const fn rgb(r: u8, g: u8, b: u8) -> RgbColor {
+    RgbColor { r, g, b }
 }
 
 /// Records that `player` was teleported to `y`, so the next move is not read as a climb.

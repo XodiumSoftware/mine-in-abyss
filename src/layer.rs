@@ -1,18 +1,19 @@
-//! The sections of the Abyss, from the surface down.
+//! The layers of the Abyss, from the surface down.
 
 use crate::PLUGIN_ID;
+use crate::utils::rgb;
 use pumpkin_plugin_api::common::RgbColor;
 use pumpkin_plugin_api::{GameRule, GameRuleValue};
 use strum::{EnumIter, IntoEnumIterator, IntoStaticStr};
 
-/// A section of the Abyss.
+/// A layer of the Abyss.
 ///
 /// Its [`From`](From::from) form is the lowercase variant name
-/// (`first`, `second`, ...), which is also the identifier used for the section's
+/// (`first`, `second`, ...), which is also the identifier used for the layer's
 /// Minecraft world.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, EnumIter, IntoStaticStr)]
 #[strum(serialize_all = "lowercase")]
-pub enum Section {
+pub enum Layer {
     /// The top of the Abyss.
     #[default]
     First,
@@ -30,13 +31,8 @@ pub enum Section {
     Seventh,
 }
 
-/// Builds an [`RgbColor`] from its channels, so palettes can be written inline.
-const fn rgb(r: u8, g: u8, b: u8) -> RgbColor {
-    RgbColor { r, g, b }
-}
-
-impl Section {
-    /// Every section, from the surface down.
+impl Layer {
+    /// Every layer, from the surface down.
     pub const ALL: [Self; 7] = [
         Self::First,
         Self::Second,
@@ -58,9 +54,9 @@ impl Section {
     /// The build limit is 319, so this is just above it.
     pub const MAX_Y: f64 = 320.0;
 
-    /// Returns this section's stable identifier (`first`, `second`, ...).
+    /// Returns this layer's stable identifier (`first`, `second`, ...).
     ///
-    /// This is the segment used to build the section's Minecraft world name. It is
+    /// This is the segment used to build the layer's Minecraft world name. It is
     /// deliberately independent of any display name, so renaming a layer never
     /// invalidates an existing world on disk.
     #[must_use]
@@ -68,16 +64,15 @@ impl Section {
         self.into()
     }
 
-    /// Returns the name of the Minecraft world that holds this section.
+    /// Returns the name of the Minecraft world that holds this layer.
     #[must_use]
     pub fn world(self) -> String {
         format!("{PLUGIN_ID}_{}", self.id())
     }
 
-    /// Returns this section's display name, as shown to players.
+    /// Returns this layer's display name, as shown to players.
     ///
-    /// This is the single source of truth for the name: the layer module docs describe
-    /// each layer's purpose rather than repeating its title.
+    /// This is the single source of truth for the name.
     #[must_use]
     pub const fn name(self) -> &'static str {
         match self {
@@ -91,7 +86,7 @@ impl Section {
         }
     }
 
-    /// Returns the two gradient stop colours of this section's palette.
+    /// Returns the two gradient stop colours of this layer's palette.
     #[must_use]
     pub const fn color(self) -> [RgbColor; 2] {
         match self {
@@ -105,7 +100,7 @@ impl Section {
         }
     }
 
-    /// Returns the game rules this section's world runs with.
+    /// Returns the game rules this layer's world runs with.
     ///
     /// Applied by [`Worlds::setup`](crate::Worlds::setup) whenever the world is created or
     /// re-attached, so the rules win over whatever the world folder was saved with. This is
@@ -124,58 +119,56 @@ impl Section {
         }
     }
 
-    /// Returns the section directly below this one, if any.
+    /// Returns the layer directly below this one, if any.
     #[must_use]
     pub fn next(self) -> Option<Self> {
         Self::iter().skip_while(|s| *s != self).nth(1)
     }
 
-    /// Returns the section directly above this one, if any.
+    /// Returns the layer directly above this one, if any.
     #[must_use]
     pub fn prev(self) -> Option<Self> {
-        Self::iter().take_while(|section| *section != self).last()
+        Self::iter().take_while(|layer| *layer != self).last()
     }
 
-    /// Returns this section's depth index, starting at 0 for the surface.
+    /// Returns this layer's depth index, starting at 0 for the surface.
     #[must_use]
     pub fn index(self) -> usize {
-        Self::iter()
-            .position(|section| section == self)
-            .unwrap_or(0)
+        Self::iter().position(|layer| layer == self).unwrap_or(0)
     }
 
-    /// Returns this section's one-based number (`1` for the surface, `7` at the
+    /// Returns this layer's one-based number (`1` for the surface, `7` at the
     /// bottom), as shown to players.
     #[must_use]
     pub fn number(self) -> usize {
         self.index() + 1
     }
 
-    /// Returns the Y coordinate a player is placed at when entering a section.
+    /// Returns the Y coordinate a player is placed at when entering a layer.
     ///
     /// Entering from above (descending) lands them near the ceiling of the world, so the
-    /// fall into the section is visible. This is the same for every section: each is its
-    /// own full-height world, so the height comes from the shared world limits rather than
-    /// from the section's depth.
+    /// fall into the layer is visible. This is the same for every layer: each is its own
+    /// full-height world, so the height comes from the shared world limits rather than from
+    /// the layer's depth.
     #[must_use]
     pub const fn entry_y() -> f64 {
         Self::MAX_Y - 2.0
     }
 
-    /// Returns the Y coordinate a player is placed at when leaving a section upward.
+    /// Returns the Y coordinate a player is placed at when leaving a layer upward.
     ///
     /// They arrive just above the floor, inside the void band, so they climb out into the
-    /// section rather than falling through it again. Like [`entry_y`](Self::entry_y), this
-    /// is the same for every section.
+    /// layer rather than falling through it again. Like [`entry_y`](Self::entry_y), this is
+    /// the same for every layer.
     #[must_use]
     pub const fn exit_y() -> f64 {
         Self::MIN_Y + 1.0
     }
 
-    /// Returns the severity of the Curse of the Abyss when ascending out of this
-    /// section, from 0 (no ill effect) to 6 (fatal).
+    /// Returns the severity of the Curse of the Abyss when ascending out of this layer,
+    /// from 0 (no ill effect) to 6 (fatal).
     ///
-    /// Derived from the section's depth so it can never drift from the enum order.
+    /// Derived from the layer's depth so it can never drift from the enum order.
     #[must_use]
     pub fn curse(self) -> u8 {
         u8::try_from(self.index()).unwrap_or(u8::MAX)

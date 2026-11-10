@@ -29,7 +29,7 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::permission::{
 use pumpkin_plugin_api::{Context, Server};
 
 use crate::PLUGIN_ID;
-use crate::section::Section;
+use crate::layer::Layer;
 
 /// The command's primary name followed by its aliases.
 const NAMES: [&str; 2] = ["abyss", "mia"];
@@ -83,10 +83,10 @@ impl CommandHandler for AbyssCommand {
             return Err(CommandError::InvalidConsumption(None));
         };
 
-        let Some(section) = section_from(&layer) else {
+        let Some(layer) = layer_from(&layer) else {
             sender.send_error(TextComponent::text(&format!(
                 "Unknown layer '{layer}'. Expected one of: {}.",
-                section_names()
+                layer_names()
             )));
             return Ok(0);
         };
@@ -103,39 +103,39 @@ impl CommandHandler for AbyssCommand {
             return Ok(0);
         };
 
-        let Some(world) = server.get_world_by_name(&section.world()) else {
+        let Some(world) = server.get_world_by_name(&layer.world()) else {
             sender.send_error(TextComponent::text(&format!(
                 "The world for {} is not available.",
-                section.id()
+                layer.id()
             )));
             return Ok(0);
         };
 
         let (x, _, z) = player.get_position();
-        player.teleport((x, Section::entry_y(), z), None, None, world);
+        player.teleport((x, Layer::entry_y(), z), None, None, world);
 
         sender.send_message(TextComponent::text(&format!(
             "Moved {} to {}.",
             player.get_name(),
-            section.id()
+            layer.id()
         )));
         Ok(1)
     }
 }
 
-/// Resolves a user-supplied layer name (`first`, `1`, `FIRST`, …) to a section.
-fn section_from(input: &str) -> Option<Section> {
+/// Resolves a user-supplied layer name (`first`, `1`, `FIRST`, …) to a layer.
+fn layer_from(input: &str) -> Option<Layer> {
     let input = input.to_ascii_lowercase();
-    Section::ALL
+    Layer::ALL
         .into_iter()
-        .find(|section| section.id() == input || section.number().to_string() == input)
+        .find(|layer| layer.id() == input || layer.number().to_string() == input)
 }
 
 /// Returns the accepted layer names, for use in error messages.
-fn section_names() -> String {
-    Section::ALL
+fn layer_names() -> String {
+    Layer::ALL
         .iter()
-        .map(|section| section.id())
+        .map(|layer| layer.id())
         .collect::<Vec<_>>()
         .join(", ")
 }

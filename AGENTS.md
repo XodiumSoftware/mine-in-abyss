@@ -71,11 +71,11 @@ cargo clippy --all-targets --all-features --target wasm32-wasip2 -- -W clippy::p
 
 ### Layer System
 
-The Abyss is a vertical world, and each layer **is** a [`Section`] variant. There is no
-separate layer trait: identifiers, names, palettes and world names all live on `Section`,
+The Abyss is a vertical world, and each layer **is** a [`Layer`] variant. There is no
+separate layer trait: identifiers, names, palettes and world names all live on `Layer`,
 so a layer cannot be described in two places that drift apart.
 
-`Section` (`src/section.rs`) names the strata from the surface down:
+`Layer` (`src/layer.rs`) names the strata from the surface down:
 
 | Variant   | `id()`    | World                   | `name()`                      |
 | --------- | --------- | ----------------------- | ----------------------------- |
@@ -99,8 +99,8 @@ that:
 - `game_rules()` — per-world game rules, applied on world setup
 - `entry_y()` / `exit_y()` — the shared spawn heights (see below)
 
-`Section::ALL` is the source of truth for which layers exist, and `LAYERS: [Section; 7]`
-in `src/lib.rs` is `Section::ALL`. Registration, world creation and world-name lookup
+`Layer::ALL` is the source of truth for which layers exist, and `LAYERS: [Layer; 7]`
+in `src/lib.rs` is `Layer::ALL`. Registration, world creation and world-name lookup
 (`layer_for_world`) all read from it.
 
 ### Events
@@ -114,9 +114,9 @@ Handlers live in `src/events/`, declared inline in the `mod events` block in `li
 | `LayerRespawn`  | `PlayerRespawnEvent`      | Clears the curse strain                                                  |
 | `LayerTeleport` | `PlayerTeleportEvent`     | Records where a teleport put the player, so it is not read as a climb    |
 
-`LayerLeave` compares against the bounds shared by every section
-(`Section::MIN_Y = -64` — the world floor, which is also where a player counts as having
-left the layer — and `Section::MAX_Y = 320`, just above the build limit): below the floor
+`LayerLeave` compares against the bounds shared by every layer
+(`Layer::MIN_Y = -64` — the world floor, which is also where a player counts as having
+left the layer — and `Layer::MAX_Y = 320`, just above the build limit): below the floor
 → next layer down at `entry_y()` (`MAX_Y - 2.0`); above the ceiling → previous layer up at
 `exit_y()` (`MIN_Y + 1.0`). Both keep X/Z. Falling out of `Seventh` (no `next()`) is
 left alone — vanilla void damage kills the player. Ascending calls `curse::apply`, which
@@ -170,7 +170,7 @@ block in `lib.rs`. Each module exposes `register(context)`, which is called from
 | `/abyss` | `/mia`  | `mine_in_abyss:command.abyss` | Moves a player into a layer without the curse (ops level 3+) |
 
 `/abyss <layer> [player]` accepts `first` … `seventh` or `1` … `7`, case-insensitive,
-and defaults the target to the sender. It teleports straight into the section, so no
+and defaults the target to the sender. It teleports straight into the layer, so no
 curse strain is added — unlike a real ascent.
 
 Registration goes through the raw `Context::register_command(command, node)` plus
@@ -195,20 +195,20 @@ implement `pumpkin_plugin_api::commands::CommandHandler` and return `Ok(1)` on s
 **`Worlds`** (`src/worlds.rs`) — creates one Minecraft world per layer on load.
 
 - `Worlds::setup(context, layers)` runs from `on_load`
-- World names come from `Section::world()`, so they stay stable across renames
+- World names come from `Layer::world()`, so they stay stable across renames
 - `create_world` is create-or-load: an existing world is reused, never reset
 - `World` is a non-cloneable WIT resource, so only the set of ready world names is
   cached in a `thread_local`; callers re-resolve the handle from the server
 - A failure for one layer is logged and does not stop the others
 
-#### Per-section content
+#### Per-layer content
 
-Per-section **data** belongs on `Section` as a `const fn` with a `match`, the way
-`name()`, `color()` and `game_rules()` do; per-section **behaviour** belongs in one
-event handler that matches on the section (as `LayerLeave` does). Terrain, structures and
+Per-layer **data** belongs on `Layer` as a `const fn` with a `match`, the way
+`name()`, `color()` and `game_rules()` do; per-layer **behaviour** belongs in one
+event handler that matches on the layer (as `LayerLeave` does). Terrain, structures and
 points of interest are neither — they are world data.
 
-`Section::game_rules()` is the worked example: `First` disables `spawn-monsters`, the
+`Layer::game_rules()` is the worked example: `First` disables `spawn-monsters`, the
 rest return an empty slice. `Worlds::setup` applies the rules on every load, so a world
 folder saved with different rules cannot override them.
 
@@ -229,11 +229,11 @@ keep it in mind whenever you touch transitions or placement:
 - Create-or-load means a map that already exists on disk is reused untouched. Never write
   code that resets, regenerates or overwrites layer world data on startup.
 - Because the terrain is authored, **do not assume there is ground at a given X/Z**. The
-  transition code preserves X/Z and picks a Y from `Section::entry_y()` / `exit_y()`;
+  transition code preserves X/Z and picks a Y from `Layer::entry_y()` / `exit_y()`;
   whether that lands on solid ground depends entirely on the map at those coordinates.
 - If a layer needs a guaranteed arrival point, that must be map data (a spawn point or a
   marker) or an explicit safe-position lookup — never a hardcoded coordinate.
-- Void and ceiling thresholds (`Section::MIN_Y` / `Section::MAX_Y`) are the world floor
+- Void and ceiling thresholds (`Layer::MIN_Y` / `Layer::MAX_Y`) are the world floor
   and the build limit, which is why every layer can be a full-height world without
   interfering with its neighbours.
 
@@ -244,10 +244,10 @@ keep it in mind whenever you touch transitions or placement:
 
 ### Active Layers
 
-All seven layers exist as `Section` variants (identifier, world, name, gradient colour)
+All seven layers exist as `Layer` variants (identifier, world, name, gradient colour)
 with no gameplay content yet. See the table under [Layer System](#layer-system).
 
-There are no per-layer modules or structs: everything a layer needs is on its `Section`
+There are no per-layer modules or structs: everything a layer needs is on its `Layer`
 variant, so adding a layer means adding a variant rather than a file.
 
 ### Project Structure
@@ -255,7 +255,7 @@ variant, so adding a layer means adding a variant rather than a file.
 ```
 src/
 ├── lib.rs              # `PLUGIN_ID`, `LAYERS`, `layer_for_world`, `Plugin` impl
-├── section.rs          # `Section` enum + id/world/next/prev/index/curse,
+├── layer.rs            # `Layer` enum + id/world/next/prev/index/curse,
 │                       # plus shared `MIN_Y`/`MAX_Y` and entry/exit heights
 ├── utils.rs            # Shared helpers (`ignores_transitions`, `begin_transition`)
 ├── worlds.rs           # `Worlds` — one world per layer
@@ -357,10 +357,10 @@ GitHub Actions workflows in `.github/workflows/`:
 
 To add a new layer, follow these steps:
 
-1. In `src/section.rs`: add a variant to the `Section` enum (keep it in depth order —
+1. In `src/layer.rs`: add a variant to the `Layer` enum (keep it in depth order —
    `next`/`prev`/`index`/`curse` all derive from the variant order)
-2. Fill in its arm in `Section::name()`, `Section::color()` and `Section::ALL`
-3. In `src/lib.rs`: `LAYERS` is `Section::ALL`, so nothing to change unless the layer
+2. Fill in its arm in `Layer::name()`, `Layer::color()` and `Layer::ALL`
+3. In `src/lib.rs`: `LAYERS` is `Layer::ALL`, so nothing to change unless the layer
    needs its own behaviour
 4. If the layer needs behaviour of its own, implement `EventHandler<T>` in
    `src/events/` and register it in `MineInAbyss::register_events` — prefer one handler

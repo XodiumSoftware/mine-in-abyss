@@ -11,7 +11,7 @@ use pumpkin_plugin_api::events_wit::PlayerChangedWorldEventData;
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::{Player, Server};
 
-use crate::section::Section;
+use crate::layer::Layer;
 use crate::utils::end_transition;
 
 /// Handles a player joining a layer's world.
@@ -25,13 +25,13 @@ impl EventHandler<PlayerChangedWorldEvent> for LayerJoin {
         event: PlayerChangedWorldEventData,
     ) -> PlayerChangedWorldEventData {
         let world_name = event.to_world.get_name();
-        if let Some(section) = crate::layer_for_world(&world_name) {
-            show_entry_title(section, &event.player);
+        if let Some(layer) = crate::layer_for_world(&world_name) {
+            show_entry_title(layer, &event.player);
         }
 
         end_transition(&event.player);
 
-        if world_name == Section::First.world() {
+        if world_name == Layer::First.world() {
             super::curse::cure(&event.player);
         }
 
@@ -39,12 +39,12 @@ impl EventHandler<PlayerChangedWorldEvent> for LayerJoin {
     }
 }
 
-/// Shows a section's name as a gradient title, with an "Entered …" subtitle.
-fn show_entry_title(section: Section, player: &Player) {
-    let colors: [RgbColor; 2] = section.color();
-    let title = TextComponent::text(section.name()).gradient(&colors[..]);
+/// Shows a layer's name as a gradient title, with an "Entered …" subtitle.
+fn show_entry_title(layer: Layer, player: &Player) {
+    let colors: [RgbColor; 2] = layer.color();
+    let title = TextComponent::text(layer.name()).gradient(&colors[..]);
 
     player.show_title(title);
-    player.show_subtitle(TextComponent::text(&format!("Entered {}", section.name())));
+    player.show_subtitle(TextComponent::text(&format!("Entered {}", layer.name())));
     player.send_title_animation(10, 40, 10);
 }

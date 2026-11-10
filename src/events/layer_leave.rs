@@ -28,7 +28,7 @@ use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::{Player, Server};
 use tracing::warn;
 
-use crate::section::Section;
+use crate::layer::Layer;
 use crate::utils::{begin_transition, consume_teleport, end_transition, ignores_transitions};
 
 /// Detects a player leaving a layer through its void or ceiling.
@@ -51,8 +51,8 @@ impl EventHandler<PlayerMoveEvent> for LayerLeave {
         }
 
         let direction = match event.to_position.1 {
-            y if y < Section::MIN_Y => Direction::Down,
-            y if y > Section::MAX_Y => Direction::Up,
+            y if y < Layer::MIN_Y => Direction::Down,
+            y if y > Layer::MAX_Y => Direction::Up,
             _ => return event,
         };
 
@@ -62,16 +62,16 @@ impl EventHandler<PlayerMoveEvent> for LayerLeave {
 
         let moved = match direction {
             Direction::Down => {
-                if let Some(section) = layer.next() {
-                    down(&server, &event.player, section)
+                if let Some(layer) = layer.next() {
+                    down(&server, &event.player, layer)
                 } else {
                     tell(&event.player, "There is nothing below the Abyss.");
                     false
                 }
             }
             Direction::Up => {
-                if let Some(section) = layer.prev() {
-                    up(&server, &event.player, section)
+                if let Some(layer) = layer.prev() {
+                    up(&server, &event.player, layer)
                 } else {
                     tell(&event.player, "There is nothing above the Abyss.");
                     false
@@ -118,31 +118,31 @@ enum Direction {
     Up,
 }
 
-/// Sends a player up to `section`, keeping their X and Z position.
+/// Sends a player up to `layer`, keeping their X and Z position.
 ///
 /// Returns `false` if the destination world is unavailable, leaving the event untouched.
-fn up(server: &Server, player: &Player, section: Section) -> bool {
-    let Some(world) = world_for(server, section) else {
+fn up(server: &Server, player: &Player, layer: Layer) -> bool {
+    let Some(world) = world_for(server, layer) else {
         return false;
     };
 
-    super::curse::apply(player, section);
+    super::curse::apply(player, layer);
 
     let (x, _, z) = player.get_position();
-    player.teleport((x, Section::exit_y(), z), None, None, world);
+    player.teleport((x, Layer::exit_y(), z), None, None, world);
     true
 }
 
-/// Sends a player down to `section`, keeping their X and Z position.
+/// Sends a player down to `layer`, keeping their X and Z position.
 ///
 /// Returns `false` if the destination world is unavailable, leaving the event untouched.
-fn down(server: &Server, player: &Player, section: Section) -> bool {
-    let Some(world) = world_for(server, section) else {
+fn down(server: &Server, player: &Player, layer: Layer) -> bool {
+    let Some(world) = world_for(server, layer) else {
         return false;
     };
 
     let (x, _, z) = player.get_position();
-    player.teleport((x, Section::entry_y(), z), None, None, world);
+    player.teleport((x, Layer::entry_y(), z), None, None, world);
     true
 }
 
@@ -155,17 +155,17 @@ fn tell(player: &Player, message: &str) {
     player.send_system_message(text, false);
 }
 
-/// Resolves the world for `section`, logging when it cannot be found.
+/// Resolves the world for `layer`, logging when it cannot be found.
 ///
 /// A missing world means [`Worlds::setup`](crate::Worlds::setup) failed for that layer;
 /// without a log the player would simply stay in the void with no trace of why.
-fn world_for(server: &Server, section: Section) -> Option<pumpkin_plugin_api::World> {
-    let name = section.world();
+fn world_for(server: &Server, layer: Layer) -> Option<pumpkin_plugin_api::World> {
+    let name = layer.world();
     let world = server.get_world_by_name(&name);
     if world.is_none() {
         warn!(
             "World '{name}' is unavailable; {} cannot be entered",
-            section.id()
+            layer.id()
         );
     }
     world

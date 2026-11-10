@@ -17,14 +17,14 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::status_effect::{
 };
 
 use crate::PLUGIN_ID;
-use crate::section::Section;
+use crate::layer::Layer;
 
 /// Namespace key under which a player's accumulated curse strain is stored.
 const STRAIN_KEY: &str = "curse";
 
 /// Highest strain a player can carry.
 ///
-/// Matches the deepest section's [`Section::curse`] severity, so strain saturates
+/// Matches the deepest layer's [`Layer::curse`] severity, so strain saturates
 /// at the fatal tier rather than growing without bound.
 const MAX_STRAIN: u8 = 6;
 
@@ -60,10 +60,10 @@ fn store(player: &Player, strain: u8) {
 
 /// Applies the Curse of the Abyss to `player` after ascending out of `from`.
 ///
-/// The severity comes from [`Section::curse`], so it scales with depth without a
+/// The severity comes from [`Layer::curse`], so it scales with depth without a
 /// table to keep in sync. It is added to the player's accumulated strain, which is
 /// what actually decides the symptoms.
-pub fn apply(player: &Player, from: Section) {
+pub fn apply(player: &Player, from: Layer) {
     let strain = strain(player).saturating_add(from.curse()).min(MAX_STRAIN);
     store(player, strain);
     inflict(player, strain);

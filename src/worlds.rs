@@ -4,11 +4,11 @@
 //! descend by moving between worlds. This module is responsible for creating (or
 //! re-attaching to) those worlds on startup.
 //!
-//! World names come from [`Section::world`](crate::section::Section::world) and are
+//! World names come from [`Layer::world`](crate::layer::Layer::world) and are
 //! stable across releases: they are derived from the layer's ordinal, not its display
 //! name.
 
-use crate::section::Section;
+use crate::layer::Layer;
 use pumpkin_plugin_api::{Context, Dimension};
 use std::cell::RefCell;
 use std::collections::HashSet;
@@ -33,11 +33,11 @@ impl Worlds {
     ///
     /// Safe to call more than once: existing worlds are re-attached rather than
     /// duplicated, and a failure for one layer does not stop the others. Each layer's
-    /// [`Section::game_rules`] are applied every time, so they cannot be lost to a world
+    /// [`Layer::game_rules`] are applied every time, so they cannot be lost to a world
     /// folder that was saved with different rules.
     ///
     /// Returns the number of worlds that are available after the call.
-    pub fn setup(context: &Context, layers: &[Section]) -> usize {
+    pub fn setup(context: &Context, layers: &[Layer]) -> usize {
         let server = context.get_server();
 
         for layer in layers {

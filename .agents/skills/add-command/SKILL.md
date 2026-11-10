@@ -57,8 +57,6 @@ modules with a `register(context)` function called from `MineInAbyss::on_load`.
 ## Docs & Verification
 
 1. Add the command to the `### Commands` table in `AGENTS.md`.
-2. Verify: `cargo clippy --all-targets --all-features --target wasm32-wasip2 -- -W
-clippy::pedantic -D warnings`, `cargo build --target wasm32-wasip2`, `cargo doc
---no-deps --target wasm32-wasip2`.
+2. Verify: `just lint`, `just build`, `just doc`.
 
 After finishing, summarize the changes and ask the user whether to commit.

@@ -43,9 +43,9 @@ If a code change would confuse someone reading the docs, update the docs. Trigge
    table, active layers, project structure tree, and conventions.
 5. Update `GUIDE.md` wherever it names affected features, commands, or game rules.
 6. Regenerate docs and confirm they build:
-    - `just doc` (or `cargo doc --no-deps --target wasm32-wasip2`)
+    - `just doc`
     - Fix any broken doc links or rustdoc warnings it reports.
 7. Confirm lints still pass if doc examples or imports moved:
-    - `just lint` (or `cargo clippy --all-targets --all-features --target wasm32-wasip2 -- -W clippy::pedantic -D warnings`)
+    - `just lint` (or `just validate` for the full CI set)
 
 After finishing, list the files updated and ask the user whether to commit.

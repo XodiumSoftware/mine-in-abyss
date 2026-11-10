@@ -41,21 +41,32 @@
 
 ## Quick Commands
 
-Build tasks run through [just](https://github.com/casey/just) (cross-platform; see the `justfile` for all recipes).
+**Always prefer `just` over raw `cargo`.** The recipes are cross-platform and encode things the
+bare commands miss — most importantly that `build` is **release** only, because debug builds
+fail to load in the Pumpkin runtime (a wasmtime locals limit in the wit-bindgen `handle-event`
+export). Run `just` with no arguments to list every recipe.
+
+| Task                               | Command           |
+| ---------------------------------- | ----------------- |
+| Everything CI runs                 | `just validate`   |
+| Lint, pedantic, warnings-as-errors | `just lint`       |
+| Check formatting                   | `just fmt-check`  |
+| Format                             | `just fmt`        |
+| Build the release WASM             | `just build`      |
+| Build, fetch Pumpkin, deploy       | `just build-copy` |
+| Generate rustdoc                   | `just doc`        |
 
 ```bash
-# Build the WASM plugin (debug), fetch the Pumpkin nightly server, and copy to .server/plugins/
+# Validate exactly as CI does: lint + format check + release build
+just validate
+
+# Build, fetch the Pumpkin nightly server, and copy the plugin to .server/plugins/
 just build-copy
-
-# Build the WASM plugin (release)
-just build
-
-# Generate documentation
-cargo doc --no-deps --target wasm32-wasip2
-
-# Lint with pedantic lints enabled; every warning is treated as an error.
-cargo clippy --all-targets --all-features --target wasm32-wasip2 -- -W clippy::pedantic -D warnings
 ```
+
+Use raw `cargo` only for something `just` genuinely does not cover — a `cargo check`, a
+`cargo add`, or a one-off `cargo doc --document-private-items`. If a `just` recipe fails and you
+need a variation, say which command you ran and why.
 
 ## Architecture Overview
 
@@ -342,7 +353,7 @@ src/
     - Add new modules or public APIs
     - Change config fields or placeholders
     - Add commands or events
-    - **Run `cargo doc --no-deps --target wasm32-wasip2`** to verify
+    - **Run `just doc`** to verify
 
 **Rule of thumb:** If a code change would confuse someone reading the docs, update the docs.
 
@@ -365,7 +376,7 @@ To add a new layer, follow these steps:
 4. If the layer needs behaviour of its own, implement `EventHandler<T>` in
    `src/events/` and register it in `MineInAbyss::register_events` — prefer one handler
    for all layers (as `LayerLeave` does) over per-layer registration
-5. Run `cargo clippy --target wasm32-wasip2 -- -W clippy::pedantic -D warnings`
+5. Run `just lint` (and `just validate` before a PR)
 
 ## Memory System
 

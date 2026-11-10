@@ -76,11 +76,8 @@ Getting this backwards is the whole reason this skill exists:
 
 ## Verification
 
-```bash
-cargo clippy --all-targets --all-features --target wasm32-wasip2 -- -W clippy::pedantic -D warnings
-cargo build --target wasm32-wasip2
-cargo doc --no-deps --target wasm32-wasip2
-```
+Run `just lint`, `just build` and `just doc` — the recipes are release-targeted and warnings
+are errors. (`just validate` also runs the format check, as CI does.)
 
 State behaviour needs a live server: restart to confirm persistence, and relog to confirm it
 survives a disconnect. Say in the summary which of the two you checked.

@@ -60,11 +60,8 @@ Self::Second => &[(GameRule::SpawnMonsters, GameRuleValue::Bool(false))],
 
 ## Verification
 
-```bash
-cargo clippy --all-targets --all-features --target wasm32-wasip2 -- -W clippy::pedantic -D warnings
-cargo build --target wasm32-wasip2
-cargo doc --no-deps --target wasm32-wasip2
-```
+Run `just lint`, `just build` and `just doc` — the recipes are release-targeted and warnings
+are errors. (`just validate` also runs the format check, as CI does.)
 
 Then update `AGENTS.md` (§ Layer System, § Adding a New Layer) if the tables changed.
 

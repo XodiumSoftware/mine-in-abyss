@@ -15,10 +15,15 @@
 //! If the destination world is unavailable — because
 //! [`Worlds::setup`](crate::Worlds::setup) failed for that layer — the failure is logged
 //! rather than swallowed, so the player being stuck in the void leaves a trace.
+//!
+//! Leaving the Abyss at either end — above `First` or below `Seventh` — tells the player
+//! there is nowhere to go, rather than doing nothing.
 
+use pumpkin_plugin_api::common::NamedColor;
 use pumpkin_plugin_api::events::EventHandler;
 use pumpkin_plugin_api::events::player::player_move::PlayerMoveEvent;
 use pumpkin_plugin_api::events_wit::PlayerMoveEventData;
+use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::{Player, Server};
 use tracing::warn;
 
@@ -46,32 +51,31 @@ impl EventHandler<PlayerMoveEvent> for LayerLeave {
             _ => return event,
         };
 
-        // Take the latch only once a transition is actually about to happen, and release
-        // it whatever the outcome, so a failed move can never lock the player out of
-        // later transitions.
         if !begin_transition(&event.player) {
             return event;
         }
 
         let moved = match direction {
             Direction::Down => {
-                // Below `Seventh` there is nowhere to go: vanilla void damage kills them.
-                layer
-                    .id()
-                    .next()
-                    .is_some_and(|section| down(&server, &event.player, section))
+                if let Some(section) = layer.id().next() {
+                    down(&server, &event.player, section)
+                } else {
+                    tell(&event.player, "There is nothing below the Abyss.");
+                    false
+                }
             }
-            Direction::Up => layer
-                .id()
-                .prev()
-                .is_some_and(|section| up(&server, &event.player, section)),
+            Direction::Up => {
+                if let Some(section) = layer.id().prev() {
+                    up(&server, &event.player, section)
+                } else {
+                    tell(&event.player, "There is nothing above the Abyss.");
+                    false
+                }
+            }
         };
         end_transition(&event.player);
 
         if moved {
-            // The teleport already put the player where they belong, so the original
-            // move must not also be applied: it describes a position inside the void or
-            // ceiling band of the world they just left.
             PlayerMoveEventData {
                 cancelled: true,
                 ..event
@@ -117,6 +121,15 @@ fn down(server: &Server, player: &Player, section: Section) -> bool {
     let (x, _, z) = player.get_position();
     player.teleport((x, section.entry_y(), z), None, None, world);
     true
+}
+
+/// Tells `player` something went nowhere, as a grey system message.
+///
+/// Used when a transition is impossible rather than failing silently, so a player is not
+/// left guessing why nothing happened.
+fn tell(player: &Player, message: &str) {
+    let text = TextComponent::text(message).color_named(NamedColor::Gray);
+    player.send_system_message(text, false);
 }
 
 /// Resolves the world for `section`, logging when it cannot be found.

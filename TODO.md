@@ -22,7 +22,7 @@ Findings from an audit of `src/events/layer_leave.rs`, checked against the
 | ---- | --- | ------------------------------------------------------ | --------------------------------------------------------------------- | -------- | ----- |
 | [x]  | 1   | Player below `VOID_Y` (spawn, `/tp`, portal)           | Latch: one teleport per transition                                    | Low      | —     |
 | [x]  | 2   | Player in `Seventh` void band                          | Nothing happens; vanilla void damage kills them                       | Low      | —     |
-| [ ]  | 3   | Falling out of `Seventh` above Y `-128`                | Never triggers; can stand on the `Seventh` floor forever              | Medium   | —     |
+| [x]  | 3   | Falling out of `Seventh` above Y `-128`                | Grey message: there is nothing below the Abyss                        | Low      | —     |
 | [ ]  | 4   | Ascending into `First`                                 | Lands at `-127` — below the terrain, but the intended entry height    | Low      | —     |
 | [ ]  | 5   | Descending into any layer                              | Lands at `318` — above the terrain, then falls in                     | Low      | —     |
 | [ ]  | 6   | Any transition                                         | X/Z preserved but no safe-position fallback; can land in terrain      | Medium   | —     |
@@ -33,7 +33,7 @@ Findings from an audit of `src/events/layer_leave.rs`, checked against the
 | [x]  | 11  | Layer disabled (`enabled() == false`, all seven today) | `enabled()` removed — every layer is live                             | Low      | —     |
 | [ ]  | 12  | Player in a non-Abyss world                            | Correctly ignored                                                     | —        | —     |
 | [ ]  | 13  | Manual `/tp` above `MAX_Y`                             | Treated as an ascent and cursed                                       | Medium   | —     |
-| [ ]  | 14  | `up()` from `First`                                    | Silent `prev() == None` return; no feedback                           | Low      | —     |
+| [x]  | 14  | `up()` from `First`                                    | Grey message: there is nothing above the Abyss                        | Low      | —     |
 | [ ]  | 15  | Player dies from strain 6 inside the move handler      | Latch is released after the move, so no re-entry while dying          | Low      | —     |
 | [x]  | 16  | Creative / spectator player                            | `layer_leave` skips both (no teleport, no curse)                      | Low      | —     |
 | [ ]  | 17  | `Seventh` boundaries                                   | No layer-specific boundaries — all layers share the vanilla limits    | Low      | —     |
@@ -60,8 +60,8 @@ Findings from an audit of `src/events/layer_leave.rs`, checked against the
       #15, #16.
       _Creative and spectator are now skipped by `LayerLeave` (`utils::ignores_transitions`);
       dead-player handling remains._
-- [ ] **F7 — Feedback on terminal transitions.** Show a message when leaving
-      `First` upward or `Seventh` downward. Addresses #14 (and partly #3).
+- [x] **F7 — Feedback on terminal transitions.** _(done)_ `tell` sends a grey system
+      message when leaving `First` upward or `Seventh` downward. Addresses #14 and #3.
 
 ## Notes
 

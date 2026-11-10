@@ -142,8 +142,13 @@ A successful transition also returns the move event with `cancelled: true`, so t
 server does not apply the original `to_position` — which would move the player back into
 the band of the world they just left.
 
+**Leaving the Abyss at either end tells the player.** Rising above `First` or falling
+below `Seventh` has nowhere to go, so `LayerLeave` sends a grey system message instead of
+silently doing nothing.
+
 Titles are built as `TextComponent`s directly — the plugin API has no `MiniMessage`
-parser, so **never emit `MiniMessage` strings**.
+parser, so **never emit `MiniMessage` strings**. `color_named` and friends are
+consuming builders: reassign the result (`let t = TextComponent::text(..).color_named(..)`)
 
 ### Commands
 
@@ -254,6 +259,8 @@ src/
 ### Key Conventions
 
 - `unsafe_code` forbidden project-wide (`[lints.rust] unsafe_code = "forbid"`)
+- **No `//` line comments.** Explain intent in rustdoc (`///`, `//!`) and in identifier
+  and function names instead. Only `///` and `//!` comments belong in `src/`.
 - All Clippy warnings enabled; run with `-W clippy::pedantic -D warnings` to catch pedantic lints as errors. (`[lints.clippy] all = "warn"`)
 - Config structs: `Debug`, `Clone`, `Default`, `Serialize`, `Deserialize`
 - Config fields documented with `///` comments

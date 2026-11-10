@@ -97,7 +97,10 @@ world data on disk.
 - **Ascending** — rising above `Y = 320` teleports the player into the layer above, at
   `Y = -127`. Ascending inflicts the **Curse of the Abyss** (see below).
 - **The bottom of the Abyss** — there is no layer below `Seventh`, so falling below
-  `Y = -128` there is left to vanilla: void damage kills the player.
+  `Y = -128` there is left to vanilla: void damage kills the player. A grey message warns
+  them first.
+- **The top of the Abyss** — rising above `Y = 320` in `First` has nowhere to go; a grey
+  message tells the player so.
 
 ### Curse of the Abyss
 

@@ -13,6 +13,7 @@ from one layer to the next. For installation and player-facing behaviour see
 - [The transition handshake](#the-transition-handshake)
 - [Why the latch exists](#why-the-latch-exists)
 - [Fall damage across layers](#fall-damage-across-layers)
+- [Monster difficulty](#monster-difficulty)
 - [The Curse of the Abyss](#the-curse-of-the-abyss)
 - [Commands](#commands)
 - [Known constraints](#known-constraints)
@@ -256,6 +257,49 @@ comment on [`resume_fall`](src/utils.rs). The baseline stays vanilla's per-world
 
 A teleport or a respawn clears the carry: the drop it described is over.
 
+## Monster difficulty
+
+Difficulty scales **exponentially** with depth, derived from the layer index the same way
+the curse is, so a layer cannot be left out and the curve cannot drift from the enum
+order:
+
+```mermaid
+graph LR
+    A["First<br/>1x"] --> B["Second<br/>2x"] --> C["Third<br/>4x"] --> D["Fourth<br/>8x"]
+    D --> E["Fifth<br/>16x"] --> F["Sixth<br/>32x"] --> G["Seventh<br/>64x"]
+```
+
+`Layer::monster_scale()` is `2^index`, applied to a monster's **base** `MaxHealth`,
+`AttackDamage` and `FollowRange`, so the visible value stays `base * scale` and re-applying
+never compounds. Health is set on both the attribute and the current health, so a monster
+does not arrive holding a surface-sized pool. Damage is never computed by the plugin —
+only the stats that vanilla then uses are changed, so armour, enchantments and everything
+else keep working.
+
+Every way a monster can enter a layer is covered:
+
+- **`EntitySpawnEvent`** — natural spawns, spawners and `/summon` all pass through it. This
+  is why the plugin listens here rather than on `CreatureSpawnEvent`, which natural spawns
+  and spawners fire but `/summon` does not.
+- **`Worlds::descend_monsters`** — a monster that follows a descending player never spawns
+  in the new world, so `LayerLeave` moves the layer's monsters down and rescales them.
+
+`First` is skipped entirely (`1x` means no work), as is anything outside the `MONSTERS`
+allow-list, so players, animals and dropped items are untouched.
+
+### The type string is a numeric id
+
+`EntitySpawnEvent` carries the entity type as a `String`, and Pumpkin fills it with
+`entity_type.id.to_string()` — the **registry index** from `pumpkin-data`, not a name.
+`zombie` arrives as `"154"`, `cave_spider` as `"22"`. `MONSTERS` and the `monster_id`
+table in `src/events/monsters.rs` are the only places those numbers live, and both forms
+(numeric id and `resource_name`) are matched.
+
+This is the weakest part of the design: the ids are tied to Pumpkin's registry order, and
+the plugin API has no name accessor on `EntityType` to derive them from. If Pumpkin
+renumbers its entity types, the scale silently stops matching, so re-verify the ids after
+an API upgrade.
+
 ## The Curse of the Abyss
 
 Ascending adds strain; the strain is cumulative and stored as namespaced NBT on the player,
@@ -291,6 +335,7 @@ its own.
 | `LayerJoin`     | `PlayerChangedWorldEvent` | Entry title; release latch; cure on the surface |
 | `LayerLeave`    | `PlayerMoveEvent`         | Void/ceiling detection, teleport, curse         |
 | `FallDamage`    | `PlayerMoveEvent`         | Adds the carried descent to the fall distance   |
+| `Monsters`      | `EntitySpawnEvent`        | Scales a spawned monster's stats by layer depth |
 | `LayerRespawn`  | `PlayerRespawnEvent`      | Clear the curse strain and any carried fall     |
 | `LayerTeleport` | `PlayerTeleportEvent`     | Record where a teleport put the player          |
 

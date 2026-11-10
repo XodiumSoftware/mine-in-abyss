@@ -151,6 +151,26 @@ is not shared.
 - **The top of the Abyss** — rising above `Y = 320` in `First` has nowhere to go; a grey
   message tells the player so.
 
+### Monsters
+
+Monsters get **exponentially harder** the deeper you go. Every monster in a layer has twice
+the health, attack damage and follow range of the layer above it:
+
+| Layer     | Health / damage / follow range |
+| --------- | ------------------------------ |
+| `First`   | `1x` (normal)                  |
+| `Second`  | `2x`                           |
+| `Third`   | `4x`                           |
+| `Fourth`  | `8x`                           |
+| `Fifth`   | `16x`                          |
+| `Sixth`   | `32x`                          |
+| `Seventh` | `64x`                          |
+
+This applies however the monster arrives — natural spawning, a spawner, or `/summon`.
+Only hostile mobs are affected; animals, villagers, players and dropped items keep their
+normal stats. Monsters that follow you down a layer are rescaled for the layer they land
+in, so nothing arrives weaker than it should.
+
 ### Curse of the Abyss
 
 The curse is **cumulative**: each ascent adds strain, so climbing back up through

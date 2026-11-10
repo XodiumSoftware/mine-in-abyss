@@ -28,12 +28,14 @@ mod events {
     pub mod layer_leave;
     pub mod layer_respawn;
     pub mod layer_teleport;
+    pub mod monsters;
 }
 
 pub use layer::*;
 pub use worlds::*;
 
 use pumpkin_plugin_api::events::EventPriority;
+use pumpkin_plugin_api::events::entity::entity_spawn::EntitySpawnEvent;
 use pumpkin_plugin_api::events::player::player_changed_world::PlayerChangedWorldEvent;
 use pumpkin_plugin_api::events::player::player_move::PlayerMoveEvent;
 use pumpkin_plugin_api::events::player::player_respawn::PlayerRespawnEvent;
@@ -108,6 +110,14 @@ impl MineInAbyss {
                 false,
             )
             .expect("failed to register PlayerTeleportEvent handler");
+
+        context
+            .register_event_handler::<EntitySpawnEvent, _>(
+                events::monsters::Monsters,
+                EventPriority::Normal,
+                false,
+            )
+            .expect("failed to register EntitySpawnEvent handler");
     }
 }
 

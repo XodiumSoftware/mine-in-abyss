@@ -173,4 +173,34 @@ impl Layer {
     pub fn curse(self) -> u8 {
         u8::try_from(self.index()).unwrap_or(u8::MAX)
     }
+
+    /// How much stronger the monsters are in this layer than at the surface.
+    ///
+    /// The Abyss gets harder **exponentially**: the surface is the baseline (`1`), and
+    /// every layer down doubles the multiplier. Monsters in `Seventh` are `64` times their
+    /// surface stats, which is what makes the deepest layers lethal without giving each
+    /// layer a hand-tuned table to drift out of sync.
+    ///
+    /// The multiplier is applied as `base * scale`, so the value is compared against `1`
+    /// rather than against `0` when deciding whether a layer needs touching at all — see
+    /// the `Monsters` event handler in `src/events/monsters.rs`.
+    #[must_use]
+    pub fn monster_scale(self) -> f64 {
+        MONSTER_SCALE_GROWTH.powi(i32::try_from(self.index()).unwrap_or(0))
+    }
+
+    /// How much one layer down multiplies a monster's strength.
+    ///
+    /// Kept as a named constant rather than a literal so the growth can be re-tuned in one
+    /// place; the exponent stays derived from depth, so no layer can be left out.
+    #[must_use]
+    pub const fn monster_scale_growth() -> f64 {
+        MONSTER_SCALE_GROWTH
+    }
 }
+
+/// The factor applied per layer of depth when scaling monsters.
+///
+/// Two doubles a monster's health and damage for every layer descended: `First` is `1x`,
+/// `Second` `2x`, `Third` `4x`, and so on to `Seventh` at `64x`.
+const MONSTER_SCALE_GROWTH: f64 = 2.0;

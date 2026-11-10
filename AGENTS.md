@@ -124,6 +124,7 @@ Handlers live in `src/events/`, declared inline in the `mod events` block in `li
 | `LayerJoin`     | `PlayerChangedWorldEvent` | Shows the entered layer's gradient title; cures the curse on the surface |
 | `LayerLeave`    | `PlayerMoveEvent`         | Void/ceiling detection, teleport, curse                                  |
 | `FallDamage`    | `PlayerMoveEvent`         | Adds a carried descent to the fall distance in the layer arrived in      |
+| `Monsters`      | `EntitySpawnEvent`        | Scales a spawned monster's stats by the layer's depth                    |
 | `LayerRespawn`  | `PlayerRespawnEvent`      | Clears the curse strain and any carried fall                             |
 | `LayerTeleport` | `PlayerTeleportEvent`     | Records where a teleport put the player, so it is not read as a climb    |
 
@@ -177,6 +178,19 @@ where `utils::take_fall` drops it and vanilla damages on impact. Damage is never
 directly, so water, hay bales and feather falling keep working. A teleport or respawn
 clears the carry. **Only one layer is carried**: a player who falls from `First` without
 landing is hurt by the last segment, not the whole drop.
+
+**Monsters are exponentially harder by layer.** `Layer::monster_scale()` is `2^index`, so
+`First` is `1x` and `Seventh` is `64x`. `Monsters` (`src/events/monsters.rs`) applies it on
+`EntitySpawnEvent` to every monster in `MONSTERS`, multiplying the **base** `MaxHealth`,
+`AttackDamage` and `FollowRange` so re-applying never compounds. `EntitySpawnEvent`, not
+`CreatureSpawnEvent`, because natural spawns, spawners and `/summon` all pass through it.
+A monster that follows a descent is rescaled by `Worlds::descend_monsters`.
+
+**The spawn event's type string is a numeric id.** Pumpkin sends
+`entity_type.id.to_string()` — the registry index (`zombie` is `"154"`), not a name. The
+`monster_id` table maps both the id and the `resource_name`, and it is the only place
+those numbers live. They are tied to Pumpkin's registry order and must be re-verified
+after an API upgrade: if it renumbers, scaling silently stops matching.
 
 **Only players change layers.** There is no entity move event or entity world-change event
 in the plugin API, so an item or mob thrown into the void does not descend — it falls to
@@ -338,6 +352,7 @@ src/
 │   ├── fall_damage.rs  # `FallDamage` — carries a descent's fall distance one layer
 │   ├── layer_join.rs   # `LayerJoin` — entry title, cure on the surface
 │   ├── layer_leave.rs  # `LayerLeave` — void/ceiling teleport + curse
+│   ├── monsters.rs     # `Monsters` — mob stats scale exponentially with depth
 │   ├── layer_respawn.rs# `LayerRespawn` — clears the curse on respawn
 │   └── layer_teleport.rs # `LayerTeleport` — teleports are not climbs
 ```

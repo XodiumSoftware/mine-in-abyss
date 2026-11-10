@@ -16,7 +16,7 @@
 use crate::generator::Void;
 use crate::layer::Layer;
 use pumpkin_plugin_api::worldgen::GeneratorManager;
-use pumpkin_plugin_api::{Context, Dimension};
+use pumpkin_plugin_api::{Context, Dimension, Server, World};
 use std::cell::RefCell;
 use std::collections::HashSet;
 use tracing::{info, warn};
@@ -87,5 +87,58 @@ impl Worlds {
     #[must_use]
     pub fn count() -> usize {
         READY.with(|r| r.borrow().len())
+    }
+
+    /// Moves the monsters in `from` down into the layer `to`.
+    ///
+    /// Entities cannot change layers, so a layer world left behind by a descent takes its
+    /// inhabitants with it: without this, a player who steps into the void and lands a layer
+    /// down would be followed by nothing, and the monsters they were fighting would simply
+    /// cease to exist.
+    ///
+    /// **Every** monster in `from` is moved, not only the ones chasing the player. Asking a
+    /// mob whether it is targeting anyone would mean one AI query per entity, and the point
+    /// of the move is that the layer above is emptied of the danger the player escaped: a
+    /// monster left behind would be stranded in a world nobody can reach without descending
+    /// again.
+    ///
+    /// Each monster keeps its own X/Z and is placed at `entry_y`, the height the player
+    /// arrives at, so it falls into the layer with them rather than appearing on its floor.
+    /// It is rescaled for the destination with `Monsters::apply`, so what follows is as
+    /// dangerous as the layer it followed the player into.
+    ///
+    /// Returns how many monsters were moved.
+    pub fn descend_monsters(server: &Server, from: &World, to: &World, layer: Layer) -> usize {
+        let target_name = to.get_name();
+        let mut moved = 0;
+
+        for entity in from.get_entities() {
+            let Some(living) = entity.as_living() else {
+                continue;
+            };
+
+            if !crate::events::monsters::is_monster(entity.get_type()) {
+                continue;
+            }
+
+            let Some(target) = server.get_world_by_name(&target_name) else {
+                break;
+            };
+
+            let (x, _, z) = entity.get_position();
+            entity.teleport((x, Layer::entry_y(), z), target);
+            crate::events::monsters::Monsters::apply(&living, layer);
+            moved += 1;
+        }
+
+        if moved > 0 {
+            info!(
+                "Moved {moved} monster(s) from '{}' into '{target_name}' for {}",
+                from.get_name(),
+                layer.id()
+            );
+        }
+
+        moved
     }
 }

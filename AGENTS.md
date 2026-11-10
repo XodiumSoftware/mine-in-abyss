@@ -10,6 +10,8 @@
 - **Build Tool:** Cargo
 - **Output:** `mine-in-abyss.wasm` (WASI Preview 2)
 - **Target:** `wasm32-wasip2`
+- **Worlds:** One Minecraft world per layer, each a **custom hand-built map** authored
+  for this project — not generated terrain. See [Each layer is a hand-built map](#each-layer-is-a-hand-built-map).
 
 ## APIs & Tools
 
@@ -174,6 +176,27 @@ implement `pumpkin_plugin_api::commands::CommandHandler` and return `Ok(1)` on s
 - `World` is a non-cloneable WIT resource, so only the set of ready world names is
   cached in a `thread_local`; `Worlds::world` re-resolves the handle from the server
 - A failure for one layer is logged and does not stop the others
+
+#### Each layer is a hand-built map
+
+Every layer world is a **custom map made specifically for this project** — an authored
+region with real terrain, structures and points of interest, not a generated world and
+not a plain void platform. This is the central assumption behind the whole design, so
+keep it in mind whenever you touch transitions or placement:
+
+- `create_world` only takes a name and dimension — there is no generator, seed or
+  level-type argument. The map **is** the world folder on disk, so shipping a layer means
+  shipping its world data.
+- Create-or-load means a map that already exists on disk is reused untouched. Never write
+  code that resets, regenerates or overwrites layer world data on startup.
+- Because the terrain is authored, **do not assume there is ground at a given X/Z**. The
+  transition code preserves X/Z and picks a Y from `Section::entry_y()` / `exit_y()`;
+  whether that lands on solid ground depends entirely on the map at those coordinates.
+- If a layer needs a guaranteed arrival point, that must be map data (a spawn point or a
+  marker) or an explicit safe-position lookup — never a hardcoded coordinate.
+- Void and ceiling thresholds (`Section::VOID_Y` / `Section::MAX_Y`) are vanilla world
+  limits, which is why every layer can be a full-height world without interfering with
+  its neighbours.
 
 ### Configuration
 

@@ -86,6 +86,10 @@ startup.
 World names are derived from the layer's ordinal, so they stay stable across releases
 even if a layer is renamed.
 
+Each layer world is a **custom map built for this project**. The plugin only creates or
+loads the world containers — the terrain, structures and points of interest live in the
+world data on disk.
+
 ### Descending and ascending
 
 - **Descending** — falling below `Y = -128` in a layer teleports the player into the

@@ -124,7 +124,6 @@ Handlers live in `src/events/`, declared inline in the `mod events` block in `li
 | `LayerLeave`    | `PlayerMoveEvent`         | Void/ceiling detection, teleport, curse                                  |
 | `LayerRespawn`  | `PlayerRespawnEvent`      | Clears the curse strain                                                  |
 | `LayerTeleport` | `PlayerTeleportEvent`     | Records where a teleport put the player, so it is not read as a climb    |
-| `LayerMobSpawn` | `CreatureSpawnEvent`      | Cancels spawns of mobs the layer does not allow                          |
 
 `LayerLeave` compares against the bounds shared by every layer
 (`Layer::MIN_Y = -64` — the world floor, which is also where a player counts as having
@@ -228,29 +227,6 @@ Minecraft's **difficulty** is a server-wide setting and the plugin API exposes n
 for it (`Server::get_difficulty` only reads), so peaceful behaviour is expressed as
 per-world game rules instead.
 
-#### Per-layer mob spawning
-
-Game rules can only switch spawning off wholesale. To allow _some_ mobs and not others,
-use `Layer::allowed_mobs()`, enforced by `LayerMobSpawn` on `CreatureSpawnEvent`:
-
-| Return                        | Meaning                                            |
-| ----------------------------- | -------------------------------------------------- |
-| `None`                        | No restriction — every spawn is allowed            |
-| `Some(&[])`                   | Nothing may spawn naturally                        |
-| `Some(&["minecraft:pig", …])` | Only these may spawn; everything else is cancelled |
-
-It is an **allowlist**: listing one mob forbids all others, so `Some(&[…])` is a
-deliberate, per-layer decision rather than an additive one. Entity types are namespaced
-entity ids (`minecraft:pig`); bare names are accepted too.
-
-Current state: `First`–`Fourth` return `None` (unrestricted), `Fifth`–`Seventh` return
-`Some(&[])` (nothing spawns). `First` stays `None` on purpose — its `spawn-monsters` game
-rule already keeps hostiles out, so the allowlist would add nothing.
-
-The handler checks `event.target_world`, so a spawn is judged against the layer it lands
-in, and spawns in non-Abyss worlds are ignored. Spawns with `spawn_reason` `spawner` bypass
-the allowlist, so an authored spawner always works.
-
 #### Each layer is a hand-built map
 
 Every layer world is a **custom map made specifically for this project** — an authored
@@ -300,7 +276,6 @@ src/
 │   ├── curse.rs        # Curse of the Abyss: strain storage + severity ladder
 │   ├── layer_join.rs   # `LayerJoin` — entry title, cure on the surface
 │   ├── layer_leave.rs  # `LayerLeave` — void/ceiling teleport + curse
-│   ├── layer_mob_spawn.rs # `LayerMobSpawn` — per-layer mob spawn allowlist
 │   ├── layer_respawn.rs# `LayerRespawn` — clears the curse on respawn
 │   └── layer_teleport.rs # `LayerTeleport` — teleports are not climbs
 ```

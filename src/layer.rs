@@ -119,44 +119,6 @@ impl Layer {
         }
     }
 
-    /// Returns the entity types allowed to spawn naturally in this layer's world.
-    ///
-    /// `None` means no restriction: every spawn is allowed. `First` uses this because its
-    /// `spawn-monsters` game rule already keeps hostiles out. `Some(&[])` forbids all natural
-    /// spawning. `Some(&[…])` is an **allowlist** — any mob not listed is cancelled, so
-    /// allowing one forbids the rest.
-    ///
-    /// Enforced by [`LayerMobSpawn`](crate::events::layer_mob_spawn::LayerMobSpawn), which
-    /// cancels the spawn event for anything not listed. Names are Minecraft entity ids
-    /// (`minecraft:pig`), and a bare name is accepted too. Spawns from a spawner block are
-    /// exempt, so authored spawners always work.
-    #[must_use]
-    pub const fn allowed_mobs(self) -> Option<&'static [&'static str]> {
-        match self {
-            Self::First => None,
-            Self::Second => Some(&[
-                "minecraft:cow",
-                "minecraft:pig",
-                "minecraft:sheep",
-                "minecraft:chicken",
-                "minecraft:rabbit",
-                "minecraft:horse",
-                "minecraft:wolf",
-                "minecraft:fox",
-                "minecraft:bat",
-                "minecraft:bee",
-            ]),
-            Self::Third => Some(&[
-                "minecraft:bat",
-                "minecraft:parrot",
-                "minecraft:bee",
-                "minecraft:phantom",
-            ]),
-            Self::Fourth => Some(&["minecraft:bat", "minecraft:spider", "minecraft:cave_spider"]),
-            Self::Fifth | Self::Sixth | Self::Seventh => Some(&[]),
-        }
-    }
-
     /// Returns the layer directly below this one, if any.
     #[must_use]
     pub fn next(self) -> Option<Self> {

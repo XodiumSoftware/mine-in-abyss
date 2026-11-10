@@ -102,19 +102,6 @@ settings cannot override them. `First` runs without hostile mobs:
 Minecraft's _difficulty_ is server-wide and cannot be set by a plugin, so "peaceful" is
 expressed as game rules instead.
 
-### Per-layer mob spawning
-
-To allow some mobs and not others, a layer can declare an **allowlist** instead of relying on
-game rules. Listing any mob forbids all the others:
-
-| Layers          | Natural spawning                                |
-| --------------- | ----------------------------------------------- |
-| First – Fourth  | Unrestricted (First: no hostiles via game rule) |
-| Fifth – Seventh | Nothing spawns naturally                        |
-
-Anything not on a layer's list is cancelled before it appears. Mobs placed in a spawner
-block always spawn, regardless of the layer.
-
 ### Descending and ascending
 
 - **Descending** — falling below the world floor (`Y = -64`) in a layer teleports the player

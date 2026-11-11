@@ -40,15 +40,20 @@ graph TD
     F -->|"fall below -64"| G["Seventh"]
     G -->|"nothing below"| H["vanilla void damage"]
 
-    G -->|"rise above 320<br/>curse +7"| F
+    G -->|rise above 320<br/>curse +7 — always fatal| F
     F -->|"curse +6"| E
     E -->|"curse +5"| D
     D -->|"curse +4"| C
     C -->|"curse +3"| B
     B -->|"curse +2"| A1
     A1 -->|"curse +1"| A
-    A -->|"nothing above"| I["nowhere to go"]
+    A -->|nothing above| I["nowhere to go"]
 ```
+
+The `+n` is [`Layer::curse`](src/layer.rs) — the layer's depth index — added to the
+strain the player already carries. Strain saturates at **6**, so climbing out of `Seventh`
+(7 points on its own) is always fatal, and every tier below it depends on how much strain
+the player has already accumulated.
 
 Every transition preserves the player's **X and Z**; only their Y and their world change.
 Because each layer is a full-height world, the void and ceiling bands of neighbouring
@@ -111,7 +116,7 @@ Three ordering details matter:
   empty rather than as generated terrain that would later compete with an authored map.
 - **`create_world` is create-or-load.** A world that already exists on disk is reused
   untouched; only its game rules and generator are re-applied.
-- **One generator id serves all seven worlds.** The handler is stored once and shared.
+- **One generator id serves all eight worlds.** The handler is stored once and shared.
 
 `World` is a non-cloneable WIT resource, so only the _names_ of ready worlds are cached in
 a thread-local; the handle is re-resolved from the server on demand.

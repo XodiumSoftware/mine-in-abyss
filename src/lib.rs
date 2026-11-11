@@ -22,7 +22,8 @@ mod commands {
 /// Minecraft's mob types cannot be extended, so a mob here is a vanilla entity wearing an
 /// identity: a base type, a visible name, scaled attributes, and a marker in its own
 /// persistent data. `mob_builder` is the trait a kind implements and where that marker is
-/// written and read back; `beniguma` is the worked example.
+/// written and read back; `docile::beniguma` is the worked example, filed in `docile`
+/// because that is the category it declares.
 mod mobs {
     pub mod mob_builder;
 

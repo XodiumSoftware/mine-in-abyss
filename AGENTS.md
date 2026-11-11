@@ -124,7 +124,7 @@ that:
 - `game_rules()` — per-world game rules, applied on world setup
 - `entry_y()` / `exit_y()` — the shared spawn heights (see below)
 
-`Layer::ALL` is the source of truth for which layers exist, and `LAYERS: [Layer; 7]`
+`Layer::ALL` is the source of truth for which layers exist, and `LAYERS: [Layer; 8]`
 in `src/lib.rs` is `Layer::ALL`. Registration, world creation and world-name lookup
 (`layer_for_world`) all read from it.
 
@@ -183,7 +183,7 @@ A successful transition also returns the move event with `cancelled: true`, so t
 server does not apply the original `to_position` — which would move the player back into
 the band of the world they just left.
 
-**Leaving the Abyss at either end tells the player.** Rising above `First` or falling
+**Leaving the Abyss at either end tells the player.** Rising above `Orth` or falling
 below `Seventh` has nowhere to go, so `LayerLeave` sends a grey action bar message instead of
 silently doing nothing.
 
@@ -222,7 +222,7 @@ and `PlayerSpawnLocationEvent` can move a position but not a world.
 in the plugin API, so an item or mob thrown into the void does not descend — it falls to
 the world floor and takes vanilla void damage. This is deferred deliberately, **not** a
 missing feature to fix with a scheduler poll over `World::get_entities()`, which would scan
-every entity in all seven worlds on a repeating task. `ARCHITECTURE.md` records what an
+every entity in all eight worlds on a repeating task. `ARCHITECTURE.md` records what an
 implementation would need, and why `EntityMoveEvent` upstream is the trigger to revisit it.
 
 Titles are built as `TextComponent`s directly — the plugin API has no `MiniMessage`
@@ -523,7 +523,7 @@ transitions or placement:
 
 ### Active Layers
 
-All seven layers exist as `Layer` variants (identifier, world, name, gradient colour)
+All eight layers exist as `Layer` variants (identifier, world, name, gradient colour)
 with no gameplay content yet. See the table under [Layer System](#layer-system).
 
 There are no per-layer modules or structs: everything a layer needs is on its `Layer`

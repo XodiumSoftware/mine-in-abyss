@@ -22,16 +22,25 @@
 //! per-world damage stays in place as the baseline. The comment on
 //! [`resume_fall`](crate::utils::resume_fall) records what closing that gap would cost.
 
-use pumpkin_plugin_api::Server;
-use pumpkin_plugin_api::events::EventHandler;
 use pumpkin_plugin_api::events::player::player_move::PlayerMoveEvent;
+use pumpkin_plugin_api::events::{EventHandler, EventPriority};
 use pumpkin_plugin_api::events_wit::PlayerMoveEventData;
+use pumpkin_plugin_api::{Context, Server};
 
+use crate::events::event::Event;
 use crate::utils::{ignores_transitions, layer_of, resume_fall};
 
 /// Adds the fall distance a descent carried into the layer a player is landing in.
 #[derive(Debug, Default, Clone, Copy)]
 pub struct FallDamage;
+
+impl Event for FallDamage {
+    fn register(context: &Context) {
+        context
+            .register_event_handler::<PlayerMoveEvent, _>(FallDamage, EventPriority::Normal, false)
+            .expect("failed to register fall distance handler");
+    }
+}
 
 impl EventHandler<PlayerMoveEvent> for FallDamage {
     fn handle(&self, _server: Server, event: PlayerMoveEventData) -> PlayerMoveEventData {

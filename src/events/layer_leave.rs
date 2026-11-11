@@ -38,11 +38,12 @@
 //! damage is the death the drop already deserves.
 
 use pumpkin_plugin_api::common::NamedColor;
-use pumpkin_plugin_api::events::EventHandler;
 use pumpkin_plugin_api::events::player::player_move::PlayerMoveEvent;
+use pumpkin_plugin_api::events::{EventHandler, EventPriority};
 use pumpkin_plugin_api::events_wit::PlayerMoveEventData;
-use pumpkin_plugin_api::{Player, Server};
+use pumpkin_plugin_api::{Context, Player, Server};
 
+use crate::events::event::Event;
 use crate::layer::Layer;
 use crate::utils::{
     arrived_by_teleport, begin_transition, carry_fall, clear_fall, ignores_transitions, layer_of,
@@ -53,6 +54,14 @@ use crate::world::setup::Worlds;
 /// Detects a player leaving a layer through its void or ceiling.
 #[derive(Debug, Default, Clone, Copy)]
 pub struct LayerLeave;
+
+impl Event for LayerLeave {
+    fn register(context: &Context) {
+        context
+            .register_event_handler::<PlayerMoveEvent, _>(LayerLeave, EventPriority::Normal, false)
+            .expect("failed to register PlayerMoveEvent handler");
+    }
+}
 
 impl EventHandler<PlayerMoveEvent> for LayerLeave {
     fn handle(&self, server: Server, event: PlayerMoveEventData) -> PlayerMoveEventData {

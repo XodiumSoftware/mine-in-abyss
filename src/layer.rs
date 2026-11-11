@@ -144,6 +144,24 @@ impl Layer {
         self.index() + 1
     }
 
+    /// Resolves a user-supplied identifier (`first`, `1`, `FIRST`, …) to a layer.
+    ///
+    /// Accepts both the [`id`](Self::id) and the [`number`](Self::number), case-insensitively,
+    /// so a command can take whichever the player finds easier to type. Both spellings are
+    /// read from the variant itself, so a renamed or reordered layer cannot leave a stale
+    /// alias behind.
+    #[must_use]
+    pub fn from_id(input: &str) -> Option<Self> {
+        let input = input.to_ascii_lowercase();
+        Self::iter().find(|layer| layer.id() == input || layer.number().to_string() == input)
+    }
+
+    /// Returns every identifier, comma-separated, for use in error messages.
+    #[must_use]
+    pub fn id_list() -> String {
+        Self::iter().map(Self::id).collect::<Vec<_>>().join(", ")
+    }
+
     /// Returns the Y coordinate a player is placed at when entering a layer.
     ///
     /// Entering from above (descending) lands them near the ceiling of the world, so the

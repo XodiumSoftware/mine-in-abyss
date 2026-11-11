@@ -76,10 +76,16 @@ need a variation, say which command you ran and why.
 **`MineInAbyss`** — implements `Plugin` from `pumpkin_plugin_api`:
 
 1. **Registration**: Via `register_plugin!(MineInAbyss)` macro
-2. **`on_load`**:
-    - Registers the event handlers (see [Events](#events))
+2. **`on_load`**, in order:
+    - `MineInAbyss::layers` — logs how many layers exist
+    - `MineInAbyss::events` — registers every event handler (see [Events](#events))
+    - `MineInAbyss::commands` — registers every command (see [Commands](#commands))
     - Creates one world per layer via `Worlds::setup`
+    - Starts the clock sync task (`world::clock::schedule`)
 3. **`on_unload`**: Logs farewell message
+
+Each of the three registration methods iterates a single array of `fn(&Context)` and logs
+`array.len()`, so the logged count cannot drift from what was registered.
 
 ### Layer System
 
@@ -117,7 +123,12 @@ in `src/lib.rs` is `Layer::ALL`. Registration, world creation and world-name loo
 
 ### Events
 
-Handlers live in `src/events/`, declared inline in the `mod events` block in `lib.rs`:
+Handlers live in `src/events/`, declared inline in the `mod events` block in `lib.rs`.
+Each handler implements the [`Event`](src/events/event.rs) trait for itself, so the event
+type it answers, its priority and whether it blocks stay in the file that defines the
+handler. `src/events/event.rs` holds the trait; `MineInAbyss::events` in `lib.rs` calls
+every `register` and logs the count. Registering a handler therefore means adding its file,
+its submodule, its `impl Event`, and one entry in that array.
 
 | Handler         | Event                     | Behaviour                                                                |
 | --------------- | ------------------------- | ------------------------------------------------------------------------ |
@@ -220,14 +231,21 @@ consuming builders: reassign the result (`let t = TextComponent::text(..).color_
 ### Commands
 
 Commands live in `src/commands/<name>.rs` and are declared inline in the `mod commands`
-block in `lib.rs`. Each module exposes `register(context)`, which is called from
-`on_load`.
+block in `lib.rs`. Each command implements the [`Command`](src/commands/command.rs) trait
+for itself, so its tree, its permission node and the message a failed registration logs
+stay in the file that defines the executor. `src/commands/command.rs` holds the trait;
+`MineInAbyss::commands` in `lib.rs` calls every `register` and logs the count. Adding a
+command therefore means adding its file, its submodule, its `impl Command`, and one entry
+in that array.
 
 | Command  | Aliases | Permission                    | Behaviour                                                    |
 | -------- | ------- | ----------------------------- | ------------------------------------------------------------ |
 | `/abyss` | `/mia`  | `mine_in_abyss:command.abyss` | Moves a player into a layer without the curse (ops level 3+) |
 
-`/abyss <layer> [player]` accepts `first` … `seventh` or `1` … `7`, case-insensitive.
+`/abyss <layer> [player]` accepts `first` … `seventh` or `1` … `7`, case-insensitive,
+through [`Layer::from_id`], which reads both spellings off the variant so a reordered layer
+cannot leave a stale alias behind. `Layer::id_list` renders the accepted names for the
+error message.
 A player running it is always the one moved; `[player]` is only consulted from console.
 It teleports straight into the layer, so no curse strain is added — unlike a real ascent.
 
@@ -367,16 +385,18 @@ src/
 │   ├── generator.rs    # `Void` chunk generator — layer worlds generate empty
 │   └── clock.rs        # Keeps every layer world on `First`'s clock
 ├── commands/
-│   └── abyss.rs        # `/abyss` — ops teleport into a layer, curse-free
+│   ├── abyss.rs        # `/abyss` — ops teleport into a layer, curse-free
+│   └── command.rs      # `Command` trait — each command registers itself
 ├── events/
 │   ├── curse.rs        # Curse of the Abyss: strain storage + severity ladder
+│   ├── event.rs        # `Event` trait — each handler registers itself
 │   ├── bed_spawn.rs    # `BedSpawn` — refuses beds setting a spawn point
 │   ├── fall_damage.rs  # `FallDamage` — carries a descent's fall distance one layer
 │   ├── layer_join.rs   # `LayerJoin` — entry title, cure on the surface
 │   ├── layer_leave.rs  # `LayerLeave` — void/ceiling teleport + curse
 │   ├── monsters.rs     # `Monsters` — mob stats scale exponentially with depth
 │   ├── layer_respawn.rs# `LayerRespawn` — respawns at First's spawn
-│   └── layer_teleport.rs # `LayerTeleport` — teleports are not climbs
+│   ├── layer_teleport.rs # `LayerTeleport` — teleports are not climbs
 ```
 
 ### Key Conventions
@@ -476,8 +496,9 @@ To add a new layer, follow these steps:
 3. In `src/lib.rs`: `LAYERS` is `Layer::ALL`, so nothing to change unless the layer
    needs its own behaviour
 4. If the layer needs behaviour of its own, implement `EventHandler<T>` in
-   `src/events/` and register it in `MineInAbyss::register_events` — prefer one handler
-   for all layers (as `LayerLeave` does) over per-layer registration
+   `src/events/`, implement `Event::register` beside it, and add one entry to the array in
+   `MineInAbyss::events` — prefer one handler for all layers (as `LayerLeave` does) over
+   per-layer registration
 5. Run `just lint` (and `just validate` before a PR)
 
 ## Memory System

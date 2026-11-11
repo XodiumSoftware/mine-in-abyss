@@ -6,16 +6,29 @@
 //! landed; [`LayerLeave`](super::layer_leave) decides whether that landing point counts as
 //! an ascent. The fall carry is dropped here because the drop it described is over.
 
-use pumpkin_plugin_api::Server;
-use pumpkin_plugin_api::events::EventHandler;
 use pumpkin_plugin_api::events::player::player_teleport::PlayerTeleportEvent;
+use pumpkin_plugin_api::events::{EventHandler, EventPriority};
 use pumpkin_plugin_api::events_wit::PlayerTeleportEventData;
+use pumpkin_plugin_api::{Context, Server};
 
+use crate::events::event::Event;
 use crate::utils::{clear_fall, note_teleport};
 
 /// Notes the destination of every player teleport.
 #[derive(Debug, Default, Clone, Copy)]
 pub struct LayerTeleport;
+
+impl Event for LayerTeleport {
+    fn register(context: &Context) {
+        context
+            .register_event_handler::<PlayerTeleportEvent, _>(
+                LayerTeleport,
+                EventPriority::Normal,
+                false,
+            )
+            .expect("failed to register PlayerTeleportEvent handler");
+    }
+}
 
 impl EventHandler<PlayerTeleportEvent> for LayerTeleport {
     fn handle(&self, _server: Server, event: PlayerTeleportEventData) -> PlayerTeleportEventData {

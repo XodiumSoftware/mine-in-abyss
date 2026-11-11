@@ -14,6 +14,7 @@ mod layer;
 /// The `/abyss` command.
 mod commands {
     pub mod abyss;
+    pub mod command;
 }
 
 /// The layer worlds, and the machinery that keeps them usable.
@@ -53,6 +54,7 @@ mod utils {
 mod events {
     pub mod bed_spawn;
     pub mod curse;
+    pub mod event;
     pub mod fall_damage;
     pub mod layer_join;
     pub mod layer_leave;
@@ -64,15 +66,11 @@ mod events {
 pub use layer::*;
 pub use world::setup::*;
 
-use pumpkin_plugin_api::events::EventPriority;
-use pumpkin_plugin_api::events::entity::entity_spawn::EntitySpawnEvent;
-use pumpkin_plugin_api::events::player::player_changed_world::PlayerChangedWorldEvent;
-use pumpkin_plugin_api::events::player::player_move::PlayerMoveEvent;
-use pumpkin_plugin_api::events::player::player_respawn::PlayerRespawnEvent;
-use pumpkin_plugin_api::events::player::player_spawn_change::PlayerSpawnChangeEvent;
-use pumpkin_plugin_api::events::player::player_teleport::PlayerTeleportEvent;
 use pumpkin_plugin_api::{Context, Plugin, PluginMetadata};
 use tracing::info;
+
+use commands::command::Command as RegisterCommand;
+use events::event::Event as RegisterEvent;
 
 /// The plugin identifier used for namespaced ids and permission nodes.
 ///
@@ -95,68 +93,36 @@ pub(crate) fn layer_for_world(name: &str) -> Option<Layer> {
 pub struct MineInAbyss {}
 
 impl MineInAbyss {
-    /// Registers every layer, from the surface down.
-    fn register_layers() {
+    fn layers() {
         info!("Registered {} layer(s)", LAYERS.len());
     }
 
-    /// Registers the event that announces a layer when a player enters its world.
-    fn register_events(context: &Context) {
-        context
-            .register_event_handler::<PlayerChangedWorldEvent, _>(
-                events::layer_join::LayerJoin,
-                EventPriority::Normal,
-                false,
-            )
-            .expect("failed to register PlayerChangedWorldEvent handler");
+    fn events(context: &Context) {
+        let events: [fn(&Context); 7] = [
+            events::layer_join::LayerJoin::register,
+            events::layer_leave::LayerLeave::register,
+            events::fall_damage::FallDamage::register,
+            events::layer_respawn::LayerRespawn::register,
+            events::layer_teleport::LayerTeleport::register,
+            events::monsters::Monsters::register,
+            events::bed_spawn::BedSpawn::register,
+        ];
 
-        context
-            .register_event_handler::<PlayerMoveEvent, _>(
-                events::layer_leave::LayerLeave,
-                EventPriority::Normal,
-                false,
-            )
-            .expect("failed to register PlayerMoveEvent handler");
+        for register in events {
+            register(context);
+        }
 
-        context
-            .register_event_handler::<PlayerMoveEvent, _>(
-                events::fall_damage::FallDamage,
-                EventPriority::Normal,
-                false,
-            )
-            .expect("failed to register fall distance handler");
+        info!("Registered {} event(s)", events.len());
+    }
 
-        context
-            .register_event_handler::<PlayerRespawnEvent, _>(
-                events::layer_respawn::LayerRespawn,
-                EventPriority::Normal,
-                false,
-            )
-            .expect("failed to register PlayerRespawnEvent handler");
+    fn commands(context: &Context) {
+        let commands: [fn(&Context); 1] = [commands::abyss::Abyss::register];
 
-        context
-            .register_event_handler::<PlayerTeleportEvent, _>(
-                events::layer_teleport::LayerTeleport,
-                EventPriority::Normal,
-                false,
-            )
-            .expect("failed to register PlayerTeleportEvent handler");
+        for register in commands {
+            register(context);
+        }
 
-        context
-            .register_event_handler::<EntitySpawnEvent, _>(
-                events::monsters::Monsters,
-                EventPriority::Normal,
-                false,
-            )
-            .expect("failed to register EntitySpawnEvent handler");
-
-        context
-            .register_event_handler::<PlayerSpawnChangeEvent, _>(
-                events::bed_spawn::BedSpawn,
-                EventPriority::Normal,
-                false,
-            )
-            .expect("failed to register PlayerSpawnChangeEvent handler");
+        info!("Registered {} command(s)", commands.len());
     }
 }
 
@@ -180,9 +146,9 @@ impl Plugin for MineInAbyss {
     }
 
     fn on_load(&self, context: Context) -> pumpkin_plugin_api::Result<()> {
-        Self::register_layers();
-        Self::register_events(&context);
-        commands::abyss::register(&context);
+        Self::layers();
+        Self::events(&context);
+        Self::commands(&context);
 
         let worlds = Worlds::setup(&context, &LAYERS);
         world::clock::schedule(&context);

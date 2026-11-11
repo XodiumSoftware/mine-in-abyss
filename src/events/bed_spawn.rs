@@ -21,17 +21,30 @@
 //! usual "Spawn point set" message, so this handler adds a short red action bar line —
 //! using a bed should not silently do nothing.
 
-use pumpkin_plugin_api::Server;
 use pumpkin_plugin_api::common::NamedColor;
-use pumpkin_plugin_api::events::EventHandler;
 use pumpkin_plugin_api::events::player::player_spawn_change::PlayerSpawnChangeEvent;
+use pumpkin_plugin_api::events::{EventHandler, EventPriority};
 use pumpkin_plugin_api::events_wit::PlayerSpawnChangeEventData;
+use pumpkin_plugin_api::{Context, Server};
 
+use crate::events::event::Event;
 use crate::utils::tell;
 
 /// Refuses a player-set spawn point, leaving cleared and operator-set points alone.
 #[derive(Debug, Default, Clone, Copy)]
 pub struct BedSpawn;
+
+impl Event for BedSpawn {
+    fn register(context: &Context) {
+        context
+            .register_event_handler::<PlayerSpawnChangeEvent, _>(
+                BedSpawn,
+                EventPriority::Normal,
+                false,
+            )
+            .expect("failed to register PlayerSpawnChangeEvent handler");
+    }
+}
 
 impl EventHandler<PlayerSpawnChangeEvent> for BedSpawn {
     fn handle(

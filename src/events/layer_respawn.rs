@@ -23,17 +23,30 @@
 //! except the respawn packet itself, which is what puts the player back in a playable
 //! state.
 
-use pumpkin_plugin_api::Server;
-use pumpkin_plugin_api::events::EventHandler;
 use pumpkin_plugin_api::events::player::player_respawn::PlayerRespawnEvent;
+use pumpkin_plugin_api::events::{EventHandler, EventPriority};
 use pumpkin_plugin_api::events_wit::PlayerRespawnEventData;
+use pumpkin_plugin_api::{Context, Server};
 
+use crate::events::event::Event;
 use crate::layer::Layer;
 use crate::utils::{clear_fall, world_for};
 
 /// Returns a respawning player to `First`'s world spawn.
 #[derive(Debug, Default, Clone, Copy)]
 pub struct LayerRespawn;
+
+impl Event for LayerRespawn {
+    fn register(context: &Context) {
+        context
+            .register_event_handler::<PlayerRespawnEvent, _>(
+                LayerRespawn,
+                EventPriority::Normal,
+                false,
+            )
+            .expect("failed to register PlayerRespawnEvent handler");
+    }
+}
 
 impl EventHandler<PlayerRespawnEvent> for LayerRespawn {
     fn handle(&self, server: Server, event: PlayerRespawnEventData) -> PlayerRespawnEventData {

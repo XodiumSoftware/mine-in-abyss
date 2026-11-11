@@ -37,6 +37,7 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::permission::{
 use pumpkin_plugin_api::{Context, Server};
 
 use crate::PLUGIN_ID;
+use crate::commands::command::Command as RegisterCommand;
 use crate::layer::Layer;
 
 /// The command's primary name followed by its aliases.
@@ -52,37 +53,42 @@ pub fn permission_node() -> String {
 /// Human-readable description, reused by the command and its permission node.
 const DESCRIPTION: &str = "Move to a layer of the Abyss without the curse";
 
-/// Registers `/abyss` and its permission node.
-pub fn register(context: &Context) {
-    let names: Vec<String> = NAMES.iter().map(ToString::to_string).collect();
+/// The `/abyss` command, registration and executor.
+///
+/// The struct is empty: it exists so the command can implement [`RegisterCommand`] and
+/// [`CommandHandler`], keeping both next to the tree they describe.
+#[derive(Debug, Default, Clone, Copy)]
+pub struct Abyss;
 
-    let layer_leaf = CommandNode::argument("layer", &ArgumentType::String(StringType::SingleWord));
-    let layer_with_player =
-        CommandNode::argument("layer", &ArgumentType::String(StringType::SingleWord));
-    let player = CommandNode::argument("player", &ArgumentType::String(StringType::SingleWord));
+impl RegisterCommand for Abyss {
+    fn register(context: &Context) {
+        let names: Vec<String> = NAMES.iter().map(ToString::to_string).collect();
 
-    let command = Command::new(&names, DESCRIPTION)
-        .then(layer_with_player.then(player).execute(AbyssCommand))
-        .then(layer_leaf.execute(AbyssCommand))
-        .execute(AbyssCommand);
+        let layer_leaf =
+            CommandNode::argument("layer", &ArgumentType::String(StringType::SingleWord));
+        let layer_with_player =
+            CommandNode::argument("layer", &ArgumentType::String(StringType::SingleWord));
+        let player = CommandNode::argument("player", &ArgumentType::String(StringType::SingleWord));
 
-    context.register_command(command, &permission_node());
+        let command = Command::new(&names, DESCRIPTION)
+            .then(layer_with_player.then(player).execute(Abyss))
+            .then(layer_leaf.execute(Abyss))
+            .execute(Abyss);
 
-    context
-        .register_permission(&Permission {
-            node: permission_node(),
-            description: DESCRIPTION.to_string(),
-            default: PermissionDefault::Op(PermissionLevel::Three),
-            children: vec![],
-        })
-        .expect("failed to register permission node");
+        context.register_command(command, &permission_node());
+
+        context
+            .register_permission(&Permission {
+                node: permission_node(),
+                description: DESCRIPTION.to_string(),
+                default: PermissionDefault::Op(PermissionLevel::Three),
+                children: vec![],
+            })
+            .expect("failed to register permission node");
+    }
 }
 
-/// Executor for `/abyss`.
-#[derive(Debug, Default, Clone, Copy)]
-struct AbyssCommand;
-
-impl CommandHandler for AbyssCommand {
+impl CommandHandler for Abyss {
     fn handle(
         &self,
         sender: CommandSender,
@@ -93,10 +99,10 @@ impl CommandHandler for AbyssCommand {
             return Err(CommandError::InvalidConsumption(None));
         };
 
-        let Some(layer) = layer_from(&layer) else {
+        let Some(layer) = Layer::from_id(&layer) else {
             sender.send_error(TextComponent::text(&format!(
                 "Unknown layer '{layer}'. Expected one of: {}.",
-                layer_names()
+                Layer::id_list()
             )));
             return Ok(0);
         };
@@ -134,23 +140,6 @@ impl CommandHandler for AbyssCommand {
     }
 }
 
-/// Resolves a user-supplied layer name (`first`, `1`, `FIRST`, …) to a layer.
-fn layer_from(input: &str) -> Option<Layer> {
-    let input = input.to_ascii_lowercase();
-    Layer::ALL
-        .into_iter()
-        .find(|layer| layer.id() == input || layer.number().to_string() == input)
-}
-
-/// Returns the accepted layer names, for use in error messages.
-fn layer_names() -> String {
-    Layer::ALL
-        .iter()
-        .map(|layer| layer.id())
-        .collect::<Vec<_>>()
-        .join(", ")
-}
-
 /// Suggests layer names for the `<layer>` argument.
 ///
 /// **Disabled.** Attaching this with `CommandNode::suggest` makes the server panic on the
@@ -158,7 +147,8 @@ fn layer_names() -> String {
 /// `Simulation` thread, which has no Tokio reactor, and panics before the plugin is
 /// reached. The handler is kept, and gated behind `cfg(any())` — which is never true — so
 /// it still compiles as part of `cargo check`, and enabling it is a matter of restoring
-/// the two `.suggest(LayerSuggestions)` calls in [`register`] and dropping the gates.
+/// the two `.suggest(LayerSuggestions)` calls in [`Abyss`]'s `register` and dropping the
+/// gates.
 ///
 /// It cannot be exercised until the host is fixed. See the notes in `AGENTS.md`.
 #[cfg(any())]

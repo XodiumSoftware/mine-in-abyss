@@ -125,6 +125,7 @@ Handlers live in `src/events/`, declared inline in the `mod events` block in `li
 | `LayerLeave`    | `PlayerMoveEvent`         | Void/ceiling detection, teleport, curse                                  |
 | `FallDamage`    | `PlayerMoveEvent`         | Adds a carried descent to the fall distance in the layer arrived in      |
 | `Monsters`      | `EntitySpawnEvent`        | Scales a spawned monster's stats by the layer's depth                    |
+| `BedSpawn`      | `PlayerSpawnChangeEvent`  | Refuses a spawn point a player sets, but keeps `/spawnpoint`             |
 | `LayerRespawn`  | `PlayerRespawnEvent`      | Clears the curse strain and any carried fall                             |
 | `LayerTeleport` | `PlayerTeleportEvent`     | Records where a teleport put the player, so it is not read as a climb    |
 
@@ -191,6 +192,13 @@ A monster that follows a descent is rescaled by `Worlds::descend_monsters`.
 `monster_id` table maps both the id and the `resource_name`, and it is the only place
 those numbers live. They are tied to Pumpkin's registry order and must be re-verified
 after an API upgrade: if it renumbers, scaling silently stops matching.
+
+**Beds cannot set a spawn point.** `BedSpawn` cancels `PlayerSpawnChangeEvent` unless it is
+`forced` or is clearing a point (`new_spawn: None`). `forced` is how the host marks
+`/spawnpoint`, and beds and respawn anchors both pass `forced: false`, so one flag
+separates an operator override from a player shortcut — do not drop it, or `/spawnpoint`
+stops working. Cancelling is sufficient: the host returns `false` from
+`set_respawn_point` and sends no "Spawn point set" message.
 
 **Only players change layers.** There is no entity move event or entity world-change event
 in the plugin API, so an item or mob thrown into the void does not descend — it falls to
@@ -349,6 +357,7 @@ src/
 │   └── abyss.rs        # `/abyss` — ops teleport into a layer, curse-free
 ├── events/
 │   ├── curse.rs        # Curse of the Abyss: strain storage + severity ladder
+│   ├── bed_spawn.rs    # `BedSpawn` — refuses beds setting a spawn point
 │   ├── fall_damage.rs  # `FallDamage` — carries a descent's fall distance one layer
 │   ├── layer_join.rs   # `LayerJoin` — entry title, cure on the surface
 │   ├── layer_leave.rs  # `LayerLeave` — void/ceiling teleport + curse

@@ -151,6 +151,15 @@ is not shared.
 - **The top of the Abyss** — rising above `Y = 320` in `First` has nowhere to go; a grey
   message tells the player so.
 
+### Spawn points
+
+You **cannot set a spawn point** with a bed or a respawn anchor — the Abyss is escaped on
+its own terms, and a bed at the bottom would let you skip the climb. Using one tells you
+so and leaves your spawn where it was.
+
+Operators can still force one with `/spawnpoint`, which is treated as a deliberate
+override rather than a player shortcut.
+
 ### Monsters
 
 Monsters get **exponentially harder** the deeper you go. Every monster in a layer has twice

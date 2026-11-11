@@ -14,6 +14,7 @@ from one layer to the next. For installation and player-facing behaviour see
 - [Why the latch exists](#why-the-latch-exists)
 - [Fall damage across layers](#fall-damage-across-layers)
 - [Monster difficulty](#monster-difficulty)
+- [No bed spawns](#no-bed-spawns)
 - [The Curse of the Abyss](#the-curse-of-the-abyss)
 - [Commands](#commands)
 - [Known constraints](#known-constraints)
@@ -300,6 +301,23 @@ the plugin API has no name accessor on `EntityType` to derive them from. If Pump
 renumbers its entity types, the scale silently stops matching, so re-verify the ids after
 an API upgrade.
 
+## No bed spawns
+
+The Abyss is escaped on its own terms, so a player cannot set a spawn point: a bed at the
+bottom of `Seventh` would let them skip the climb — and the Curse — by dying there.
+`BedSpawn` cancels `PlayerSpawnChangeEvent` and says why in a red action bar message.
+
+The filter is `!forced && new_spawn.is_some()`:
+
+- **`forced`** is set only by `/spawnpoint`, which passes `forced: true` because an
+  operator asked for it. Beds and respawn anchors both pass `forced: false`. Cancelling
+  unconditionally would take away the operator's escape hatch.
+- **`new_spawn: None`** means a point is being _cleared_, not set, so clearing still works.
+
+Cancelling is enough on its own: the host returns `false` from `set_respawn_point` and
+never sends its usual "Spawn point set" message, so the only feedback is the one this
+handler adds.
+
 ## The Curse of the Abyss
 
 Ascending adds strain; the strain is cumulative and stored as namespaced NBT on the player,
@@ -330,14 +348,15 @@ its own.
 
 `/abyss <layer> [player]` (alias `/mia`) is the only command.
 
-| Event handler   | Event                     | Responsibility                                  |
-| --------------- | ------------------------- | ----------------------------------------------- |
-| `LayerJoin`     | `PlayerChangedWorldEvent` | Entry title; release latch; cure on the surface |
-| `LayerLeave`    | `PlayerMoveEvent`         | Void/ceiling detection, teleport, curse         |
-| `FallDamage`    | `PlayerMoveEvent`         | Adds the carried descent to the fall distance   |
-| `Monsters`      | `EntitySpawnEvent`        | Scales a spawned monster's stats by layer depth |
-| `LayerRespawn`  | `PlayerRespawnEvent`      | Clear the curse strain and any carried fall     |
-| `LayerTeleport` | `PlayerTeleportEvent`     | Record where a teleport put the player          |
+| Event handler   | Event                     | Responsibility                                       |
+| --------------- | ------------------------- | ---------------------------------------------------- |
+| `LayerJoin`     | `PlayerChangedWorldEvent` | Entry title; release latch; cure on the surface      |
+| `LayerLeave`    | `PlayerMoveEvent`         | Void/ceiling detection, teleport, curse              |
+| `FallDamage`    | `PlayerMoveEvent`         | Adds the carried descent to the fall distance        |
+| `Monsters`      | `EntitySpawnEvent`        | Scales a spawned monster's stats by layer depth      |
+| `BedSpawn`      | `PlayerSpawnChangeEvent`  | Refuses player-set spawn points, keeps `/spawnpoint` |
+| `LayerRespawn`  | `PlayerRespawnEvent`      | Clear the curse strain and any carried fall          |
+| `LayerTeleport` | `PlayerTeleportEvent`     | Record where a teleport put the player               |
 
 A **player** running `/abyss` is always the one moved; `[player]` is only consulted from
 console. This is not a stylistic choice — the host returns an omitted argument as

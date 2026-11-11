@@ -12,12 +12,27 @@
 mod generator;
 mod layer;
 mod time_sync;
-mod utils;
 mod worlds;
 
 /// The `/abyss` command.
 mod commands {
     pub mod abyss;
+}
+
+/// Small helpers shared across the plugin.
+mod utils {
+    pub mod fall;
+    pub mod general;
+    pub mod teleport;
+    pub mod text;
+    pub mod transition;
+    pub mod world;
+
+    pub use fall::{carry_fall, clear_fall, resume_fall};
+    pub use teleport::{arrived_by_teleport, note_teleport};
+    pub use text::{ordinal, rgb, tell};
+    pub use transition::{begin_transition, end_transition, ignores_transitions};
+    pub use world::{layer_of, world_for};
 }
 
 /// Event handlers for `mine-in-abyss`.

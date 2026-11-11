@@ -355,7 +355,15 @@ src/
 ├── lib.rs              # `PLUGIN_ID`, `LAYERS`, `layer_for_world`, `Plugin` impl
 ├── layer.rs            # `Layer` enum + id/world/next/prev/index/curse,
 │                       # plus shared `MIN_Y`/`MAX_Y` and entry/exit heights
-├── utils.rs            # Shared helpers (`ignores_transitions`, `layer_of`, `tell`, `world_for`)
+├── utils.rs            # Docs + shared helpers; `mod utils` in `lib.rs` declares the
+│                       # submodules below and re-exports their functions
+├── utils/
+│   ├── fall.rs         # `FallCarry` — a descent's distance carried across a boundary
+│   ├── general.rs      # `key`, `is_dead`, `exempt_gamemode` — per-player predicates
+│   ├── teleport.rs     # `TELEPORTED` — a teleport is not a climb
+│   ├── text.rs         # `tell`, `ordinal`, `rgb`
+│   ├── transition.rs   # `TRANSITING` — the one-shot latch
+│   └── world.rs        # `world_for`, `layer_of`
 ├── generator.rs        # `Void` chunk generator — layer worlds generate empty
 ├── time_sync.rs        # Keeps every layer world on `First`'s clock
 ├── worlds.rs           # `Worlds` — one void world per layer
@@ -377,6 +385,9 @@ src/
 - `unsafe_code` forbidden project-wide (`[lints.rust] unsafe_code = "forbid"`)
 - **No `//` line comments.** Explain intent in rustdoc (`///`, `//!`) and in identifier
   and function names instead. Only `///` and `//!` comments belong in `src/`.
+- **No `mod.rs`.** Folder modules are declared inline in `lib.rs`, next to `commands` and
+  `events` — a folder gets a file of the same name for its `//!` docs and re-exports
+  (`utils.rs` next to `utils/`), never a `mod.rs`.
 - All Clippy warnings enabled; run with `-W clippy::pedantic -D warnings` to catch pedantic lints as errors. (`[lints.clippy] all = "warn"`)
 - Config structs: `Debug`, `Clone`, `Default`, `Serialize`, `Deserialize`
 - Config fields documented with `///` comments

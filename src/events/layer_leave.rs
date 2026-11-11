@@ -45,7 +45,7 @@ use pumpkin_plugin_api::{Player, Server};
 
 use crate::layer::Layer;
 use crate::utils::{
-    begin_transition, carry_fall, clear_fall, consume_teleport, ignores_transitions, layer_of,
+    arrived_by_teleport, begin_transition, carry_fall, clear_fall, ignores_transitions, layer_of,
     tell, world_for,
 };
 use crate::worlds::Worlds;
@@ -117,21 +117,6 @@ impl EventHandler<PlayerMoveEvent> for LayerLeave {
         }
     }
 }
-
-/// Returns `true` if this move merely reports a position a teleport already placed the
-/// player at.
-///
-/// Being teleported above the ceiling is not an ascent, and must not be cursed. The
-/// record is consumed either way, so a genuine climb afterwards still counts; the Y
-/// comparison stops a stale record swallowing an unrelated move.
-fn arrived_by_teleport(player: &Player, y: f64) -> bool {
-    consume_teleport(player)
-        .is_some_and(|teleported_y| (teleported_y - y).abs() < TELEPORT_TOLERANCE)
-}
-
-/// How far a move may differ from a teleport destination and still count as the same
-/// arrival, in blocks. Covers the drift between the requested and applied position.
-const TELEPORT_TOLERANCE: f64 = 2.0;
 
 /// Which way out of a layer a player is heading.
 #[derive(Debug, Clone, Copy)]

@@ -160,6 +160,7 @@ mod utils {
 /// Event handlers for `mine-in-abyss`.
 mod events {
     pub mod bed_spawn;
+    pub mod creature_spawn;
     pub mod curse;
     pub mod event;
     pub mod fall_damage;
@@ -331,13 +332,14 @@ impl MineInAbyss {
     }
 
     fn events(context: &Context) {
-        let events: [fn(&Context); 6] = [
+        let events: [fn(&Context); 7] = [
             events::layer_join::LayerJoin::register,
             events::layer_leave::LayerLeave::register,
             events::fall_damage::FallDamage::register,
             events::layer_respawn::LayerRespawn::register,
             events::layer_teleport::LayerTeleport::register,
             events::bed_spawn::BedSpawn::register,
+            events::creature_spawn::CreatureSpawn::register,
         ];
 
         let started = Instant::now();

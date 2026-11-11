@@ -145,6 +145,7 @@ its submodule, its `impl Event`, and one entry in that array.
 | `BedSpawn`      | `PlayerSpawnChangeEvent`  | Refuses a spawn point a player sets, but keeps `/spawnpoint`          |
 | `LayerRespawn`  | `PlayerRespawnEvent`      | Clears the curse strain, then returns the player to `Orth`'s spawn    |
 | `LayerTeleport` | `PlayerTeleportEvent`     | Records where a teleport put the player, so it is not read as a climb |
+| `CreatureSpawn` | `CreatureSpawnEvent`      | Replaces a naturally spawned vanilla mob with one of the layer's kinds |
 
 `LayerLeave` compares against the bounds shared by every layer
 (`Layer::MIN_Y = -64` — the world floor, which is also where a player counts as having
@@ -228,6 +229,32 @@ implementation would need, and why `EntityMoveEvent` upstream is the trigger to 
 Titles are built as `TextComponent`s directly — the plugin API has no `MiniMessage`
 parser, so **never emit `MiniMessage` strings**. `color_named` and friends are
 consuming builders: reassign the result (`let t = TextComponent::text(..).color_named(..)`)
+
+**Vanilla mobs never spawn in a layer world.** `CreatureSpawn` cancels a natural spawn in any
+layer world and spawns a kind from [`mob_kinds`](src/lib.rs) whose `layers()` include that
+layer, at the event's own position and world. The list that guards `/abyss summon` therefore
+also decides what lives where — there is no second spawn table.
+
+Only reasons in `NATURAL_REASONS` count as natural. A spawner, breeding, a spawn egg or a
+command is left untouched, so this never removes a mob a player or operator asked for. The API
+carries `spawn-reason` as a bare `string` with **no documented vocabulary**, so the spellings
+are a best guess; an unrecognised one is logged at `debug` and not treated as natural. If
+layers turn out to spawn nothing on a live server, check that log first — it distinguishes
+"the host words it differently" from "no kind lives in this layer".
+
+**The choice is positional, not random.** The kind is picked by mixing the spawn position's
+bits into an index, so no RNG dependency is needed and the same spot always yields the same
+kind. It is not weighted: every kind listing the layer is equally likely.
+
+**Suppression has a visible consequence.** `Sixth` and `Seventh` list no kinds, so once this
+handler is active those layers contain **no mobs at all** — vanilla spawns are cancelled and
+nothing replaces them. That is the honest result of no kind being authored for them yet, but
+it is a gameplay change, not an oversight. Every other layer has candidates (`Orth` 1, `First`
+20, `Second` 21, `Third` 14, `Fourth` 18, `Fifth` 26).
+
+**Two places create a mob**, and nothing else does: this handler by rule, and `/abyss summon`
+when an operator asks. Entities still cannot descend between layers, so a mob spawned here
+lives and dies in the layer it was born in.
 
 ### Commands
 
@@ -603,6 +630,7 @@ src/
 │   ├── curse.rs        # Curse of the Abyss: strain storage + severity ladder
 │   ├── event.rs        # `Event` trait — each handler registers itself
 │   ├── bed_spawn.rs    # `BedSpawn` — refuses beds setting a spawn point
+│   ├── creature_spawn.rs # `CreatureSpawn` — vanilla spawns become layer kinds
 │   ├── fall_damage.rs  # `FallDamage` — carries a descent's fall distance one layer
 │   ├── layer_join.rs   # `LayerJoin` — entry title, cure in Orth
 │   ├── layer_leave.rs  # `LayerLeave` — void/ceiling teleport + curse

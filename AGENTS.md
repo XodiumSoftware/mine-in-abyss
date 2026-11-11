@@ -78,6 +78,7 @@ need a variation, say which command you ran and why.
 1. **Registration**: Via `register_plugin!(MineInAbyss)` macro
 2. **`on_load`**, in order — four startup steps, one method each:
     - `MineInAbyss::layers` — logs how many layers exist
+    - `MineInAbyss::mobs` — logs the mob kinds in the catalogue
     - `MineInAbyss::events` — registers every event handler (see [Events](#events))
     - `MineInAbyss::commands` — registers every command (see [Commands](#commands))
     - `MineInAbyss::worlds` — creates one world per layer via `Worlds::setup`, starts the
@@ -319,6 +320,49 @@ follows as well — `/time set 24000` in `First` puts the other layers on day 1 
 world's **age** is a separate counter with no setter in the plugin API, so it cannot be
 shared; nothing in vanilla depends on age and time of day agreeing.
 
+### Custom mobs
+
+**Minecraft's entity types cannot be extended.** `entity-types.wit` exposes `entity-type` as
+a closed enum and there is no registration call anywhere in the plugin WIT, so a "custom
+mob" is always **a vanilla mob wearing an identity**. `src/mobs/` is the architecture for
+that, not a way around it:
+
+- `mob.rs` — the [`Mob`](src/mobs/mob.rs) trait, plus the identity marker it writes. A kind
+  supplies its base `EntityType`, a stable `id` byte and its visible name, and does
+  everything else in **`Mob::apply`**: the spawned `LivingEntity` is handed over and the
+  kind sets attributes with `set_attribute_base` and equips itself with `set_equipment`
+  per slot. Nothing is a fixed table, so a hand-only mob and a fully armoured one are just
+  different bodies for that method. `Mob::spawn` creates the base type, calls `apply`, and
+  stamps the identity.
+- The marker itself is `mark`/`id_of`/`is` in the same file: a **byte** in the entity's own
+  persistent data under `PLUGIN_ID` (`set_byte`/`get_byte`, the same calls `curse.rs` uses),
+  so it survives relogs and restarts and cannot collide with another plugin's data. It
+  stores `Mob::id`, not the display name, so renaming a kind does not orphan mobs already
+  spawned. `id_of` returns `None` for anything this plugin did not spawn, so a handler must
+  not assume every mob is custom.
+
+**Attributes are written to the base value**, matching `Monsters::apply`. That is what lets
+the depth scale layer on top: a kind's own attributes and the layer's `2^index` are
+independent and neither compounds.
+
+**What is not available**, so do not design around it:
+
+- No entity model, texture or hitbox support, and no resource-pack hook. A mob looks like
+  its base type; equipment is the only visual lever.
+- `get_width`/`get_height` are read-only, so hitbox size cannot be changed.
+- Status effects can only be applied to players, so a permanent glowing or speed effect on
+  a mob is not expressible.
+
+`MobKind`-style catalogues are the array in `MineInAbyss::mobs`, the same way `Layer` holds
+per-layer data and `MineInAbyss::events` lists every handler. Adding a kind means adding its
+file, its submodule in `lib.rs`, its `impl Mob`, and one entry in that array. It is an array
+of names rather than a `const` because a trait method cannot be called in a constant.
+`scavenger.rs` is the worked example.
+
+**Nothing spawns a kind yet**, so the module carries an `#[expect(dead_code)]`. Remove it
+when the first real caller exists — a `/abyss summon` subcommand or a layer spawn rule —
+and not before, since an unused spawn path is worse than an acknowledged gap.
+
 #### Each layer is a hand-built map
 
 Every layer world is a **custom map made specifically for this project** — an authored
@@ -391,6 +435,9 @@ src/
 │   ├── setup.rs        # `Worlds` — one void world per layer, created on load
 │   ├── generator.rs    # `Void` chunk generator — layer worlds generate empty
 │   └── clock.rs        # Keeps every layer world on `First`'s clock
+├── mobs/               # declared as `mod mobs` in `lib.rs`: the plugin's own mobs
+│   ├── mob.rs          # `Mob` trait + `mark`/`id_of`/`is` — the identity marker
+│   └── scavenger.rs    # `Scavenger` — the worked example, built on a zombie
 ├── commands/
 │   ├── abyss.rs        # `/abyss` — ops teleport into a layer, curse-free
 │   └── command.rs      # `Command` trait — each command registers itself

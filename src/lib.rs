@@ -17,6 +17,18 @@ mod commands {
     pub mod command;
 }
 
+/// The plugin's own mobs, built on top of the vanilla ones.
+///
+/// Minecraft's mob types cannot be extended, so a mob here is a vanilla entity wearing an
+/// identity: a base type, a visible name, scaled attributes, and a marker in its own
+/// persistent data. `mob` is the trait a kind implements and where that marker is written
+/// and read back; `scavenger` is the worked example.
+#[expect(dead_code, reason = "no command or handler spawns a mob kind yet")]
+mod mobs {
+    pub mod mob;
+    pub mod scavenger;
+}
+
 /// The layer worlds, and the machinery that keeps them usable.
 ///
 /// A layer world is only ever as good as the three pieces around it: it has to be created
@@ -66,12 +78,14 @@ mod events {
 pub use layer::*;
 pub use world::setup::*;
 
+use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
 use pumpkin_plugin_api::{Context, Plugin, PluginMetadata};
 use std::time::Instant;
 use tracing::info;
 
 use commands::command::Command as RegisterCommand;
 use events::event::Event as RegisterEvent;
+use mobs::mob::Mob;
 
 /// The plugin identifier used for namespaced ids and permission nodes.
 ///
@@ -100,6 +114,18 @@ impl MineInAbyss {
         info!(
             "Registered {} layer(s) in {:?}",
             LAYERS.len(),
+            started.elapsed()
+        );
+    }
+
+    fn mobs() {
+        let started = Instant::now();
+
+        let mobs: [fn() -> EntityType; 1] = [mobs::scavenger::Scavenger::base];
+
+        info!(
+            "Registered {} custom mob(s) in {:?}",
+            mobs.len(),
             started.elapsed()
         );
     }
@@ -178,6 +204,7 @@ impl Plugin for MineInAbyss {
 
     fn on_load(&self, context: Context) -> pumpkin_plugin_api::Result<()> {
         Self::layers();
+        Self::mobs();
         Self::events(&context);
         Self::commands(&context);
         Self::worlds(&context);

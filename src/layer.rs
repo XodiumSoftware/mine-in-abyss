@@ -9,13 +9,15 @@ use strum::{EnumIter, IntoEnumIterator, IntoStaticStr};
 /// A layer of the Abyss.
 ///
 /// Its [`From`](From::from) form is the lowercase variant name
-/// (`first`, `second`, ...), which is also the identifier used for the layer's
+/// (`orth`, `first`, ...), which is also the identifier used for the layer's
 /// Minecraft world.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, EnumIter, IntoStaticStr)]
 #[strum(serialize_all = "lowercase")]
 pub enum Layer {
-    /// The top of the Abyss.
+    /// The city on the edge, above the Abyss itself.
     #[default]
+    Orth,
+    /// The Depths of the Abyss.
     First,
     /// The Forest of Temptation.
     Second,
@@ -33,7 +35,8 @@ pub enum Layer {
 
 impl Layer {
     /// Every layer, from the surface down.
-    pub const ALL: [Self; 7] = [
+    pub const ALL: [Self; 8] = [
+        Self::Orth,
         Self::First,
         Self::Second,
         Self::Third,
@@ -76,7 +79,8 @@ impl Layer {
     #[must_use]
     pub const fn name(self) -> &'static str {
         match self {
-            Self::First => "The Top of the Abyss",
+            Self::Orth => "The City on the Edge",
+            Self::First => "Depths of the Abyss",
             Self::Second => "The Forest of Temptation",
             Self::Third => "The Great Fault",
             Self::Fourth => "The Goblets of Giants",
@@ -90,6 +94,7 @@ impl Layer {
     #[must_use]
     pub const fn color(self) -> [RgbColor; 2] {
         match self {
+            Self::Orth => [rgb(0xB0, 0xE0, 0xF0), rgb(0x87, 0xCE, 0xEB)],
             Self::First => [rgb(0x87, 0xCE, 0xEB), rgb(0x5B, 0xA8, 0x5B)],
             Self::Second => [rgb(0x5B, 0xA8, 0x5B), rgb(0x2E, 0x8B, 0x57)],
             Self::Third => [rgb(0x8B, 0x73, 0x55), rgb(0x6B, 0x5B, 0x4A)],
@@ -109,7 +114,7 @@ impl Layer {
     #[must_use]
     pub const fn game_rules(self) -> &'static [(GameRule, GameRuleValue)] {
         match self {
-            Self::First => &[(GameRule::SpawnMonsters, GameRuleValue::Bool(false))],
+            Self::Orth | Self::First => &[(GameRule::SpawnMonsters, GameRuleValue::Bool(false))],
             Self::Second
             | Self::Third
             | Self::Fourth
@@ -137,7 +142,7 @@ impl Layer {
         Self::iter().position(|layer| layer == self).unwrap_or(0)
     }
 
-    /// Returns this layer's one-based number (`1` for the surface, `7` at the
+    /// Returns this layer's one-based number (`1` for the surface, `8` at the
     /// bottom), as shown to players.
     #[must_use]
     pub fn number(self) -> usize {
@@ -191,34 +196,4 @@ impl Layer {
     pub fn curse(self) -> u8 {
         u8::try_from(self.index()).unwrap_or(u8::MAX)
     }
-
-    /// How much stronger the monsters are in this layer than at the surface.
-    ///
-    /// The Abyss gets harder **exponentially**: the surface is the baseline (`1`), and
-    /// every layer down doubles the multiplier. Monsters in `Seventh` are `64` times their
-    /// surface stats, which is what makes the deepest layers lethal without giving each
-    /// layer a hand-tuned table to drift out of sync.
-    ///
-    /// The multiplier is applied as `base * scale`, so the value is compared against `1`
-    /// rather than against `0` when deciding whether a layer needs touching at all — see
-    /// the `Monsters` event handler in `src/events/monsters.rs`.
-    #[must_use]
-    pub fn monster_scale(self) -> f64 {
-        MONSTER_SCALE_GROWTH.powi(i32::try_from(self.index()).unwrap_or(0))
-    }
-
-    /// How much one layer down multiplies a monster's strength.
-    ///
-    /// Kept as a named constant rather than a literal so the growth can be re-tuned in one
-    /// place; the exponent stays derived from depth, so no layer can be left out.
-    #[must_use]
-    pub const fn monster_scale_growth() -> f64 {
-        MONSTER_SCALE_GROWTH
-    }
 }
-
-/// The factor applied per layer of depth when scaling monsters.
-///
-/// Two doubles a monster's health and damage for every layer descended: `First` is `1x`,
-/// `Second` `2x`, `Third` `4x`, and so on to `Seventh` at `64x`.
-const MONSTER_SCALE_GROWTH: f64 = 2.0;

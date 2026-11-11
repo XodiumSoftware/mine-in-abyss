@@ -1,7 +1,7 @@
-//! Sends a respawning player back to the top of the Abyss.
+//! Sends a respawning player back to Orth, the city above the Abyss.
 //!
 //! The Abyss is escaped on its own terms, so death is not a shortcut home: the player
-//! wakes up at `First`'s world spawn rather than wherever they died. Since
+//! wakes up at `Orth`'s world spawn rather than wherever they died. Since
 //! [`BedSpawn`](super::bed_spawn::BedSpawn) refuses beds, there is no way to bank a spawn
 //! point further down and skip the climb.
 //!
@@ -9,7 +9,7 @@
 //!
 //! `PlayerRespawnEvent` is fired once the host has already resolved a destination world and
 //! position, and it is **not cancellable** — so this handler does not prevent the respawn,
-//! it moves the player again immediately afterwards. The host resolves `First`'s position
+//! it moves the player again immediately afterwards. The host resolves `Orth`'s position
 //! only if the player died in it; anywhere else it would have used the `OVERWORLD`
 //! dimension's own spawn, which is not a layer world.
 //!
@@ -53,8 +53,7 @@ impl EventHandler<PlayerRespawnEvent> for LayerRespawn {
         super::curse::cure(&event.player);
         clear_fall(&event.player);
 
-        let Some(world) = world_for(&server, Layer::First, "a respawn cannot return to First")
-        else {
+        let Some(world) = world_for(&server, Layer::Orth, "a respawn cannot return to Orth") else {
             return event;
         };
 

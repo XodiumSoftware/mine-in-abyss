@@ -103,7 +103,8 @@ so a layer cannot be described in two places that drift apart.
 
 | Variant   | `id()`    | World                   | `name()`                      |
 | --------- | --------- | ----------------------- | ----------------------------- |
-| `First`   | `first`   | `mine_in_abyss_first`   | The Top of the Abyss          |
+| `Orth`    | `orth`    | `mine_in_abyss_orth`    | The City on the Edge          |
+| `First`   | `first`   | `mine_in_abyss_first`   | Depths of the Abyss           |
 | `Second`  | `second`  | `mine_in_abyss_second`  | The Forest of Temptation      |
 | `Third`   | `third`   | `mine_in_abyss_third`   | The Great Fault               |
 | `Fourth`  | `fourth`  | `mine_in_abyss_fourth`  | The Goblets of Giants         |
@@ -136,15 +137,14 @@ handler. `src/events/event.rs` holds the trait; `MineInAbyss::events` in `lib.rs
 every `register` and logs the count. Registering a handler therefore means adding its file,
 its submodule, its `impl Event`, and one entry in that array.
 
-| Handler         | Event                     | Behaviour                                                                |
-| --------------- | ------------------------- | ------------------------------------------------------------------------ |
-| `LayerJoin`     | `PlayerChangedWorldEvent` | Shows the entered layer's gradient title; cures the curse on the surface |
-| `LayerLeave`    | `PlayerMoveEvent`         | Void/ceiling detection, teleport, curse                                  |
-| `FallDamage`    | `PlayerMoveEvent`         | Adds a carried descent to the fall distance in the layer arrived in      |
-| `Monsters`      | `EntitySpawnEvent`        | Scales a spawned monster's stats by the layer's depth                    |
-| `BedSpawn`      | `PlayerSpawnChangeEvent`  | Refuses a spawn point a player sets, but keeps `/spawnpoint`             |
-| `LayerRespawn`  | `PlayerRespawnEvent`      | Clears the curse strain, then returns the player to `First`'s spawn      |
-| `LayerTeleport` | `PlayerTeleportEvent`     | Records where a teleport put the player, so it is not read as a climb    |
+| Handler         | Event                     | Behaviour                                                             |
+| --------------- | ------------------------- | --------------------------------------------------------------------- |
+| `LayerJoin`     | `PlayerChangedWorldEvent` | Shows the entered layer's gradient title; cures the curse in `Orth`   |
+| `LayerLeave`    | `PlayerMoveEvent`         | Void/ceiling detection, teleport, curse                               |
+| `FallDamage`    | `PlayerMoveEvent`         | Adds a carried descent to the fall distance in the layer arrived in   |
+| `BedSpawn`      | `PlayerSpawnChangeEvent`  | Refuses a spawn point a player sets, but keeps `/spawnpoint`          |
+| `LayerRespawn`  | `PlayerRespawnEvent`      | Clears the curse strain, then returns the player to `Orth`'s spawn    |
+| `LayerTeleport` | `PlayerTeleportEvent`     | Records where a teleport put the player, so it is not read as a climb |
 
 `LayerLeave` compares against the bounds shared by every layer
 (`Layer::MIN_Y = -64` — the world floor, which is also where a player counts as having
@@ -197,12 +197,7 @@ directly, so water, hay bales and feather falling keep working. A teleport or re
 clears the carry. **Only one layer is carried**: a player who falls from `First` without
 landing is hurt by the last segment, not the whole drop.
 
-**Monsters are exponentially harder by layer.** `Layer::monster_scale()` is `2^index`, so
-`First` is `1x` and `Seventh` is `64x`. `Monsters` (`src/events/monsters.rs`) applies it on
-`EntitySpawnEvent` to every monster in `MONSTERS`, multiplying the **base** `MaxHealth`,
-`AttackDamage` and `FollowRange` so re-applying never compounds. `EntitySpawnEvent`, not
-`CreatureSpawnEvent`, because natural spawns, spawners and `/summon` all pass through it.
-A monster that follows a descent is rescaled by `Worlds::descend_monsters`.
+**A descent leaves the monsters behind.** Entities cannot change layers and nothing moves them between worlds, so the mobs in the layer above stay there — what was chasing a player does not follow them down, and the layer they land in holds only its own inhabitants. **Monster stats do not scale with depth**: a mob is exactly what its type says, at every layer.
 
 **The spawn event's type string is a numeric id.** Pumpkin sends
 `entity_type.id.to_string()` — the registry index (`zombie` is `"154"`), not a name. The
@@ -217,9 +212,9 @@ separates an operator override from a player shortcut — do not drop it, or `/s
 stops working. Cancelling is sufficient: the host returns `false` from
 `set_respawn_point` and sends no "Spawn point set" message.
 
-**Dying returns the player to `First`'s world spawn.** `PlayerRespawnEvent` is **not
+**Dying returns the player to `Orth`'s world spawn.** `PlayerRespawnEvent` is **not
 cancellable** and fires after the host resolved a destination, so `LayerRespawn` respawns
-the player and then teleports them to `First`. It must supply the world: without a spawn
+the player and then teleports them to `Orth`. It must supply the world: without a spawn
 point the host falls back to the `OVERWORLD` dimension's spawn, which is not a layer world,
 and `PlayerSpawnLocationEvent` can move a position but not a world.
 
@@ -248,7 +243,7 @@ in that array.
 | -------- | ------- | ----------------------------- | ------------------------------------------------------------ |
 | `/abyss` | `/mia`  | `mine_in_abyss:command.abyss` | Moves a player into a layer without the curse (ops level 3+) |
 
-`/abyss <layer> [player]` accepts `first` … `seventh` or `1` … `7`, case-insensitive,
+`/abyss <layer> [player]` accepts `orth`, `first` … `seventh` or `1` … `8`, case-insensitive,
 through [`Layer::from_id`], which reads both spellings off the variant so a reordered layer
 cannot leave a stale alias behind. `Layer::id_list` renders the accepted names for the
 error message.
@@ -276,7 +271,7 @@ command cannot keep its old node. Handler structs implement
 - `apply(player, from)` adds `from.curse()` to the strain, saturating at `MAX_STRAIN`
   (6), then inflicts the symptoms for the **total**
 - Ascending several layers in a row therefore compounds: the curse is cumulative
-- Reaching `First`, or respawning, calls `cure`
+- Reaching `Orth`, or respawning, calls `cure`
 - Strain 6 is fatal — `inflict` kills rather than applying effects
 
 ### Worlds
@@ -297,8 +292,8 @@ Per-layer **data** belongs on `Layer` as a `const fn` with a `match`, the way
 event handler that matches on the layer (as `LayerLeave` does). Terrain, structures and
 points of interest are neither — they are world data.
 
-`Layer::game_rules()` is the worked example: `First` disables `spawn-monsters`, the
-rest return an empty slice. `Worlds::setup` applies the rules on every load, so a world
+`Layer::game_rules()` is the worked example: `Orth` and `First` disable `spawn-monsters`,
+the rest return an empty slice. `Worlds::setup` applies the rules on every load, so a world
 folder saved with different rules cannot override them.
 
 Minecraft's **difficulty** is a server-wide setting and the plugin API exposes no setter
@@ -308,15 +303,15 @@ per-world game rules instead.
 ### Time of day
 
 Every layer world keeps its own clock, so left alone they drift apart and a descending
-player would watch the sun jump. `src/world/clock.rs` copies `First`'s clock to the other six
+player would watch the sun jump. `src/world/clock.rs` copies `Orth`'s clock to the other seven
 worlds on a one-minute repeating task, which runs once immediately on load.
 
-`First` is the source because it is the surface, the layer an operator is most likely to
-change the time in, and the start of every descent. Change the time there and the rest of
-the Abyss follows within a minute.
+`Orth` is the source because it is the city above the Abyss, the layer an operator is most
+likely to change the time in, and the start of every descent. Change the time there and the
+rest of the Abyss follows within a minute.
 
 The copied value is the full clock, not just the time within a day, so the **day number**
-follows as well — `/time set 24000` in `First` puts the other layers on day 1 too. A
+follows as well — `/time set 24000` in `Orth` puts the other layers on day 1 too. A
 world's **age** is a separate counter with no setter in the plugin API, so it cannot be
 shared; nothing in vanilla depends on age and time of day agreeing.
 
@@ -346,9 +341,9 @@ that, not a way around it:
   spawned. `id_of` returns `None` for anything this plugin did not spawn, so a handler must
   not assume every mob is custom.
 
-**Attributes are written to the base value**, matching `Monsters::apply`. That is what lets
-the depth scale layer on top: a kind's own attributes and the layer's `2^index` are
-independent and neither compounds.
+**Attributes are written to the base value**, matching how every kind sets its stats. The
+base is the template and the visible stat is derived from it, so setting a base is
+idempotent and never compounds on a repeated call.
 
 **What is not available**, so do not design around it:
 
@@ -363,6 +358,34 @@ per-layer data and `MineInAbyss::events` lists every handler. Adding a kind mean
 file, its submodule in `lib.rs`, its `impl Mob`, and one entry in that array. It is an array
 of names rather than a `const` because a trait method cannot be called in a constant.
 `beniguma.rs` is the worked example.
+
+**The catalogue as it stands**, with ids and spawn layers:
+
+| Kind              | id  | Base    | Category | Layers  | Hearts |
+| ----------------- | --- | ------- | -------- | ------- | ------ |
+| `Beniguma`        | 1   | Wolf    | Docile   | 1, 2    | 8      |
+| `Cyatoria`        | 2   | Cat     | Flying   | 1, 2    | 12.5   |
+| `SmallHammerbeak` | 3   | Parrot  | Flying   | 1, 2    | 9      |
+| `GiantHammerbeak` | 4   | Parrot  | Flying   | 1, 2, 4 | 20     |
+| `Splitjaw`        | 5   | Parrot  | Flying   | 1, 2, 3 | 45     |
+| `Woodcrier`       | 6   | Parrot  | Hostile  | 1, 2    | 15     |
+| `ManToyer`        | 7   | Parrot  | Hostile  | 1       | 7.5    |
+| `Silkfang`        | 8   | Parrot  | Hostile  | 1, 2    | 11     |
+| `Spittleshrub`    | 9   | Parrot  | Hostile  | 1, 2, 4 | 10     |
+| `Vinebinder`      | 10  | Creeper | Hostile  | 1, 2    | 10     |
+| `Vineblaster`     | 11  | Creeper | Hostile  | 1, 2    | 8      |
+| `Vinepoofer`      | 12  | Creeper | Hostile  | 1, 2    | 10     |
+| `Fuwagi`          | 13  | Rabbit  | Passive  | 1, 2    | 5      |
+| `Okibo`           | 14  | Sniffer | Passive  | Orth, 1 | 20     |
+| `Spiralsquid`     | 15  | Squid   | Aquatic  | 1, 4    | 4      |
+
+Ids are permanent once shipped — they are what tells two kinds on the same base type
+apart — so a new kind takes the next free number and never reuses one.
+
+**Names are coloured through `mob::named`.** [`NamedColor`](src/mobs/mob.rs) has only 16
+variants and no cyan, brown or light gray, so those are mapped to their nearest
+neighbour: cyan to `Aqua`, brown to `Gold`, light gray to `Gray`, purple to
+`LightPurple`. `TextComponent::color_rgb` is available if an exact colour is ever needed.
 
 **Nothing spawns a kind yet**, so the module carries an `#[expect(dead_code)]`. Remove it
 when the first real caller exists — a `/abyss summon` subcommand or a layer spawn rule —
@@ -439,10 +462,24 @@ src/
 ├── world/              # declared as `mod world` in `lib.rs`: the layer worlds
 │   ├── setup.rs        # `Worlds` — one void world per layer, created on load
 │   ├── generator.rs    # `Void` chunk generator — layer worlds generate empty
-│   └── clock.rs        # Keeps every layer world on `First`'s clock
+│   └── clock.rs        # Keeps every layer world on `Orth`'s clock
 ├── mobs/               # declared as `mod mobs` in `lib.rs`: the plugin's own mobs
-│   ├── mob.rs          # `Mob` trait + `mark`/`id_of`/`is` — the identity marker
-│   └── beniguma.rs     # `Beniguma` — the worked example, built on a wolf
+│   ├── mob.rs          # `Mob` trait, `Category`, `named` + the identity marker
+│   ├── beniguma.rs     # `Beniguma` — the worked example, built on a wolf
+│   ├── cyatoria.rs     # `Cyatoria` — flying cat
+│   ├── fuwagi.rs       # `Fuwagi` — passive rabbit
+│   ├── giant_hammerbeak.rs  # `GiantHammerbeak` — flying parrot
+│   ├── man_toyer.rs    # `ManToyer` — hostile parrot
+│   ├── okibo.rs        # `Okibo` — passive sniffer
+│   ├── silkfang.rs     # `Silkfang` — hostile parrot
+│   ├── small_hammerbeak.rs  # `SmallHammerbeak` — flying parrot
+│   ├── spiralsquid.rs  # `Spiralsquid` — aquatic squid
+│   ├── splitjaw.rs     # `Splitjaw` — flying parrot
+│   ├── spittleshrub.rs # `Spittleshrub` — hostile parrot
+│   ├── vinebinder.rs   # `Vinebinder` — hostile creeper
+│   ├── vineblaster.rs  # `Vineblaster` — hostile creeper
+│   ├── vinepoofer.rs   # `Vinepoofer` — hostile creeper
+│   └── woodcrier.rs    # `Woodcrier` — hostile parrot
 ├── commands/
 │   ├── abyss.rs        # `/abyss` — ops teleport into a layer, curse-free
 │   └── command.rs      # `Command` trait — each command registers itself
@@ -451,10 +488,9 @@ src/
 │   ├── event.rs        # `Event` trait — each handler registers itself
 │   ├── bed_spawn.rs    # `BedSpawn` — refuses beds setting a spawn point
 │   ├── fall_damage.rs  # `FallDamage` — carries a descent's fall distance one layer
-│   ├── layer_join.rs   # `LayerJoin` — entry title, cure on the surface
+│   ├── layer_join.rs   # `LayerJoin` — entry title, cure in Orth
 │   ├── layer_leave.rs  # `LayerLeave` — void/ceiling teleport + curse
-│   ├── monsters.rs     # `Monsters` — mob stats scale exponentially with depth
-│   ├── layer_respawn.rs# `LayerRespawn` — respawns at First's spawn
+│   ├── layer_respawn.rs# `LayerRespawn` — respawns at Orth's spawn
 │   ├── layer_teleport.rs # `LayerTeleport` — teleports are not climbs
 ```
 

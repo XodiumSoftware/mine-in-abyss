@@ -23,16 +23,17 @@
 //! distance is measured at the moment of the swap and handed to
 //! [`FallDamage`](super::fall_damage), which adds it to the fall in the layer arrived in.
 //!
-//! A descent also **carries the monsters**. Entities cannot change layers, so the mobs a
-//! player leaves behind in an empty layer above would simply stop existing the moment the
-//! player falls out. Descending therefore moves the players in the layer above down with
-//! them, at their own X/Z and the next entry height, before the player is placed. The
-//! mobs that were chasing them follow; the rest of the layer, monsters that had not yet
-//! found them included, does not. The monsters are scaled by
-//! [`Layer::monster_scale`] on arrival, so what follows is as dangerous as the layer it
-//! has followed the player into.
+//! A descent **carries its fall distance** into the next layer. Vanilla resets the
+//! distance when the world changes, so the descent would otherwise end the fall: the
+//! player would fall out of `First` unhurt, and only the last layer would hurt them. The
+//! distance is measured at the moment of the swap and handed to
+//! [`FallDamage`](super::fall_damage), which adds it to the fall in the layer arrived in.
 //!
-//! Leaving the Abyss at either end — above `First` or below `Seventh` — tells the player
+//! A descent **does not carry the monsters**. Entities cannot change layers, so the mobs a
+//! player leaves behind in the layer above stay there: what was chasing them does not
+//! follow, and the layer they land in holds only its own inhabitants.
+//!
+//! Leaving the Abyss at either end — above `Orth` or below `Seventh` — tells the player
 //! there is nowhere to go, rather than doing nothing. Below `Seventh` the carry is
 //! dropped instead: there is no layer for it to be resumed into, and vanilla's void
 //! damage is the death the drop already deserves.
@@ -49,7 +50,6 @@ use crate::utils::{
     arrived_by_teleport, begin_transition, carry_fall, clear_fall, ignores_transitions, layer_of,
     tell, world_for,
 };
-use crate::world::setup::Worlds;
 
 /// Detects a player leaving a layer through its void or ceiling.
 #[derive(Debug, Default, Clone, Copy)]
@@ -164,8 +164,6 @@ fn down(server: &Server, player: &Player, layer: Layer) -> bool {
     };
 
     let fallen_before_world_change = player.as_entity().get_fall_distance();
-
-    Worlds::descend_monsters(server, &player.get_world(), &world, layer);
 
     let (x, _, z) = player.get_position();
     player.teleport((x, Layer::entry_y(), z), None, None, world);

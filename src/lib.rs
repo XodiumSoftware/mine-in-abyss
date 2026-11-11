@@ -26,7 +26,21 @@ mod commands {
 #[expect(dead_code, reason = "no command or handler spawns a mob kind yet")]
 mod mobs {
     pub mod beniguma;
+    pub mod cyatoria;
+    pub mod fuwagi;
+    pub mod giant_hammerbeak;
+    pub mod man_toyer;
     pub mod mob;
+    pub mod okibo;
+    pub mod silkfang;
+    pub mod small_hammerbeak;
+    pub mod spiralsquid;
+    pub mod spittleshrub;
+    pub mod splitjaw;
+    pub mod vinebinder;
+    pub mod vineblaster;
+    pub mod vinepoofer;
+    pub mod woodcrier;
 }
 
 /// The layer worlds, and the machinery that keeps them usable.
@@ -72,7 +86,6 @@ mod events {
     pub mod layer_leave;
     pub mod layer_respawn;
     pub mod layer_teleport;
-    pub mod monsters;
 }
 
 pub use layer::*;
@@ -97,7 +110,7 @@ pub const PLUGIN_ID: &str = "mine_in_abyss";
 ///
 /// This is the single source of truth for which layers exist: registration, world
 /// creation and the entry title all read from it. Identical to [`Layer::ALL`].
-pub const LAYERS: [Layer; 7] = Layer::ALL;
+pub const LAYERS: [Layer; 8] = Layer::ALL;
 
 /// Returns the layer whose world is called `name`, if any.
 pub(crate) fn layer_for_world(name: &str) -> Option<Layer> {
@@ -121,7 +134,23 @@ impl MineInAbyss {
     fn mobs() {
         let started = Instant::now();
 
-        let mobs: [fn() -> EntityType; 1] = [mobs::beniguma::Beniguma::base];
+        let mobs: [fn() -> EntityType; 15] = [
+            mobs::beniguma::Beniguma::base,
+            mobs::cyatoria::Cyatoria::base,
+            mobs::small_hammerbeak::SmallHammerbeak::base,
+            mobs::giant_hammerbeak::GiantHammerbeak::base,
+            mobs::splitjaw::Splitjaw::base,
+            mobs::woodcrier::Woodcrier::base,
+            mobs::man_toyer::ManToyer::base,
+            mobs::silkfang::Silkfang::base,
+            mobs::spittleshrub::Spittleshrub::base,
+            mobs::vinebinder::Vinebinder::base,
+            mobs::vineblaster::Vineblaster::base,
+            mobs::vinepoofer::Vinepoofer::base,
+            mobs::fuwagi::Fuwagi::base,
+            mobs::okibo::Okibo::base,
+            mobs::spiralsquid::Spiralsquid::base,
+        ];
 
         info!(
             "Registered {} custom mob(s) in {:?}",
@@ -131,13 +160,12 @@ impl MineInAbyss {
     }
 
     fn events(context: &Context) {
-        let events: [fn(&Context); 7] = [
+        let events: [fn(&Context); 6] = [
             events::layer_join::LayerJoin::register,
             events::layer_leave::LayerLeave::register,
             events::fall_damage::FallDamage::register,
             events::layer_respawn::LayerRespawn::register,
             events::layer_teleport::LayerTeleport::register,
-            events::monsters::Monsters::register,
             events::bed_spawn::BedSpawn::register,
         ];
 

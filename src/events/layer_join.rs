@@ -63,7 +63,7 @@ impl EventHandler<PlayerChangedWorldEvent> for LayerJoin {
 
         end_transition(&event.player);
 
-        if world_name == Layer::First.world() {
+        if world_name == Layer::Orth.world() {
             super::curse::cure(&event.player);
         }
 

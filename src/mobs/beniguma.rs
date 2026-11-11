@@ -1,14 +1,12 @@
-//! An example mob kind, showing what a custom mob can express.
+//! A docile wolf of the upper layers, showing what a custom mob can express.
 //!
-//! This is the worked example for [`Mob`](super::mob::Mob): it sets its attributes and its
-//! equipment in one `apply`, which is how every kind defines itself — there is no fixed
-//! table of multipliers or slots to fill in.
+//! This is the worked example for [`Mob`](super::mob::Mob): it sets its health in one `apply`,
+//! which is how every kind defines itself — there is no fixed table of multipliers or slots
+//! to fill in.
 //!
-//! In the Abyss this is a docile wolf of the upper layers: tougher than a plain wolf, so a
-//! player can tell it apart from the vanilla mob it is built on and thinks twice before
-//! provoking one. The depth scale in
-//! [`Monsters`](crate::events::monsters::Monsters) still applies on top, so the same kind is
-//! far more dangerous six layers down.
+//! In the Abyss this is a docile wolf of the first and second layers: tougher than a plain
+//! wolf, so a player can tell it apart from the vanilla mob it is built on and thinks twice
+//! before provoking one.
 
 use pumpkin_plugin_api::common::NamedColor;
 use pumpkin_plugin_api::text::TextComponent;
@@ -16,10 +14,10 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
 use pumpkin_plugin_api::world::LivingEntity;
 
-use super::mob::{Category, Mob};
+use super::mob::{Category, Mob, named};
 use crate::layer::Layer;
 
-/// A scavenger of the upper layers, built on a wolf.
+/// A docile wolf of the Top of the Abyss and the Forest of Temptation.
 #[derive(Debug, Default, Clone, Copy)]
 pub struct Beniguma;
 
@@ -33,7 +31,7 @@ impl Mob for Beniguma {
     }
 
     fn name() -> TextComponent {
-        TextComponent::text("Beniguma").color_named(NamedColor::Red)
+        named("Beniguma", NamedColor::Red)
     }
 
     fn layers() -> &'static [Layer] {

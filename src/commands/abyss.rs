@@ -9,7 +9,7 @@
 //! /abyss <layer> [player]
 //! ```
 //!
-//! - `<layer>` — `first` … `seventh`, or `1` … `7`, case-insensitive
+//! - `<layer>` — `orth`, `first` … `seventh`, or `1` … `8`, case-insensitive
 //! - `[player]` — who to move; only used when the command comes from **console**, since a
 //!   player sender is always moved themselves
 //!

@@ -12,6 +12,7 @@
 //! apart, and means renaming a kind does not orphan the mobs already in the world.
 
 use pumpkin_plugin_api::World;
+use pumpkin_plugin_api::common::NamedColor;
 use pumpkin_plugin_api::persistent_data::PersistentDataHolder;
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
@@ -23,6 +24,15 @@ use crate::layer::Layer;
 
 /// Key under which a custom mob's identity is stored.
 const IDENTITY_KEY: &str = "mob";
+
+/// Builds the visible name of a mob kind.
+///
+/// Every kind names itself through this so the name above a mob is built one way — plain
+/// text, then a colour. It lives here rather than in each kind because the colour palette is
+/// narrow enough that the choice needs to be made once, not nine times.
+pub fn named(name: &str, color: NamedColor) -> TextComponent {
+    TextComponent::text(name).color_named(color)
+}
 
 /// How a mob kind behaves towards players.
 ///
@@ -153,9 +163,8 @@ pub trait Mob {
     ///
     /// Set attributes through `set_attribute_base`, not the current value. The base is the
     /// template and the visible stat is derived from it, so setting a base is idempotent —
-    /// that is what lets [`Monsters`](crate::events::monsters::Monsters) apply the depth
-    /// scale on top without the two compounding. Raising `MaxHealth` also means raising
-    /// `set_health` to match, or the mob arrives damaged.
+    /// repeated calls never compound. Raising `MaxHealth` also means raising `set_health` to
+    /// match, or the mob arrives damaged.
     ///
     /// Equipment is per slot, so a kind equips only what it means to: a hand-only mob calls
     /// `set_equipment(EquipmentSlot::MainHand, ..)` and leaves the armour slots empty, and a

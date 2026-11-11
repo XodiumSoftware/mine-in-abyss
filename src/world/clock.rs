@@ -8,9 +8,9 @@
 //!
 //! # Why a source world rather than a computed time
 //!
-//! The layers have no shared clock, so one of them has to be authoritative. `First` is
-//! that source: it is the surface, the layer an operator is most likely to change the time
-//! in, and the one every descent starts from.
+//! The layers have no shared clock, so one of them has to be authoritative. `Orth` is
+//! that source: it is the city above the Abyss, the layer an operator is most likely to
+//! change the time in, and the one every descent starts from.
 //!
 //! # Why the period is slow
 //!
@@ -38,7 +38,7 @@ use crate::layer::Layer;
 use crate::utils::world_for;
 
 /// The layer whose clock every other layer follows.
-const SOURCE: Layer = Layer::First;
+const SOURCE: Layer = Layer::Orth;
 
 /// Ticks between two synchronisations: one minute at 20 ticks per second.
 ///

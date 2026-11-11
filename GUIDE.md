@@ -89,14 +89,15 @@ cd .server && ./pumpkin      # pumpkin.exe on Windows
 ## Usage
 
 The Abyss is a vertical world, so every layer is its own Minecraft world
-(`mine_in_abyss_first`, `mine_in_abyss_second`, …). All seven layers are created on
+(`mine_in_abyss_orth`, `mine_in_abyss_first`, …). All eight layers are created on
 startup.
 
 ### Layers
 
 | Layer     | World                   | Name                          |
 | --------- | ----------------------- | ----------------------------- |
-| `First`   | `mine_in_abyss_first`   | The Top of the Abyss          |
+| `Orth`    | `mine_in_abyss_orth`    | The City on the Edge          |
+| `First`   | `mine_in_abyss_first`   | Depths of the Abyss           |
 | `Second`  | `mine_in_abyss_second`  | The Forest of Temptation      |
 | `Third`   | `mine_in_abyss_third`   | The Great Fault               |
 | `Fourth`  | `mine_in_abyss_fourth`  | The Goblets of Giants         |
@@ -116,11 +117,11 @@ map yet falls straight through it and continues to the layer below.
 ### Per-layer game rules
 
 World settings are applied on every startup, so a world folder saved with different
-settings cannot override them. `First` runs without hostile mobs:
+settings cannot override them. `Orth` and `First` run without hostile mobs:
 
-| Layer   | Game rules                 |
-| ------- | -------------------------- |
-| `First` | `spawn-monsters` = `false` |
+| Layer           | Game rules                 |
+| --------------- | -------------------------- |
+| `Orth`, `First` | `spawn-monsters` = `false` |
 
 Minecraft's _difficulty_ is server-wide and cannot be set by a plugin, so "peaceful" is
 expressed as game rules instead.
@@ -128,12 +129,12 @@ expressed as game rules instead.
 ### Time of day
 
 Each layer keeps its own clock, so they would drift apart and the sun would jump as you
-descend. The plugin copies `First`'s clock to the other six layers once a minute, and once
+descend. The plugin copies `Orth`'s clock to the other seven layers once a minute, and once
 immediately on startup.
 
-Change the time in `First` (e.g. `/time set night`) and the rest of the Abyss follows
+Change the time in `Orth` (e.g. `/time set night`) and the rest of the Abyss follows
 within a minute. Changing it in any other layer has no lasting effect — the next sync
-overwrites it. The **day number** follows as well, so `/time set 24000` in `First` puts
+overwrites it. The **day number** follows as well, so `/time set 24000` in `Orth` puts
 every layer on day 1. A world's _age_ is a separate counter the plugin cannot set, so it
 is not shared.
 
@@ -148,7 +149,7 @@ is not shared.
 - **The bottom of the Abyss** — there is no layer below `Seventh`, so falling below the
   world floor (`Y = -64`) there is left to vanilla: void damage kills the player. A grey
   message warns them first.
-- **The top of the Abyss** — rising above `Y = 320` in `First` has nowhere to go; a grey
+- **The top of the Abyss** — rising above `Y = 320` in `Orth` has nowhere to go; a grey
   message tells the player so.
 
 ### Spawn points
@@ -162,34 +163,21 @@ override rather than a player shortcut.
 
 ### Dying
 
-When you die you respawn at **`First`'s world spawn**, wherever in the Abyss you fell. Death
+When you die you respawn at **`Orth`'s world spawn**, wherever in the Abyss you fell. Death
 is not a shortcut back to the top, and the Curse of the Abyss is cleared when you do.
 
 ### Monsters
 
-Monsters get **exponentially harder** the deeper you go. Every monster in a layer has twice
-the health, attack damage and follow range of the layer above it:
-
-| Layer     | Health / damage / follow range |
-| --------- | ------------------------------ |
-| `First`   | `1x` (normal)                  |
-| `Second`  | `2x`                           |
-| `Third`   | `4x`                           |
-| `Fourth`  | `8x`                           |
-| `Fifth`   | `16x`                          |
-| `Sixth`   | `32x`                          |
-| `Seventh` | `64x`                          |
-
-This applies however the monster arrives — natural spawning, a spawner, or `/summon`.
-Only hostile mobs are affected; animals, villagers, players and dropped items keep their
-normal stats. Monsters that follow you down a layer are rescaled for the layer they land
-in, so nothing arrives weaker than it should.
+Monster stats do **not** change with depth: a mob in `Seventh` is exactly as strong as the
+same mob in `Orth`. Descending is still an escape, though — mobs cannot change layers, so
+whatever was chasing you does not follow you down. The layer you land in holds only its own
+inhabitants.
 
 ### Curse of the Abyss
 
 The curse is **cumulative**: each ascent adds strain, so climbing back up through
 several layers is worse than climbing up one. The strain is saved on the player, so it
-survives a relog. It is only cleared by reaching the surface (`First`), or by dying.
+survives a relog. It is only cleared by reaching the city above (`Orth`), or by dying.
 
 Severity is derived from the layer's index, starting at `0` for the surface, and is
 added to the player's current strain (capped at 6):
@@ -204,8 +192,8 @@ added to the player's current strain (capped at 6):
 | `5`          | Blindness, weakness, magic damage, health clamped to 1 |
 | `6`          | Death                                                  |
 
-Ascending out of `First` adds nothing (index `0`). Ascending out of `Seventh` adds
-`6`, which is fatal on its own.
+Ascending out of `Orth` adds nothing (index `0`) — there is nowhere above it. Ascending out
+of `Seventh` adds `7`, which is fatal on its own.
 
 ### Other behaviour
 
@@ -222,7 +210,7 @@ and never afflicted by the curse, so they can fly through the void and ceiling f
 
 Alias: `/mia`. Requires permission level 3 (admin) or above.
 
-`<layer>` is `first` … `seventh` or `1` … `7`, case-insensitive. The command teleports
+`<layer>` is `orth`, `first` … `seventh` or `1` … `8`, case-insensitive. The command teleports
 the player straight into the layer, so **no curse strain is added** — unlike a real ascent.
 
 A **player** running the command is always the one moved. `[player]` is only used from

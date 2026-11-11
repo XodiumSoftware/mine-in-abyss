@@ -31,7 +31,8 @@ crossing a world boundary.
 
 ```mermaid
 graph TD
-    A["First<br/>Y -64 .. 320"] -->|"fall below -64"| B["Second"]
+    A["Orth<br/>Y -64 .. 320"] -->|"fall below -64"| A1["First"]
+    A1 -->|"fall below -64"| B["Second"]
     B -->|"fall below -64"| C["Third"]
     C -->|"fall below -64"| D["Fourth"]
     D -->|"fall below -64"| E["Fifth"]
@@ -39,13 +40,14 @@ graph TD
     F -->|"fall below -64"| G["Seventh"]
     G -->|"nothing below"| H["vanilla void damage"]
 
-    G -->|"rise above 320<br/>curse +6"| F
-    F -->|"curse +5"| E
-    E -->|"curse +4"| D
-    D -->|"curse +3"| C
-    C -->|"curse +2"| B
-    B -->|"curse +1"| A
-    A -->|"nothing above"| I
+    G -->|"rise above 320<br/>curse +7"| F
+    F -->|"curse +6"| E
+    E -->|"curse +5"| D
+    D -->|"curse +4"| C
+    C -->|"curse +3"| B
+    B -->|"curse +2"| A1
+    A1 -->|"curse +1"| A
+    A -->|"nothing above"| I["nowhere to go"]
 ```
 
 Every transition preserves the player's **X and Z**; only their Y and their world change.
@@ -60,7 +62,8 @@ palette, game rules and curse severity are all derived from it.
 
 | Variant   | `id()`    | World                   | `name()`                      |
 | --------- | --------- | ----------------------- | ----------------------------- |
-| `First`   | `first`   | `mine_in_abyss_first`   | The Top of the Abyss          |
+| `Orth`    | `orth`    | `mine_in_abyss_orth`    | The City on the Edge          |
+| `First`   | `first`   | `mine_in_abyss_first`   | Depths of the Abyss           |
 | `Second`  | `second`  | `mine_in_abyss_second`  | The Forest of Temptation      |
 | `Third`   | `third`   | `mine_in_abyss_third`   | The Great Fault               |
 | `Fourth`  | `fourth`  | `mine_in_abyss_fourth`  | The Goblets of Giants         |
@@ -72,7 +75,7 @@ palette, game rules and curse severity are all derived from it.
 adding or reordering a layer carries them along automatically. `id()` comes from
 `IntoStaticStr`, so a variant name is never written twice.
 
-Two constants are shared by every layer, because all seven are Overworld-dimension worlds
+Two constants are shared by every layer, because all eight are Overworld-dimension worlds
 of the same height:
 
 - `Layer::MIN_Y` = `-64` — the world floor, and where a player counts as having left
@@ -177,7 +180,7 @@ sequenceDiagram
         P->>J: world changed
         J->>P: bold title + subtitle
         J->>U: end_transition
-        opt arrived in First
+        opt arrived in Orth
             J->>P: cure curse
         end
     end
@@ -259,48 +262,12 @@ comment on [`resume_fall`](src/utils.rs). The baseline stays vanilla's per-world
 
 A teleport or a respawn clears the carry: the drop it described is over.
 
-## Monster difficulty
+## Monsters do not scale, and do not follow
 
-Difficulty scales **exponentially** with depth, derived from the layer index the same way
-the curse is, so a layer cannot be left out and the curve cannot drift from the enum
-order:
-
-```mermaid
-graph LR
-    A["First<br/>1x"] --> B["Second<br/>2x"] --> C["Third<br/>4x"] --> D["Fourth<br/>8x"]
-    D --> E["Fifth<br/>16x"] --> F["Sixth<br/>32x"] --> G["Seventh<br/>64x"]
-```
-
-`Layer::monster_scale()` is `2^index`, applied to a monster's **base** `MaxHealth`,
-`AttackDamage` and `FollowRange`, so the visible value stays `base * scale` and re-applying
-never compounds. Health is set on both the attribute and the current health, so a monster
-does not arrive holding a surface-sized pool. Damage is never computed by the plugin —
-only the stats that vanilla then uses are changed, so armour, enchantments and everything
-else keep working.
-
-Every way a monster can enter a layer is covered:
-
-- **`EntitySpawnEvent`** — natural spawns, spawners and `/summon` all pass through it. This
-  is why the plugin listens here rather than on `CreatureSpawnEvent`, which natural spawns
-  and spawners fire but `/summon` does not.
-- **`Worlds::descend_monsters`** — a monster that follows a descending player never spawns
-  in the new world, so `LayerLeave` moves the layer's monsters down and rescales them.
-
-`First` is skipped entirely (`1x` means no work), as is anything outside the `MONSTERS`
-allow-list, so players, animals and dropped items are untouched.
-
-### The type string is a numeric id
-
-`EntitySpawnEvent` carries the entity type as a `String`, and Pumpkin fills it with
-`entity_type.id.to_string()` — the **registry index** from `pumpkin-data`, not a name.
-`zombie` arrives as `"154"`, `cave_spider` as `"22"`. `MONSTERS` and the `monster_id`
-table in `src/events/monsters.rs` are the only places those numbers live, and both forms
-(numeric id and `resource_name`) are matched.
-
-This is the weakest part of the design: the ids are tied to Pumpkin's registry order, and
-the plugin API has no name accessor on `EntityType` to derive them from. If Pumpkin
-renumbers its entity types, the scale silently stops matching, so re-verify the ids after
-an API upgrade.
+A mob is exactly what its entity type says, in every layer — there is no depth multiplier
+and no per-layer allow-list. Descending is still an escape: entities cannot change layers
+and nothing moves them between worlds, so the mobs in the layer a player leaves stay there.
+The layer they land in holds only its own inhabitants.
 
 ## No bed spawns
 
@@ -370,15 +337,14 @@ its own.
 
 `/abyss <layer> [player]` (alias `/mia`) is the only command.
 
-| Event handler   | Event                     | Responsibility                                         |
-| --------------- | ------------------------- | ------------------------------------------------------ |
-| `LayerJoin`     | `PlayerChangedWorldEvent` | Entry title; release latch; cure on the surface        |
-| `LayerLeave`    | `PlayerMoveEvent`         | Void/ceiling detection, teleport, curse                |
-| `FallDamage`    | `PlayerMoveEvent`         | Adds the carried descent to the fall distance          |
-| `Monsters`      | `EntitySpawnEvent`        | Scales a spawned monster's stats by layer depth        |
-| `BedSpawn`      | `PlayerSpawnChangeEvent`  | Refuses player-set spawn points, keeps `/spawnpoint`   |
-| `LayerRespawn`  | `PlayerRespawnEvent`      | Returns the player to `First`'s spawn, cures the curse |
-| `LayerTeleport` | `PlayerTeleportEvent`     | Record where a teleport put the player                 |
+| Event handler   | Event                     | Responsibility                                        |
+| --------------- | ------------------------- | ----------------------------------------------------- |
+| `LayerJoin`     | `PlayerChangedWorldEvent` | Entry title; release latch; cure in `Orth`            |
+| `LayerLeave`    | `PlayerMoveEvent`         | Void/ceiling detection, teleport, curse               |
+| `FallDamage`    | `PlayerMoveEvent`         | Adds the carried descent to the fall distance         |
+| `BedSpawn`      | `PlayerSpawnChangeEvent`  | Refuses player-set spawn points, keeps `/spawnpoint`  |
+| `LayerRespawn`  | `PlayerRespawnEvent`      | Returns the player to `Orth`'s spawn, cures the curse |
+| `LayerTeleport` | `PlayerTeleportEvent`     | Record where a teleport put the player                |
 
 A **player** running `/abyss` is always the one moved; `[player]` is only consulted from
 console. This is not a stylistic choice — the host returns an omitted argument as
@@ -404,7 +370,7 @@ These are host or design limits the plugin works within, not bugs to fix casuall
 - **No spawn-point setter is exposed.** A void world's spawn sits at the origin, so
   arrivals must be driven by the transition code or by map data.
 - **Difficulty is server-wide** and has no setter, so peaceful behaviour is expressed as
-  per-world game rules (`First` disables `spawn-monsters`).
+  per-world game rules (`Orth` and `First` disable `spawn-monsters`).
 - **A fall is only carried one layer.** A descent resets the fall distance at every world
   boundary, and the carry described above is measured in the layer the player arrives in.
   Someone who falls from `First` without ever landing is hurt by the last segment, not the

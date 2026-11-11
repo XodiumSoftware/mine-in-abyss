@@ -12,7 +12,7 @@
 //! apart, and means renaming a kind does not orphan the mobs already in the world.
 
 use pumpkin_plugin_api::World;
-use pumpkin_plugin_api::common::NamedColor;
+use pumpkin_plugin_api::common::{NamedColor, RgbColor};
 use pumpkin_plugin_api::persistent_data::PersistentDataHolder;
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
@@ -25,12 +25,22 @@ use crate::layer::Layer;
 /// Key under which a custom mob's identity is stored.
 const IDENTITY_KEY: &str = "mob";
 
-/// Builds the visible name of a mob kind.
+/// Builds the visible name of a mob kind from an exact colour.
 ///
 /// Every kind names itself through this so the name above a mob is built one way — plain
-/// text, then a colour. It lives here rather than in each kind because the colour palette is
-/// narrow enough that the choice needs to be made once, not nine times.
-pub fn named(name: &str, color: NamedColor) -> TextComponent {
+/// text, then a colour. It takes the exact RGB the bestiary lists rather than a
+/// [`NamedColor`], because that palette has only 16 entries and no cyan, brown or light
+/// gray: a mob whose colour is written down should render in that colour, not its nearest
+/// neighbour.
+pub fn named(name: &str, color: RgbColor) -> TextComponent {
+    TextComponent::text(name).color_rgb(color)
+}
+
+/// Builds the visible name of a mob kind from one of Minecraft's named colours.
+///
+/// For a kind whose colour is only described loosely; prefer [`named`] when an exact
+/// colour is known.
+pub fn named_color(name: &str, color: NamedColor) -> TextComponent {
     TextComponent::text(name).color_named(color)
 }
 
@@ -52,8 +62,8 @@ pub enum Category {
     Passive,
     /// May be bred or tamed, and only harms players when provoked.
     Docile,
-    /// Can fly, so its pathing ignores the ground.
-    Flying,
+    /// Moves through the air, so its pathing ignores the ground.
+    Aerial,
     /// Swims, so it belongs in water rather than on the layer's map.
     Aquatic,
     /// Attacks players on sight.
@@ -65,7 +75,7 @@ impl Category {
     pub const ALL: [Self; 5] = [
         Self::Passive,
         Self::Docile,
-        Self::Flying,
+        Self::Aerial,
         Self::Aquatic,
         Self::Hostile,
     ];

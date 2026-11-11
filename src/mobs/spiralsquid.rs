@@ -1,6 +1,5 @@
 //! The spiralsquid, an aquatic mob of the first and fourth layers.
 
-use pumpkin_plugin_api::common::NamedColor;
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
@@ -8,6 +7,7 @@ use pumpkin_plugin_api::world::LivingEntity;
 
 use super::mob::{Category, Mob, named};
 use crate::layer::Layer;
+use crate::utils::rgb;
 
 /// A blue squid, at home wherever a layer's map holds water.
 #[derive(Debug, Default, Clone, Copy)]
@@ -23,7 +23,7 @@ impl Mob for Spiralsquid {
     }
 
     fn name() -> TextComponent {
-        named("Spiralsquid", NamedColor::Blue)
+        named("Spiralsquid", rgb(0x1B, 0x91, 0xB5))
     }
 
     fn layers() -> &'static [Layer] {

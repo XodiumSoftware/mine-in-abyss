@@ -8,7 +8,6 @@
 //! wolf, so a player can tell it apart from the vanilla mob it is built on and thinks twice
 //! before provoking one.
 
-use pumpkin_plugin_api::common::NamedColor;
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
@@ -16,6 +15,7 @@ use pumpkin_plugin_api::world::LivingEntity;
 
 use super::mob::{Category, Mob, named};
 use crate::layer::Layer;
+use crate::utils::rgb;
 
 /// A docile wolf of the Top of the Abyss and the Forest of Temptation.
 #[derive(Debug, Default, Clone, Copy)]
@@ -31,7 +31,7 @@ impl Mob for Beniguma {
     }
 
     fn name() -> TextComponent {
-        named("Beniguma", NamedColor::Red)
+        named("Beniguma", rgb(0x82, 0x42, 0x43))
     }
 
     fn layers() -> &'static [Layer] {

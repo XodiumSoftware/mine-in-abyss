@@ -1,6 +1,5 @@
 //! The silkfang, a hostile flyer of the upper strata.
 
-use pumpkin_plugin_api::common::NamedColor;
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
@@ -8,6 +7,7 @@ use pumpkin_plugin_api::world::LivingEntity;
 
 use super::mob::{Category, Mob, named};
 use crate::layer::Layer;
+use crate::utils::rgb;
 
 /// A yellow flyer that hunts players in the first and second layers.
 #[derive(Debug, Default, Clone, Copy)]
@@ -23,7 +23,7 @@ impl Mob for Silkfang {
     }
 
     fn name() -> TextComponent {
-        named("Silkfang", NamedColor::Yellow)
+        named("Silkfang", rgb(0x69, 0x61, 0x12))
     }
 
     fn layers() -> &'static [Layer] {

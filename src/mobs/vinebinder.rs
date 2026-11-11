@@ -1,6 +1,5 @@
 //! The vinebinder, a hostile plant of the first two layers.
 
-use pumpkin_plugin_api::common::NamedColor;
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
@@ -8,6 +7,7 @@ use pumpkin_plugin_api::world::LivingEntity;
 
 use super::mob::{Category, Mob, named};
 use crate::layer::Layer;
+use crate::utils::rgb;
 
 /// A white creeper-shaped thing that hunts players among the vines.
 #[derive(Debug, Default, Clone, Copy)]
@@ -23,7 +23,7 @@ impl Mob for Vinebinder {
     }
 
     fn name() -> TextComponent {
-        named("Vinebinder", NamedColor::White)
+        named("Vinebinder", rgb(0xFF, 0xFF, 0xFF))
     }
 
     fn layers() -> &'static [Layer] {

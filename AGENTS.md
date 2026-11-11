@@ -324,7 +324,7 @@ that, not a way around it:
 
 - `mob.rs` — the [`Mob`](src/mobs/mob.rs) trait, plus the identity marker it writes. A kind
   supplies its base `EntityType`, a stable `id` byte, its visible name, the layers it may
-  spawn in and a [`Category`](src/mobs/mob.rs) (`Passive`/`Docile`/`Flying`/`Aquatic`/`Hostile`),
+  spawn in and a [`Category`](src/mobs/mob.rs) (`Passive`/`Docile`/`Aerial`/`Aquatic`/`Hostile`),
   and does everything else in **`Mob::apply`**: the spawned `LivingEntity` is handed over and
   the kind sets attributes with `set_attribute_base` and equips itself with `set_equipment`
   per slot. Nothing is a fixed table, so a hand-only mob and a fully armoured one are just
@@ -361,17 +361,17 @@ of names rather than a `const` because a trait method cannot be called in a cons
 
 **The catalogue as it stands**, with ids and spawn layers:
 
-| Kind              | id  | Base    | Category | Layers  | Hearts |
-| ----------------- | --- | ------- | -------- | ------- | ------ |
-| `Beniguma`        | 1   | Wolf    | Docile   | 1, 2    | 8      |
-| `Cyatoria`        | 2   | Cat     | Flying   | 1, 2    | 12.5   |
-| `SmallHammerbeak` | 3   | Parrot  | Flying   | 1, 2    | 9      |
-| `GiantHammerbeak` | 4   | Parrot  | Flying   | 1, 2, 4 | 20     |
-| `Splitjaw`        | 5   | Parrot  | Flying   | 1, 2, 3 | 45     |
-| `Woodcrier`       | 6   | Parrot  | Hostile  | 1, 2    | 15     |
-| `ManToyer`        | 7   | Parrot  | Hostile  | 1       | 7.5    |
-| `Silkfang`        | 8   | Parrot  | Hostile  | 1, 2    | 11     |
-| `Spittleshrub`    | 9   | Parrot  | Hostile  | 1, 2, 4 | 10     |
+| Kind              | id  | Base    | Category | Layers  | Hearts | Colour    |
+| ----------------- | --- | ------- | -------- | ------- | ------ | --------- |
+| `Beniguma`        | 1   | Wolf    | Docile   | 1, 2    | 8      | `#824243` |
+| `Cyatoria`        | 2   | Cat     | Aerial   | 1, 2    | 12.5   | `#3DDFFF` |
+| `SmallHammerbeak` | 3   | Parrot  | Aerial   | 1, 2    | 9      | `#613F0C` |
+| `GiantHammerbeak` | 4   | Parrot  | Aerial   | 1, 2, 4 | 20     | `#613F0C` |
+| `Splitjaw`        | 5   | Parrot  | Aerial   | 1, 2, 3 | 45     | `#9A1CAD` |
+| `Woodcrier`       | 6   | Parrot  | Hostile  | 1, 2    | 15     | `#9A1CAD` |
+| `ManToyer`        | 7   | Parrot  | Hostile  | 1       | 7.5    | `#D8D8D8` |
+| `Silkfang`        | 8   | Parrot  | Hostile  | 1, 2    | 11     | `#696112` |
+| `Spittleshrub`    | 9   | Parrot  | Hostile  | 1, 2, 4 | 10     | `#696112` |
 | `Vinebinder`      | 10  | Creeper | Hostile  | 1, 2    | 10     |
 | `Vineblaster`     | 11  | Creeper | Hostile  | 1, 2    | 8      |
 | `Vinepoofer`      | 12  | Creeper | Hostile  | 1, 2    | 10     |
@@ -382,10 +382,10 @@ of names rather than a `const` because a trait method cannot be called in a cons
 Ids are permanent once shipped — they are what tells two kinds on the same base type
 apart — so a new kind takes the next free number and never reuses one.
 
-**Names are coloured through `mob::named`.** [`NamedColor`](src/mobs/mob.rs) has only 16
-variants and no cyan, brown or light gray, so those are mapped to their nearest
-neighbour: cyan to `Aqua`, brown to `Gold`, light gray to `Gray`, purple to
-`LightPurple`. `TextComponent::color_rgb` is available if an exact colour is ever needed.
+**Names are coloured through `mob::named`, which takes an exact RGB.** The colours are the
+hex values the wiki lists for each mob, so they are written as `rgb(0xRR, 0xGG, 0xBB)`
+rather than a [`NamedColor`], which has only 16 entries and no cyan, brown or light gray.
+`mob::named_color` exists for a kind whose colour is only described loosely.
 
 **Nothing spawns a kind yet**, so the module carries an `#[expect(dead_code)]`. Remove it
 when the first real caller exists — a `/abyss summon` subcommand or a layer spawn rule —

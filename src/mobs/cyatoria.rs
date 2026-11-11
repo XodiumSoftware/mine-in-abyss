@@ -1,6 +1,5 @@
 //! A cyan flying cat of the Top of the Abyss and the Forest of Temptation.
 
-use pumpkin_plugin_api::common::NamedColor;
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
@@ -8,6 +7,7 @@ use pumpkin_plugin_api::world::LivingEntity;
 
 use super::mob::{Category, Mob, named};
 use crate::layer::Layer;
+use crate::utils::rgb;
 
 /// A cyan flying cat, at home in the upper layers.
 #[derive(Debug, Default, Clone, Copy)]
@@ -23,7 +23,7 @@ impl Mob for Cyatoria {
     }
 
     fn name() -> TextComponent {
-        named("Cyatoria", NamedColor::Aqua)
+        named("Cyatoria", rgb(0x3D, 0xDF, 0xFF))
     }
 
     fn layers() -> &'static [Layer] {
@@ -31,7 +31,7 @@ impl Mob for Cyatoria {
     }
 
     fn category() -> Category {
-        Category::Flying
+        Category::Aerial
     }
 
     fn apply(entity: &LivingEntity) {

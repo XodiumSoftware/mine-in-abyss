@@ -1,6 +1,5 @@
 //! The splitjaw, the heaviest flyer in the upper half of the Abyss.
 
-use pumpkin_plugin_api::common::NamedColor;
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
@@ -8,6 +7,7 @@ use pumpkin_plugin_api::world::LivingEntity;
 
 use super::mob::{Category, Mob, named};
 use crate::layer::Layer;
+use crate::utils::rgb;
 
 /// A large purple flyer, met from the Top of the Abyss down to the Great Fault.
 #[derive(Debug, Default, Clone, Copy)]
@@ -23,7 +23,7 @@ impl Mob for Splitjaw {
     }
 
     fn name() -> TextComponent {
-        named("Splitjaw", NamedColor::LightPurple)
+        named("Splitjaw", rgb(0x9A, 0x1C, 0xAD))
     }
 
     fn layers() -> &'static [Layer] {
@@ -31,7 +31,7 @@ impl Mob for Splitjaw {
     }
 
     fn category() -> Category {
-        Category::Flying
+        Category::Aerial
     }
 
     fn apply(entity: &LivingEntity) {

@@ -1,6 +1,5 @@
 //! A small flying hammerbeak, found across the middle strata.
 
-use pumpkin_plugin_api::common::NamedColor;
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
@@ -8,6 +7,7 @@ use pumpkin_plugin_api::world::LivingEntity;
 
 use super::mob::{Category, Mob, named};
 use crate::layer::Layer;
+use crate::utils::rgb;
 
 /// The smaller of the two hammerbeaks, the one a player meets first.
 #[derive(Debug, Default, Clone, Copy)]
@@ -23,7 +23,7 @@ impl Mob for SmallHammerbeak {
     }
 
     fn name() -> TextComponent {
-        named("Small Hammerbeak", NamedColor::Gold)
+        named("Small Hammerbeak", rgb(0x61, 0x3F, 0x0C))
     }
 
     fn layers() -> &'static [Layer] {
@@ -31,7 +31,7 @@ impl Mob for SmallHammerbeak {
     }
 
     fn category() -> Category {
-        Category::Flying
+        Category::Aerial
     }
 
     fn apply(entity: &LivingEntity) {

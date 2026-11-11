@@ -68,12 +68,14 @@ pub fn register(context: &Context) {
 
     context.register_command(command, &permission_node());
 
-    let _ = context.register_permission(&Permission {
-        node: permission_node(),
-        description: DESCRIPTION.to_string(),
-        default: PermissionDefault::Op(PermissionLevel::Three),
-        children: vec![],
-    });
+    context
+        .register_permission(&Permission {
+            node: permission_node(),
+            description: DESCRIPTION.to_string(),
+            default: PermissionDefault::Op(PermissionLevel::Three),
+            children: vec![],
+        })
+        .expect("failed to register permission node");
 }
 
 /// Executor for `/abyss`.

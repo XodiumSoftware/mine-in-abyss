@@ -126,7 +126,7 @@ Handlers live in `src/events/`, declared inline in the `mod events` block in `li
 | `FallDamage`    | `PlayerMoveEvent`         | Adds a carried descent to the fall distance in the layer arrived in      |
 | `Monsters`      | `EntitySpawnEvent`        | Scales a spawned monster's stats by the layer's depth                    |
 | `BedSpawn`      | `PlayerSpawnChangeEvent`  | Refuses a spawn point a player sets, but keeps `/spawnpoint`             |
-| `LayerRespawn`  | `PlayerRespawnEvent`      | Clears the curse strain and any carried fall                             |
+| `LayerRespawn`  | `PlayerRespawnEvent`      | Clears the curse strain, then returns the player to `First`'s spawn      |
 | `LayerTeleport` | `PlayerTeleportEvent`     | Records where a teleport put the player, so it is not read as a climb    |
 
 `LayerLeave` compares against the bounds shared by every layer
@@ -199,6 +199,12 @@ after an API upgrade: if it renumbers, scaling silently stops matching.
 separates an operator override from a player shortcut — do not drop it, or `/spawnpoint`
 stops working. Cancelling is sufficient: the host returns `false` from
 `set_respawn_point` and sends no "Spawn point set" message.
+
+**Dying returns the player to `First`'s world spawn.** `PlayerRespawnEvent` is **not
+cancellable** and fires after the host resolved a destination, so `LayerRespawn` respawns
+the player and then teleports them to `First`. It must supply the world: without a spawn
+point the host falls back to the `OVERWORLD` dimension's spawn, which is not a layer world,
+and `PlayerSpawnLocationEvent` can move a position but not a world.
 
 **Only players change layers.** There is no entity move event or entity world-change event
 in the plugin API, so an item or mob thrown into the void does not descend — it falls to
@@ -349,7 +355,7 @@ src/
 ├── lib.rs              # `PLUGIN_ID`, `LAYERS`, `layer_for_world`, `Plugin` impl
 ├── layer.rs            # `Layer` enum + id/world/next/prev/index/curse,
 │                       # plus shared `MIN_Y`/`MAX_Y` and entry/exit heights
-├── utils.rs            # Shared helpers (`ignores_transitions`, `begin_transition`)
+├── utils.rs            # Shared helpers (`ignores_transitions`, `world_for`, fall carry)
 ├── generator.rs        # `Void` chunk generator — layer worlds generate empty
 ├── time_sync.rs        # Keeps every layer world on `First`'s clock
 ├── worlds.rs           # `Worlds` — one void world per layer
@@ -362,7 +368,7 @@ src/
 │   ├── layer_join.rs   # `LayerJoin` — entry title, cure on the surface
 │   ├── layer_leave.rs  # `LayerLeave` — void/ceiling teleport + curse
 │   ├── monsters.rs     # `Monsters` — mob stats scale exponentially with depth
-│   ├── layer_respawn.rs# `LayerRespawn` — clears the curse on respawn
+│   ├── layer_respawn.rs# `LayerRespawn` — respawns at First's spawn
 │   └── layer_teleport.rs # `LayerTeleport` — teleports are not climbs
 ```
 

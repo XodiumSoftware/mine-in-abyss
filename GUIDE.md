@@ -160,6 +160,11 @@ so and leaves your spawn where it was.
 Operators can still force one with `/spawnpoint`, which is treated as a deliberate
 override rather than a player shortcut.
 
+### Dying
+
+When you die you respawn at **`First`'s world spawn**, wherever in the Abyss you fell. Death
+is not a shortcut back to the top, and the Curse of the Abyss is cleared when you do.
+
 ### Monsters
 
 Monsters get **exponentially harder** the deeper you go. Every monster in a layer has twice

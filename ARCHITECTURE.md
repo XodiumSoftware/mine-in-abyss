@@ -15,6 +15,7 @@ from one layer to the next. For installation and player-facing behaviour see
 - [Fall damage across layers](#fall-damage-across-layers)
 - [Monster difficulty](#monster-difficulty)
 - [No bed spawns](#no-bed-spawns)
+- [Respawning](#respawning)
 - [The Curse of the Abyss](#the-curse-of-the-abyss)
 - [Commands](#commands)
 - [Known constraints](#known-constraints)
@@ -318,6 +319,27 @@ Cancelling is enough on its own: the host returns `false` from `set_respawn_poin
 never sends its usual "Spawn point set" message, so the only feedback is the one this
 handler adds.
 
+## Respawning
+
+Dying returns the player to **`First`'s world spawn**, not wherever they died. Combined
+with [no bed spawns](#no-bed-spawns) there is no way to bank a point further down, so death
+is never a shortcut home.
+
+`LayerRespawn` runs on `PlayerRespawnEvent`, which is **not cancellable** and fires after
+the host has already resolved a destination. So the respawn happens first and the player is
+moved again immediately: this is a teleport, not a redirection. Two consequences worth
+knowing:
+
+- The host only resolves `First`'s position when the player died in `First`. Everywhere
+  else it falls back to the **`OVERWORLD` dimension's** spawn, which is not a layer world —
+  so the handler has to supply the world itself, not just a position.
+- Rewriting `PlayerSpawnLocationEvent` instead would move the position but **not** the
+  world, which is why it is not used here.
+
+The spawn is read from `World::get_spawn_location()`, so changing the world spawn in
+`First` moves the respawn point with it. The handler also cures the curse and clears any
+carried fall, so a death never leaves a debuff or a resumed descent behind.
+
 ## The Curse of the Abyss
 
 Ascending adds strain; the strain is cumulative and stored as namespaced NBT on the player,
@@ -348,15 +370,15 @@ its own.
 
 `/abyss <layer> [player]` (alias `/mia`) is the only command.
 
-| Event handler   | Event                     | Responsibility                                       |
-| --------------- | ------------------------- | ---------------------------------------------------- |
-| `LayerJoin`     | `PlayerChangedWorldEvent` | Entry title; release latch; cure on the surface      |
-| `LayerLeave`    | `PlayerMoveEvent`         | Void/ceiling detection, teleport, curse              |
-| `FallDamage`    | `PlayerMoveEvent`         | Adds the carried descent to the fall distance        |
-| `Monsters`      | `EntitySpawnEvent`        | Scales a spawned monster's stats by layer depth      |
-| `BedSpawn`      | `PlayerSpawnChangeEvent`  | Refuses player-set spawn points, keeps `/spawnpoint` |
-| `LayerRespawn`  | `PlayerRespawnEvent`      | Clear the curse strain and any carried fall          |
-| `LayerTeleport` | `PlayerTeleportEvent`     | Record where a teleport put the player               |
+| Event handler   | Event                     | Responsibility                                         |
+| --------------- | ------------------------- | ------------------------------------------------------ |
+| `LayerJoin`     | `PlayerChangedWorldEvent` | Entry title; release latch; cure on the surface        |
+| `LayerLeave`    | `PlayerMoveEvent`         | Void/ceiling detection, teleport, curse                |
+| `FallDamage`    | `PlayerMoveEvent`         | Adds the carried descent to the fall distance          |
+| `Monsters`      | `EntitySpawnEvent`        | Scales a spawned monster's stats by layer depth        |
+| `BedSpawn`      | `PlayerSpawnChangeEvent`  | Refuses player-set spawn points, keeps `/spawnpoint`   |
+| `LayerRespawn`  | `PlayerRespawnEvent`      | Returns the player to `First`'s spawn, cures the curse |
+| `LayerTeleport` | `PlayerTeleportEvent`     | Record where a teleport put the player                 |
 
 A **player** running `/abyss` is always the one moved; `[player]` is only consulted from
 console. This is not a stylistic choice — the host returns an omitted argument as

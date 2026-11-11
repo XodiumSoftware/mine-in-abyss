@@ -1,24 +1,62 @@
-//! Handles a player respawning.
+//! Sends a respawning player back to the top of the Abyss.
+//!
+//! The Abyss is escaped on its own terms, so death is not a shortcut home: the player
+//! wakes up at `First`'s world spawn rather than wherever they died. Since
+//! [`BedSpawn`](super::bed_spawn::BedSpawn) refuses beds, there is no way to bank a spawn
+//! point further down and skip the climb.
+//!
+//! # Why this event
+//!
+//! `PlayerRespawnEvent` is fired once the host has already resolved a destination world and
+//! position, and it is **not cancellable** — so this handler does not prevent the respawn,
+//! it moves the player again immediately afterwards. The host resolves `First`'s position
+//! only if the player died in it; anywhere else it would have used the `OVERWORLD`
+//! dimension's own spawn, which is not a layer world.
+//!
+//! Rewriting `PlayerSpawnLocationEvent` instead would move the position but not the world,
+//! which is not enough: the player has to change world.
+//!
+//! # What it does not do
+//!
+//! Respawn still happens first — the player is alive and in the resolved world for an
+//! instant — so this is a teleport, not a redirection. Nothing observes that in between
+//! except the respawn packet itself, which is what puts the player back in a playable
+//! state.
 
 use pumpkin_plugin_api::Server;
 use pumpkin_plugin_api::events::EventHandler;
 use pumpkin_plugin_api::events::player::player_respawn::PlayerRespawnEvent;
 use pumpkin_plugin_api::events_wit::PlayerRespawnEventData;
 
-use crate::utils::clear_fall;
+use crate::layer::Layer;
+use crate::utils::{clear_fall, world_for};
 
-/// Clears the player's curse strain when they respawn.
-///
-/// The curse is uncurable by normal means, but death resets it: otherwise a fatal
-/// strain would follow the player through every respawn. A descent they were partway
-/// through dies with them, so the carried fall distance is dropped too.
+/// Returns a respawning player to `First`'s world spawn.
 #[derive(Debug, Default, Clone, Copy)]
 pub struct LayerRespawn;
 
 impl EventHandler<PlayerRespawnEvent> for LayerRespawn {
-    fn handle(&self, _server: Server, event: PlayerRespawnEventData) -> PlayerRespawnEventData {
+    fn handle(&self, server: Server, event: PlayerRespawnEventData) -> PlayerRespawnEventData {
         super::curse::cure(&event.player);
         clear_fall(&event.player);
+
+        let Some(world) = world_for(&server, Layer::First, "a respawn cannot return to First")
+        else {
+            return event;
+        };
+
+        let spawn = world.get_spawn_location();
+        event.player.teleport(
+            (
+                f64::from(spawn.pos.x) + 0.5,
+                f64::from(spawn.pos.y),
+                f64::from(spawn.pos.z) + 0.5,
+            ),
+            Some(spawn.yaw),
+            Some(spawn.pitch),
+            world,
+        );
+
         event
     }
 }

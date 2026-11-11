@@ -3,8 +3,12 @@
 use pumpkin_plugin_api::Player;
 use pumpkin_plugin_api::common::{GameMode, RgbColor};
 use pumpkin_plugin_api::wit::pumpkin::plugin::uuid;
+use pumpkin_plugin_api::{Server, World};
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
+use tracing::warn;
+
+use crate::Layer;
 
 thread_local! {
     /// Players currently being moved between layers, keyed by player id.
@@ -62,6 +66,24 @@ struct FallCarry {
 /// Returns a stable key for `player`, usable across separate WIT handles.
 fn key(player: &Player) -> String {
     uuid::to_string(player.get_id())
+}
+
+/// Resolves the world for `layer`, logging `purpose` when it cannot be found.
+///
+/// A missing world means [`Worlds::setup`](crate::Worlds::setup) failed for that layer. The
+/// caller says what it was trying to do, so the log explains why it mattered — a player
+/// stuck in the void, a clock that cannot be synced and a respawn that went elsewhere are
+/// different failures.
+///
+/// Every caller returns quietly on `None`: one unavailable world must not take down an
+/// event handler or a repeating task that still has other layers to serve.
+pub fn world_for(server: &Server, layer: Layer, purpose: &str) -> Option<World> {
+    let name = layer.world();
+    let world = server.get_world_by_name(&name);
+    if world.is_none() {
+        warn!("World '{name}' is unavailable; {purpose}");
+    }
+    world
 }
 
 /// Builds an [`RgbColor`] from its channels, so palettes can be written inline.

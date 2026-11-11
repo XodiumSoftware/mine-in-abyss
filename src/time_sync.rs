@@ -30,12 +30,12 @@
 //! age cannot be shared. Nothing in vanilla depends on a world's age matching its time of
 //! day, and `/time set` desynchronises the two in vanilla as well.
 
+use pumpkin_plugin_api::Server;
 use pumpkin_plugin_api::scheduler::SchedulerExt;
-use pumpkin_plugin_api::{Server, World};
-use tracing::warn;
 
 use crate::LAYERS;
 use crate::layer::Layer;
+use crate::utils::world_for;
 
 /// The layer whose clock every other layer follows.
 const SOURCE: Layer = Layer::First;
@@ -59,7 +59,7 @@ pub fn schedule(context: &pumpkin_plugin_api::Context) -> u32 {
 
 /// Copies the source layer's clock to every other layer world.
 fn sync_times(server: &Server) {
-    let Some(source) = world_for(server, SOURCE) else {
+    let Some(source) = world_for(server, SOURCE, "its clock cannot be synced") else {
         return;
     };
 
@@ -70,21 +70,8 @@ fn sync_times(server: &Server) {
             continue;
         }
 
-        if let Some(world) = world_for(server, layer) {
+        if let Some(world) = world_for(server, layer, "its clock cannot be synced") {
             world.set_time_of_day(time);
         }
     }
-}
-
-/// Resolves the world for `layer`, logging when it is unavailable.
-///
-/// A missing world is not fatal here: [`Worlds::setup`](crate::Worlds::setup) already warns
-/// about it, and the remaining layers should still be kept in step with each other.
-fn world_for(server: &Server, layer: Layer) -> Option<World> {
-    let name = layer.world();
-    let world = server.get_world_by_name(&name);
-    if world.is_none() {
-        warn!("World '{name}' is unavailable; its clock cannot be synced");
-    }
-    world
 }

@@ -43,11 +43,11 @@ use pumpkin_plugin_api::events::player::player_move::PlayerMoveEvent;
 use pumpkin_plugin_api::events_wit::PlayerMoveEventData;
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::{Player, Server};
-use tracing::warn;
 
 use crate::layer::Layer;
 use crate::utils::{
-    begin_transition, carry_fall, clear_fall, consume_teleport, end_transition, ignores_transitions,
+    begin_transition, carry_fall, clear_fall, consume_teleport, end_transition,
+    ignores_transitions, world_for,
 };
 use crate::worlds::Worlds;
 
@@ -144,7 +144,7 @@ enum Direction {
 ///
 /// Returns `false` if the destination world is unavailable, leaving the event untouched.
 fn up(server: &Server, player: &Player, layer: Layer) -> bool {
-    let Some(world) = world_for(server, layer) else {
+    let Some(world) = world_for(server, layer, "it cannot be entered") else {
         return false;
     };
 
@@ -159,7 +159,7 @@ fn up(server: &Server, player: &Player, layer: Layer) -> bool {
 ///
 /// Returns `false` if the destination world is unavailable, leaving the event untouched.
 fn down(server: &Server, player: &Player, layer: Layer) -> bool {
-    let Some(world) = world_for(server, layer) else {
+    let Some(world) = world_for(server, layer, "it cannot be entered") else {
         return false;
     };
 
@@ -181,20 +181,4 @@ fn down(server: &Server, player: &Player, layer: Layer) -> bool {
 fn tell(player: &Player, message: &str) {
     let text = TextComponent::text(message).color_named(NamedColor::Gray);
     player.send_system_message(text, false);
-}
-
-/// Resolves the world for `layer`, logging when it cannot be found.
-///
-/// A missing world means [`Worlds::setup`](crate::Worlds::setup) failed for that layer;
-/// without a log the player would simply stay in the void with no trace of why.
-fn world_for(server: &Server, layer: Layer) -> Option<pumpkin_plugin_api::World> {
-    let name = layer.world();
-    let world = server.get_world_by_name(&name);
-    if world.is_none() {
-        warn!(
-            "World '{name}' is unavailable; {} cannot be entered",
-            layer.id()
-        );
-    }
-    world
 }

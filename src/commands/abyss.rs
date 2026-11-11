@@ -3,15 +3,22 @@
 //! Moves a player into any layer of the Abyss directly, without ascending through the
 //! Abyss in between, so the Curse of the Abyss is never inflicted.
 //!
+//! It also carries `/abyss item`, which puts a custom item in the sender's hand. That
+//! subcommand exists to exercise the [`ItemBuilder`](crate::items::item_builder::ItemBuilder)
+//! path end to end — create a stack, stamp it, read the marker back — until a real source of
+//! items (loot tables or crafting) exists.
+//!
 //! # Usage
 //!
 //! ```text
 //! /abyss <layer> [player]
+//! /abyss item <item>
 //! ```
 //!
 //! - `<layer>` — `orth`, `first` … `seventh`, or `1` … `8`, case-insensitive
 //! - `[player]` — who to move; only used when the command comes from **console**, since a
 //!   player sender is always moved themselves
+//! - `<item>` — `relic`, case-insensitive; gives one Abyss Relic to the sender
 //!
 //! Tab-completion for `<layer>` is implemented but disabled: the Pumpkin host panics on
 //! any suggestion request (see [`LayerSuggestions`]).
@@ -31,12 +38,15 @@ use pumpkin_plugin_api::commands::CommandHandler;
 #[cfg(any())]
 use pumpkin_plugin_api::commands::CommandSuggestionHandler;
 use pumpkin_plugin_api::text::TextComponent;
+use pumpkin_plugin_api::wit::pumpkin::plugin::inventory::Hand;
 use pumpkin_plugin_api::wit::pumpkin::plugin::permission::{
     Permission, PermissionDefault, PermissionLevel,
 };
 use pumpkin_plugin_api::{Context, Server};
 
 use crate::commands::command::Command as RegisterCommand;
+use crate::items::abyss_relic::AbyssRelic;
+use crate::items::item_builder::{ItemBuilder, id_of};
 use crate::layer::Layer;
 
 /// The `/abyss` command, registration and executor.
@@ -64,7 +74,12 @@ impl RegisterCommand for Abyss {
             CommandNode::argument("layer", &ArgumentType::String(StringType::SingleWord));
         let player = CommandNode::argument("player", &ArgumentType::String(StringType::SingleWord));
 
+        let item = CommandNode::literal("item");
+        let item_name =
+            CommandNode::argument("item", &ArgumentType::String(StringType::SingleWord));
+
         let command = Command::new(&names, Self::description())
+            .then(item.then(item_name).execute(AbyssItem))
             .then(layer_with_player.then(player).execute(Abyss))
             .then(layer_leaf.execute(Abyss))
             .execute(Abyss);
@@ -131,6 +146,59 @@ impl CommandHandler for Abyss {
             layer.id()
         )));
         Ok(1)
+    }
+}
+
+/// The `/abyss item <item>` executor.
+///
+/// Creates the named custom item, puts it in the sender's hand, and reads the marker straight
+/// back off the stored stack. That round trip is the point: it proves the stack survives
+/// being written into an inventory slot and still reports its own kind.
+#[derive(Debug, Default, Clone, Copy)]
+pub struct AbyssItem;
+
+impl CommandHandler for AbyssItem {
+    fn handle(
+        &self,
+        sender: CommandSender,
+        _server: Server,
+        args: ConsumedArgs,
+    ) -> Result<i32, CommandError> {
+        let Arg::Simple(name) = args.get_value("item") else {
+            return Err(CommandError::InvalidConsumption(None));
+        };
+
+        let Some(player) = sender.as_player() else {
+            sender.send_error(TextComponent::text("Console must run this as a player."));
+            return Ok(0);
+        };
+
+        if !name.eq_ignore_ascii_case("relic") {
+            sender.send_error(TextComponent::text(&format!(
+                "Unknown item '{name}'. Expected one of: relic."
+            )));
+            return Ok(0);
+        }
+
+        let stack = AbyssRelic::create(1);
+        player
+            .get_inventory()
+            .set_item_in_hand(Hand::Right, Some(stack));
+
+        let stored = player.get_inventory().get_item_in_hand(Hand::Right);
+        let identity = stored.as_ref().and_then(id_of);
+
+        if identity == Some(AbyssRelic::id()) {
+            sender.send_message(TextComponent::text(
+                "Gave one Abyss Relic; marker reads back.",
+            ));
+            return Ok(1);
+        }
+
+        sender.send_error(TextComponent::text(
+            "Created an Abyss Relic, but its marker did not survive the inventory slot.",
+        ));
+        Ok(0)
     }
 }
 

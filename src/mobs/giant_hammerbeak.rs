@@ -6,7 +6,7 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
 use pumpkin_plugin_api::world::LivingEntity;
 
-use super::mob::{Category, Mob};
+use super::mob_builder::{Category, MobBuilder};
 use crate::layer::Layer;
 use crate::utils::rgb;
 
@@ -14,7 +14,7 @@ use crate::utils::rgb;
 #[derive(Debug, Default, Clone, Copy)]
 pub struct GiantHammerbeak;
 
-impl Mob for GiantHammerbeak {
+impl MobBuilder for GiantHammerbeak {
     fn base() -> EntityType {
         EntityType::Parrot
     }

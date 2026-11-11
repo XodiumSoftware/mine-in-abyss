@@ -207,11 +207,16 @@ and never afflicted by the curse, so they can fly through the void and ceiling f
 | Command                   | Permission                    |
 | ------------------------- | ----------------------------- |
 | `/abyss <layer> [player]` | `mine_in_abyss:command.abyss` |
+| `/abyss item <item>`      | `mine_in_abyss:command.abyss` |
 
 Alias: `/mia`. Requires permission level 3 (admin) or above.
 
 `<layer>` is `orth`, `first` … `seventh` or `1` … `8`, case-insensitive. The command teleports
 the player straight into the layer, so **no curse strain is added** — unlike a real ascent.
+
+`/abyss item relic` puts an **Abyss Relic** in your hand. It exists to test the custom-item
+path end to end — the stack is created, stamped with its identity, and the identity is read
+back off the slot it landed in — and reports whether that round trip worked.
 
 A **player** running the command is always the one moved. `[player]` is only used from
 console, where the sender is not a player:

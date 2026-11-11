@@ -1,6 +1,6 @@
 //! A docile wolf of the upper layers, showing what a custom mob can express.
 //!
-//! This is the worked example for [`Mob`](super::mob::Mob): it sets its health in one `apply`,
+//! This is the worked example for [`MobBuilder`](super::mob_builder::MobBuilder): it sets its health in one `apply`,
 //! which is how every kind defines itself — there is no fixed table of multipliers or slots
 //! to fill in.
 //!
@@ -13,7 +13,7 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
 use pumpkin_plugin_api::world::LivingEntity;
 
-use super::mob::{Category, Mob};
+use super::mob_builder::{Category, MobBuilder};
 use crate::layer::Layer;
 use crate::utils::rgb;
 
@@ -21,7 +21,7 @@ use crate::utils::rgb;
 #[derive(Debug, Default, Clone, Copy)]
 pub struct Beniguma;
 
-impl Mob for Beniguma {
+impl MobBuilder for Beniguma {
     fn base() -> EntityType {
         EntityType::Wolf
     }

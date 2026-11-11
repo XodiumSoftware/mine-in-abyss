@@ -5,7 +5,7 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
 use pumpkin_plugin_api::world::LivingEntity;
 
-use super::mob::{Category, Mob};
+use super::mob_builder::{Category, MobBuilder};
 use crate::layer::Layer;
 use crate::utils::rgb;
 
@@ -13,7 +13,7 @@ use crate::utils::rgb;
 #[derive(Debug, Default, Clone, Copy)]
 pub struct Neritantan;
 
-impl Mob for Neritantan {
+impl MobBuilder for Neritantan {
     fn base() -> EntityType {
         EntityType::Rabbit
     }

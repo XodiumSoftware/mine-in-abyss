@@ -56,7 +56,7 @@ mod mobs {
     pub mod madokajack;
     pub mod makihige;
     pub mod man_toyer;
-    pub mod mob;
+    pub mod mob_builder;
     pub mod neritantan;
     pub mod octoliar;
     pub mod okibo;
@@ -91,6 +91,17 @@ mod mobs {
     pub mod virinsipede;
     pub mod woodcrier;
     pub mod yomotsubi;
+}
+
+/// The plugin's own items, built on top of the vanilla ones.
+///
+/// Like a custom mob, a custom item is a vanilla item wearing an identity: a base item, a
+/// visible name, whatever `apply` adds, and a marker in the stack's own persistent data.
+/// `item_builder` is the trait an item implements and where that marker is written and read
+/// back; `abyss_relic` is the worked example, reachable in game through `/abyss item relic`.
+mod items {
+    pub mod abyss_relic;
+    pub mod item_builder;
 }
 
 /// The layer worlds, and the machinery that keeps them usable.
@@ -148,7 +159,7 @@ use tracing::info;
 
 use commands::command::Command as RegisterCommand;
 use events::event::Event as RegisterEvent;
-use mobs::mob::Mob;
+use mobs::mob_builder::MobBuilder;
 
 /// The plugin identifier used for namespaced ids and permission nodes.
 ///

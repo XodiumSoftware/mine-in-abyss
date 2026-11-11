@@ -322,13 +322,13 @@ a closed enum and there is no registration call anywhere in the plugin WIT, so a
 mob" is always **a vanilla mob wearing an identity**. `src/mobs/` is the architecture for
 that, not a way around it:
 
-- `mob.rs` — the [`Mob`](src/mobs/mob.rs) trait, plus the identity marker it writes. A kind
+- `mob_builder.rs` — the [`MobBuilder`](src/mobs/mob_builder.rs) trait, plus the identity marker it writes. A kind
   supplies its base `EntityType`, a stable `id` byte, its visible name, the layers it may
-  spawn in and a [`Category`](src/mobs/mob.rs) (`Passive`/`Docile`/`Aerial`/`Aquatic`/`Hostile`),
-  and does everything else in **`Mob::apply`**: the spawned `LivingEntity` is handed over and
+  spawn in and a [`Category`](src/mobs/mob_builder.rs) (`Passive`/`Docile`/`Aerial`/`Aquatic`/`Hostile`),
+  and does everything else in **`MobBuilder::apply`**: the spawned `LivingEntity` is handed over and
   the kind sets attributes with `set_attribute_base` and equips itself with `set_equipment`
   per slot. Nothing is a fixed table, so a hand-only mob and a fully armoured one are just
-  different bodies for that method. `Mob::spawn` creates the base type, calls `apply`, and
+  different bodies for that method. `MobBuilder::spawn` creates the base type, calls `apply`, and
   stamps the identity.
 - `Category` is _not_ derived from `EntityType`: the base type says what a mob looks like and
   how the host paths it, the category says what it is for. They usually agree and are allowed
@@ -337,7 +337,7 @@ that, not a way around it:
 - The marker itself is `mark`/`id_of`/`is` in the same file: a **byte** in the entity's own
   persistent data under `PLUGIN_ID` (`set_byte`/`get_byte`, the same calls `curse.rs` uses),
   so it survives relogs and restarts and cannot collide with another plugin's data. It
-  stores `Mob::id`, not the display name, so renaming a kind does not orphan mobs already
+  stores `MobBuilder::id`, not the display name, so renaming a kind does not orphan mobs already
   spawned. `id_of` returns `None` for anything this plugin did not spawn, so a handler must
   not assume every mob is custom.
 
@@ -440,6 +440,31 @@ rather than a `NamedColor`, which has only 16 entries and no cyan, brown or ligh
 when the first real caller exists — a `/abyss summon` subcommand or a layer spawn rule —
 and not before, since an unused spawn path is worse than an acknowledged gap.
 
+### Custom items
+
+Items work exactly like mobs, and for the same reason: `Item` is a **closed enum** of 1658
+vanilla items with no registration call in the plugin WIT, so a custom item is a vanilla
+item wearing an identity.
+
+- `item_builder.rs` — the [`ItemBuilder`](src/items/item_builder.rs) trait, plus the identity
+  marker. A kind supplies its base `Item`, a stable `id` byte and its visible name, and does
+  everything else in **`ItemBuilder::apply`**: `ItemBuilder::create` makes the stack, sets the
+  name, hands it over, and stamps the identity.
+- The marker is `mark`/`id_of`/`is`, a **byte** in the stack's own persistent data under
+  `PLUGIN_ID`, written with the same `set_byte`/`get_byte` calls `curse.rs` and the mob marker
+  use. It survives restarts and cannot collide with another plugin's data.
+
+**Custom data on a stack is an NBT tree, which the API cannot build.** `set_custom_data`
+takes an `NbtTree`, and that type is an opaque handle with no constructor, so the
+`PersistentDataHolder` `set_byte`/`get_byte` route is the one to use for anything this
+plugin stores on an item.
+
+**`AbyssRelic` is the worked example**, reachable in game through `/abyss item relic`. That
+subcommand creates the stack, puts it in the sender's hand and reads the marker straight
+back off the stored stack, so it exercises the whole path until a real source of items
+(loot tables or crafting) exists. Because a caller exists, `mod items` carries no
+`#[expect(dead_code)]` — unlike `mod mobs`, nothing creates a mob kind yet.
+
 #### Each layer is a hand-built map
 
 Every layer world is a **custom map made specifically for this project** — an authored
@@ -513,8 +538,11 @@ src/
 │   ├── generator.rs    # `Void` chunk generator — layer worlds generate empty
 │   └── clock.rs        # Keeps every layer world on `Orth`'s clock
 ├── mobs/               # declared as `mod mobs` in `lib.rs`: the plugin's own mobs
-│   ├── mob.rs          # `Mob` trait, `Category` + the identity marker
+│   ├── mob_builder.rs  # `MobBuilder` trait, `Category` + the identity marker
 │   └── <kind>.rs       # one file per kind, 65 of them; see the catalogue above
+├── items/              # declared as `mod items` in `lib.rs`: the plugin's own items
+│   ├── item_builder.rs # `ItemBuilder` trait + the identity marker
+│   └── abyss_relic.rs  # `AbyssRelic` — the worked example, via `/abyss item relic`
 ├── commands/
 │   ├── abyss.rs        # `/abyss` — ops teleport into a layer, curse-free
 │   └── command.rs      # `Command` trait — each command registers itself

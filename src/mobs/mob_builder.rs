@@ -1,11 +1,11 @@
 //! The trait a custom mob implements, and the identity it writes onto the entity.
 //!
-//! An entity cannot change type, so a mob spawned by [`Mob::spawn`] is a vanilla mob to the
+//! An entity cannot change type, so a mob spawned by [`MobBuilder::spawn`] is a vanilla mob to the
 //! server. The only thing that distinguishes it from a naturally spawned one is a marker in
 //! its own persistent data, written once at spawn and read by every handler that needs to
 //! know what it is looking at.
 //!
-//! The marker is [`Mob::id`] — a byte, not the display name — stored under
+//! The marker is [`MobBuilder::id`] — a byte, not the display name — stored under
 //! [`PLUGIN_ID`](crate::PLUGIN_ID) with `set_byte`/`get_byte`, the same calls
 //! [`curse`](crate::events::curse) uses. That keeps it from colliding with another plugin's
 //! data, lets it survive relogs and restarts, keeps two kinds built on the same vanilla type
@@ -82,11 +82,11 @@ impl Category {
 /// Nothing here registers anything with the host — the entity type is always a vanilla
 /// [`EntityType`] — so adding a mob means adding a file and its submodule in `lib.rs`.
 ///
-/// Everything a kind does to the spawned entity goes through [`Mob::apply`], never through a
+/// Everything a kind does to the spawned entity goes through [`MobBuilder::apply`], never through a
 /// fixed table in this trait: attributes, equipment, or anything else the API grows. A kind
 /// that wears armour and carries a sword and one that only carries a sword are both just
 /// different bodies for that method.
-pub trait Mob {
+pub trait MobBuilder {
     /// The vanilla mob this kind is built on, and the type actually spawned.
     fn base() -> EntityType;
 
@@ -164,7 +164,7 @@ pub trait Mob {
     /// Spawns this mob in `world` at `position` and stamps it with its identity.
     ///
     /// Returns the spawned entity, which is the vanilla [`base`](Self::base) type carrying
-    /// this kind's name, stats, equipment and [`Mob::id`] marker — not a new entity type.
+    /// this kind's name, stats, equipment and [`MobBuilder::id`] marker — not a new entity type.
     ///
     /// Placement is not checked here: callers that spawn by rule should gate on
     /// [`spawns_in`](Self::spawns_in) first, and callers placing a mob deliberately may
@@ -190,7 +190,7 @@ pub trait Mob {
 
 /// Records that `entity` is a custom mob of kind `id`.
 ///
-/// The identity is written by [`Mob::spawn`], which is the only caller. The byte is signed,
+/// The identity is written by [`MobBuilder::spawn`], which is the only caller. The byte is signed,
 /// so a kind id has to fit in `i8`; a larger one is silently not written rather than
 /// wrapped into another kind's id.
 pub fn mark(entity: &Entity, id: u8) {

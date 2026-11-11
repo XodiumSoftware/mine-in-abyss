@@ -22,8 +22,8 @@
 //! using a bed should not silently do nothing.
 
 use pumpkin_plugin_api::common::NamedColor;
+use pumpkin_plugin_api::events::EventHandler;
 use pumpkin_plugin_api::events::player::player_spawn_change::PlayerSpawnChangeEvent;
-use pumpkin_plugin_api::events::{EventHandler, EventPriority};
 use pumpkin_plugin_api::events_wit::PlayerSpawnChangeEventData;
 use pumpkin_plugin_api::{Context, Server};
 
@@ -39,10 +39,10 @@ impl Event for BedSpawn {
         context
             .register_event_handler::<PlayerSpawnChangeEvent, _>(
                 BedSpawn,
-                EventPriority::Normal,
-                false,
+                Self::PRIORITY,
+                Self::BLOCKING,
             )
-            .expect("failed to register PlayerSpawnChangeEvent handler");
+            .unwrap_or_else(|_| Self::fail("BedSpawn"));
     }
 }
 

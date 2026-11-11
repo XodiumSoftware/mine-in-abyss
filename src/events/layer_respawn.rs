@@ -23,8 +23,8 @@
 //! except the respawn packet itself, which is what puts the player back in a playable
 //! state.
 
+use pumpkin_plugin_api::events::EventHandler;
 use pumpkin_plugin_api::events::player::player_respawn::PlayerRespawnEvent;
-use pumpkin_plugin_api::events::{EventHandler, EventPriority};
 use pumpkin_plugin_api::events_wit::PlayerRespawnEventData;
 use pumpkin_plugin_api::{Context, Server};
 
@@ -41,10 +41,10 @@ impl Event for LayerRespawn {
         context
             .register_event_handler::<PlayerRespawnEvent, _>(
                 LayerRespawn,
-                EventPriority::Normal,
-                false,
+                Self::PRIORITY,
+                Self::BLOCKING,
             )
-            .expect("failed to register PlayerRespawnEvent handler");
+            .unwrap_or_else(|_| Self::fail("LayerRespawn"));
     }
 }
 

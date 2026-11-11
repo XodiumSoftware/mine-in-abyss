@@ -29,8 +29,8 @@
 //! same [`Monsters::apply`], so what follows a player is exactly as dangerous as the layer
 //! it followed them into.
 
+use pumpkin_plugin_api::events::EventHandler;
 use pumpkin_plugin_api::events::entity::entity_spawn::EntitySpawnEvent;
-use pumpkin_plugin_api::events::{EventHandler, EventPriority};
 use pumpkin_plugin_api::events_wit::EntitySpawnEventData;
 use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
@@ -47,8 +47,8 @@ pub struct Monsters;
 impl Event for Monsters {
     fn register(context: &Context) {
         context
-            .register_event_handler::<EntitySpawnEvent, _>(Monsters, EventPriority::Normal, false)
-            .expect("failed to register EntitySpawnEvent handler");
+            .register_event_handler::<EntitySpawnEvent, _>(Monsters, Self::PRIORITY, Self::BLOCKING)
+            .unwrap_or_else(|_| Self::fail("Monsters"));
     }
 }
 

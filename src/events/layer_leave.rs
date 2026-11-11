@@ -38,8 +38,8 @@
 //! damage is the death the drop already deserves.
 
 use pumpkin_plugin_api::common::NamedColor;
+use pumpkin_plugin_api::events::EventHandler;
 use pumpkin_plugin_api::events::player::player_move::PlayerMoveEvent;
-use pumpkin_plugin_api::events::{EventHandler, EventPriority};
 use pumpkin_plugin_api::events_wit::PlayerMoveEventData;
 use pumpkin_plugin_api::{Context, Player, Server};
 
@@ -58,8 +58,12 @@ pub struct LayerLeave;
 impl Event for LayerLeave {
     fn register(context: &Context) {
         context
-            .register_event_handler::<PlayerMoveEvent, _>(LayerLeave, EventPriority::Normal, false)
-            .expect("failed to register PlayerMoveEvent handler");
+            .register_event_handler::<PlayerMoveEvent, _>(
+                LayerLeave,
+                Self::PRIORITY,
+                Self::BLOCKING,
+            )
+            .unwrap_or_else(|_| Self::fail("LayerLeave"));
     }
 }
 

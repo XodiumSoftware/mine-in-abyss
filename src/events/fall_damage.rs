@@ -22,8 +22,8 @@
 //! per-world damage stays in place as the baseline. The comment on
 //! [`resume_fall`](crate::utils::resume_fall) records what closing that gap would cost.
 
+use pumpkin_plugin_api::events::EventHandler;
 use pumpkin_plugin_api::events::player::player_move::PlayerMoveEvent;
-use pumpkin_plugin_api::events::{EventHandler, EventPriority};
 use pumpkin_plugin_api::events_wit::PlayerMoveEventData;
 use pumpkin_plugin_api::{Context, Server};
 
@@ -37,8 +37,12 @@ pub struct FallDamage;
 impl Event for FallDamage {
     fn register(context: &Context) {
         context
-            .register_event_handler::<PlayerMoveEvent, _>(FallDamage, EventPriority::Normal, false)
-            .expect("failed to register fall distance handler");
+            .register_event_handler::<PlayerMoveEvent, _>(
+                FallDamage,
+                Self::PRIORITY,
+                Self::BLOCKING,
+            )
+            .unwrap_or_else(|_| Self::fail("FallDamage"));
     }
 }
 

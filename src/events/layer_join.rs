@@ -7,8 +7,8 @@
 use pumpkin_plugin_api::Context;
 use pumpkin_plugin_api::Server;
 use pumpkin_plugin_api::common::RgbColor;
+use pumpkin_plugin_api::events::EventHandler;
 use pumpkin_plugin_api::events::player::player_changed_world::PlayerChangedWorldEvent;
-use pumpkin_plugin_api::events::{EventHandler, EventPriority};
 use pumpkin_plugin_api::events_wit::PlayerChangedWorldEventData;
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::sounds::{Sound, SoundCategory};
@@ -26,10 +26,10 @@ impl Event for LayerJoin {
         context
             .register_event_handler::<PlayerChangedWorldEvent, _>(
                 LayerJoin,
-                EventPriority::Normal,
-                false,
+                Self::PRIORITY,
+                Self::BLOCKING,
             )
-            .expect("failed to register PlayerChangedWorldEvent handler");
+            .unwrap_or_else(|_| Self::fail("LayerJoin"));
     }
 }
 

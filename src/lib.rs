@@ -67,6 +67,7 @@ pub use layer::*;
 pub use world::setup::*;
 
 use pumpkin_plugin_api::{Context, Plugin, PluginMetadata};
+use std::time::Instant;
 use tracing::info;
 
 use commands::command::Command as RegisterCommand;
@@ -94,7 +95,13 @@ pub struct MineInAbyss {}
 
 impl MineInAbyss {
     fn layers() {
-        info!("Registered {} layer(s)", LAYERS.len());
+        let started = Instant::now();
+
+        info!(
+            "Registered {} layer(s) in {:?}",
+            LAYERS.len(),
+            started.elapsed()
+        );
     }
 
     fn events(context: &Context) {
@@ -108,28 +115,45 @@ impl MineInAbyss {
             events::bed_spawn::BedSpawn::register,
         ];
 
+        let started = Instant::now();
+
         for register in events {
             register(context);
         }
 
-        info!("Registered {} event(s)", events.len());
+        info!(
+            "Registered {} event(s) in {:?}",
+            events.len(),
+            started.elapsed()
+        );
     }
 
     fn commands(context: &Context) {
         let commands: [fn(&Context); 1] = [commands::abyss::Abyss::register];
 
+        let started = Instant::now();
+
         for register in commands {
             register(context);
         }
 
-        info!("Registered {} command(s)", commands.len());
+        info!(
+            "Registered {} command(s) in {:?}",
+            commands.len(),
+            started.elapsed()
+        );
     }
 
     fn worlds(context: &Context) {
+        let started = Instant::now();
+
         Worlds::setup(context, &LAYERS);
         world::clock::schedule(context);
 
-        info!("World setup completed and world clocks are in sync");
+        info!(
+            "World setup completed and world clocks are in sync in {:?}",
+            started.elapsed()
+        );
     }
 }
 

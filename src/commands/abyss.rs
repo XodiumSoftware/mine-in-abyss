@@ -36,22 +36,8 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::permission::{
 };
 use pumpkin_plugin_api::{Context, Server};
 
-use crate::PLUGIN_ID;
 use crate::commands::command::Command as RegisterCommand;
 use crate::layer::Layer;
-
-/// The command's primary name followed by its aliases.
-const NAMES: [&str; 2] = ["abyss", "mia"];
-
-/// Permission node that gates the command.
-///
-/// Built from [`crate::PLUGIN_ID`] so the namespace never drifts from the crate's.
-pub fn permission_node() -> String {
-    format!("{PLUGIN_ID}:command.abyss")
-}
-
-/// Human-readable description, reused by the command and its permission node.
-const DESCRIPTION: &str = "Move to a layer of the Abyss without the curse";
 
 /// The `/abyss` command, registration and executor.
 ///
@@ -61,8 +47,16 @@ const DESCRIPTION: &str = "Move to a layer of the Abyss without the curse";
 pub struct Abyss;
 
 impl RegisterCommand for Abyss {
+    fn names() -> &'static [&'static str] {
+        &["abyss", "mia"]
+    }
+
+    fn description() -> &'static str {
+        "Move to a layer of the Abyss without the curse"
+    }
+
     fn register(context: &Context) {
-        let names: Vec<String> = NAMES.iter().map(ToString::to_string).collect();
+        let names: Vec<String> = Self::names().iter().map(ToString::to_string).collect();
 
         let layer_leaf =
             CommandNode::argument("layer", &ArgumentType::String(StringType::SingleWord));
@@ -70,21 +64,21 @@ impl RegisterCommand for Abyss {
             CommandNode::argument("layer", &ArgumentType::String(StringType::SingleWord));
         let player = CommandNode::argument("player", &ArgumentType::String(StringType::SingleWord));
 
-        let command = Command::new(&names, DESCRIPTION)
+        let command = Command::new(&names, Self::description())
             .then(layer_with_player.then(player).execute(Abyss))
             .then(layer_leaf.execute(Abyss))
             .execute(Abyss);
 
-        context.register_command(command, &permission_node());
+        context.register_command(command, &Self::permission_node());
 
         context
             .register_permission(&Permission {
-                node: permission_node(),
-                description: DESCRIPTION.to_string(),
+                node: Self::permission_node(),
+                description: Self::description().to_string(),
                 default: PermissionDefault::Op(PermissionLevel::Three),
                 children: vec![],
             })
-            .expect("failed to register permission node");
+            .unwrap_or_else(|_| Self::fail("Abyss"));
     }
 }
 

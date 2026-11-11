@@ -260,9 +260,11 @@ Tokio reactor). The `LayerSuggestions` handler is kept in `src/commands/abyss.rs
 `cfg(any())` for when that is fixed.
 
 Registration goes through the raw `Context::register_command(command, node)` plus
-`Context::register_permission(&Permission)`. Permission nodes are built from
-`PLUGIN_ID` (`abyss::permission_node()`), never hand-formatted. Handler structs
-implement `pumpkin_plugin_api::commands::CommandHandler` and return `Ok(1)` on success.
+`Context::register_permission(&Permission)`. Permission nodes come from the trait's
+defaulted `Command::permission_node()`, which builds `{PLUGIN_ID}:command.{primary name}`
+from [`Command::names`](src/commands/command.rs) — never hand-formatted, so a renamed
+command cannot keep its old node. Handler structs implement
+`pumpkin_plugin_api::commands::CommandHandler` and return `Ok(1)` on success.
 
 ### Curse of the Abyss
 

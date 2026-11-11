@@ -32,9 +32,7 @@
 
 ## Overview
 
-`mine-in-abyss` is a [WASM](https://webassembly.org/) plugin for the [Pumpkin](https://github.com/Pumpkin-MC/Pumpkin) Minecraft server, written in Rust. It recreates the world and systems of ***Made in Abyss*** in Minecraft through a modular, config-driven system.
-
-> **Status:** early scaffold. The plugin loads, reads its config, and registers no gameplay modules yet.
+`mine-in-abyss` is a [WASM](https://webassembly.org/) plugin for the [Pumpkin](https://github.com/Pumpkin-MC/Pumpkin) Minecraft server, written in Rust. It recreates the world and systems of _**Made in Abyss**_ in Minecraft through a modular, config-driven system.
 
 <p align="right"><a href="#readme-top">▲</a></p>
 

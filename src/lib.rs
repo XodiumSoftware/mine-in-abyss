@@ -128,6 +128,8 @@ impl MineInAbyss {
     fn worlds(context: &Context) {
         Worlds::setup(context, &LAYERS);
         world::clock::schedule(context);
+
+        info!("World setup completed and world clocks are in sync");
     }
 }
 

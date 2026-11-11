@@ -80,14 +80,17 @@ need a variation, say which command you ran and why.
     - `MineInAbyss::layers` — logs how many layers exist
     - `MineInAbyss::events` — registers every event handler (see [Events](#events))
     - `MineInAbyss::commands` — registers every command (see [Commands](#commands))
-    - `MineInAbyss::worlds` — creates one world per layer via `Worlds::setup`, then
-      starts the clock sync task (`world::clock::schedule`)
+    - `MineInAbyss::worlds` — creates one world per layer via `Worlds::setup`, starts the
+      clock sync task (`world::clock::schedule`), then logs that setup finished
 3. **`on_unload`**: Logs farewell message
 
 `layers`, `events` and `commands` each iterate a single array and log `array.len()`, so the
-logged count cannot drift from what was registered. `worlds` logs nothing: `Worlds::setup`
-returns how many worlds came up, and that count is deliberately discarded — a layer whose
-world is missing already logs a `warn!` of its own.
+logged count cannot drift from what was registered.
+
+`worlds` reports no count: `Worlds::setup` returns how many worlds came up, and that value
+is deliberately discarded — a layer whose world is missing already logs a `warn!` of its
+own. Its message therefore means _"setup finished and the sync task is running"_, not
+"every world is up": the sync task runs once immediately, but after this line.
 
 ### Layer System
 

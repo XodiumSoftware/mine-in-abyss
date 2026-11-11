@@ -19,7 +19,7 @@
 //! - `<layer>` — `orth`, `first` … `seventh`, or `1` … `8`, case-insensitive
 //! - `[player]` — who to move; only used when the command comes from **console**, since a
 //!   player sender is always moved themselves
-//! - `<item>` — `relic`, case-insensitive; gives one Abyss Relic to the sender
+//! - `<item>` — `orthcoin`, case-insensitive; gives one to the sender
 //! - `<mob>` — a mob kind's display name, case-insensitive, spaces and hyphens ignored:
 //!   `small hammerbeak` and `SmallHammerbeak` both work
 //! - `[count]` — how many to spawn, `1` … `16`, defaulting to one
@@ -53,8 +53,8 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::permission::{
 use pumpkin_plugin_api::{Context, Server};
 
 use crate::commands::command::Command as RegisterCommand;
-use crate::items::abyss_relic::AbyssRelic;
 use crate::items::item_builder::{ItemBuilder, id_of};
+use crate::items::orthcoin::Orthcoin;
 use crate::layer::Layer;
 use crate::mobs::mob_builder::{MobKind, id_of as mob_id_of};
 
@@ -193,30 +193,29 @@ impl CommandHandler for AbyssItem {
             return Ok(0);
         };
 
-        if !name.eq_ignore_ascii_case("relic") {
+        if !name.eq_ignore_ascii_case("orthcoin") {
             sender.send_error(TextComponent::text(&format!(
-                "Unknown item '{name}'. Expected one of: relic."
+                "Unknown item '{name}'. The only item is 'orthcoin'."
             )));
             return Ok(0);
         }
 
-        let stack = AbyssRelic::create(1);
+        let stack = Orthcoin::create(1);
+
         player
             .get_inventory()
             .set_item_in_hand(Hand::Right, Some(stack));
 
         let stored = player.get_inventory().get_item_in_hand(Hand::Right);
-        let identity = stored.as_ref().and_then(id_of);
+        let stored_identity = stored.as_ref().and_then(id_of);
 
-        if identity == Some(AbyssRelic::id()) {
-            sender.send_message(TextComponent::text(
-                "Gave one Abyss Relic; marker reads back.",
-            ));
+        if stored_identity == Some(Orthcoin::id()) {
+            sender.send_message(TextComponent::text("Gave an Orthcoin; marker reads back."));
             return Ok(1);
         }
 
         sender.send_error(TextComponent::text(
-            "Created an Abyss Relic, but its marker did not survive the inventory slot.",
+            "Created an Orthcoin, but its marker did not survive the inventory slot.",
         ));
         Ok(0)
     }

@@ -25,8 +25,9 @@ exists**.
 2. **`src/lib.rs`** — `LAYERS` is `Layer::ALL`, so there is usually nothing to change.
 
 3. **Behaviour**, if the layer needs any: implement `EventHandler<T>` in a module under
-   `src/events/` and register it in `MineInAbyss::register_events`. Prefer one handler
-   that covers all layers (as `LayerLeave` does) over per-layer registration.
+   `src/events/`, implement `Event` beside it, and add one entry to the array in
+   `MineInAbyss::events`. Prefer one handler that covers all layers (as `LayerLeave` does) over
+   per-layer registration — see the `add-event` skill.
 
 ## Per-layer game rules
 
@@ -60,9 +61,19 @@ Self::Second => &[(GameRule::SpawnMonsters, GameRuleValue::Bool(false))],
 
 ## Verification
 
-Run `just lint`, `just build` and `just doc` — the recipes are release-targeted and warnings
-are errors. (`just validate` also runs the format check, as CI does.)
+Run `just validate` and `just doc`. The release build is required: debug builds fail to load in
+the Pumpkin runtime.
 
 Then update `AGENTS.md` (§ Layer System, § Adding a New Layer) if the tables changed.
+
+Note that a new layer also shifts several things sized to the current eight: `Layer::ALL`
+and `LAYERS` in `lib.rs` are both `[Layer; 8]` and must change length together, and
+`AGENTS.md` spells the count out in a few places (Layer System, Active Layers, Time of day).
+Grep for "eight" and "seven" rather than trusting the tables alone.
+
+**A ninth layer touches the curse.** `Layer::curse()` is the depth index, and `MAX_STRAIN` in
+`src/events/curse.rs` is fixed at 6. Adding a layer below `Seventh` makes the deepest severity
+8, so raise `MAX_STRAIN` and add the matching arm to `inflict` in the same change — see the
+note in `ARCHITECTURE.md` and the `add-util` and `add-persistent-data` skills.
 
 After finishing, summarize the files changed and ask the user whether to commit.

@@ -477,7 +477,7 @@ item wearing an identity.
   marker. A kind supplies its base `Item`, a stable `id` byte and its visible name, and does
   everything else in **`ItemBuilder::apply`**: `ItemBuilder::create` makes the stack, sets the
   name, hands it over, and stamps the identity.
-- The marker is `mark`/`id_of`/`is`, a **byte** in the stack's own persistent data under
+- The marker is `mark`/`id_of`, a **byte** in the stack's own persistent data under
   `PLUGIN_ID`, written with the same `set_byte`/`get_byte` calls `curse.rs` and the mob marker
   use. It survives restarts and cannot collide with another plugin's data.
 
@@ -486,11 +486,33 @@ takes an `NbtTree`, and that type is an opaque handle with no constructor, so th
 `PersistentDataHolder` `set_byte`/`get_byte` route is the one to use for anything this
 plugin stores on an item.
 
-**`AbyssRelic` is the worked example**, reachable in game through `/abyss item relic`. That
+**`Orthcoin` is the worked example**, reachable in game through `/abyss item orthcoin`. That
 subcommand creates the stack, puts it in the sender's hand and reads the marker straight
 back off the stored stack, so it exercises the whole path until a real source of items
 (loot tables or crafting) exists. Because a caller exists, `mod items` carries no
 `#[expect(dead_code)]`, just as `mod mobs` does not — `/abyss summon` reaches a kind by name.
+
+**The catalogue as it stands**, with ids and base items:
+
+| Kind       | id  | Base        | Name       | Reachable via           |
+| ---------- | --- | ----------- | ---------- | ----------------------- |
+| `Orthcoin` | 2   | Gold Nugget | Orthcoin   | `/abyss item orthcoin`  |
+
+Ids are permanent once shipped, for the same reason a mob id is: they are what tells two
+kinds on the same base item apart. A new item takes the next free number and never reuses
+one — `Orthcoin` keeps `2` even though id `1` is no longer used.
+
+There is no `item_kinds()` catalogue function, unlike [`mob_kinds`](src/lib.rs). The mob
+catalogue exists because `/abyss summon` takes a name and needs to look one up; `/abyss item`
+takes a fixed set of spellings, so a list would be a third place to keep in sync for no
+reader. Adding an item therefore means its file, its `pub mod` line in the `mod items` block
+in `lib.rs`, its `impl ItemBuilder`, and its arm in the `/abyss item` executor.
+
+**Items have no economy.** `Orthcoin` is a name, a colour, a lore line and a marker — it cannot
+be spent, minted from anything, or counted by the plugin. That is deliberate: a currency with
+no sink is a promise the design has not made yet, and a stack marker is not a wallet. Real
+storage would be per-player persistent data (`set_long`/`get_long`, the same route
+`curse.rs` uses for strain), not a property of the item.
 
 #### Each layer is a hand-built map
 
@@ -573,7 +595,7 @@ src/
 │   └── passive/
 ├── items/              # declared as `mod items` in `lib.rs`: the plugin's own items
 │   ├── item_builder.rs # `ItemBuilder` trait + the identity marker
-│   └── abyss_relic.rs  # `AbyssRelic` — the worked example, via `/abyss item relic`
+│   └── orthcoin.rs     # `Orthcoin` — the worked example, via `/abyss item orthcoin`
 ├── commands/
 │   ├── abyss.rs        # `/abyss` — ops teleport into a layer, curse-free
 │   └── command.rs      # `Command` trait — each command registers itself

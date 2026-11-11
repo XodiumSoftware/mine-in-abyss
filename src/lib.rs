@@ -118,10 +118,10 @@ mod mobs {
 /// Like a custom mob, a custom item is a vanilla item wearing an identity: a base item, a
 /// visible name, whatever `apply` adds, and a marker in the stack's own persistent data.
 /// `item_builder` is the trait an item implements and where that marker is written and read
-/// back; `abyss_relic` is the worked example, reachable in game through `/abyss item relic`.
+/// back; `orthcoin` is the worked example, reachable in game through `/abyss item orthcoin`.
 mod items {
-    pub mod abyss_relic;
     pub mod item_builder;
+    pub mod orthcoin;
 }
 
 /// The layer worlds, and the machinery that keeps them usable.

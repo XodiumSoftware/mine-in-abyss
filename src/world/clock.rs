@@ -30,8 +30,8 @@
 //! age cannot be shared. Nothing in vanilla depends on a world's age matching its time of
 //! day, and `/time set` desynchronises the two in vanilla as well.
 
-use pumpkin_plugin_api::Server;
 use pumpkin_plugin_api::scheduler::SchedulerExt;
+use pumpkin_plugin_api::{Context, Server};
 
 use crate::LAYERS;
 use crate::layer::Layer;
@@ -53,7 +53,7 @@ const SYNC_PERIOD: u64 = 20 * 60;
 /// Scheduled through `context` rather than the server: `Server` is a non-cloneable resource,
 /// so it cannot be captured by the task closure, and [`SchedulerExt`] offers the same call
 /// on [`Context`](pumpkin_plugin_api::Context).
-pub fn schedule(context: &pumpkin_plugin_api::Context) -> u32 {
+pub fn schedule(context: &Context) -> u32 {
     context.schedule_repeating_task(1, SYNC_PERIOD, |server| sync_times(&server))
 }
 

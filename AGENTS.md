@@ -255,7 +255,7 @@ implement `pumpkin_plugin_api::commands::CommandHandler` and return `Ok(1)` on s
 
 ### Worlds
 
-**`Worlds`** (`src/worlds.rs`) — creates one Minecraft world per layer on load.
+**`Worlds`** (`src/world/setup.rs`) — creates one Minecraft world per layer on load.
 
 - `Worlds::setup(context, layers)` runs from `on_load`
 - World names come from `Layer::world()`, so they stay stable across renames
@@ -282,7 +282,7 @@ per-world game rules instead.
 ### Time of day
 
 Every layer world keeps its own clock, so left alone they drift apart and a descending
-player would watch the sun jump. `src/time_sync.rs` copies `First`'s clock to the other six
+player would watch the sun jump. `src/world/clock.rs` copies `First`'s clock to the other six
 worlds on a one-minute repeating task, which runs once immediately on load.
 
 `First` is the source because it is the surface, the layer an operator is most likely to
@@ -305,7 +305,7 @@ transitions or placement:
   level-type argument. The map **is** the world folder on disk, so shipping a layer means
   shipping its world data.
 - Worlds are generated **empty**, not left to the default generator: `Worlds::setup`
-  registers the [`Void`](src/generator.rs) `ChunkGenerator` and attaches it with
+  registers the [`Void`](src/world/generator.rs) `ChunkGenerator` and attaches it with
   `World::set_chunk_generator` before the world is used. Generation is the only way to
   pick what a layer starts as, since `create_world` offers no level-type argument.
 - A world that already has chunks keeps them, so an authored map is safe across restarts
@@ -334,8 +334,7 @@ with no gameplay content yet. See the table under [Layer System](#layer-system).
 There are no per-layer modules or structs: everything a layer needs is on its `Layer`
 variant, so adding a layer means adding a variant rather than a file.
 
-`utils.rs` also holds `ordinal`, the English ordinal-suffix formatter used for the entry
-subtitle.
+`utils::ordinal` also renders the English ordinal-suffix form used for the entry subtitle.
 
 ### Documentation
 
@@ -355,18 +354,18 @@ src/
 ├── lib.rs              # `PLUGIN_ID`, `LAYERS`, `layer_for_world`, `Plugin` impl
 ├── layer.rs            # `Layer` enum + id/world/next/prev/index/curse,
 │                       # plus shared `MIN_Y`/`MAX_Y` and entry/exit heights
-├── utils.rs            # Docs + shared helpers; `mod utils` in `lib.rs` declares the
-│                       # submodules below and re-exports their functions
-├── utils/
+├── utils/              # declared as `mod utils` in `lib.rs`: per-category helpers,
+│                       # re-exported so callers write `utils::{carry_fall, layer_of}`
 │   ├── fall.rs         # `FallCarry` — a descent's distance carried across a boundary
 │   ├── general.rs      # `key`, `is_dead`, `exempt_gamemode` — per-player predicates
 │   ├── teleport.rs     # `TELEPORTED` — a teleport is not a climb
 │   ├── text.rs         # `tell`, `ordinal`, `rgb`
 │   ├── transition.rs   # `TRANSITING` — the one-shot latch
 │   └── world.rs        # `world_for`, `layer_of`
-├── generator.rs        # `Void` chunk generator — layer worlds generate empty
-├── time_sync.rs        # Keeps every layer world on `First`'s clock
-├── worlds.rs           # `Worlds` — one void world per layer
+├── world/              # declared as `mod world` in `lib.rs`: the layer worlds
+│   ├── setup.rs        # `Worlds` — one void world per layer, created on load
+│   ├── generator.rs    # `Void` chunk generator — layer worlds generate empty
+│   └── clock.rs        # Keeps every layer world on `First`'s clock
 ├── commands/
 │   └── abyss.rs        # `/abyss` — ops teleport into a layer, curse-free
 ├── events/
@@ -385,9 +384,9 @@ src/
 - `unsafe_code` forbidden project-wide (`[lints.rust] unsafe_code = "forbid"`)
 - **No `//` line comments.** Explain intent in rustdoc (`///`, `//!`) and in identifier
   and function names instead. Only `///` and `//!` comments belong in `src/`.
-- **No `mod.rs`.** Folder modules are declared inline in `lib.rs`, next to `commands` and
-  `events` — a folder gets a file of the same name for its `//!` docs and re-exports
-  (`utils.rs` next to `utils/`), never a `mod.rs`.
+- **No `mod.rs`.** Folder modules are declared inline in `lib.rs`, next to `commands`
+  and `events`. A folder needs no file of its own: its `//!` docs, `pub mod` list and
+  `pub use` re-exports all live in that block — never a `mod.rs`.
 - All Clippy warnings enabled; run with `-W clippy::pedantic -D warnings` to catch pedantic lints as errors. (`[lints.clippy] all = "warn"`)
 - Config structs: `Debug`, `Clone`, `Default`, `Serialize`, `Deserialize`
 - Config fields documented with `///` comments

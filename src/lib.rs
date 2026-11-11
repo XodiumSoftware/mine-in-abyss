@@ -9,17 +9,31 @@
 //! See [`GUIDE.md`](../GUIDE.md) for installation.
 #![allow(clippy::must_use_candidate)]
 
-mod generator;
 mod layer;
-mod time_sync;
-mod worlds;
 
 /// The `/abyss` command.
 mod commands {
     pub mod abyss;
 }
 
-/// Small helpers shared across the plugin.
+/// The layer worlds, and the machinery that keeps them usable.
+///
+/// A layer world is only ever as good as the three pieces around it: it has to be created
+/// ([`setup`]), it has to generate empty until its authored map exists ([`generator`]),
+/// and it has to share the surface's clock with the rest of the Abyss ([`clock`]).
+mod world {
+    pub mod clock;
+    pub mod generator;
+    pub mod setup;
+}
+
+/// Small helpers shared across the plugin, split by what each module owns.
+///
+/// The three `thread_local` records a transition needs are each a module of their own, so
+/// the state and the functions that maintain it cannot drift apart. Every submodule is
+/// re-exported here, so a caller writes `use crate::utils::{carry_fall, layer_of};` and
+/// does not have to know which file a helper ended up in; reach for `utils::fall::…`
+/// directly only when the grouping is what you are looking for.
 mod utils {
     pub mod fall;
     pub mod general;
@@ -48,7 +62,7 @@ mod events {
 }
 
 pub use layer::*;
-pub use worlds::*;
+pub use world::setup::*;
 
 use pumpkin_plugin_api::events::EventPriority;
 use pumpkin_plugin_api::events::entity::entity_spawn::EntitySpawnEvent;
@@ -171,7 +185,7 @@ impl Plugin for MineInAbyss {
         commands::abyss::register(&context);
 
         let worlds = Worlds::setup(&context, &LAYERS);
-        time_sync::schedule(&context);
+        world::clock::schedule(&context);
 
         info!("Mine in Abyss loaded ({worlds} layer world(s)).");
         Ok(())

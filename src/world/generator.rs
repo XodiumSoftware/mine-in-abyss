@@ -20,7 +20,7 @@ use tracing::warn;
 
 /// Generates empty chunks, one air block at a time.
 ///
-/// Registered once by [`Worlds::setup`](crate::Worlds::setup) and attached to every
+/// Registered once by [`Worlds::setup`](super::setup::Worlds::setup) and attached to every
 /// layer world, so all of them generate the same way.
 #[derive(Debug, Default, Clone, Copy)]
 pub struct Void;

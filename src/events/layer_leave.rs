@@ -48,7 +48,7 @@ use crate::utils::{
     arrived_by_teleport, begin_transition, carry_fall, clear_fall, ignores_transitions, layer_of,
     tell, world_for,
 };
-use crate::worlds::Worlds;
+use crate::world::setup::Worlds;
 
 /// Detects a player leaving a layer through its void or ceiling.
 #[derive(Debug, Default, Clone, Copy)]

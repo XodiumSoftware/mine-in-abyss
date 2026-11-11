@@ -18,6 +18,7 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
 use pumpkin_plugin_api::world::{Entity, LivingEntity};
 
 use crate::PLUGIN_ID;
+use crate::layer::Layer;
 
 /// Key under which a custom mob's identity is stored.
 const IDENTITY_KEY: &str = "mob";
@@ -50,6 +51,26 @@ pub trait Mob {
     /// The name shown above the mob.
     fn name() -> &'static str;
 
+    /// The layers this kind is allowed to spawn in.
+    ///
+    /// A slice rather than a single [`Layer`] so a kind can live at several depths, and
+    /// rather than a predicate so the answer is data a spawn rule can read without
+    /// running gameplay code. `&[Layer::First]` for a surface mob, `Layer::ALL` for one
+    /// that belongs everywhere.
+    ///
+    /// The default is empty: a kind that has not said where it lives spawns nowhere, so a
+    /// new mob cannot appear somewhere it was never meant to until it states its layers.
+    /// This is a constraint on spawning only — [`spawn`](Self::spawn) itself does not
+    /// consult it, because an operator placing a mob deliberately should not be blocked.
+    fn layers() -> &'static [Layer] {
+        &[]
+    }
+
+    /// Returns whether this kind may spawn in `layer`.
+    fn spawns_in(layer: Layer) -> bool {
+        Self::layers().contains(&layer)
+    }
+
     /// Makes `entity` into this kind of mob.
     ///
     /// Runs inside [`spawn`](Self::spawn), after the entity exists and before anything can
@@ -71,6 +92,10 @@ pub trait Mob {
     ///
     /// Returns the spawned entity, which is the vanilla [`base`](Self::base) type carrying
     /// this kind's name, stats, equipment and [`Mob::id`] marker — not a new entity type.
+    ///
+    /// Placement is not checked here: callers that spawn by rule should gate on
+    /// [`spawns_in`](Self::spawns_in) first, and callers placing a mob deliberately may
+    /// skip the check.
     ///
     /// The name is set visible: without that a custom mob is indistinguishable from the
     /// vanilla one it is built on.

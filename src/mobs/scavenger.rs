@@ -15,6 +15,7 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
 use pumpkin_plugin_api::world::LivingEntity;
 
 use super::mob::Mob;
+use crate::layer::Layer;
 
 /// A scavenger of the upper layers, built on a zombie.
 #[derive(Debug, Default, Clone, Copy)]
@@ -31,6 +32,10 @@ impl Mob for Scavenger {
 
     fn name() -> &'static str {
         "Abyss Scavenger"
+    }
+
+    fn layers() -> &'static [Layer] {
+        &[Layer::First, Layer::Second]
     }
 
     fn apply(entity: &LivingEntity) {

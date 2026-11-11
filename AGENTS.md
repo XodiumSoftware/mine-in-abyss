@@ -355,11 +355,18 @@ idempotent and never compounds on a repeated call.
 - Status effects can only be applied to players, so a permanent glowing or speed effect on
   a mob is not expressible.
 
-`MobKind`-style catalogues are the array in `MineInAbyss::mobs`, the same way `Layer` holds
+`MobKind`-style catalogues are the array in `mob_kinds()`, the same way `Layer` holds
 per-layer data and `MineInAbyss::events` lists every handler. Adding a kind means adding its
-file, its submodule in `lib.rs`, its `impl Mob`, and one entry in that array. It is an array
-of names rather than a `const` because a trait method cannot be called in a constant.
-`beniguma.rs` is the worked example.
+file, its `pub mod` line in `lib.rs`, its `impl MobBuilder`, and one entry in `mob_kinds`.
+It is a function rather than a `const` because a trait method cannot be called in a constant.
+`beniguma` is the worked example.
+
+**Kinds are filed by category.** `src/mobs/` holds `mob_builder.rs` plus one folder per
+[`Category`](src/mobs/mob_builder.rs) — `aerial`, `aquatic`, `docile`, `hostile`, `passive` —
+and a kind lives in the folder matching its own `category()`. The folder is organisation
+only: nothing reads it at runtime, so a kind whose category changes must be **moved** by hand
+to keep the two agreeing. There is no `mod.rs`; each folder's `pub mod` list lives inline in
+the `mod mobs` block in `lib.rs`, alongside the others.
 
 **The catalogue as it stands**, with ids and spawn layers:
 
@@ -555,8 +562,12 @@ src/
 │   ├── generator.rs    # `Void` chunk generator — layer worlds generate empty
 │   └── clock.rs        # Keeps every layer world on `Orth`'s clock
 ├── mobs/               # declared as `mod mobs` in `lib.rs`: the plugin's own mobs
-│   ├── mob_builder.rs  # `MobBuilder` trait, `Category` + the identity marker
-│   └── <kind>.rs       # one file per kind, 65 of them; see the catalogue above
+│   ├── mob_builder.rs  # `MobBuilder` trait, `Category`, `MobKind` + the marker
+│   ├── aerial/         # one folder per category; a kind sits in its own
+│   ├── aquatic/        #   category's folder: aerial 15, aquatic 8, docile 8,
+│   ├── docile/         #   hostile 23, passive 12 — 65 kinds in all
+│   ├── hostile/
+│   └── passive/
 ├── items/              # declared as `mod items` in `lib.rs`: the plugin's own items
 │   ├── item_builder.rs # `ItemBuilder` trait + the identity marker
 │   └── abyss_relic.rs  # `AbyssRelic` — the worked example, via `/abyss item relic`

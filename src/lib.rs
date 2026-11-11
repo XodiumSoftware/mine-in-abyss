@@ -24,72 +24,92 @@ mod commands {
 /// persistent data. `mob_builder` is the trait a kind implements and where that marker is
 /// written and read back; `beniguma` is the worked example.
 mod mobs {
-    pub mod abyssal_snail;
-    pub mod ashimite;
-    pub mod beniguma;
-    pub mod billabonk;
-    pub mod buroguro;
-    pub mod chikyuoebi;
-    pub mod chimokami;
-    pub mod corpse_weeper;
-    pub mod cyatoria;
-    pub mod daikonchu;
-    pub mod demonfish;
-    pub mod dosetori;
-    pub mod edusan;
-    pub mod fuwagi;
-    pub mod giant_hammerbeak;
-    pub mod hagamizukin;
-    pub mod hashofu;
-    pub mod himushi;
-    pub mod hisoishi;
-    pub mod hisomukuro;
-    pub mod horncrier;
-    pub mod ikenosuke;
-    pub mod ikonia;
-    pub mod inbyo;
-    pub mod kagi_tachikiri;
-    pub mod kakatsumuri;
-    pub mod kazura;
-    pub mod kuongatari;
-    pub mod madokajack;
-    pub mod makihige;
-    pub mod man_toyer;
     pub mod mob_builder;
-    pub mod neritantan;
-    pub mod octoliar;
-    pub mod okibo;
-    pub mod onitsuchi;
-    pub mod orb_piercer;
-    pub mod ottobas;
-    pub mod rinsipede;
-    pub mod rockwalker;
-    pub mod rohana;
-    pub mod sakuranbo;
-    pub mod shiratsubi;
-    pub mod shroombear;
-    pub mod silkfang;
-    pub mod small_hammerbeak;
-    pub mod spikewalker;
-    pub mod spiralsquid;
-    pub mod spittleshrub;
-    pub mod splitjaw;
-    pub mod spore_manta;
-    pub mod squidfly;
-    pub mod stinger;
-    pub mod stingerhead;
-    pub mod swarmhoarder;
-    pub mod swarmshocker;
-    pub mod tachikatana;
-    pub mod tesuchi;
-    pub mod titanjaw;
-    pub mod uibuta;
-    pub mod vinebinder;
-    pub mod vineblaster;
-    pub mod vinepoofer;
-    pub mod virinsipede;
-    pub mod woodcrier;
-    pub mod yomotsubi;
+
+    /// Aerial mob kinds.
+    pub mod aerial {
+        pub mod buroguro;
+        pub mod corpse_weeper;
+        pub mod cyatoria;
+        pub mod dosetori;
+        pub mod giant_hammerbeak;
+        pub mod hashofu;
+        pub mod kagi_tachikiri;
+        pub mod madokajack;
+        pub mod onitsuchi;
+        pub mod rohana;
+        pub mod small_hammerbeak;
+        pub mod splitjaw;
+        pub mod spore_manta;
+        pub mod squidfly;
+        pub mod stinger;
+    }
+
+    /// Aquatic mob kinds.
+    pub mod aquatic {
+        pub mod demonfish;
+        pub mod edusan;
+        pub mod hagamizukin;
+        pub mod hisomukuro;
+        pub mod ikenosuke;
+        pub mod kazura;
+        pub mod makihige;
+        pub mod spiralsquid;
+    }
+
+    /// Docile mob kinds.
+    pub mod docile {
+        pub mod beniguma;
+        pub mod chimokami;
+        pub mod daikonchu;
+        pub mod hisoishi;
+        pub mod rinsipede;
+        pub mod rockwalker;
+        pub mod spikewalker;
+        pub mod titanjaw;
+    }
+
+    /// Hostile mob kinds.
+    pub mod hostile {
+        pub mod chikyuoebi;
+        pub mod himushi;
+        pub mod horncrier;
+        pub mod inbyo;
+        pub mod kuongatari;
+        pub mod man_toyer;
+        pub mod octoliar;
+        pub mod orb_piercer;
+        pub mod ottobas;
+        pub mod shiratsubi;
+        pub mod silkfang;
+        pub mod spittleshrub;
+        pub mod stingerhead;
+        pub mod swarmhoarder;
+        pub mod swarmshocker;
+        pub mod tachikatana;
+        pub mod uibuta;
+        pub mod vinebinder;
+        pub mod vineblaster;
+        pub mod vinepoofer;
+        pub mod virinsipede;
+        pub mod woodcrier;
+        pub mod yomotsubi;
+    }
+
+    /// Passive mob kinds.
+    pub mod passive {
+        pub mod abyssal_snail;
+        pub mod ashimite;
+        pub mod billabonk;
+        pub mod fuwagi;
+        pub mod ikonia;
+        pub mod kakatsumuri;
+        pub mod neritantan;
+        pub mod okibo;
+        pub mod sakuranbo;
+        pub mod shroombear;
+        pub mod tesuchi;
+    }
 }
 
 /// The plugin's own items, built on top of the vanilla ones.
@@ -183,75 +203,81 @@ pub const LAYERS: [Layer; 8] = Layer::ALL;
 #[must_use]
 pub fn mob_kinds() -> [mobs::mob_builder::MobKind; 65] {
     [
-        mobs::mob_builder::MobKind::of::<mobs::beniguma::Beniguma>("Beniguma"),
-        mobs::mob_builder::MobKind::of::<mobs::cyatoria::Cyatoria>("Cyatoria"),
-        mobs::mob_builder::MobKind::of::<mobs::small_hammerbeak::SmallHammerbeak>(
+        mobs::mob_builder::MobKind::of::<mobs::docile::beniguma::Beniguma>("Beniguma"),
+        mobs::mob_builder::MobKind::of::<mobs::aerial::cyatoria::Cyatoria>("Cyatoria"),
+        mobs::mob_builder::MobKind::of::<mobs::aerial::small_hammerbeak::SmallHammerbeak>(
             "Small Hammerbeak",
         ),
-        mobs::mob_builder::MobKind::of::<mobs::giant_hammerbeak::GiantHammerbeak>(
+        mobs::mob_builder::MobKind::of::<mobs::aerial::giant_hammerbeak::GiantHammerbeak>(
             "Giant Hammerbeak",
         ),
-        mobs::mob_builder::MobKind::of::<mobs::splitjaw::Splitjaw>("Splitjaw"),
-        mobs::mob_builder::MobKind::of::<mobs::woodcrier::Woodcrier>("Woodcrier"),
-        mobs::mob_builder::MobKind::of::<mobs::man_toyer::ManToyer>("Man-toyer"),
-        mobs::mob_builder::MobKind::of::<mobs::silkfang::Silkfang>("Silkfang"),
-        mobs::mob_builder::MobKind::of::<mobs::spittleshrub::Spittleshrub>("Spittleshrub"),
-        mobs::mob_builder::MobKind::of::<mobs::vinebinder::Vinebinder>("Vinebinder"),
-        mobs::mob_builder::MobKind::of::<mobs::vineblaster::Vineblaster>("Vineblaster"),
-        mobs::mob_builder::MobKind::of::<mobs::vinepoofer::Vinepoofer>("Vinepoofer"),
-        mobs::mob_builder::MobKind::of::<mobs::fuwagi::Fuwagi>("Fuwagi"),
-        mobs::mob_builder::MobKind::of::<mobs::okibo::Okibo>("Okibo"),
-        mobs::mob_builder::MobKind::of::<mobs::spiralsquid::Spiralsquid>("Spiralsquid"),
-        mobs::mob_builder::MobKind::of::<mobs::chimokami::Chimokami>("Chimokami"),
-        mobs::mob_builder::MobKind::of::<mobs::corpse_weeper::CorpseWeeper>("Corpse-Weeper"),
-        mobs::mob_builder::MobKind::of::<mobs::dosetori::Dosetori>("Dosetori"),
-        mobs::mob_builder::MobKind::of::<mobs::ottobas::Ottobas>("Ottobas"),
-        mobs::mob_builder::MobKind::of::<mobs::tesuchi::Tesuchi>("Tesuchi"),
-        mobs::mob_builder::MobKind::of::<mobs::hisoishi::Hisoishi>("Hisoishi"),
-        mobs::mob_builder::MobKind::of::<mobs::rockwalker::Rockwalker>("Rockwalker"),
-        mobs::mob_builder::MobKind::of::<mobs::rohana::Rohana>("Rohana"),
-        mobs::mob_builder::MobKind::of::<mobs::stinger::Stinger>("Stinger"),
-        mobs::mob_builder::MobKind::of::<mobs::inbyo::Inbyo>("Inbyo"),
-        mobs::mob_builder::MobKind::of::<mobs::billabonk::Billabonk>("Billabonk"),
-        mobs::mob_builder::MobKind::of::<mobs::neritantan::Neritantan>("Neritantan"),
-        mobs::mob_builder::MobKind::of::<mobs::ikenosuke::Ikenosuke>("Ikenosuke"),
-        mobs::mob_builder::MobKind::of::<mobs::daikonchu::Daikonchu>("Daikonchu"),
-        mobs::mob_builder::MobKind::of::<mobs::rinsipede::Rinsipede>("Rinsipede"),
-        mobs::mob_builder::MobKind::of::<mobs::buroguro::Buroguro>("Buroguro"),
-        mobs::mob_builder::MobKind::of::<mobs::madokajack::Madokajack>("Madokajack"),
-        mobs::mob_builder::MobKind::of::<mobs::squidfly::Squidfly>("Squidfly"),
-        mobs::mob_builder::MobKind::of::<mobs::himushi::Himushi>("Himushi"),
-        mobs::mob_builder::MobKind::of::<mobs::yomotsubi::Yomotsubi>("Yomotsubi"),
-        mobs::mob_builder::MobKind::of::<mobs::kakatsumuri::Kakatsumuri>("Kakatsumuri"),
-        mobs::mob_builder::MobKind::of::<mobs::sakuranbo::Sakuranbo>("Sakuranbo"),
-        mobs::mob_builder::MobKind::of::<mobs::hashofu::Hashofu>("Hashofu"),
-        mobs::mob_builder::MobKind::of::<mobs::onitsuchi::Onitsuchi>("Onitsuchi"),
-        mobs::mob_builder::MobKind::of::<mobs::horncrier::Horncrier>("Horncrier"),
-        mobs::mob_builder::MobKind::of::<mobs::kuongatari::Kuongatari>("Kuongatari"),
-        mobs::mob_builder::MobKind::of::<mobs::orb_piercer::OrbPiercer>("Orb Piercer"),
-        mobs::mob_builder::MobKind::of::<mobs::swarmshocker::Swarmshocker>("Swarmshocker"),
-        mobs::mob_builder::MobKind::of::<mobs::tachikatana::Tachikatana>("Tachikatana"),
-        mobs::mob_builder::MobKind::of::<mobs::uibuta::Uibuta>("Uibuta"),
-        mobs::mob_builder::MobKind::of::<mobs::shroombear::Shroombear>("Shroombear"),
-        mobs::mob_builder::MobKind::of::<mobs::hagamizukin::Hagamizukin>("Hagamizukin"),
-        mobs::mob_builder::MobKind::of::<mobs::kazura::Kazura>("Kazura"),
-        mobs::mob_builder::MobKind::of::<mobs::makihige::Makihige>("Makihige"),
-        mobs::mob_builder::MobKind::of::<mobs::spikewalker::Spikewalker>("Spikewalker"),
-        mobs::mob_builder::MobKind::of::<mobs::titanjaw::Titanjaw>("Titanjaw"),
-        mobs::mob_builder::MobKind::of::<mobs::kagi_tachikiri::KagiTachikiri>("Kagi-Tachikiri"),
-        mobs::mob_builder::MobKind::of::<mobs::chikyuoebi::Chikyuoebi>("Chikyuoebi"),
-        mobs::mob_builder::MobKind::of::<mobs::octoliar::Octoliar>("Octoliar"),
-        mobs::mob_builder::MobKind::of::<mobs::stingerhead::Stingerhead>("Stingerhead"),
-        mobs::mob_builder::MobKind::of::<mobs::swarmhoarder::Swarmhoarder>("Swarmhoarder"),
-        mobs::mob_builder::MobKind::of::<mobs::spore_manta::SporeManta>("Spore Manta"),
-        mobs::mob_builder::MobKind::of::<mobs::virinsipede::Virinsipede>("Virinsipede"),
-        mobs::mob_builder::MobKind::of::<mobs::shiratsubi::Shiratsubi>("Shiratsubi"),
-        mobs::mob_builder::MobKind::of::<mobs::abyssal_snail::AbyssalSnail>("Abyssal Snail"),
-        mobs::mob_builder::MobKind::of::<mobs::ashimite::Ashimite>("Ashimite"),
-        mobs::mob_builder::MobKind::of::<mobs::ikonia::Ikonia>("Ikonia"),
-        mobs::mob_builder::MobKind::of::<mobs::demonfish::Demonfish>("Demonfish"),
-        mobs::mob_builder::MobKind::of::<mobs::edusan::Edusan>("Edusan"),
-        mobs::mob_builder::MobKind::of::<mobs::hisomukuro::Hisomukuro>("Hisomukuro"),
+        mobs::mob_builder::MobKind::of::<mobs::aerial::splitjaw::Splitjaw>("Splitjaw"),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::woodcrier::Woodcrier>("Woodcrier"),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::man_toyer::ManToyer>("Man-toyer"),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::silkfang::Silkfang>("Silkfang"),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::spittleshrub::Spittleshrub>("Spittleshrub"),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::vinebinder::Vinebinder>("Vinebinder"),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::vineblaster::Vineblaster>("Vineblaster"),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::vinepoofer::Vinepoofer>("Vinepoofer"),
+        mobs::mob_builder::MobKind::of::<mobs::passive::fuwagi::Fuwagi>("Fuwagi"),
+        mobs::mob_builder::MobKind::of::<mobs::passive::okibo::Okibo>("Okibo"),
+        mobs::mob_builder::MobKind::of::<mobs::aquatic::spiralsquid::Spiralsquid>("Spiralsquid"),
+        mobs::mob_builder::MobKind::of::<mobs::docile::chimokami::Chimokami>("Chimokami"),
+        mobs::mob_builder::MobKind::of::<mobs::aerial::corpse_weeper::CorpseWeeper>(
+            "Corpse-Weeper",
+        ),
+        mobs::mob_builder::MobKind::of::<mobs::aerial::dosetori::Dosetori>("Dosetori"),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::ottobas::Ottobas>("Ottobas"),
+        mobs::mob_builder::MobKind::of::<mobs::passive::tesuchi::Tesuchi>("Tesuchi"),
+        mobs::mob_builder::MobKind::of::<mobs::docile::hisoishi::Hisoishi>("Hisoishi"),
+        mobs::mob_builder::MobKind::of::<mobs::docile::rockwalker::Rockwalker>("Rockwalker"),
+        mobs::mob_builder::MobKind::of::<mobs::aerial::rohana::Rohana>("Rohana"),
+        mobs::mob_builder::MobKind::of::<mobs::aerial::stinger::Stinger>("Stinger"),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::inbyo::Inbyo>("Inbyo"),
+        mobs::mob_builder::MobKind::of::<mobs::passive::billabonk::Billabonk>("Billabonk"),
+        mobs::mob_builder::MobKind::of::<mobs::passive::neritantan::Neritantan>("Neritantan"),
+        mobs::mob_builder::MobKind::of::<mobs::aquatic::ikenosuke::Ikenosuke>("Ikenosuke"),
+        mobs::mob_builder::MobKind::of::<mobs::docile::daikonchu::Daikonchu>("Daikonchu"),
+        mobs::mob_builder::MobKind::of::<mobs::docile::rinsipede::Rinsipede>("Rinsipede"),
+        mobs::mob_builder::MobKind::of::<mobs::aerial::buroguro::Buroguro>("Buroguro"),
+        mobs::mob_builder::MobKind::of::<mobs::aerial::madokajack::Madokajack>("Madokajack"),
+        mobs::mob_builder::MobKind::of::<mobs::aerial::squidfly::Squidfly>("Squidfly"),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::himushi::Himushi>("Himushi"),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::yomotsubi::Yomotsubi>("Yomotsubi"),
+        mobs::mob_builder::MobKind::of::<mobs::passive::kakatsumuri::Kakatsumuri>("Kakatsumuri"),
+        mobs::mob_builder::MobKind::of::<mobs::passive::sakuranbo::Sakuranbo>("Sakuranbo"),
+        mobs::mob_builder::MobKind::of::<mobs::aerial::hashofu::Hashofu>("Hashofu"),
+        mobs::mob_builder::MobKind::of::<mobs::aerial::onitsuchi::Onitsuchi>("Onitsuchi"),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::horncrier::Horncrier>("Horncrier"),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::kuongatari::Kuongatari>("Kuongatari"),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::orb_piercer::OrbPiercer>("Orb Piercer"),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::swarmshocker::Swarmshocker>("Swarmshocker"),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::tachikatana::Tachikatana>("Tachikatana"),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::uibuta::Uibuta>("Uibuta"),
+        mobs::mob_builder::MobKind::of::<mobs::passive::shroombear::Shroombear>("Shroombear"),
+        mobs::mob_builder::MobKind::of::<mobs::aquatic::hagamizukin::Hagamizukin>("Hagamizukin"),
+        mobs::mob_builder::MobKind::of::<mobs::aquatic::kazura::Kazura>("Kazura"),
+        mobs::mob_builder::MobKind::of::<mobs::aquatic::makihige::Makihige>("Makihige"),
+        mobs::mob_builder::MobKind::of::<mobs::docile::spikewalker::Spikewalker>("Spikewalker"),
+        mobs::mob_builder::MobKind::of::<mobs::docile::titanjaw::Titanjaw>("Titanjaw"),
+        mobs::mob_builder::MobKind::of::<mobs::aerial::kagi_tachikiri::KagiTachikiri>(
+            "Kagi-Tachikiri",
+        ),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::chikyuoebi::Chikyuoebi>("Chikyuoebi"),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::octoliar::Octoliar>("Octoliar"),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::stingerhead::Stingerhead>("Stingerhead"),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::swarmhoarder::Swarmhoarder>("Swarmhoarder"),
+        mobs::mob_builder::MobKind::of::<mobs::aerial::spore_manta::SporeManta>("Spore Manta"),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::virinsipede::Virinsipede>("Virinsipede"),
+        mobs::mob_builder::MobKind::of::<mobs::hostile::shiratsubi::Shiratsubi>("Shiratsubi"),
+        mobs::mob_builder::MobKind::of::<mobs::passive::abyssal_snail::AbyssalSnail>(
+            "Abyssal Snail",
+        ),
+        mobs::mob_builder::MobKind::of::<mobs::passive::ashimite::Ashimite>("Ashimite"),
+        mobs::mob_builder::MobKind::of::<mobs::passive::ikonia::Ikonia>("Ikonia"),
+        mobs::mob_builder::MobKind::of::<mobs::aquatic::demonfish::Demonfish>("Demonfish"),
+        mobs::mob_builder::MobKind::of::<mobs::aquatic::edusan::Edusan>("Edusan"),
+        mobs::mob_builder::MobKind::of::<mobs::aquatic::hisomukuro::Hisomukuro>("Hisomukuro"),
     ]
 }
 

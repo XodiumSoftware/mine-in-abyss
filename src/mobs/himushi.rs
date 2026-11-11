@@ -5,7 +5,7 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
 use pumpkin_plugin_api::world::LivingEntity;
 
-use super::mob::{Category, Mob, named};
+use super::mob::{Category, Mob};
 use crate::layer::Layer;
 use crate::utils::rgb;
 
@@ -23,7 +23,7 @@ impl Mob for Himushi {
     }
 
     fn name() -> TextComponent {
-        named("Himushi", rgb(0xB2, 0x22, 0x22))
+        TextComponent::text("Himushi").color_rgb(rgb(0xB2, 0x22, 0x22))
     }
 
     fn layers() -> &'static [Layer] {

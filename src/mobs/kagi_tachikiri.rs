@@ -5,7 +5,7 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
 use pumpkin_plugin_api::world::LivingEntity;
 
-use super::mob::{Category, Mob, named};
+use super::mob::{Category, Mob};
 use crate::layer::Layer;
 use crate::utils::rgb;
 
@@ -23,7 +23,7 @@ impl Mob for KagiTachikiri {
     }
 
     fn name() -> TextComponent {
-        named("Kagi-Tachikiri", rgb(0x54, 0x68, 0xA8))
+        TextComponent::text("Kagi-Tachikiri").color_rgb(rgb(0x54, 0x68, 0xA8))
     }
 
     fn layers() -> &'static [Layer] {

@@ -5,7 +5,7 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
 use pumpkin_plugin_api::world::LivingEntity;
 
-use super::mob::{Category, Mob, named};
+use super::mob::{Category, Mob};
 use crate::layer::Layer;
 use crate::utils::rgb;
 
@@ -23,7 +23,7 @@ impl Mob for AbyssalSnail {
     }
 
     fn name() -> TextComponent {
-        named("Abyssal Snail", rgb(0x78, 0x5F, 0x34))
+        TextComponent::text("Abyssal Snail").color_rgb(rgb(0x78, 0x5F, 0x34))
     }
 
     fn layers() -> &'static [Layer] {

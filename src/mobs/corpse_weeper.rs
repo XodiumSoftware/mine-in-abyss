@@ -5,7 +5,7 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
 use pumpkin_plugin_api::world::LivingEntity;
 
-use super::mob::{Category, Mob, named};
+use super::mob::{Category, Mob};
 use crate::layer::Layer;
 use crate::utils::rgb;
 
@@ -23,7 +23,7 @@ impl Mob for CorpseWeeper {
     }
 
     fn name() -> TextComponent {
-        named("Corpse-Weeper", rgb(0xD1, 0x2B, 0x26))
+        TextComponent::text("Corpse-Weeper").color_rgb(rgb(0xD1, 0x2B, 0x26))
     }
 
     fn layers() -> &'static [Layer] {

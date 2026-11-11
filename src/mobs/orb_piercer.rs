@@ -5,7 +5,7 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
 use pumpkin_plugin_api::world::LivingEntity;
 
-use super::mob::{Category, Mob, named};
+use super::mob::{Category, Mob};
 use crate::layer::Layer;
 use crate::utils::rgb;
 
@@ -23,7 +23,7 @@ impl Mob for OrbPiercer {
     }
 
     fn name() -> TextComponent {
-        named("Orb Piercer", rgb(0xC7, 0x40, 0x40))
+        TextComponent::text("Orb Piercer").color_rgb(rgb(0xC7, 0x40, 0x40))
     }
 
     fn layers() -> &'static [Layer] {

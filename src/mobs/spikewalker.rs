@@ -5,7 +5,7 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
 use pumpkin_plugin_api::world::LivingEntity;
 
-use super::mob::{Category, Mob, named};
+use super::mob::{Category, Mob};
 use crate::layer::Layer;
 use crate::utils::rgb;
 
@@ -23,7 +23,7 @@ impl Mob for Spikewalker {
     }
 
     fn name() -> TextComponent {
-        named("Spikewalker", rgb(0x75, 0x52, 0x37))
+        TextComponent::text("Spikewalker").color_rgb(rgb(0x75, 0x52, 0x37))
     }
 
     fn layers() -> &'static [Layer] {

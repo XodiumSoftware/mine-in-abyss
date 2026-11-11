@@ -361,81 +361,80 @@ of names rather than a `const` because a trait method cannot be called in a cons
 
 **The catalogue as it stands**, with ids and spawn layers:
 
-| Kind | id | Base | Category | Layers | Hearts | Colour |
-| --- | --- | --- | --- | --- | --- | --- |
-| `Beniguma` | 1 | Wolf | Docile | First, Second | 8 | `#824243` |
-| `Cyatoria` | 2 | Cat | Aerial | First, Second | 12.5 | `#3DDFFF` |
-| `SmallHammerbeak` | 3 | Parrot | Aerial | First, Second | 9 | `#613F0C` |
-| `GiantHammerbeak` | 4 | Parrot | Aerial | First, Second, Fourth | 20 | `#613F0C` |
-| `Splitjaw` | 5 | Parrot | Aerial | First, Second, Third | 45 | `#9A1CAD` |
-| `Woodcrier` | 6 | Parrot | Hostile | First, Second | 15 | `#9A1CAD` |
-| `ManToyer` | 7 | Parrot | Hostile | First | 7.5 | `#D8D8D8` |
-| `Silkfang` | 8 | Parrot | Hostile | First, Second | 11 | `#696112` |
-| `Spittleshrub` | 9 | Parrot | Hostile | First, Second, Fourth | 10 | `#696112` |
-| `Vinebinder` | 10 | Creeper | Hostile | First, Second | 10 | `#FFFFFF` |
-| `Vineblaster` | 11 | Creeper | Hostile | First, Second | 8 | `#FFFFFF` |
-| `Vinepoofer` | 12 | Creeper | Hostile | First, Second | 10 | `#FFFFFF` |
-| `Fuwagi` | 13 | Rabbit | Passive | First, Second | 5 | `#E0E0E0` |
-| `Okibo` | 14 | Sniffer | Passive | Orth, First | 20 | `#10DEA7` |
-| `Spiralsquid` | 15 | Squid | Aquatic | First, Fourth | 4 | `#1B91B5` |
-| `Chimokami` | 16 | Fox | Docile | First | 15 | `#7C3A4A` |
-| `CorpseWeeper` | 17 | Phantom | Aerial | First | 17.5 | `#D12B26` |
-| `Dosetori` | 18 | Parrot | Aerial | First, Second | 15 | `#59AC7A` |
-| `Ottobas` | 19 | Ravager | Hostile | First | 45 | `#D8D8D8` |
-| `Tesuchi` | 20 | Turtle | Passive | First | 10 | `#C0C0C0` |
-| `Hisoishi` | 21 | Endermite | Docile | Second, Third | 12.5 | `#303E77` |
-| `Rockwalker` | 22 | Silverfish | Docile | Second, Third | 12.5 | `#BE6400` |
-| `Rohana` | 23 | Bat | Aerial | Second, Fourth | 5 | `#6C19BF` |
-| `Stinger` | 24 | Bee | Aerial | Second, Fourth, Fifth | 8 | `#03AC13` |
-| `Inbyo` | 25 | Spider | Hostile | Second | 12.5 | `#3D3D3D` |
-| `Billabonk` | 26 | Frog | Passive | Second | 10 | `#B754C2` |
-| `Neritantan` | 27 | Rabbit | Passive | Second, Third | 3.5 | `#BDBDBD` |
-| `Ikenosuke` | 28 | TropicalFish | Aquatic | Second, Third, Fourth | 6 | `#9FF3F3` |
-| `Daikonchu` | 29 | Silverfish | Docile | Third | 40 | `#C26D23` |
-| `Rinsipede` | 30 | Silverfish | Docile | Third | 15 | `#FFA500` |
-| `Buroguro` | 31 | Bee | Aerial | Third | 16 | `#A3F7A2` |
-| `Madokajack` | 32 | Phantom | Aerial | Third | 20 | `#1C439E` |
-| `Squidfly` | 33 | Bat | Aerial | Third | 8 | `#85512E` |
-| `Himushi` | 34 | MagmaCube | Hostile | Third | 30 | `#B22222` |
-| `Yomotsubi` | 35 | Vex | Hostile | Third | 20 | `#9C0F2C` |
-| `Kakatsumuri` | 36 | Silverfish | Passive | Third | 2.5 | `#7D93FF` |
-| `Sakuranbo` | 37 | Bee | Passive | Third | 5 | `#FFB7C5` |
-| `Hashofu` | 38 | Bat | Aerial | Fourth, Fifth | 10 | `#454545` |
-| `Onitsuchi` | 39 | Chicken | Aerial | Fourth, Fifth | 25 | `#5C471D` |
-| `Horncrier` | 40 | Parrot | Hostile | Fourth, Fifth | 30 | `#9A1CAD` |
-| `Kuongatari` | 41 | Spider | Hostile | Fourth, Fifth | 15 | `#1FB53D` |
-| `OrbPiercer` | 42 | CaveSpider | Hostile | Fourth | 90 | `#C74040` |
-| `Swarmshocker` | 43 | Bee | Hostile | Fourth, Fifth | 10 | `#257BEB` |
-| `Tachikatana` | 44 | Spider | Hostile | Fourth, Fifth | 110 | `#00FFFF` |
-| `Uibuta` | 45 | Hoglin | Hostile | Fourth, Fifth | 35 | `#8F2222` |
-| `Shroombear` | 46 | Panda | Passive | Fourth | 12.5 | `#85562D` |
-| `Hagamizukin` | 47 | Cod | Aquatic | Fourth, Fifth | 25 | `#0B6623` |
-| `Kazura` | 48 | GlowSquid | Aquatic | Fourth | 2.5 | `#A9CCCA` |
-| `Makihige` | 49 | Squid | Aquatic | Fourth, Fifth | 30 | `#FF771C` |
-| `Spikewalker` | 50 | Silverfish | Docile | Fifth | 20 | `#755237` |
-| `Titanjaw` | 51 | Turtle | Docile | Fifth | 30 | `#3C3B4A` |
-| `KagiTachikiri` | 52 | Vex | Aerial | Fifth | 25 | `#5468A8` |
-| `Chikyuoebi` | 53 | Spider | Hostile | Fifth | 42.5 | `#649984` |
-| `Octoliar` | 54 | Squid | Hostile | Fifth | 40 | `#ADD8E6` |
-| `Stingerhead` | 55 | Phantom | Hostile | Fifth | 130 | `#9C0F2C` |
-| `Swarmhoarder` | 56 | Bee | Hostile | Fifth | 35 | `#257BEB` |
-| `SporeManta` | 57 | Phantom | Aerial | Fifth | 15 | `#6C19BF` |
-| `Virinsipede` | 58 | Silverfish | Hostile | Fifth | 75 | `#C42D2D` |
-| `Shiratsubi` | 59 | Vex | Hostile | Fifth | 22.5 | `#9C0F2C` |
-| `AbyssalSnail` | 60 | Silverfish | Passive | Fifth | 20 | `#785F34` |
-| `Ashimite` | 61 | Goat | Passive | Fifth | 17.5 | `#2597D9` |
-| `Ikonia` | 62 | Turtle | Passive | Fifth | 80 | `#3C3B4A` |
-| `Demonfish` | 63 | Pufferfish | Aquatic | Fifth | 15 | `#1B91B5` |
-| `Edusan` | 64 | Guardian | Aquatic | Fifth | 40 | `#800080` |
-| `Hisomukuro` | 65 | Squid | Aquatic | Fifth | 40 | `#C7BCAD` |
+| Kind              | id  | Base         | Category | Layers                | Hearts | Colour    |
+| ----------------- | --- | ------------ | -------- | --------------------- | ------ | --------- |
+| `Beniguma`        | 1   | Wolf         | Docile   | First, Second         | 8      | `#824243` |
+| `Cyatoria`        | 2   | Cat          | Aerial   | First, Second         | 12.5   | `#3DDFFF` |
+| `SmallHammerbeak` | 3   | Parrot       | Aerial   | First, Second         | 9      | `#613F0C` |
+| `GiantHammerbeak` | 4   | Parrot       | Aerial   | First, Second, Fourth | 20     | `#613F0C` |
+| `Splitjaw`        | 5   | Parrot       | Aerial   | First, Second, Third  | 45     | `#9A1CAD` |
+| `Woodcrier`       | 6   | Parrot       | Hostile  | First, Second         | 15     | `#9A1CAD` |
+| `ManToyer`        | 7   | Parrot       | Hostile  | First                 | 7.5    | `#D8D8D8` |
+| `Silkfang`        | 8   | Parrot       | Hostile  | First, Second         | 11     | `#696112` |
+| `Spittleshrub`    | 9   | Parrot       | Hostile  | First, Second, Fourth | 10     | `#696112` |
+| `Vinebinder`      | 10  | Creeper      | Hostile  | First, Second         | 10     | `#FFFFFF` |
+| `Vineblaster`     | 11  | Creeper      | Hostile  | First, Second         | 8      | `#FFFFFF` |
+| `Vinepoofer`      | 12  | Creeper      | Hostile  | First, Second         | 10     | `#FFFFFF` |
+| `Fuwagi`          | 13  | Rabbit       | Passive  | First, Second         | 5      | `#E0E0E0` |
+| `Okibo`           | 14  | Sniffer      | Passive  | Orth, First           | 20     | `#10DEA7` |
+| `Spiralsquid`     | 15  | Squid        | Aquatic  | First, Fourth         | 4      | `#1B91B5` |
+| `Chimokami`       | 16  | Fox          | Docile   | First                 | 15     | `#7C3A4A` |
+| `CorpseWeeper`    | 17  | Phantom      | Aerial   | First                 | 17.5   | `#D12B26` |
+| `Dosetori`        | 18  | Parrot       | Aerial   | First, Second         | 15     | `#59AC7A` |
+| `Ottobas`         | 19  | Ravager      | Hostile  | First                 | 45     | `#D8D8D8` |
+| `Tesuchi`         | 20  | Turtle       | Passive  | First                 | 10     | `#C0C0C0` |
+| `Hisoishi`        | 21  | Endermite    | Docile   | Second, Third         | 12.5   | `#303E77` |
+| `Rockwalker`      | 22  | Silverfish   | Docile   | Second, Third         | 12.5   | `#BE6400` |
+| `Rohana`          | 23  | Bat          | Aerial   | Second, Fourth        | 5      | `#6C19BF` |
+| `Stinger`         | 24  | Bee          | Aerial   | Second, Fourth, Fifth | 8      | `#03AC13` |
+| `Inbyo`           | 25  | Spider       | Hostile  | Second                | 12.5   | `#3D3D3D` |
+| `Billabonk`       | 26  | Frog         | Passive  | Second                | 10     | `#B754C2` |
+| `Neritantan`      | 27  | Rabbit       | Passive  | Second, Third         | 3.5    | `#BDBDBD` |
+| `Ikenosuke`       | 28  | TropicalFish | Aquatic  | Second, Third, Fourth | 6      | `#9FF3F3` |
+| `Daikonchu`       | 29  | Silverfish   | Docile   | Third                 | 40     | `#C26D23` |
+| `Rinsipede`       | 30  | Silverfish   | Docile   | Third                 | 15     | `#FFA500` |
+| `Buroguro`        | 31  | Bee          | Aerial   | Third                 | 16     | `#A3F7A2` |
+| `Madokajack`      | 32  | Phantom      | Aerial   | Third                 | 20     | `#1C439E` |
+| `Squidfly`        | 33  | Bat          | Aerial   | Third                 | 8      | `#85512E` |
+| `Himushi`         | 34  | MagmaCube    | Hostile  | Third                 | 30     | `#B22222` |
+| `Yomotsubi`       | 35  | Vex          | Hostile  | Third                 | 20     | `#9C0F2C` |
+| `Kakatsumuri`     | 36  | Silverfish   | Passive  | Third                 | 2.5    | `#7D93FF` |
+| `Sakuranbo`       | 37  | Bee          | Passive  | Third                 | 5      | `#FFB7C5` |
+| `Hashofu`         | 38  | Bat          | Aerial   | Fourth, Fifth         | 10     | `#454545` |
+| `Onitsuchi`       | 39  | Chicken      | Aerial   | Fourth, Fifth         | 25     | `#5C471D` |
+| `Horncrier`       | 40  | Parrot       | Hostile  | Fourth, Fifth         | 30     | `#9A1CAD` |
+| `Kuongatari`      | 41  | Spider       | Hostile  | Fourth, Fifth         | 15     | `#1FB53D` |
+| `OrbPiercer`      | 42  | CaveSpider   | Hostile  | Fourth                | 90     | `#C74040` |
+| `Swarmshocker`    | 43  | Bee          | Hostile  | Fourth, Fifth         | 10     | `#257BEB` |
+| `Tachikatana`     | 44  | Spider       | Hostile  | Fourth, Fifth         | 110    | `#00FFFF` |
+| `Uibuta`          | 45  | Hoglin       | Hostile  | Fourth, Fifth         | 35     | `#8F2222` |
+| `Shroombear`      | 46  | Panda        | Passive  | Fourth                | 12.5   | `#85562D` |
+| `Hagamizukin`     | 47  | Cod          | Aquatic  | Fourth, Fifth         | 25     | `#0B6623` |
+| `Kazura`          | 48  | GlowSquid    | Aquatic  | Fourth                | 2.5    | `#A9CCCA` |
+| `Makihige`        | 49  | Squid        | Aquatic  | Fourth, Fifth         | 30     | `#FF771C` |
+| `Spikewalker`     | 50  | Silverfish   | Docile   | Fifth                 | 20     | `#755237` |
+| `Titanjaw`        | 51  | Turtle       | Docile   | Fifth                 | 30     | `#3C3B4A` |
+| `KagiTachikiri`   | 52  | Vex          | Aerial   | Fifth                 | 25     | `#5468A8` |
+| `Chikyuoebi`      | 53  | Spider       | Hostile  | Fifth                 | 42.5   | `#649984` |
+| `Octoliar`        | 54  | Squid        | Hostile  | Fifth                 | 40     | `#ADD8E6` |
+| `Stingerhead`     | 55  | Phantom      | Hostile  | Fifth                 | 130    | `#9C0F2C` |
+| `Swarmhoarder`    | 56  | Bee          | Hostile  | Fifth                 | 35     | `#257BEB` |
+| `SporeManta`      | 57  | Phantom      | Aerial   | Fifth                 | 15     | `#6C19BF` |
+| `Virinsipede`     | 58  | Silverfish   | Hostile  | Fifth                 | 75     | `#C42D2D` |
+| `Shiratsubi`      | 59  | Vex          | Hostile  | Fifth                 | 22.5   | `#9C0F2C` |
+| `AbyssalSnail`    | 60  | Silverfish   | Passive  | Fifth                 | 20     | `#785F34` |
+| `Ashimite`        | 61  | Goat         | Passive  | Fifth                 | 17.5   | `#2597D9` |
+| `Ikonia`          | 62  | Turtle       | Passive  | Fifth                 | 80     | `#3C3B4A` |
+| `Demonfish`       | 63  | Pufferfish   | Aquatic  | Fifth                 | 15     | `#1B91B5` |
+| `Edusan`          | 64  | Guardian     | Aquatic  | Fifth                 | 40     | `#800080` |
+| `Hisomukuro`      | 65  | Squid        | Aquatic  | Fifth                 | 40     | `#C7BCAD` |
 
 Ids are permanent once shipped — they are what tells two kinds on the same base type
 apart — so a new kind takes the next free number and never reuses one.
 
-**Names are coloured through `mob::named`, which takes an exact RGB.** The colours are the
-hex values the wiki lists for each mob, so they are written as `rgb(0xRR, 0xGG, 0xBB)`
-rather than a [`NamedColor`], which has only 16 entries and no cyan, brown or light gray.
-`mob::named_color` exists for a kind whose colour is only described loosely.
+**Names are coloured inline with an exact RGB.** The colours are the hex values the wiki
+lists for each mob, so `name()` returns `TextComponent::text(..).color_rgb(rgb(..))`
+rather than a `NamedColor`, which has only 16 entries and no cyan, brown or light gray.
 
 **Nothing spawns a kind yet**, so the module carries an `#[expect(dead_code)]`. Remove it
 when the first real caller exists — a `/abyss summon` subcommand or a layer spawn rule —
@@ -514,7 +513,7 @@ src/
 │   ├── generator.rs    # `Void` chunk generator — layer worlds generate empty
 │   └── clock.rs        # Keeps every layer world on `Orth`'s clock
 ├── mobs/               # declared as `mod mobs` in `lib.rs`: the plugin's own mobs
-│   ├── mob.rs          # `Mob` trait, `Category`, `named` + the identity marker
+│   ├── mob.rs          # `Mob` trait, `Category` + the identity marker
 │   └── <kind>.rs       # one file per kind, 65 of them; see the catalogue above
 ├── commands/
 │   ├── abyss.rs        # `/abyss` — ops teleport into a layer, curse-free

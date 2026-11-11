@@ -12,7 +12,6 @@
 //! apart, and means renaming a kind does not orphan the mobs already in the world.
 
 use pumpkin_plugin_api::World;
-use pumpkin_plugin_api::common::{NamedColor, RgbColor};
 use pumpkin_plugin_api::persistent_data::PersistentDataHolder;
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
@@ -24,25 +23,6 @@ use crate::layer::Layer;
 
 /// Key under which a custom mob's identity is stored.
 const IDENTITY_KEY: &str = "mob";
-
-/// Builds the visible name of a mob kind from an exact colour.
-///
-/// Every kind names itself through this so the name above a mob is built one way — plain
-/// text, then a colour. It takes the exact RGB the bestiary lists rather than a
-/// [`NamedColor`], because that palette has only 16 entries and no cyan, brown or light
-/// gray: a mob whose colour is written down should render in that colour, not its nearest
-/// neighbour.
-pub fn named(name: &str, color: RgbColor) -> TextComponent {
-    TextComponent::text(name).color_rgb(color)
-}
-
-/// Builds the visible name of a mob kind from one of Minecraft's named colours.
-///
-/// For a kind whose colour is only described loosely; prefer [`named`] when an exact
-/// colour is known.
-pub fn named_color(name: &str, color: NamedColor) -> TextComponent {
-    TextComponent::text(name).color_named(color)
-}
 
 /// How a mob kind behaves towards players.
 ///

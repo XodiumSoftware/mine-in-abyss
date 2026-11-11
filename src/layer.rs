@@ -189,9 +189,11 @@ impl Layer {
     }
 
     /// Returns the severity of the Curse of the Abyss when ascending out of this layer,
-    /// from 0 (no ill effect) to 6 (fatal).
+    /// from 0 (no ill effect) to 7 (fatal) — the value is the layer's depth index.
     ///
-    /// Derived from the layer's depth so it can never drift from the enum order.
+    /// Derived from the layer's depth so it can never drift from the enum order. Because it is
+    /// the index, the deepest layer returns a severity above the cap the curse applies to a
+    /// player, which is what makes climbing out of `Seventh` fatal on its own.
     #[must_use]
     pub fn curse(self) -> u8 {
         u8::try_from(self.index()).unwrap_or(u8::MAX)

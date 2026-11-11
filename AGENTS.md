@@ -274,7 +274,10 @@ command cannot keep its old node. Handler structs implement
   (6), then inflicts the symptoms for the **total**
 - Ascending several layers in a row therefore compounds: the curse is cumulative
 - Reaching `Orth`, or respawning, calls `cure`
-- Strain 6 is fatal — `inflict` kills rather than applying effects
+- Strain **6 or more** is fatal — `inflict` ends in a catch-all arm rather than one arm per
+  value. `apply` caps at `MAX_STRAIN` (6), so in practice the tier is reached and not passed;
+  the cap is what keeps strain inside the range the ladder documents, and raising it means
+  adding arms to `inflict` in the same change
 
 ### Worlds
 

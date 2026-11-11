@@ -327,14 +327,22 @@ graph LR
     C -->|3| G["nausea, blindness, slowness"]
     C -->|4| H["+ minor magic damage"]
     C -->|5| I["+ health clamped to 1"]
-    C -->|6| J["death"]
-    K["reach First"] --> L["cure"]
+    C -->|6 or more| J["death"]
+    K["reach Orth"] --> L["cure"]
     M["respawn"] --> L
 ```
 
 Ascending several layers in one go compounds: the severity comes from
-`Layer::curse()`, which is the layer's index, so climbing out of `Seventh` is fatal on
-its own.
+`Layer::curse()`, which is the layer's index, so climbing out of `Seventh` adds `7` and is
+fatal on its own.
+
+The **death tier is `6` or more**, not exactly `6`: `inflict` ends in a catch-all arm
+rather than an arm per value. That makes the cap load-bearing, not decorative —
+`MAX_STRAIN` (6) must stay at the deepest tier `Layer::curse()` can return, because it is the
+only thing keeping strain inside the ladder's designed range. A ninth layer would make
+`Layer::curse()` reach `8`; that is still caught by the catch-all and would still kill, so
+it is not a bug, but the range documented above would no longer describe the truth. Raising
+`MAX_STRAIN` therefore means adding the matching arms to `inflict` in the same change.
 
 `/abyss` teleports **without** adding strain — it is an ops shortcut, not a climb.
 

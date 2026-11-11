@@ -25,7 +25,10 @@ const STRAIN_KEY: &str = "curse";
 /// Highest strain a player can carry.
 ///
 /// Matches the deepest layer's [`Layer::curse`] severity, so strain saturates
-/// at the fatal tier rather than growing without bound.
+/// at the fatal tier rather than growing without bound. This is an invariant, not a
+/// coincidence: [`inflict`] ends in a catch-all arm, so the cap is what keeps strain inside
+/// the range the ladder is written for. Add a layer deeper than `Seventh` and this has to
+/// rise with it, together with an arm in [`inflict`].
 const MAX_STRAIN: u8 = 6;
 
 /// Builds a status effect instance, showing particles and icon by default.
@@ -78,6 +81,10 @@ pub fn cure(player: &Player) {
 }
 
 /// Inflicts the symptoms of a given total `strain` on `player`.
+///
+/// The arms run from 1 to [`MAX_STRAIN`]; the catch-all is the fatal tier, so a strain of
+/// `6` **or more** kills. Strain cannot exceed `MAX_STRAIN` while [`apply`] is the only
+/// writer, so in practice that means exactly 6.
 fn inflict(player: &Player, strain: u8) {
     match strain {
         0 => {}

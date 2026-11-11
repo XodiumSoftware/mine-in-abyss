@@ -16,12 +16,65 @@ use pumpkin_plugin_api::persistent_data::PersistentDataHolder;
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
 use pumpkin_plugin_api::world::{Entity, LivingEntity};
+use strum::{EnumIter, IntoStaticStr};
 
 use crate::PLUGIN_ID;
 use crate::layer::Layer;
 
 /// Key under which a custom mob's identity is stored.
 const IDENTITY_KEY: &str = "mob";
+
+/// How a mob kind behaves towards players.
+///
+/// A separate type from [`EntityType`], which only says *what shape* a mob is: a wolf and a
+/// zombie are both spawned as vanilla types, but one is [`Category::Passive`] and the other
+/// [`Category::Hostile`]. The category is what a spawn rule, a difficulty tweak or a
+/// bestiary entry reads when the vanilla type is not the question.
+///
+/// Its `id()` is a fixed `snake_case` spelling rather than the variant name, so `"passive"`
+/// stays readable in a command argument, a data file or a log line, the same way
+/// [`Layer::id`](crate::layer::Layer) does it.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, EnumIter, IntoStaticStr)]
+#[strum(serialize_all = "snake_case")]
+pub enum Category {
+    /// Never attacks a player unprovoked; will fight back or not, per kind.
+    #[default]
+    Passive,
+    /// May be bred or tamed, and only harms players when provoked.
+    Docile,
+    /// Can fly, so its pathing ignores the ground.
+    Flying,
+    /// Swims, so it belongs in water rather than on the layer's map.
+    Aquatic,
+    /// Attacks players on sight.
+    Hostile,
+}
+
+impl Category {
+    /// Every category, in the order used for listings.
+    pub const ALL: [Self; 5] = [
+        Self::Passive,
+        Self::Docile,
+        Self::Flying,
+        Self::Aquatic,
+        Self::Hostile,
+    ];
+
+    /// This category's stable lowercase identifier, e.g. `"hostile"`.
+    ///
+    /// Read off the variant by `strum`, never hand-written, so renaming a variant cannot
+    /// leave a stale spelling behind.
+    #[must_use]
+    pub fn id(self) -> &'static str {
+        self.into()
+    }
+
+    /// Returns whether a mob of this category hunts players.
+    #[must_use]
+    pub fn is_hostile(self) -> bool {
+        matches!(self, Self::Hostile)
+    }
+}
 
 /// A kind of mob the plugin defines on top of a vanilla one.
 ///
@@ -48,8 +101,29 @@ pub trait Mob {
     /// existing mobs still recognised as themselves.
     fn id() -> u8;
 
-    /// The name shown above the mob.
-    fn name() -> &'static str;
+    /// The name shown above the mob, as the component the host renders.
+    ///
+    /// A [`TextComponent`] rather than a `&'static str` so a kind can colour, style or
+    /// localise its name without [`spawn`](Self::spawn) growing a second, richer hook.
+    /// `TextComponent::text("Beniguma")` is the plain case.
+    ///
+    /// The component is owned because it is a host resource and cannot be copied: build a
+    /// fresh one per call (`TextComponent::text(..)` is cheap) instead of trying to cache
+    /// and hand out a shared one.
+    fn name() -> TextComponent;
+
+    /// How this kind behaves towards players.
+    ///
+    /// Not derived from [`base`](Self::base): the vanilla type says what the mob looks like
+    /// and how the host paths it, while the category says what it is for. They usually agree
+    /// and are allowed to disagree — a kind built on a wolf can be [`Category::Hostile`] if
+    /// that is what it is meant to be.
+    ///
+    /// The default is [`Category::Passive`], the least aggressive reading: a kind that has
+    /// not said otherwise is not silently treated as something that hunts players.
+    fn category() -> Category {
+        Category::default()
+    }
 
     /// The layers this kind is allowed to spawn in.
     ///
@@ -102,7 +176,7 @@ pub trait Mob {
     fn spawn(world: &World, position: (f64, f64, f64)) -> Entity {
         let entity = world.spawn_entity(Self::base(), position);
 
-        entity.set_custom_name(TextComponent::text(Self::name()));
+        entity.set_custom_name(Self::name());
         entity.set_custom_name_visible(true);
 
         if let Some(living) = entity.as_living() {

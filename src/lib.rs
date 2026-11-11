@@ -22,11 +22,11 @@ mod commands {
 /// Minecraft's mob types cannot be extended, so a mob here is a vanilla entity wearing an
 /// identity: a base type, a visible name, scaled attributes, and a marker in its own
 /// persistent data. `mob` is the trait a kind implements and where that marker is written
-/// and read back; `scavenger` is the worked example.
+/// and read back; `beniguma` is the worked example.
 #[expect(dead_code, reason = "no command or handler spawns a mob kind yet")]
 mod mobs {
+    pub mod beniguma;
     pub mod mob;
-    pub mod scavenger;
 }
 
 /// The layer worlds, and the machinery that keeps them usable.
@@ -121,7 +121,7 @@ impl MineInAbyss {
     fn mobs() {
         let started = Instant::now();
 
-        let mobs: [fn() -> EntityType; 1] = [mobs::scavenger::Scavenger::base];
+        let mobs: [fn() -> EntityType; 1] = [mobs::beniguma::Beniguma::base];
 
         info!(
             "Registered {} custom mob(s) in {:?}",

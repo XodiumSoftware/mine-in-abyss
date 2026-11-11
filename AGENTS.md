@@ -328,12 +328,17 @@ mob" is always **a vanilla mob wearing an identity**. `src/mobs/` is the archite
 that, not a way around it:
 
 - `mob.rs` — the [`Mob`](src/mobs/mob.rs) trait, plus the identity marker it writes. A kind
-  supplies its base `EntityType`, a stable `id` byte and its visible name, and does
-  everything else in **`Mob::apply`**: the spawned `LivingEntity` is handed over and the
-  kind sets attributes with `set_attribute_base` and equips itself with `set_equipment`
+  supplies its base `EntityType`, a stable `id` byte, its visible name, the layers it may
+  spawn in and a [`Category`](src/mobs/mob.rs) (`Passive`/`Docile`/`Flying`/`Aquatic`/`Hostile`),
+  and does everything else in **`Mob::apply`**: the spawned `LivingEntity` is handed over and
+  the kind sets attributes with `set_attribute_base` and equips itself with `set_equipment`
   per slot. Nothing is a fixed table, so a hand-only mob and a fully armoured one are just
   different bodies for that method. `Mob::spawn` creates the base type, calls `apply`, and
   stamps the identity.
+- `Category` is _not_ derived from `EntityType`: the base type says what a mob looks like and
+  how the host paths it, the category says what it is for. They usually agree and are allowed
+  to disagree, and an unstated category defaults to `Passive` so a new kind is never silently
+  treated as something that hunts players.
 - The marker itself is `mark`/`id_of`/`is` in the same file: a **byte** in the entity's own
   persistent data under `PLUGIN_ID` (`set_byte`/`get_byte`, the same calls `curse.rs` uses),
   so it survives relogs and restarts and cannot collide with another plugin's data. It
@@ -357,7 +362,7 @@ independent and neither compounds.
 per-layer data and `MineInAbyss::events` lists every handler. Adding a kind means adding its
 file, its submodule in `lib.rs`, its `impl Mob`, and one entry in that array. It is an array
 of names rather than a `const` because a trait method cannot be called in a constant.
-`scavenger.rs` is the worked example.
+`beniguma.rs` is the worked example.
 
 **Nothing spawns a kind yet**, so the module carries an `#[expect(dead_code)]`. Remove it
 when the first real caller exists — a `/abyss summon` subcommand or a layer spawn rule —
@@ -437,7 +442,7 @@ src/
 │   └── clock.rs        # Keeps every layer world on `First`'s clock
 ├── mobs/               # declared as `mod mobs` in `lib.rs`: the plugin's own mobs
 │   ├── mob.rs          # `Mob` trait + `mark`/`id_of`/`is` — the identity marker
-│   └── scavenger.rs    # `Scavenger` — the worked example, built on a zombie
+│   └── beniguma.rs     # `Beniguma` — the worked example, built on a wolf
 ├── commands/
 │   ├── abyss.rs        # `/abyss` — ops teleport into a layer, curse-free
 │   └── command.rs      # `Command` trait — each command registers itself

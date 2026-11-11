@@ -23,12 +23,6 @@
 //! distance is measured at the moment of the swap and handed to
 //! [`FallDamage`](super::fall_damage), which adds it to the fall in the layer arrived in.
 //!
-//! A descent **carries its fall distance** into the next layer. Vanilla resets the
-//! distance when the world changes, so the descent would otherwise end the fall: the
-//! player would fall out of `First` unhurt, and only the last layer would hurt them. The
-//! distance is measured at the moment of the swap and handed to
-//! [`FallDamage`](super::fall_damage), which adds it to the fall in the layer arrived in.
-//!
 //! A descent **does not carry the monsters**. Entities cannot change layers, so the mobs a
 //! player leaves behind in the layer above stay there: what was chasing them does not
 //! follow, and the layer they land in holds only its own inhabitants.

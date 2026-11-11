@@ -487,7 +487,7 @@ plugin stores on an item.
 subcommand creates the stack, puts it in the sender's hand and reads the marker straight
 back off the stored stack, so it exercises the whole path until a real source of items
 (loot tables or crafting) exists. Because a caller exists, `mod items` carries no
-`#[expect(dead_code)]` — unlike `mod mobs`, nothing creates a mob kind yet.
+`#[expect(dead_code)]`, just as `mod mobs` does not — `/abyss summon` reaches a kind by name.
 
 #### Each layer is a hand-built map
 

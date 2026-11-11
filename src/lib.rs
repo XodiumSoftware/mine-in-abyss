@@ -193,12 +193,11 @@ pub const LAYERS: [Layer; 8] = Layer::ALL;
 /// Every mob kind the plugin defines, in id order.
 ///
 /// A kind's associated functions cannot be called through a trait object, so the catalogue
-/// spells each one out with [`MobKind::of`](mobs::mob_builder::MobKind::of), which fills
-/// the entry from that kind's own [`MobBuilder`](mobs::mob_builder::MobBuilder) methods.
-/// Adding a kind therefore means adding it here, and `/abyss summon` can then reach it by
-/// name.
+/// spells each one out with `MobKind::of`, which fills the entry from that kind's own
+/// `MobBuilder` methods. Adding a kind therefore means adding it here, and `/abyss summon`
+/// can then reach it by name.
 ///
-/// A function rather than a `const`: [`MobKind::of`] calls trait methods, which are not
+/// A function rather than a `const`: `MobKind::of` calls trait methods, which are not
 /// `const`, so the catalogue is built once at first use.
 #[must_use]
 pub fn mob_kinds() -> [mobs::mob_builder::MobKind; 65] {

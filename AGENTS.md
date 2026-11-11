@@ -76,16 +76,18 @@ need a variation, say which command you ran and why.
 **`MineInAbyss`** — implements `Plugin` from `pumpkin_plugin_api`:
 
 1. **Registration**: Via `register_plugin!(MineInAbyss)` macro
-2. **`on_load`**, in order:
+2. **`on_load`**, in order — four startup steps, one method each:
     - `MineInAbyss::layers` — logs how many layers exist
     - `MineInAbyss::events` — registers every event handler (see [Events](#events))
     - `MineInAbyss::commands` — registers every command (see [Commands](#commands))
-    - Creates one world per layer via `Worlds::setup`
-    - Starts the clock sync task (`world::clock::schedule`)
+    - `MineInAbyss::worlds` — creates one world per layer via `Worlds::setup`, then
+      starts the clock sync task (`world::clock::schedule`)
 3. **`on_unload`**: Logs farewell message
 
-Each of the three registration methods iterates a single array of `fn(&Context)` and logs
-`array.len()`, so the logged count cannot drift from what was registered.
+`layers`, `events` and `commands` each iterate a single array and log `array.len()`, so the
+logged count cannot drift from what was registered. `worlds` logs nothing: `Worlds::setup`
+returns how many worlds came up, and that count is deliberately discarded — a layer whose
+world is missing already logs a `warn!` of its own.
 
 ### Layer System
 

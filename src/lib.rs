@@ -124,6 +124,11 @@ impl MineInAbyss {
 
         info!("Registered {} command(s)", commands.len());
     }
+
+    fn worlds(context: &Context) {
+        Worlds::setup(context, &LAYERS);
+        world::clock::schedule(context);
+    }
 }
 
 impl Plugin for MineInAbyss {
@@ -149,16 +154,14 @@ impl Plugin for MineInAbyss {
         Self::layers();
         Self::events(&context);
         Self::commands(&context);
+        Self::worlds(&context);
 
-        let worlds = Worlds::setup(&context, &LAYERS);
-        world::clock::schedule(&context);
-
-        info!("Mine in Abyss loaded ({worlds} layer world(s)).");
+        info!("Mine In Abyss loaded. NICE TO CYA!");
         Ok(())
     }
 
     fn on_unload(&self, _context: Context) -> pumpkin_plugin_api::Result<()> {
-        info!("Mine in Abyss unloaded.");
+        info!("Mine In Abyss unloaded. CYA NEXT TIME!");
         Ok(())
     }
 }

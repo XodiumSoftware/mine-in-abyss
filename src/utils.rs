@@ -1,7 +1,8 @@
 //! Small helpers shared across the plugin's events and layers.
 
 use pumpkin_plugin_api::Player;
-use pumpkin_plugin_api::common::{GameMode, RgbColor};
+use pumpkin_plugin_api::common::{GameMode, NamedColor, RgbColor};
+use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::uuid;
 use pumpkin_plugin_api::{Server, World};
 use std::cell::RefCell;
@@ -84,6 +85,17 @@ pub fn world_for(server: &Server, layer: Layer, purpose: &str) -> Option<World> 
         warn!("World '{name}' is unavailable; {purpose}");
     }
     world
+}
+
+/// Returns the layer `player` is standing in, if any.
+///
+/// Every handler that reacts to a player has to answer this first, and each one would
+/// otherwise repeat the same two steps: read the current world's name, then match it
+/// against [`Layer::world`](crate::Layer::world). Reading the world here rather than taking
+/// a name keeps callers from having to re-resolve it for a field they do not use.
+#[must_use]
+pub fn layer_of(player: &Player) -> Option<Layer> {
+    crate::layer_for_world(&player.get_world().get_name())
 }
 
 /// Builds an [`RgbColor`] from its channels, so palettes can be written inline.
@@ -237,6 +249,15 @@ pub fn ignores_transitions(player: &Player) -> bool {
     );
 
     exempt_gamemode || is_dead(player)
+}
+
+/// Tells `player` something with a short message in the action bar.
+///
+/// The action bar rather than chat: these are answers to one interaction — a refused
+/// spawn point, a layer with nothing beside it — and should not clutter the log. `color`
+/// carries the meaning, red for a refusal and grey for a neutral explanation.
+pub fn tell(player: &Player, message: &str, color: NamedColor) {
+    player.show_actionbar(TextComponent::text(message).color_named(color));
 }
 
 /// Returns `true` if `player` has died and has not respawned yet.

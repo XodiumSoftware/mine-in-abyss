@@ -27,7 +27,7 @@ use pumpkin_plugin_api::events::EventHandler;
 use pumpkin_plugin_api::events::player::player_move::PlayerMoveEvent;
 use pumpkin_plugin_api::events_wit::PlayerMoveEventData;
 
-use crate::utils::{ignores_transitions, resume_fall};
+use crate::utils::{ignores_transitions, layer_of, resume_fall};
 
 /// Adds the fall distance a descent carried into the layer a player is landing in.
 #[derive(Debug, Default, Clone, Copy)]
@@ -39,8 +39,7 @@ impl EventHandler<PlayerMoveEvent> for FallDamage {
             return event;
         }
 
-        let world_name = event.player.get_world().get_name();
-        let Some(layer) = crate::layer_for_world(&world_name) else {
+        let Some(layer) = layer_of(&event.player) else {
             return event;
         };
 

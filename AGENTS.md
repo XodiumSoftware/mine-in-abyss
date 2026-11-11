@@ -167,7 +167,7 @@ server does not apply the original `to_position` — which would move the player
 the band of the world they just left.
 
 **Leaving the Abyss at either end tells the player.** Rising above `First` or falling
-below `Seventh` has nowhere to go, so `LayerLeave` sends a grey system message instead of
+below `Seventh` has nowhere to go, so `LayerLeave` sends a grey action bar message instead of
 silently doing nothing.
 
 **A descent carries its fall distance.** Changing world resets `get_fall_distance`, and a
@@ -355,7 +355,7 @@ src/
 ├── lib.rs              # `PLUGIN_ID`, `LAYERS`, `layer_for_world`, `Plugin` impl
 ├── layer.rs            # `Layer` enum + id/world/next/prev/index/curse,
 │                       # plus shared `MIN_Y`/`MAX_Y` and entry/exit heights
-├── utils.rs            # Shared helpers (`ignores_transitions`, `world_for`, fall carry)
+├── utils.rs            # Shared helpers (`ignores_transitions`, `layer_of`, `tell`, `world_for`)
 ├── generator.rs        # `Void` chunk generator — layer worlds generate empty
 ├── time_sync.rs        # Keeps every layer world on `First`'s clock
 ├── worlds.rs           # `Worlds` — one void world per layer

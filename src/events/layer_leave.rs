@@ -41,13 +41,12 @@ use pumpkin_plugin_api::common::NamedColor;
 use pumpkin_plugin_api::events::EventHandler;
 use pumpkin_plugin_api::events::player::player_move::PlayerMoveEvent;
 use pumpkin_plugin_api::events_wit::PlayerMoveEventData;
-use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::{Player, Server};
 
 use crate::layer::Layer;
 use crate::utils::{
-    begin_transition, carry_fall, clear_fall, consume_teleport, end_transition,
-    ignores_transitions, world_for,
+    begin_transition, carry_fall, clear_fall, consume_teleport, ignores_transitions, layer_of,
+    tell, world_for,
 };
 use crate::worlds::Worlds;
 
@@ -61,8 +60,7 @@ impl EventHandler<PlayerMoveEvent> for LayerLeave {
             return event;
         }
 
-        let world_name = event.player.get_world().get_name();
-        let Some(layer) = crate::layer_for_world(&world_name) else {
+        let Some(layer) = layer_of(&event.player) else {
             return event;
         };
 
@@ -85,7 +83,11 @@ impl EventHandler<PlayerMoveEvent> for LayerLeave {
                 if let Some(layer) = layer.next() {
                     down(&server, &event.player, layer)
                 } else {
-                    tell(&event.player, "There is nothing below the Abyss.");
+                    tell(
+                        &event.player,
+                        "There is nothing below the Abyss.",
+                        NamedColor::Gray,
+                    );
                     clear_fall(&event.player);
                     false
                 }
@@ -94,24 +96,24 @@ impl EventHandler<PlayerMoveEvent> for LayerLeave {
                 if let Some(layer) = layer.prev() {
                     up(&server, &event.player, layer)
                 } else {
-                    tell(&event.player, "There is nothing above the Abyss.");
+                    tell(
+                        &event.player,
+                        "There is nothing above the Abyss.",
+                        NamedColor::Gray,
+                    );
                     clear_fall(&event.player);
                     false
                 }
             }
         };
 
-        if moved {
-            // The latch stays taken: `LayerJoin` releases it once the player is actually in
-            // the destination world, so the moves and the world change that follow the
-            // teleport cannot re-trigger the transition.
-            PlayerMoveEventData {
-                cancelled: true,
-                ..event
-            }
-        } else {
-            end_transition(&event.player);
-            event
+        if !moved {
+            return event;
+        }
+
+        PlayerMoveEventData {
+            cancelled: true,
+            ..event
         }
     }
 }
@@ -172,13 +174,4 @@ fn down(server: &Server, player: &Player, layer: Layer) -> bool {
 
     carry_fall(player, fallen_before_world_change, layer);
     true
-}
-
-/// Tells `player` something went nowhere, as a grey system message.
-///
-/// Used when a transition is impossible rather than failing silently, so a player is not
-/// left guessing why nothing happened.
-fn tell(player: &Player, message: &str) {
-    let text = TextComponent::text(message).color_named(NamedColor::Gray);
-    player.send_system_message(text, false);
 }

@@ -18,16 +18,16 @@
 //! # What the player sees
 //!
 //! Cancelling the event is enough: the host never stores the point, and never sends its
-//! usual "Spawn point set" message. This handler adds a short red action bar line so using
-//! a bed does not silently do nothing — the action bar rather than chat, because it is a
-//! refusal of that one interaction and should not clutter the log.
+//! usual "Spawn point set" message, so this handler adds a short red action bar line —
+//! using a bed should not silently do nothing.
 
 use pumpkin_plugin_api::Server;
 use pumpkin_plugin_api::common::NamedColor;
 use pumpkin_plugin_api::events::EventHandler;
 use pumpkin_plugin_api::events::player::player_spawn_change::PlayerSpawnChangeEvent;
 use pumpkin_plugin_api::events_wit::PlayerSpawnChangeEventData;
-use pumpkin_plugin_api::text::TextComponent;
+
+use crate::utils::tell;
 
 /// Refuses a player-set spawn point, leaving cleared and operator-set points alone.
 #[derive(Debug, Default, Clone, Copy)]
@@ -43,9 +43,10 @@ impl EventHandler<PlayerSpawnChangeEvent> for BedSpawn {
             return event;
         }
 
-        event.player.show_actionbar(
-            TextComponent::text("The Abyss does not let you set a spawn point.")
-                .color_named(NamedColor::Red),
+        tell(
+            &event.player,
+            "The Abyss does not let you set a spawn point.",
+            NamedColor::Red,
         );
 
         PlayerSpawnChangeEventData {

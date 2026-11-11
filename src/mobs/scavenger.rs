@@ -10,10 +10,9 @@
 //! [`Monsters`](crate::events::monsters::Monsters) still applies on top, so the same kind is
 //! far more dangerous six layers down.
 
-use pumpkin_plugin_api::ItemStack;
 use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
-use pumpkin_plugin_api::world::{EquipmentSlot, LivingEntity};
+use pumpkin_plugin_api::world::LivingEntity;
 
 use super::mob::Mob;
 

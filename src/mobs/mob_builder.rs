@@ -214,8 +214,49 @@ pub fn id_of(entity: &Entity) -> Option<u8> {
         .and_then(|id| u8::try_from(id).ok())
 }
 
-/// Returns whether `entity` is the custom mob kind `id`.
-#[must_use]
-pub fn is(entity: &Entity, id: u8) -> bool {
-    id_of(entity).is_some_and(|found| found == id)
+/// One entry of the mob catalogue: everything about a kind that can be read without an
+/// instance, plus the function that spawns it.
+///
+/// A kind's own associated functions cannot be called through a trait object or stored as
+/// data, so the catalogue spells them out once. [`MobKind::of`] is the bridge: it takes a
+/// kind and fills the entry from that kind's own [`MobBuilder`] methods, so a kind's values
+/// are still written in exactly one place.
+#[derive(Debug, Clone, Copy)]
+pub struct MobKind {
+    /// The kind's stable identifier, from [`MobBuilder::id`].
+    pub id: u8,
+    /// The name shown above the mob, from [`MobBuilder::name`].
+    pub name: &'static str,
+    /// The vanilla type the kind is built on, from [`MobBuilder::base`].
+    pub base: EntityType,
+    /// The layers the kind may spawn in, from [`MobBuilder::layers`].
+    pub layers: &'static [Layer],
+    /// How the kind behaves towards players, from [`MobBuilder::category`].
+    pub category: Category,
+    /// Spawns the kind, from [`MobBuilder::spawn`].
+    pub spawn: fn(&World, (f64, f64, f64)) -> Entity,
+}
+
+impl MobKind {
+    /// Builds the catalogue entry for one kind.
+    ///
+    /// `label` is the kind's display text, which has to be passed separately:
+    /// [`MobBuilder::name`] returns a [`TextComponent`] that cannot be read back as a string,
+    /// so the catalogue keeps its own copy rather than trying to reverse the component.
+    pub fn of<T: MobBuilder>(label: &'static str) -> Self {
+        Self {
+            id: T::id(),
+            name: label,
+            base: T::base(),
+            layers: T::layers(),
+            category: T::category(),
+            spawn: T::spawn,
+        }
+    }
+
+    /// Returns whether this kind may spawn in `layer`.
+    #[must_use]
+    pub fn spawns_in(&self, layer: Layer) -> bool {
+        self.layers.contains(&layer)
+    }
 }

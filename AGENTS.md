@@ -247,6 +247,8 @@ in that array.
 through [`Layer::from_id`], which reads both spellings off the variant so a reordered layer
 cannot leave a stale alias behind. `Layer::id_list` renders the accepted names for the
 error message.
+It also carries `/abyss item <item>` and `/abyss summon <mob> [count]`, which are the callers
+that keep `mod items` and `mod mobs` reachable — see the two sections below.
 A player running it is always the one moved; `[player]` is only consulted from console.
 It teleports straight into the layer, so no curse strain is added — unlike a real ascent.
 
@@ -436,9 +438,24 @@ apart — so a new kind takes the next free number and never reuses one.
 lists for each mob, so `name()` returns `TextComponent::text(..).color_rgb(rgb(..))`
 rather than a `NamedColor`, which has only 16 entries and no cyan, brown or light gray.
 
-**Nothing spawns a kind yet**, so the module carries an `#[expect(dead_code)]`. Remove it
-when the first real caller exists — a `/abyss summon` subcommand or a layer spawn rule —
-and not before, since an unused spawn path is worse than an acknowledged gap.
+**`/abyss summon <mob> [count]` is the caller**, so the module carries no
+`#[expect(dead_code)]`. It resolves a name through [`mob_kinds`](src/lib.rs), which builds a
+[`MobKind`](src/mobs/mob_builder.rs) per kind — id, name, base, layers, category and a spawn
+fn pointer — because a kind's associated functions cannot be called through a trait object.
+`MobKind::of::<T>(label)` fills the entry from that kind's own methods, so a kind's values
+are still written in one place; the label is passed separately because `MobBuilder::name`
+returns a `TextComponent` that cannot be read back as a string.
+
+The catalogue is a **function, not a `const`**: `MobKind::of` calls trait methods, which are
+not `const`. Adding a kind means adding it to `mob_kinds` in `lib.rs` as well as to the
+module list.
+
+**Summoning refuses a layer the kind does not list.** The layer guard is the point of
+`MobBuilder::layers` finally having a consumer, and it keeps an operator command from quietly
+filling a layer with something that was never meant to live there.
+
+**Names match loosely**: case-insensitive, with spaces and hyphens ignored, so
+`small hammerbeak`, `Small Hammerbeak` and `SmallHammerbeak` all resolve.
 
 ### Custom items
 

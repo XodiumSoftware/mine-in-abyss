@@ -204,10 +204,11 @@ and never afflicted by the curse, so they can fly through the void and ceiling f
 
 ## Commands
 
-| Command                   | Permission                    |
-| ------------------------- | ----------------------------- |
-| `/abyss <layer> [player]` | `mine_in_abyss:command.abyss` |
-| `/abyss item <item>`      | `mine_in_abyss:command.abyss` |
+| Command                       | Permission                    |
+| ----------------------------- | ----------------------------- |
+| `/abyss <layer> [player]`     | `mine_in_abyss:command.abyss` |
+| `/abyss item <item>`          | `mine_in_abyss:command.abyss` |
+| `/abyss summon <mob> [count]` | `mine_in_abyss:command.abyss` |
 
 Alias: `/mia`. Requires permission level 3 (admin) or above.
 
@@ -217,6 +218,11 @@ the player straight into the layer, so **no curse strain is added** — unlike a
 `/abyss item relic` puts an **Abyss Relic** in your hand. It exists to test the custom-item
 path end to end — the stack is created, stamped with its identity, and the identity is read
 back off the slot it landed in — and reports whether that round trip worked.
+
+`/abyss summon <mob> [count]` spawns a custom mob at your feet, up to 16 at a time. `<mob>` is
+the display name, and matching is loose: `small hammerbeak`, `Small Hammerbeak` and
+`SmallHammerbeak` all work. It **refuses a mob in a layer it does not list**, so you cannot
+quietly fill a layer with something that was never meant to live there.
 
 A **player** running the command is always the one moved. `[player]` is only used from
 console, where the sender is not a player:

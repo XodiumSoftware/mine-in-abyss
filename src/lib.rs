@@ -21,9 +21,8 @@ mod commands {
 ///
 /// Minecraft's mob types cannot be extended, so a mob here is a vanilla entity wearing an
 /// identity: a base type, a visible name, scaled attributes, and a marker in its own
-/// persistent data. `mob` is the trait a kind implements and where that marker is written
-/// and read back; `beniguma` is the worked example.
-#[expect(dead_code, reason = "no command or handler spawns a mob kind yet")]
+/// persistent data. `mob_builder` is the trait a kind implements and where that marker is
+/// written and read back; `beniguma` is the worked example.
 mod mobs {
     pub mod abyssal_snail;
     pub mod ashimite;
@@ -152,14 +151,12 @@ mod events {
 pub use layer::*;
 pub use world::setup::*;
 
-use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
 use pumpkin_plugin_api::{Context, Plugin, PluginMetadata};
 use std::time::Instant;
 use tracing::info;
 
 use commands::command::Command as RegisterCommand;
 use events::event::Event as RegisterEvent;
-use mobs::mob_builder::MobBuilder;
 
 /// The plugin identifier used for namespaced ids and permission nodes.
 ///
@@ -172,6 +169,109 @@ pub const PLUGIN_ID: &str = "mine_in_abyss";
 /// This is the single source of truth for which layers exist: registration, world
 /// creation and the entry title all read from it. Identical to [`Layer::ALL`].
 pub const LAYERS: [Layer; 8] = Layer::ALL;
+
+/// Every mob kind the plugin defines, in id order.
+///
+/// A kind's associated functions cannot be called through a trait object, so the catalogue
+/// spells each one out with [`MobKind::of`](mobs::mob_builder::MobKind::of), which fills
+/// the entry from that kind's own [`MobBuilder`](mobs::mob_builder::MobBuilder) methods.
+/// Adding a kind therefore means adding it here, and `/abyss summon` can then reach it by
+/// name.
+///
+/// A function rather than a `const`: [`MobKind::of`] calls trait methods, which are not
+/// `const`, so the catalogue is built once at first use.
+#[must_use]
+pub fn mob_kinds() -> [mobs::mob_builder::MobKind; 65] {
+    [
+        mobs::mob_builder::MobKind::of::<mobs::beniguma::Beniguma>("Beniguma"),
+        mobs::mob_builder::MobKind::of::<mobs::cyatoria::Cyatoria>("Cyatoria"),
+        mobs::mob_builder::MobKind::of::<mobs::small_hammerbeak::SmallHammerbeak>(
+            "Small Hammerbeak",
+        ),
+        mobs::mob_builder::MobKind::of::<mobs::giant_hammerbeak::GiantHammerbeak>(
+            "Giant Hammerbeak",
+        ),
+        mobs::mob_builder::MobKind::of::<mobs::splitjaw::Splitjaw>("Splitjaw"),
+        mobs::mob_builder::MobKind::of::<mobs::woodcrier::Woodcrier>("Woodcrier"),
+        mobs::mob_builder::MobKind::of::<mobs::man_toyer::ManToyer>("Man-toyer"),
+        mobs::mob_builder::MobKind::of::<mobs::silkfang::Silkfang>("Silkfang"),
+        mobs::mob_builder::MobKind::of::<mobs::spittleshrub::Spittleshrub>("Spittleshrub"),
+        mobs::mob_builder::MobKind::of::<mobs::vinebinder::Vinebinder>("Vinebinder"),
+        mobs::mob_builder::MobKind::of::<mobs::vineblaster::Vineblaster>("Vineblaster"),
+        mobs::mob_builder::MobKind::of::<mobs::vinepoofer::Vinepoofer>("Vinepoofer"),
+        mobs::mob_builder::MobKind::of::<mobs::fuwagi::Fuwagi>("Fuwagi"),
+        mobs::mob_builder::MobKind::of::<mobs::okibo::Okibo>("Okibo"),
+        mobs::mob_builder::MobKind::of::<mobs::spiralsquid::Spiralsquid>("Spiralsquid"),
+        mobs::mob_builder::MobKind::of::<mobs::chimokami::Chimokami>("Chimokami"),
+        mobs::mob_builder::MobKind::of::<mobs::corpse_weeper::CorpseWeeper>("Corpse-Weeper"),
+        mobs::mob_builder::MobKind::of::<mobs::dosetori::Dosetori>("Dosetori"),
+        mobs::mob_builder::MobKind::of::<mobs::ottobas::Ottobas>("Ottobas"),
+        mobs::mob_builder::MobKind::of::<mobs::tesuchi::Tesuchi>("Tesuchi"),
+        mobs::mob_builder::MobKind::of::<mobs::hisoishi::Hisoishi>("Hisoishi"),
+        mobs::mob_builder::MobKind::of::<mobs::rockwalker::Rockwalker>("Rockwalker"),
+        mobs::mob_builder::MobKind::of::<mobs::rohana::Rohana>("Rohana"),
+        mobs::mob_builder::MobKind::of::<mobs::stinger::Stinger>("Stinger"),
+        mobs::mob_builder::MobKind::of::<mobs::inbyo::Inbyo>("Inbyo"),
+        mobs::mob_builder::MobKind::of::<mobs::billabonk::Billabonk>("Billabonk"),
+        mobs::mob_builder::MobKind::of::<mobs::neritantan::Neritantan>("Neritantan"),
+        mobs::mob_builder::MobKind::of::<mobs::ikenosuke::Ikenosuke>("Ikenosuke"),
+        mobs::mob_builder::MobKind::of::<mobs::daikonchu::Daikonchu>("Daikonchu"),
+        mobs::mob_builder::MobKind::of::<mobs::rinsipede::Rinsipede>("Rinsipede"),
+        mobs::mob_builder::MobKind::of::<mobs::buroguro::Buroguro>("Buroguro"),
+        mobs::mob_builder::MobKind::of::<mobs::madokajack::Madokajack>("Madokajack"),
+        mobs::mob_builder::MobKind::of::<mobs::squidfly::Squidfly>("Squidfly"),
+        mobs::mob_builder::MobKind::of::<mobs::himushi::Himushi>("Himushi"),
+        mobs::mob_builder::MobKind::of::<mobs::yomotsubi::Yomotsubi>("Yomotsubi"),
+        mobs::mob_builder::MobKind::of::<mobs::kakatsumuri::Kakatsumuri>("Kakatsumuri"),
+        mobs::mob_builder::MobKind::of::<mobs::sakuranbo::Sakuranbo>("Sakuranbo"),
+        mobs::mob_builder::MobKind::of::<mobs::hashofu::Hashofu>("Hashofu"),
+        mobs::mob_builder::MobKind::of::<mobs::onitsuchi::Onitsuchi>("Onitsuchi"),
+        mobs::mob_builder::MobKind::of::<mobs::horncrier::Horncrier>("Horncrier"),
+        mobs::mob_builder::MobKind::of::<mobs::kuongatari::Kuongatari>("Kuongatari"),
+        mobs::mob_builder::MobKind::of::<mobs::orb_piercer::OrbPiercer>("Orb Piercer"),
+        mobs::mob_builder::MobKind::of::<mobs::swarmshocker::Swarmshocker>("Swarmshocker"),
+        mobs::mob_builder::MobKind::of::<mobs::tachikatana::Tachikatana>("Tachikatana"),
+        mobs::mob_builder::MobKind::of::<mobs::uibuta::Uibuta>("Uibuta"),
+        mobs::mob_builder::MobKind::of::<mobs::shroombear::Shroombear>("Shroombear"),
+        mobs::mob_builder::MobKind::of::<mobs::hagamizukin::Hagamizukin>("Hagamizukin"),
+        mobs::mob_builder::MobKind::of::<mobs::kazura::Kazura>("Kazura"),
+        mobs::mob_builder::MobKind::of::<mobs::makihige::Makihige>("Makihige"),
+        mobs::mob_builder::MobKind::of::<mobs::spikewalker::Spikewalker>("Spikewalker"),
+        mobs::mob_builder::MobKind::of::<mobs::titanjaw::Titanjaw>("Titanjaw"),
+        mobs::mob_builder::MobKind::of::<mobs::kagi_tachikiri::KagiTachikiri>("Kagi-Tachikiri"),
+        mobs::mob_builder::MobKind::of::<mobs::chikyuoebi::Chikyuoebi>("Chikyuoebi"),
+        mobs::mob_builder::MobKind::of::<mobs::octoliar::Octoliar>("Octoliar"),
+        mobs::mob_builder::MobKind::of::<mobs::stingerhead::Stingerhead>("Stingerhead"),
+        mobs::mob_builder::MobKind::of::<mobs::swarmhoarder::Swarmhoarder>("Swarmhoarder"),
+        mobs::mob_builder::MobKind::of::<mobs::spore_manta::SporeManta>("Spore Manta"),
+        mobs::mob_builder::MobKind::of::<mobs::virinsipede::Virinsipede>("Virinsipede"),
+        mobs::mob_builder::MobKind::of::<mobs::shiratsubi::Shiratsubi>("Shiratsubi"),
+        mobs::mob_builder::MobKind::of::<mobs::abyssal_snail::AbyssalSnail>("Abyssal Snail"),
+        mobs::mob_builder::MobKind::of::<mobs::ashimite::Ashimite>("Ashimite"),
+        mobs::mob_builder::MobKind::of::<mobs::ikonia::Ikonia>("Ikonia"),
+        mobs::mob_builder::MobKind::of::<mobs::demonfish::Demonfish>("Demonfish"),
+        mobs::mob_builder::MobKind::of::<mobs::edusan::Edusan>("Edusan"),
+        mobs::mob_builder::MobKind::of::<mobs::hisomukuro::Hisomukuro>("Hisomukuro"),
+    ]
+}
+
+/// Returns the mob kind called `name`, matched case-insensitively against the display name
+/// and with spaces or hyphens interchangeable.
+#[must_use]
+pub(crate) fn mob_kind(name: &str) -> Option<mobs::mob_builder::MobKind> {
+    let wanted = normalise(name);
+    mob_kinds()
+        .into_iter()
+        .find(|kind| normalise(kind.name) == wanted)
+}
+
+/// Folds a mob name to a form that ignores case, spaces and hyphens.
+fn normalise(name: &str) -> String {
+    name.chars()
+        .filter(|c| *c != ' ' && *c != '-')
+        .flat_map(char::to_lowercase)
+        .collect()
+}
 
 /// Returns the layer whose world is called `name`, if any.
 pub(crate) fn layer_for_world(name: &str) -> Option<Layer> {
@@ -195,73 +295,7 @@ impl MineInAbyss {
     fn mobs() {
         let started = Instant::now();
 
-        let mobs: [fn() -> EntityType; 65] = [
-            mobs::beniguma::Beniguma::base,
-            mobs::cyatoria::Cyatoria::base,
-            mobs::small_hammerbeak::SmallHammerbeak::base,
-            mobs::giant_hammerbeak::GiantHammerbeak::base,
-            mobs::splitjaw::Splitjaw::base,
-            mobs::woodcrier::Woodcrier::base,
-            mobs::man_toyer::ManToyer::base,
-            mobs::silkfang::Silkfang::base,
-            mobs::spittleshrub::Spittleshrub::base,
-            mobs::vinebinder::Vinebinder::base,
-            mobs::vineblaster::Vineblaster::base,
-            mobs::vinepoofer::Vinepoofer::base,
-            mobs::fuwagi::Fuwagi::base,
-            mobs::okibo::Okibo::base,
-            mobs::spiralsquid::Spiralsquid::base,
-            mobs::chimokami::Chimokami::base,
-            mobs::corpse_weeper::CorpseWeeper::base,
-            mobs::dosetori::Dosetori::base,
-            mobs::ottobas::Ottobas::base,
-            mobs::tesuchi::Tesuchi::base,
-            mobs::hisoishi::Hisoishi::base,
-            mobs::rockwalker::Rockwalker::base,
-            mobs::rohana::Rohana::base,
-            mobs::stinger::Stinger::base,
-            mobs::inbyo::Inbyo::base,
-            mobs::billabonk::Billabonk::base,
-            mobs::neritantan::Neritantan::base,
-            mobs::ikenosuke::Ikenosuke::base,
-            mobs::daikonchu::Daikonchu::base,
-            mobs::rinsipede::Rinsipede::base,
-            mobs::buroguro::Buroguro::base,
-            mobs::madokajack::Madokajack::base,
-            mobs::squidfly::Squidfly::base,
-            mobs::himushi::Himushi::base,
-            mobs::yomotsubi::Yomotsubi::base,
-            mobs::kakatsumuri::Kakatsumuri::base,
-            mobs::sakuranbo::Sakuranbo::base,
-            mobs::hashofu::Hashofu::base,
-            mobs::onitsuchi::Onitsuchi::base,
-            mobs::horncrier::Horncrier::base,
-            mobs::kuongatari::Kuongatari::base,
-            mobs::orb_piercer::OrbPiercer::base,
-            mobs::swarmshocker::Swarmshocker::base,
-            mobs::tachikatana::Tachikatana::base,
-            mobs::uibuta::Uibuta::base,
-            mobs::shroombear::Shroombear::base,
-            mobs::hagamizukin::Hagamizukin::base,
-            mobs::kazura::Kazura::base,
-            mobs::makihige::Makihige::base,
-            mobs::spikewalker::Spikewalker::base,
-            mobs::titanjaw::Titanjaw::base,
-            mobs::kagi_tachikiri::KagiTachikiri::base,
-            mobs::chikyuoebi::Chikyuoebi::base,
-            mobs::octoliar::Octoliar::base,
-            mobs::stingerhead::Stingerhead::base,
-            mobs::swarmhoarder::Swarmhoarder::base,
-            mobs::spore_manta::SporeManta::base,
-            mobs::virinsipede::Virinsipede::base,
-            mobs::shiratsubi::Shiratsubi::base,
-            mobs::abyssal_snail::AbyssalSnail::base,
-            mobs::ashimite::Ashimite::base,
-            mobs::ikonia::Ikonia::base,
-            mobs::demonfish::Demonfish::base,
-            mobs::edusan::Edusan::base,
-            mobs::hisomukuro::Hisomukuro::base,
-        ];
+        let mobs = mob_kinds();
 
         info!(
             "Registered {} custom mob(s) in {:?}",

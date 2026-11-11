@@ -25,22 +25,72 @@ mod commands {
 /// and read back; `beniguma` is the worked example.
 #[expect(dead_code, reason = "no command or handler spawns a mob kind yet")]
 mod mobs {
+    pub mod abyssal_snail;
+    pub mod ashimite;
     pub mod beniguma;
+    pub mod billabonk;
+    pub mod buroguro;
+    pub mod chikyuoebi;
+    pub mod chimokami;
+    pub mod corpse_weeper;
     pub mod cyatoria;
+    pub mod daikonchu;
+    pub mod demonfish;
+    pub mod dosetori;
+    pub mod edusan;
     pub mod fuwagi;
     pub mod giant_hammerbeak;
+    pub mod hagamizukin;
+    pub mod hashofu;
+    pub mod himushi;
+    pub mod hisoishi;
+    pub mod hisomukuro;
+    pub mod horncrier;
+    pub mod ikenosuke;
+    pub mod ikonia;
+    pub mod inbyo;
+    pub mod kagi_tachikiri;
+    pub mod kakatsumuri;
+    pub mod kazura;
+    pub mod kuongatari;
+    pub mod madokajack;
+    pub mod makihige;
     pub mod man_toyer;
     pub mod mob;
+    pub mod neritantan;
+    pub mod octoliar;
     pub mod okibo;
+    pub mod onitsuchi;
+    pub mod orb_piercer;
+    pub mod ottobas;
+    pub mod rinsipede;
+    pub mod rockwalker;
+    pub mod rohana;
+    pub mod sakuranbo;
+    pub mod shiratsubi;
+    pub mod shroombear;
     pub mod silkfang;
     pub mod small_hammerbeak;
+    pub mod spikewalker;
     pub mod spiralsquid;
     pub mod spittleshrub;
     pub mod splitjaw;
+    pub mod spore_manta;
+    pub mod squidfly;
+    pub mod stinger;
+    pub mod stingerhead;
+    pub mod swarmhoarder;
+    pub mod swarmshocker;
+    pub mod tachikatana;
+    pub mod tesuchi;
+    pub mod titanjaw;
+    pub mod uibuta;
     pub mod vinebinder;
     pub mod vineblaster;
     pub mod vinepoofer;
+    pub mod virinsipede;
     pub mod woodcrier;
+    pub mod yomotsubi;
 }
 
 /// The layer worlds, and the machinery that keeps them usable.
@@ -134,7 +184,7 @@ impl MineInAbyss {
     fn mobs() {
         let started = Instant::now();
 
-        let mobs: [fn() -> EntityType; 15] = [
+        let mobs: [fn() -> EntityType; 65] = [
             mobs::beniguma::Beniguma::base,
             mobs::cyatoria::Cyatoria::base,
             mobs::small_hammerbeak::SmallHammerbeak::base,
@@ -150,6 +200,56 @@ impl MineInAbyss {
             mobs::fuwagi::Fuwagi::base,
             mobs::okibo::Okibo::base,
             mobs::spiralsquid::Spiralsquid::base,
+            mobs::chimokami::Chimokami::base,
+            mobs::corpse_weeper::CorpseWeeper::base,
+            mobs::dosetori::Dosetori::base,
+            mobs::ottobas::Ottobas::base,
+            mobs::tesuchi::Tesuchi::base,
+            mobs::hisoishi::Hisoishi::base,
+            mobs::rockwalker::Rockwalker::base,
+            mobs::rohana::Rohana::base,
+            mobs::stinger::Stinger::base,
+            mobs::inbyo::Inbyo::base,
+            mobs::billabonk::Billabonk::base,
+            mobs::neritantan::Neritantan::base,
+            mobs::ikenosuke::Ikenosuke::base,
+            mobs::daikonchu::Daikonchu::base,
+            mobs::rinsipede::Rinsipede::base,
+            mobs::buroguro::Buroguro::base,
+            mobs::madokajack::Madokajack::base,
+            mobs::squidfly::Squidfly::base,
+            mobs::himushi::Himushi::base,
+            mobs::yomotsubi::Yomotsubi::base,
+            mobs::kakatsumuri::Kakatsumuri::base,
+            mobs::sakuranbo::Sakuranbo::base,
+            mobs::hashofu::Hashofu::base,
+            mobs::onitsuchi::Onitsuchi::base,
+            mobs::horncrier::Horncrier::base,
+            mobs::kuongatari::Kuongatari::base,
+            mobs::orb_piercer::OrbPiercer::base,
+            mobs::swarmshocker::Swarmshocker::base,
+            mobs::tachikatana::Tachikatana::base,
+            mobs::uibuta::Uibuta::base,
+            mobs::shroombear::Shroombear::base,
+            mobs::hagamizukin::Hagamizukin::base,
+            mobs::kazura::Kazura::base,
+            mobs::makihige::Makihige::base,
+            mobs::spikewalker::Spikewalker::base,
+            mobs::titanjaw::Titanjaw::base,
+            mobs::kagi_tachikiri::KagiTachikiri::base,
+            mobs::chikyuoebi::Chikyuoebi::base,
+            mobs::octoliar::Octoliar::base,
+            mobs::stingerhead::Stingerhead::base,
+            mobs::swarmhoarder::Swarmhoarder::base,
+            mobs::spore_manta::SporeManta::base,
+            mobs::virinsipede::Virinsipede::base,
+            mobs::shiratsubi::Shiratsubi::base,
+            mobs::abyssal_snail::AbyssalSnail::base,
+            mobs::ashimite::Ashimite::base,
+            mobs::ikonia::Ikonia::base,
+            mobs::demonfish::Demonfish::base,
+            mobs::edusan::Edusan::base,
+            mobs::hisomukuro::Hisomukuro::base,
         ];
 
         info!(

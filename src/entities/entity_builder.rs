@@ -15,9 +15,9 @@
 //! hook that customises a spawned entity, and [`spawn`](Self::spawn) itself. What a kind is
 //! for, and where it may appear, is the business of the builder that extends this one:
 //! [`MobBuilder`](crate::entities::mobs::mob_builder::MobBuilder) adds a category and a layer
-//! list, and [`VillagerBuilder`](crate::entities::villagers::villager_builder::VillagerBuilder)
-//! adds a profession and the [`VillagerBuild`](crate::entities::villagers::villager_trait_builder::VillagerBuild)
-//! chain that describes the rest of the trader.
+//! list, and a trader additionally describes itself through
+//! [`VillagerBuilder`](crate::entities::villagers::villager_builder::VillagerBuilder) inside
+//! its own `apply` — there is no second trait for it.
 
 use pumpkin_plugin_api::World;
 use pumpkin_plugin_api::persistent_data::PersistentDataHolder;

@@ -25,16 +25,18 @@ mod commands {
 /// [`EntityBuilder`] trait, where that marker is written and read back.
 ///
 /// What an entity *is* and where it may appear are then each builder's own business.
-/// `mobs::mob_builder` adds a mob's [`MobBuilder`] with its [`Category`] and its layers, and
-/// `villagers::villager_builder` adds a villager's [`VillagerBuilder`] with its profession.
-/// Mobs are filed one folder per [`Category`], and `mobs::docile::beniguma` is the worked
-/// example; `villagers::boy` is the villager one.
+/// `mobs::mob_builder` adds a mob's [`MobBuilder`] with its [`MobCategory`] and its layers,
+/// while a villager has no trait of its own: it describes itself through
+/// `villagers::villager_builder`'s `VillagerBuilder` inside the same `apply`. Mobs are filed
+/// one folder per [`MobCategory`], and `mobs::docile::beniguma` is the worked example;
+/// `villagers::boy` is the villager one.
 mod entities {
     pub(crate) mod entity_builder;
 
     /// Mobs, the creatures of the Abyss.
     pub(crate) mod mobs {
         pub(crate) mod mob_builder;
+        pub(crate) mod mob_category;
 
         /// Aerial mob kinds.
         pub(crate) mod aerial {
@@ -134,7 +136,6 @@ mod entities {
     pub(crate) mod villagers {
         pub(crate) mod boy;
         pub(crate) mod villager_builder;
-        pub(crate) mod villager_trait_builder;
     }
 }
 
@@ -235,8 +236,8 @@ pub const LAYERS: [Layer; 8] = Layer::ALL;
 ///
 /// Villagers are **not** listed here. They share the identity marker but not the question a
 /// mob catalogue answers — where a layer's wild life comes from — so a trader is placed on
-/// the map rather than drawn by the creature-spawn rule, and the villager kinds live under
-/// `entities::villagers`, each claiming its number from `villager_builder::ids`.
+/// the map rather than drawn by the creature-spawn rule, and `entities::villagers::boy` is
+/// simply spawned where its shop stands.
 ///
 /// A function rather than a `const`: `MobKind::of` calls trait methods, which are not
 /// `const`, so the catalogue is built once at first use.
@@ -455,32 +456,6 @@ pub fn mob_kinds() -> [entities::mobs::mob_builder::MobKind; 65] {
 pub(crate) fn mob_kind(name: &str) -> Option<entities::mobs::mob_builder::MobKind> {
     let wanted = normalise(name);
     mob_kinds()
-        .into_iter()
-        .find(|kind| normalise(kind.name) == wanted)
-}
-
-/// Every villager kind the plugin defines.
-///
-/// The trading counterpart of [`mob_kinds`](crate::mob_kinds), and the same shape: a
-/// `VillagerKind` per trader, filled from the kind's own trait methods. A villager's number
-/// is claimed from the shared marker space, so the ids here must not repeat any in
-/// `mob_kinds` — mobs hold `1`–`65`, and traders start above them.
-#[expect(dead_code, reason = "the lookup returns with the caller that needs it")]
-#[must_use]
-pub(crate) fn villager_kinds() -> [entities::villagers::villager_builder::VillagerKind; 1] {
-    [entities::villagers::villager_builder::VillagerKind::of::<
-        entities::villagers::boy::Boy,
-    >("Boy, Lord of Currency")]
-}
-
-/// Returns the villager kind called `name`, matched the same way [`mob_kind`] matches.
-#[expect(dead_code, reason = "the lookup returns with the caller that needs it")]
-#[must_use]
-pub(crate) fn villager_kind(
-    name: &str,
-) -> Option<entities::villagers::villager_builder::VillagerKind> {
-    let wanted = normalise(name);
-    villager_kinds()
         .into_iter()
         .find(|kind| normalise(kind.name) == wanted)
 }

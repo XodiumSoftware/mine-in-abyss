@@ -1,127 +1,116 @@
-//! The trait a custom villager implements.
+//! The chainable [`VillagerBuilder`] a trader kind describes itself with.
 //!
-//! A villager is a vanilla entity wearing an identity, exactly as
-//! [`EntityBuilder`](crate::entities::entity_builder::EntityBuilder) describes: the base type
-//! (`EntityType::Villager` for every kind), the name, the identity byte and the spawn path all
-//! come from there. What this trait adds is what makes a villager a *trader*: a profession,
-//! and — once the host can be told about them — the trades it offers.
+//! The same idea as [`ItemBuilder`](crate::items::item_builder::ItemBuilder): `Villager`'s
+//! setters return nothing, so they cannot be chained directly, and a small builder turns the
+//! whole description of a trader into one expression. Unlike the item builder this one never
+//! writes an identity marker — [`EntityBuilder::spawn`](crate::entities::entity_builder::EntityBuilder::spawn)
+//! stamps the entity after `apply` returns — and it borrows the [`Villager`] rather than owning
+//! it, because `Villager<'_>` is a borrowed wrapper around the spawned mob.
+//!
+//! It is deliberately small: `villager-data` carries only a profession, a level and an
+//! experience count, so the chain is short today. It exists to keep the shape of a kind in one
+//! place, the way [`ItemBuilder`](crate::items::item_builder::ItemBuilder) does for a stack,
+//! and to give trades somewhere to go once the host grows a setter for them.
+//!
+//! There is deliberately no villager trait. A kind is a plain [`EntityBuilder`] whose
+//! `apply` opens this builder itself, exactly as `Orthcoin::stack` is a constructor rather than
+//! an [`ItemBuilder`](crate::items::item_builder::ItemBuilder) impl: nothing is generic over
+//! villager kinds — there is no catalogue to erase them into — so a trait would add an import
+//! and an indirection without giving a caller anything.
 //!
 //! # Why a villager is not a mob
 //!
-//! A villager is not a creature of the Abyss: it stands behind a counter on the map, it is
-//! not something a layer spawns, and
-//! [`Category`](crate::entities::mobs::mob_builder::Category) answers a question nobody asks
-//! of a shopkeeper. So it is its own builder rather than a mob kind with an odd category, and
-//! [`CreatureSpawn`](crate::events::creature_spawn) refuses to put one where a natural spawn
-//! would.
-//!
-//! # Implementing one
-//!
-//! A kind implements both traits, and writes each answer once. [`EntityBuilder`] supplies the
-//! base type, which is always [`EntityType::Villager`](pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType),
-//! the id it stores and the name it shows; [`VillagerBuilder`] supplies the profession and
-//! [`describe`](VillagerBuilder::describe), which finishes the trader through
-//! [`VillagerBuild`]. [`EntityBuilder::spawn`] is inherited rather than reimplemented, so a
-//! trader is placed by the same code as every other custom entity.
-//!
-//! # Trades
-//!
-//! The offers behind a villager cannot be written yet. The plugin API reads and writes a
-//! villager's profession, level and experience, but has no call that sets the trades, and the
-//! `TradeSelect`/`VillagerAcquireTrade` events carry only an index, never the offer. A kind
-//! therefore leaves its trades out of [`describe`](VillagerBuilder::describe) and states only
-//! the shape of the trader; the table is added there, not invented elsewhere, once the host
-//! grows a setter.
+//! A villager is not a creature of the Abyss: it stands behind a counter on the map, it is not
+//! something a layer spawns, and
+//! [`MobCategory`](crate::entities::mobs::mob_category::MobCategory) answers a question nobody asks of
+//! a shopkeeper. So it is described by this builder rather than by a mob kind with an odd
+//! category, and [`CreatureSpawn`](crate::events::creature_spawn) refuses to put one where a
+//! natural spawn would.
 
 use pumpkin_plugin_api::Villager;
 use pumpkin_plugin_api::VillagerProfession;
-use pumpkin_plugin_api::World;
-use pumpkin_plugin_api::world::{Entity, LivingEntity};
 
-use crate::entities::entity_builder::EntityBuilder;
-use crate::entities::villagers::villager_trait_builder::VillagerBuild;
-
-/// A kind of trader the plugin defines on top of a vanilla villager.
+/// A trader's data, built one property at a time, then written to the villager.
 ///
-/// Implemented once per villager kind, alongside [`EntityBuilder`], so the id, the name and
-/// the marker stay in the shared trait while the profession and the rest of the trader stay
-/// here.
-pub(crate) trait VillagerBuilder: EntityBuilder {
-    /// The profession this trader wears.
-    ///
-    /// A real vanilla profession rather than [`VillagerProfession::None`], because the
-    /// profession is the only thing about a villager the host renders meaningfully: `None`
-    /// has no work sound, no level badge and no trades at all, so a trader wearing it looks
-    /// like a villager that has not found a job.
-    fn profession() -> VillagerProfession;
-
-    /// Finishes this trader, starting from the [`VillagerBuild`] the spawn path has already
-    /// opened with the kind's [`profession`](Self::profession).
-    ///
-    /// Runs inside [`EntityBuilder::spawn`] on a handle already confirmed to be a villager, so
-    /// a kind does not have to check the type itself. A kind states its level and experience
-    /// here — and one day its trades — and hands the build back so the caller can finish it:
-    ///
-    /// ```ignore
-    /// fn describe(build: VillagerBuild<'_>) -> VillagerBuild<'_> {
-    ///     build.level(1).experience(0)
-    /// }
-    /// ```
-    ///
-    /// The default changes nothing, leaving the villager as the build was opened: level `1`
-    /// and no experience, which is a trader that has never traded.
-    fn describe(build: VillagerBuild<'_>) -> VillagerBuild<'_> {
-        build
-    }
+/// ```ignore
+/// VillagerBuilder::of(&villager, VillagerProfession::Librarian)
+///     .level(1)
+///     .experience(0)
+///     .build();
+/// ```
+///
+/// The profession is a parameter of [`of`](Self::of) rather than a chain method, for the same
+/// reason [`ItemBuilder::of`](crate::items::item_builder::ItemBuilder::of) takes the id: a
+/// villager without one renders as an unemployed villager, so a kind cannot accidentally
+/// produce a trader that has not chosen a job. A real profession rather than
+/// [`VillagerProfession::None`] is the point: `None` has no work sound, no level badge and no
+/// trades at all, so it looks like a villager that has not found a job.
+///
+/// The chain records intent and [`build`](Self::build) is the only thing that touches the
+/// villager, mirroring [`ItemBuilder::build`](crate::items::item_builder::ItemBuilder::build):
+/// a later `level` overrides an earlier one, exactly as two direct calls would. A kind needing
+/// a setter this type has not grown yet reaches the live villager through
+/// [`apply`](Self::apply).
+#[derive(Clone, Copy)]
+pub(crate) struct VillagerBuilder<'a> {
+    villager: &'a Villager<'a>,
+    profession: VillagerProfession,
+    level: u8,
+    experience: u32,
 }
 
-/// Turns a spawned entity into the trader `T`.
-///
-/// Called from a kind's [`EntityBuilder::apply`], which is where the shared spawn path hands
-/// over the spawned entity. Kept here so every villager kind converts the entity, opens the
-/// build and finishes it the same way, and so that is never forgotten.
-pub(crate) fn prepare<T: VillagerBuilder>(entity: &LivingEntity) {
-    let Some(villager) = Villager::from_living(entity) else {
-        return;
-    };
-
-    T::describe(VillagerBuild::of(&villager, T::profession())).build();
-}
-
-/// One entry of the villager catalogue: everything about a trader that can be read without an
-/// instance, plus the function that spawns it.
-///
-/// The same erasure [`MobKind`](crate::entities::mobs::mob_builder::MobKind) performs, for the
-/// same reason: a kind's associated functions cannot be called through a trait object, so the
-/// catalogue spells them out once and [`VillagerKind::of`] fills an entry from that kind's own
-/// trait methods.
-///
-/// It is deliberately smaller than `MobKind`: a trader has no category, and its profession and
-/// base type are set by `EntityBuilder::spawn` on the kind itself, so an entry only has to
-/// carry what a caller reads — the id to check the marker against, the name to report, and
-/// the function to call.
-#[derive(Debug, Clone, Copy)]
-pub(crate) struct VillagerKind {
-    /// The trader's stable identifier, from [`EntityBuilder::id`].
-    pub id: u8,
-    /// The name shown above the trader, from [`EntityBuilder::name`].
-    pub name: &'static str,
-    /// Spawns the trader, from [`EntityBuilder::spawn`].
-    pub spawn: fn(&World, (f64, f64, f64)) -> Entity,
-}
-
-impl VillagerKind {
-    /// Builds the catalogue entry for one trader.
+impl<'a> VillagerBuilder<'a> {
+    /// Starts a trader description for `villager`, claiming `profession`.
     ///
-    /// `label` is the trader's display text, passed separately for the same reason
-    /// [`MobKind::of`](crate::entities::mobs::mob_builder::MobKind::of) takes one:
-    /// [`EntityBuilder::name`] returns a [`TextComponent`](pumpkin_plugin_api::text::TextComponent)
-    /// that cannot be read back as a string.
-    pub(crate) fn of<T: VillagerBuilder>(label: &'static str) -> Self {
+    /// Nothing is written here: [`build`](Self::build) applies every property at once, so the
+    /// villager is only touched once the kind has said everything it wants to say.
+    ///
+    /// The level starts at `1` and the experience at `0`, matching what
+    /// [`Villager::get_level`] reports for a villager that has never traded, so a kind that
+    /// omits either gets the vanilla starting trader rather than a level `0` one.
+    pub(crate) fn of(villager: &'a Villager<'a>, profession: VillagerProfession) -> Self {
         Self {
-            id: T::id(),
-            name: label,
-            spawn: <T as EntityBuilder>::spawn,
+            villager,
+            profession,
+            level: 1,
+            experience: 0,
         }
+    }
+
+    /// Sets the trading level, `1`–`5`.
+    #[must_use]
+    pub(crate) fn level(mut self, level: u8) -> Self {
+        self.level = level;
+        self
+    }
+
+    /// Sets the trading experience the trader starts with.
+    #[must_use]
+    pub(crate) fn experience(mut self, experience: u32) -> Self {
+        self.experience = experience;
+        self
+    }
+
+    /// Runs `extend` over the live villager, for anything the chain has not grown a method for.
+    ///
+    /// The escape hatch, matching
+    /// [`ItemBuilder::apply`](crate::items::item_builder::ItemBuilder::apply): a kind that needs
+    /// a setter this type has not grown calls it here instead of reaching past the builder.
+    /// Unlike the chain methods it writes **immediately** and in chain order, so a later
+    /// [`build`](Self::build) can still override what it set.
+    #[must_use]
+    pub(crate) fn apply(self, extend: impl FnOnce(&Villager<'_>)) -> Self {
+        extend(self.villager);
+        self
+    }
+
+    /// Writes the profession, level and experience, finishing the trader.
+    ///
+    /// The identity marker is **not** written here — the shared spawn path stamps the entity
+    /// once `apply` has returned — so this only has to set what a villager is.
+    pub(crate) fn build(self) {
+        self.villager.set_profession(self.profession);
+        self.villager.set_level(self.level);
+        self.villager.set_experience(self.experience);
     }
 }

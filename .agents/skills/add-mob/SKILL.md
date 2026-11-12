@@ -15,10 +15,11 @@ For items, use the `add-item` skill instead — same idea, different trait and m
 **Discover, don't assume.** Read these before writing anything:
 
 1. `src/entities/entity_builder.rs` — the shared `EntityBuilder` trait, `mark`/`id_of`.
-2. `src/entities/mobs/mob_builder.rs` — `MobBuilder` (adds `layers()`/`category()`), `Category`, `MobKind`.
-3. `src/entities/mobs/docile/beniguma.rs` — the worked example; copy its structure.
-4. The `mod entities` block **and** `mob_kinds()` in `src/lib.rs`.
-5. `AGENTS.md` § Custom mobs for the catalogue and the current highest id.
+2. `src/entities/mobs/mob_builder.rs` — `MobBuilder` (adds `layers()`/`category()`), `MobKind`.
+3. `src/entities/mobs/mob_category.rs` — `MobCategory`.
+4. `src/entities/mobs/docile/beniguma.rs` — the worked example; copy its structure.
+5. The `mod entities` block **and** `mob_kinds()` in `src/lib.rs`.
+6. `AGENTS.md` § Custom mobs for the catalogue and the current highest id.
 
 ## Step 0 — Pick the five values
 
@@ -27,7 +28,7 @@ For items, use the `add-item` skill instead — same idea, different trait and m
 | `base()`     | A vanilla `EntityType` variant. Says what it looks like and how the host paths it.            |
 | `id()`       | The **next free number**, never a used one again. Check the catalogue in `AGENTS.md`.         |
 | `name()`     | `TextComponent::text(..).color_rgb(rgb(..))` — exact RGB, not a `NamedColor`.                 |
-| `category()` | One of `Passive` (default), `Docile`, `Aerial`, `Aquatic`, `Hostile`.                         |
+| `category()` | One of `Passive` (default), `Docile`, `Aerial`, `Aquatic`, `Hostile` (`MobCategory`).         |
 | `layers()`   | Which layers it may spawn in. **Empty by default — a kind that says nothing spawns nowhere.** |
 
 **Ids are permanent once shipped.** They are what tells two kinds on the same base type apart,
@@ -36,8 +37,9 @@ nothing above `127`.
 
 ## Step 1 — File it in its category's folder
 
-`src/entities/mobs/` holds `mob_builder.rs` plus one folder per `Category`: `aerial`, `aquatic`,
-`docile`, `hostile`, `passive`. A kind lives in the folder matching its **own `category()`**.
+`src/entities/mobs/` holds `mob_builder.rs`, `mob_category.rs` plus one folder per `MobCategory`:
+`aerial`, `aquatic`, `docile`, `hostile`, `passive`. A kind lives in the folder matching its
+**own `category()`**.
 
 The folder is organisation only — nothing reads it at runtime — so a kind whose category
 changes must be **moved by hand** to keep the two agreeing.
@@ -58,7 +60,8 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
 use pumpkin_plugin_api::world::LivingEntity;
 
 use crate::entities::entity_builder::EntityBuilder;
-use crate::entities::mobs::mob_builder::{Category, MobBuilder};
+use crate::entities::mobs::mob_builder::MobBuilder;
+use crate::entities::mobs::mob_category::MobCategory;
 use crate::layer::Layer;
 use crate::utils::rgb;
 
@@ -90,8 +93,8 @@ impl MobBuilder for Beniguma {
         &[Layer::First, Layer::Second]
     }
 
-    fn category() -> Category {
-        Category::Docile
+    fn category() -> MobCategory {
+        MobCategory::Docile
     }
 }
 ```

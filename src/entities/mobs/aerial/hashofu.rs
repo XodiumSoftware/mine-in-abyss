@@ -6,7 +6,8 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
 use pumpkin_plugin_api::world::LivingEntity;
 
 use crate::entities::entity_builder::EntityBuilder;
-use crate::entities::mobs::mob_builder::{Category, MobBuilder};
+use crate::entities::mobs::mob_builder::MobBuilder;
+use crate::entities::mobs::mob_category::MobCategory;
 use crate::layer::Layer;
 use crate::utils::rgb;
 
@@ -38,7 +39,7 @@ impl MobBuilder for Hashofu {
         &[Layer::Fourth, Layer::Fifth]
     }
 
-    fn category() -> Category {
-        Category::Aerial
+    fn category() -> MobCategory {
+        MobCategory::Aerial
     }
 }

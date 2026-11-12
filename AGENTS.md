@@ -517,15 +517,23 @@ Abyss: it stands behind a counter on an authored map, it is not something a laye
 the mob one rather than a mob kind with an odd category.
 
 - `villager_builder.rs` — [`VillagerBuilder`](src/entities/villagers/villager_builder.rs)
-  extends `EntityBuilder` with a `profession()` and `apply(&Villager)`. There is no separate
-  layer list: `EntityBuilder` is where an entity states what it is, and a trader has no
-  category to declare.
+  extends `EntityBuilder` with a `profession()` and `describe(VillagerBuild)`. There is no
+  separate layer list: `EntityBuilder` is where an entity states what it is, and a trader has
+  no category to declare.
+- `villager_trait_builder.rs` — [`VillagerBuild`](src/entities/villagers/villager_trait_builder.rs),
+  the chain a trade kind finishes itself with, the same shape as
+  [`ItemBuilder`](src/items/item_builder.rs): `of(&villager, profession)` opens it, `.level(..)`
+  and `.experience(..)` record what the chain wants, `.apply(|villager| ..)` reaches any setter
+  the chain has not grown, and `.build()` — which `villager_builder::prepare` calls — writes
+  the profession, level and experience in one go. It **never** writes the identity marker;
+  `EntityBuilder::spawn` stamps the entity after `apply` returns. It borrows the `Villager`
+  rather than owning it, because `Villager<'_>` is a borrowed wrapper.
 - A kind implements **both** traits and writes each answer once. `EntityBuilder` supplies
   `base()` (always `EntityType::Villager`), `id()` (a plain byte, like every mob) and
-  `name()`; `VillagerBuilder` supplies the profession and `apply(&Villager)`. The kind's
-  `EntityBuilder::apply` forwards to `villager_builder::prepare::<Self>`, which sets the
-  profession and hands over the villager handle. `EntityBuilder::spawn` is inherited, so a
-  trader is placed by the same code as every other custom entity.
+  `name()`; `VillagerBuilder` supplies the profession and `describe`. The kind's
+  `EntityBuilder::apply` forwards to `villager_builder::prepare::<Self>`, which opens the build
+  with the kind's profession and finishes it. `EntityBuilder::spawn` is inherited, so a trader
+  is placed by the same code as every other custom entity.
 - `VillagerKind` is the catalogue entry for one trader — id, name and the spawn fn pointer,
   the same erasure `MobKind` performs. It is smaller than `MobKind` because a trader has no
   category and its profession is applied by the spawn path, so an entry only carries what a
@@ -537,9 +545,9 @@ the mob one rather than a mob kind with an odd category.
   base is `EntityType::Villager`, so a layer's wild spawns can never produce a shopkeeper.
 - **Trades cannot be authored yet.** The API reads and writes profession, level and
   experience, but has no call that sets the offers, and `TradeSelect`/`VillagerAcquireTrade`
-  carry only an index. A kind therefore leaves its trade table out of `apply` and states only
-  the shape of the trader. The wiki's Orth trade table is the source for those offers once a
-  setter exists — do not invent a second table elsewhere.
+  carry only an index. A kind therefore leaves its trade table out of `describe` and states
+  only the shape of the trader. The wiki's Orth trade table is the source for those offers
+  once a setter exists — do not invent a second table elsewhere.
 - **Nothing places a trader yet.** `/abyss summon` used to reach one, looked up after the
   mobs and placed wherever the sender stood; with that subcommand gone the villager tree
   carries `#[expect(dead_code)]`. A trader has no layer list to refuse, because where a shop
@@ -703,8 +711,9 @@ src/
 │   │   ├── hostile/
 │   │   └── passive/
 │   └── villagers/      # the traders of Orth
-│       ├── villager_builder.rs # `VillagerBuilder`, `VillagerKind`
-│       └── boy.rs              # `Boy` — the worked example, awaiting a caller
+│       ├── villager_builder.rs       # `VillagerBuilder`, `VillagerKind`
+│       ├── villager_trait_builder.rs # `VillagerBuild` — the chainable trader builder
+│       └── boy.rs                    # `Boy` — the worked example, awaiting a caller
 ├── items/              # declared as `mod items` in `lib.rs`: the plugin's own items
 │   ├── item_builder.rs # `ItemBuilder` — the chainable stack builder; no trait
 │   └── orthcoin.rs     # `Orthcoin` — the worked example, awaiting a caller

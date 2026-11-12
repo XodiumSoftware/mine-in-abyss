@@ -8,14 +8,13 @@
 //! The wiki's trade table is deliberately **not** written here. The plugin API can read and
 //! write a villager's profession, level and experience, but it has no call that sets the
 //! offers behind them, so a table in this file would be data nothing could deliver. The
-//! trades are the part of a trader [`apply`](VillagerBuilder::apply) will grow once the host
-//! can be told about them.
+//! trades are the part of a trader [`describe`](VillagerBuilder::describe) will grow once the
+//! host can be told about them.
 //!
 //! What it does set is the shape of the trader: a librarian, so its work sound is right, a
 //! name over its head so a player can tell it from a village villager, and a first trade
 //! level so one is available the moment it is placed.
 
-use pumpkin_plugin_api::Villager;
 use pumpkin_plugin_api::VillagerProfession;
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
@@ -23,6 +22,7 @@ use pumpkin_plugin_api::world::LivingEntity;
 
 use crate::entities::entity_builder::EntityBuilder;
 use crate::entities::villagers::villager_builder::{VillagerBuilder, prepare};
+use crate::entities::villagers::villager_trait_builder::VillagerBuild;
 use crate::utils::rgb;
 
 /// Boy, Lord of Currency: the relic buyer of Orth, built on a librarian.
@@ -52,8 +52,7 @@ impl VillagerBuilder for Boy {
         VillagerProfession::Librarian
     }
 
-    fn apply(villager: &Villager<'_>) {
-        villager.set_level(1);
-        villager.set_experience(0);
+    fn describe(build: VillagerBuild<'_>) -> VillagerBuild<'_> {
+        build.level(1).experience(0)
     }
 }

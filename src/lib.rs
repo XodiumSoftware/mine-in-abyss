@@ -134,6 +134,7 @@ mod entities {
     pub(crate) mod villagers {
         pub(crate) mod boy;
         pub(crate) mod villager_builder;
+        pub(crate) mod villager_trait_builder;
     }
 }
 

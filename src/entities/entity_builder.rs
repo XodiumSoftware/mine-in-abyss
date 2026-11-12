@@ -16,7 +16,8 @@
 //! for, and where it may appear, is the business of the builder that extends this one:
 //! [`MobBuilder`](crate::entities::mobs::mob_builder::MobBuilder) adds a category and a layer
 //! list, and [`VillagerBuilder`](crate::entities::villagers::villager_builder::VillagerBuilder)
-//! adds a profession.
+//! adds a profession and the [`VillagerBuild`](crate::entities::villagers::villager_trait_builder::VillagerBuild)
+//! chain that describes the rest of the trader.
 
 use pumpkin_plugin_api::World;
 use pumpkin_plugin_api::persistent_data::PersistentDataHolder;

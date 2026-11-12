@@ -20,17 +20,18 @@
 //! A kind implements both traits, and writes each answer once. [`EntityBuilder`] supplies the
 //! base type, which is always [`EntityType::Villager`](pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType),
 //! the id it stores and the name it shows; [`VillagerBuilder`] supplies the profession and
-//! [`apply`](VillagerBuilder::apply). [`EntityBuilder::spawn`] is inherited rather than
-//! reimplemented, so a trader is placed by the same code as every other custom entity.
+//! [`describe`](VillagerBuilder::describe), which finishes the trader through
+//! [`VillagerBuild`]. [`EntityBuilder::spawn`] is inherited rather than reimplemented, so a
+//! trader is placed by the same code as every other custom entity.
 //!
 //! # Trades
 //!
 //! The offers behind a villager cannot be written yet. The plugin API reads and writes a
 //! villager's profession, level and experience, but has no call that sets the trades, and the
 //! `TradeSelect`/`VillagerAcquireTrade` events carry only an index, never the offer. A kind
-//! therefore leaves its trades out of [`apply`](VillagerBuilder::apply) and states only the
-//! shape of the trader; the table is added here, not invented elsewhere, once the host grows
-//! a setter.
+//! therefore leaves its trades out of [`describe`](VillagerBuilder::describe) and states only
+//! the shape of the trader; the table is added there, not invented elsewhere, once the host
+//! grows a setter.
 
 use pumpkin_plugin_api::Villager;
 use pumpkin_plugin_api::VillagerProfession;
@@ -38,11 +39,13 @@ use pumpkin_plugin_api::World;
 use pumpkin_plugin_api::world::{Entity, LivingEntity};
 
 use crate::entities::entity_builder::EntityBuilder;
+use crate::entities::villagers::villager_trait_builder::VillagerBuild;
 
 /// A kind of trader the plugin defines on top of a vanilla villager.
 ///
 /// Implemented once per villager kind, alongside [`EntityBuilder`], so the id, the name and
-/// the marker stay in the shared trait while the profession and the trades stay here.
+/// the marker stay in the shared trait while the profession and the rest of the trader stay
+/// here.
 pub(crate) trait VillagerBuilder: EntityBuilder {
     /// The profession this trader wears.
     ///
@@ -52,27 +55,37 @@ pub(crate) trait VillagerBuilder: EntityBuilder {
     /// like a villager that has not found a job.
     fn profession() -> VillagerProfession;
 
-    /// Makes `villager` into this kind of trader.
+    /// Finishes this trader, starting from the [`VillagerBuild`] the spawn path has already
+    /// opened with the kind's [`profession`](Self::profession).
     ///
     /// Runs inside [`EntityBuilder::spawn`] on a handle already confirmed to be a villager, so
-    /// a kind does not have to check the type itself. The profession is set before this runs,
-    /// from [`profession`](Self::profession); everything else — the level it starts at, its
-    /// experience, and one day its trades — is set here.
-    fn apply(_villager: &Villager<'_>) {}
+    /// a kind does not have to check the type itself. A kind states its level and experience
+    /// here — and one day its trades — and hands the build back so the caller can finish it:
+    ///
+    /// ```ignore
+    /// fn describe(build: VillagerBuild<'_>) -> VillagerBuild<'_> {
+    ///     build.level(1).experience(0)
+    /// }
+    /// ```
+    ///
+    /// The default changes nothing, leaving the villager as the build was opened: level `1`
+    /// and no experience, which is a trader that has never traded.
+    fn describe(build: VillagerBuild<'_>) -> VillagerBuild<'_> {
+        build
+    }
 }
 
 /// Turns a spawned entity into the trader `T`.
 ///
 /// Called from a kind's [`EntityBuilder::apply`], which is where the shared spawn path hands
-/// over the spawned entity. Kept here so every villager kind converts the entity and sets the
-/// profession the same way, and so that is never forgotten.
+/// over the spawned entity. Kept here so every villager kind converts the entity, opens the
+/// build and finishes it the same way, and so that is never forgotten.
 pub(crate) fn prepare<T: VillagerBuilder>(entity: &LivingEntity) {
     let Some(villager) = Villager::from_living(entity) else {
         return;
     };
 
-    villager.set_profession(T::profession());
-    <T as VillagerBuilder>::apply(&villager);
+    T::describe(VillagerBuild::of(&villager, T::profession())).build();
 }
 
 /// One entry of the villager catalogue: everything about a trader that can be read without an

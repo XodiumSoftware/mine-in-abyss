@@ -123,6 +123,14 @@ mod entities {
     }
 
     /// Villagers, the traders of Orth.
+    ///
+    /// Kept whole while `/abyss summon` is gone: the kinds are authored and their numbers
+    /// reserved, but nothing places one until a trader has a caller again — a map marker, or
+    /// a command of its own.
+    #[expect(
+        dead_code,
+        reason = "no caller places a trader until the summon subcommand returns"
+    )]
     pub(crate) mod villagers {
         pub(crate) mod boy;
         pub(crate) mod villager_builder;
@@ -136,6 +144,14 @@ mod entities {
 /// persistent data. `item_builder` is the chainable builder and where that marker is written
 /// and read back; `orthcoin` is the worked example, an inherent `stack()` rather than a trait
 /// impl — see `item_builder` for why there is no trait.
+///
+/// Nothing creates an item yet. `/abyss item`, which gave one to the sender so the path could
+/// be exercised end to end, has been removed, so the tree is kept whole but unused until a
+/// real source of items — loot tables, crafting, a shop — exists.
+#[expect(
+    dead_code,
+    reason = "no caller creates an item until a real item source exists"
+)]
 mod items {
     pub(crate) mod item_builder;
     pub(crate) mod orthcoin;
@@ -430,6 +446,10 @@ pub fn mob_kinds() -> [entities::mobs::mob_builder::MobKind; 65] {
 
 /// Returns the mob kind called `name`, matched case-insensitively against the display name
 /// and with spaces or hyphens interchangeable.
+///
+/// No command looks a kind up by name while `/abyss summon` is gone, but the catalogue stays
+/// whole: the next caller — a summon subcommand, a spawn-by-name map marker — uses this.
+#[expect(dead_code, reason = "the lookup returns with the caller that needs it")]
 #[must_use]
 pub(crate) fn mob_kind(name: &str) -> Option<entities::mobs::mob_builder::MobKind> {
     let wanted = normalise(name);
@@ -444,6 +464,7 @@ pub(crate) fn mob_kind(name: &str) -> Option<entities::mobs::mob_builder::MobKin
 /// `VillagerKind` per trader, filled from the kind's own trait methods. A villager's number
 /// is claimed from the shared marker space, so the ids here must not repeat any in
 /// `mob_kinds` — mobs hold `1`–`65`, and traders start above them.
+#[expect(dead_code, reason = "the lookup returns with the caller that needs it")]
 #[must_use]
 pub(crate) fn villager_kinds() -> [entities::villagers::villager_builder::VillagerKind; 1] {
     [entities::villagers::villager_builder::VillagerKind::of::<
@@ -452,6 +473,7 @@ pub(crate) fn villager_kinds() -> [entities::villagers::villager_builder::Villag
 }
 
 /// Returns the villager kind called `name`, matched the same way [`mob_kind`] matches.
+#[expect(dead_code, reason = "the lookup returns with the caller that needs it")]
 #[must_use]
 pub(crate) fn villager_kind(
     name: &str,
@@ -462,7 +484,11 @@ pub(crate) fn villager_kind(
         .find(|kind| normalise(kind.name) == wanted)
 }
 
-/// Folds a mob name to a form that ignores case, spaces and hyphens.
+/// Folds a kind name to a form that ignores case, spaces and hyphens.
+#[expect(
+    dead_code,
+    reason = "only the kind lookups use it, and they are dormant"
+)]
 fn normalise(name: &str) -> String {
     name.chars()
         .filter(|c| *c != ' ' && *c != '-')

@@ -7,10 +7,10 @@
 //! ([`Category`]) and where it may appear ([`layers`](MobBuilder::layers)).
 //!
 //! Both of those are answers a spawn rule reads, not gameplay code it runs: the layer list is
-//! what `/abyss summon` refuses to violate and what
-//! [`CreatureSpawn`](crate::events::creature_spawn) consults when it replaces a vanilla
-//! spawn, and the category is what a difficulty tweak or a bestiary entry would read. A
-//! villager, which is a trader rather than a creature of the Abyss, is built on
+//! what [`CreatureSpawn`](crate::events::creature_spawn) consults when it replaces a vanilla
+//! spawn — and what `/abyss summon` refused to violate while it existed — and the category is
+//! what a difficulty tweak or a bestiary entry would read. A villager, which is a trader rather
+//! than a creature of the Abyss, is built on
 //! [`VillagerBuilder`](crate::entities::villagers::villager_builder::VillagerBuilder)
 //! instead.
 

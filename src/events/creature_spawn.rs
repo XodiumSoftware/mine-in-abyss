@@ -6,8 +6,8 @@
 //! place.
 //!
 //! Which kind is decided by [`MobBuilder::layers`](crate::entities::mobs::mob_builder::MobBuilder::layers):
-//! only a kind that lists the layer may appear there, so the same list that guards
-//! `/abyss summon` also decides what lives where. A layer with no eligible kind stays empty,
+//! only a kind that lists the layer may appear there, so the same list that used to guard
+//! `/abyss summon` decides what lives where. A layer with no eligible kind stays empty,
 //! which is the honest answer — nothing was authored to live there yet.
 //!
 //! The replacement is placed at the event's own position and world, so it stands exactly where

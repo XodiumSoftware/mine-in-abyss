@@ -18,17 +18,17 @@ For items, use the `add-item` skill instead — same idea, different trait and m
 2. `src/entities/mobs/mob_builder.rs` — `MobBuilder` (adds `layers()`/`category()`), `Category`, `MobKind`.
 3. `src/entities/mobs/docile/beniguma.rs` — the worked example; copy its structure.
 4. The `mod entities` block **and** `mob_kinds()` in `src/lib.rs`.
-4. `AGENTS.md` § Custom mobs for the catalogue and the current highest id.
+5. `AGENTS.md` § Custom mobs for the catalogue and the current highest id.
 
 ## Step 0 — Pick the five values
 
-| Value | Rule |
-| ----- | ---- |
-| `base()` | A vanilla `EntityType` variant. Says what it looks like and how the host paths it. |
-| `id()` | The **next free number**, never a used one again. Check the catalogue in `AGENTS.md`. |
-| `name()` | `TextComponent::text(..).color_rgb(rgb(..))` — exact RGB, not a `NamedColor`. |
-| `category()` | One of `Passive` (default), `Docile`, `Aerial`, `Aquatic`, `Hostile`. |
-| `layers()` | Which layers it may spawn in. **Empty by default — a kind that says nothing spawns nowhere.** |
+| Value        | Rule                                                                                          |
+| ------------ | --------------------------------------------------------------------------------------------- |
+| `base()`     | A vanilla `EntityType` variant. Says what it looks like and how the host paths it.            |
+| `id()`       | The **next free number**, never a used one again. Check the catalogue in `AGENTS.md`.         |
+| `name()`     | `TextComponent::text(..).color_rgb(rgb(..))` — exact RGB, not a `NamedColor`.                 |
+| `category()` | One of `Passive` (default), `Docile`, `Aerial`, `Aquatic`, `Hostile`.                         |
+| `layers()`   | Which layers it may spawn in. **Empty by default — a kind that says nothing spawns nowhere.** |
 
 **Ids are permanent once shipped.** They are what tells two kinds on the same base type apart,
 so a removed kind's number is not reclaimed. The id must fit in `i8` — `mark` silently writes
@@ -132,8 +132,8 @@ Everything the kind does to the spawned entity goes here — there is no fixed t
 - What the API cannot do: no model/texture/hitbox, no resource pack, no size change, and
   status effects apply to players only. Do not design around them.
 - `layers()` constrains **spawning**, not `spawn()` — an operator may place a mob anywhere
-  deliberately. But `/abyss summon` **does** refuse a layer the kind does not list, so a
-  missing layer reads as a bug to whoever tries it.
+  deliberately. It still decides what `CreatureSpawn` may replace a vanilla spawn with, so a
+  missing layer means the kind never appears naturally.
 - An entity cannot change layers. Nothing carries a mob down when a player descends.
 
 ## Verification
@@ -145,8 +145,9 @@ Then update `AGENTS.md` § Custom mobs: the catalogue table (kind, id, base, cat
 hearts, colour) and the per-category counts on the `src/entities/mobs/` tree line. Add the file to the
 § Project Structure tree.
 
-In game, `/abyss summon <name>` spawns it, refuses a layer it does not list, and logs if the
-marker did not read back — that log line is the only check that the id actually fits `i8`.
-State in the summary that in-game confirmation is pending if you have not run the server.
+In game, a kind appears in a layer whose game rules allow natural spawning, through
+`CreatureSpawn`. There is no summon command at present, so that spawn rule is the only way to
+see one. State in the summary that in-game confirmation is pending if you have not run the
+server.
 
 After finishing, summarize the files changed and ask the user whether to commit.

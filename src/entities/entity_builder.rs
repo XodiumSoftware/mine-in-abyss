@@ -132,6 +132,13 @@ pub(crate) fn mark(entity: &Entity, id: u8) {
 ///
 /// The byte is stored signed, so a value above `127` comes back as `None`: a kind id that
 /// large is more likely a mistake than an intent.
+///
+/// No handler reads an identity while `/abyss summon` is gone, but the marker is still
+/// written on every spawn, so this stays the way to ask a spawned entity what it is.
+#[expect(
+    dead_code,
+    reason = "the reader returns with the handler that needs it"
+)]
 #[must_use]
 pub(crate) fn id_of(entity: &Entity) -> Option<u8> {
     entity

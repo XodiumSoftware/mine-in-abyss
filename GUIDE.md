@@ -204,28 +204,17 @@ and never afflicted by the curse, so they can fly through the void and ceiling f
 
 ## Commands
 
-| Command                       | Permission                    |
-| ----------------------------- | ----------------------------- |
-| `/abyss <layer> [player]`     | `mine_in_abyss:command.abyss` |
-| `/abyss item <item>`          | `mine_in_abyss:command.abyss` |
-| `/abyss summon <mob> [count]` | `mine_in_abyss:command.abyss` |
+| Command                   | Permission                    |
+| ------------------------- | ----------------------------- |
+| `/abyss <layer> [player]` | `mine_in_abyss:command.abyss` |
 
 Alias: `/mia`. Requires permission level 3 (admin) or above.
 
 `<layer>` is `orth`, `first` … `seventh` or `1` … `8`, case-insensitive. The command teleports
 the player straight into the layer, so **no curse strain is added** — unlike a real ascent.
 
-`/abyss item orthcoin` puts an **Orthcoin** in your hand. It exists to test the custom-item
-path end to end — the stack is created, stamped with its identity, and the identity is read
-back off the slot it landed in — and reports whether that round trip worked.
-
-`/abyss summon <mob> [count]` spawns a custom mob at your feet, up to 16 at a time. `<mob>` is
-the display name, and matching is loose: `small hammerbeak`, `Small Hammerbeak` and
-`SmallHammerbeak` all work. It **refuses a mob in a layer it does not list**, so you cannot
-quietly fill a layer with something that was never meant to live there.
-
-A **player** running the command is always the one moved. `[player]` is only used from
-console, where the sender is not a player:
+A **player** running `/abyss` is always the one moved. `[player]` is only used from console,
+where the sender is not a player:
 
 ```text
 /abyss third
@@ -234,6 +223,13 @@ console, where the sender is not a player:
 
 Tab-completion for `<layer>` is currently unavailable: enabling it crashes the current
 Pumpkin build, so it is disabled until the server is fixed.
+
+### Giving a custom item or spawning a custom mob
+
+There is no command for either yet. `/abyss item` and `/abyss summon` existed to exercise the
+custom-item and custom-mob paths end to end and were removed while those paths are rebuilt; the
+items and mob kinds themselves are still in the plugin, and custom mobs still appear in the
+layers through normal spawning.
 
 ## Troubleshooting
 

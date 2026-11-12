@@ -230,8 +230,9 @@ consuming builders: reassign the result (`let t = TextComponent::text(..).color_
 
 **Vanilla mobs never spawn in a layer world.** `CreatureSpawn` cancels a natural spawn in any
 layer world and spawns a kind from [`mob_kinds`](src/lib.rs) whose `layers()` include that
-layer, at the event's own position and world. The list that guards `/abyss summon` therefore
-also decides what lives where — there is no second spawn table.
+layer, at the event's own position and world. The same `layers()` list decides what lives
+where, and is also what `/abyss summon` enforced while it existed — there is no second spawn
+table.
 
 Only reasons in `NATURAL_REASONS` count as natural. A spawner, breeding, a spawn egg or a
 command is left untouched, so this never removes a mob a player or operator asked for. The API
@@ -250,9 +251,9 @@ nothing replaces them. That is the honest result of no kind being authored for t
 it is a gameplay change, not an oversight. Every other layer has candidates (`Orth` 1, `First`
 20, `Second` 21, `Third` 14, `Fourth` 18, `Fifth` 26).
 
-**Two places create a mob**, and nothing else does: this handler by rule, and `/abyss summon`
-when an operator asks. Entities still cannot descend between layers, so a mob spawned here
-lives and dies in the layer it was born in.
+**One place creates a mob now**, and nothing else does: this handler by rule. `/abyss summon`
+used to be the second, for an operator asking, and is removed for now. Entities still cannot
+descend between layers, so a mob spawned here lives and dies in the layer it was born in.
 
 ### Commands
 
@@ -272,12 +273,14 @@ in that array.
 through [`Layer::from_id`], which reads both spellings off the variant so a reordered layer
 cannot leave a stale alias behind. `Layer::id_list` renders the accepted names for the
 error message.
-It also carries `/abyss item <item>` and `/abyss summon <mob> [count]`, which are the callers
-that keep `mod items` and `mod entities` reachable — see the two sections below.
-`/abyss summon` resolves a name against `mob_kinds()` first and then `villager_kinds()`, so a
-trader and a mob live in one namespace; `[count]` is capped at 16.
 A player running it is always the one moved; `[player]` is only consulted from console.
 It teleports straight into the layer, so no curse strain is added — unlike a real ascent.
+
+**The `item` and `summon` subcommands were removed.** They were the only callers that made
+`mod items` and the kind lookups live, so those now carry `#[expect(dead_code)]` and the
+villager tree is dormant. Nothing creates an item or places a custom mob outside
+[`CreatureSpawn`](src/events/creature_spawn.rs) until that changes — see § Custom items and
+§ Custom villagers for what restores them.
 
 Tab-completion for `<layer>` is **disabled**: attaching it makes the Pumpkin host panic on
 the first suggestion request (`block_in_place` from the simulation thread, which has no
@@ -486,8 +489,9 @@ apart — so a new kind takes the next free number and never reuses one.
 lists for each mob, so `name()` returns `TextComponent::text(..).color_rgb(rgb(..))`
 rather than a `NamedColor`, which has only 16 entries and no cyan, brown or light gray.
 
-**`/abyss summon <mob> [count]` is the caller**, so the module carries no
-`#[expect(dead_code)]`. It resolves a name through [`mob_kinds`](src/lib.rs), which builds a
+**`/abyss summon <mob> [count]` used to be the caller**, and is removed for now, so the
+lookup carries `#[expect(dead_code)]`. It resolved a name through [`mob_kinds`](src/lib.rs),
+which builds a
 [`MobKind`](src/entities/mobs/mob_builder.rs) per kind — id, name, base, layers, category and a spawn
 fn pointer — because a kind's associated functions cannot be called through a trait object.
 `MobKind::of::<T>(label)` fills the entry from that kind's own methods, so a kind's values
@@ -536,9 +540,10 @@ the mob one rather than a mob kind with an odd category.
   carry only an index. A kind therefore leaves its trade table out of `apply` and states only
   the shape of the trader. The wiki's Orth trade table is the source for those offers once a
   setter exists — do not invent a second table elsewhere.
-- `/abyss summon <name>` reaches a trader, looked up **after** the mobs and placed wherever
-  the sender stands: a trader has no layer list to refuse, because where a shop stands is a
-  property of the map, not of the kind.
+- **Nothing places a trader yet.** `/abyss summon` used to reach one, looked up after the
+  mobs and placed wherever the sender stood; with that subcommand gone the villager tree
+  carries `#[expect(dead_code)]`. A trader has no layer list to refuse, because where a shop
+  stands is a property of the map, not of the kind.
 
 `Boy` is the worked example: `Boy, Lord of Currency`, a librarian placed in `Orth`,
 built from the wiki's `Golden Bridge` counter.
@@ -549,10 +554,33 @@ Items work exactly like mobs, and for the same reason: `Item` is a **closed enum
 vanilla items with no registration call in the plugin WIT, so a custom item is a vanilla
 item wearing an identity.
 
-- `item_builder.rs` — the [`ItemBuilder`](src/items/item_builder.rs) trait, plus the identity
-  marker. A kind supplies its base `Item`, a stable `id` byte and its visible name, and does
-  everything else in **`ItemBuilder::apply`**: `ItemBuilder::create` makes the stack, sets the
-  name, hands it over, and stamps the identity.
+- `item_builder.rs` — the [`ItemBuilder`](src/items/item_builder.rs) builder struct a kind
+  builds its stack with, and the identity marker. A kind is a **plain constructor**, not a
+  trait impl: `Orthcoin::stack()` returns a finished `ItemStack` — the base `Item`, the stable
+  `id` byte, its name and its lore. The chain ends at `.build()`, so a caller gets a built,
+  stamped stack and never a builder.
+- **`ItemBuilder` is a struct, not a trait, deliberately.** A trait earns its keep only when
+  something is _generic_ over it — a `[fn() -> ItemStack]` catalogue, a `give<T: Builder>`.
+  Nothing is, and items are created by code that already knows the kind, so an inherent
+  `stack()` is directly callable with no import of a trait. It comes back when a generic
+  consumer does; the villager tree's `VillagerBuilder` is the same shape and exists only
+  because a name lookup needs the erasure. The name sits beside
+  [`EntityBuilder`](src/entities/entity_builder.rs), and the struct itself exists because an
+  `ItemStack` cannot chain.
+- **`ItemBuilder` exists because `ItemStack` cannot chain.** The WIT setters return nothing
+  and `ItemStack` is not cloneable, so `ItemBuilder::of(id, base).name(..).lore(..).build()`
+  is how a kind writes its stack as one expression. It adds no capability — each method is one
+  setter call, applied in chain order — and a kind needing a setter it lacks uses
+  `.apply(|stack| ..)`, which hands it the live stack. **It never leaves the kind**: `build()`
+  is the last step of the kind's constructor, so no caller sees an `ItemBuilder`.
+- **The id is a constructor argument, not a chain method**, so a builder cannot exist without
+  one: a kind cannot accidentally produce an unmarked stack, and the marker is written by
+  `build()` after every other property. A kind writes its number once, in the chain. **The
+  count is not an argument**: `of` starts a stack of one, which is what a custom item almost
+  always is, and a bundle sets `set_count` through `.apply(|stack| ..)` rather than growing a
+  `count()` method — the escape hatch already covers it.
+- There is **no `name()` hook**: a name is a property of the stack like any other, so it is
+  set in the constructor alongside the lore.
 - The marker is `mark`/`id_of`, a **byte** in the stack's own persistent data under
   `PLUGIN_ID`, written with the same `set_byte`/`get_byte` calls `curse.rs` and the mob marker
   use. It survives restarts and cannot collide with another plugin's data.
@@ -562,27 +590,30 @@ takes an `NbtTree`, and that type is an opaque handle with no constructor, so th
 `PersistentDataHolder` `set_byte`/`get_byte` route is the one to use for anything this
 plugin stores on an item.
 
-**`Orthcoin` is the worked example**, reachable in game through `/abyss item orthcoin`. That
-subcommand creates the stack, puts it in the sender's hand and reads the marker straight
-back off the stored stack, so it exercises the whole path until a real source of items
-(loot tables or crafting) exists. Because a caller exists, `mod items` carries no
-`#[expect(dead_code)]`, just as `mod entities` does not — `/abyss summon` reaches a kind by name.
+**`Orthcoin` is the worked example**. `/abyss item orthcoin` used to create the stack, put it
+in the sender's hand and read the marker back off the stored stack; with that subcommand
+removed there is **no caller**, so `mod items` carries `#[expect(dead_code)]` until a real
+source of items — loot tables, crafting, a shop — exists. The path itself is unchanged.
+
+**No caller exists now.** With `/abyss item` removed, nothing creates an item, so `mod items`
+carries `#[expect(dead_code)]` until a real source does. The path itself is unchanged: a kind
+still gets a stamped marker the moment something calls `Orthcoin::stack()`.
 
 **The catalogue as it stands**, with ids and base items:
 
-| Kind       | id  | Base        | Name     | Reachable via          |
-| ---------- | --- | ----------- | -------- | ---------------------- |
-| `Orthcoin` | 2   | Gold Nugget | Orthcoin | `/abyss item orthcoin` |
+| Kind       | id  | Base        | Name     | Reachable via |
+| ---------- | --- | ----------- | -------- | ------------- |
+| `Orthcoin` | 1   | Gold Nugget | Orthcoin | nothing yet   |
 
 Ids are permanent once shipped, for the same reason a mob id is: they are what tells two
 kinds on the same base item apart. A new item takes the next free number and never reuses
-one — `Orthcoin` keeps `2` even though id `1` is no longer used.
+one — `Orthcoin` is `1`.
 
-There is no `item_kinds()` catalogue function, unlike [`mob_kinds`](src/lib.rs). The mob
-catalogue exists because `/abyss summon` takes a name and needs to look one up; `/abyss item`
-takes a fixed set of spellings, so a list would be a third place to keep in sync for no
-reader. Adding an item therefore means its file, its `pub mod` line in the `mod items` block
-in `lib.rs`, its `impl ItemBuilder`, and its arm in the `/abyss item` executor.
+There is no `item_kinds()` catalogue function, unlike [`mob_kinds`](src/lib.rs). A catalogue
+exists so a **name** can be looked up; items are created by code that already knows which kind
+it wants, so a list would be a place to keep in sync for no reader. Adding an item therefore
+means its file, its `pub mod` line in the `mod items` block in `lib.rs`, its inherent
+`stack()` constructor, and whatever ends up creating it.
 
 **Items have no economy.** `Orthcoin` is a name, a colour, a lore line and a marker — it cannot
 be spent, minted from anything, or counted by the plugin. That is deliberate: a currency with
@@ -673,10 +704,10 @@ src/
 │   │   └── passive/
 │   └── villagers/      # the traders of Orth
 │       ├── villager_builder.rs # `VillagerBuilder`, `VillagerKind`
-│       └── boy.rs              # `Boy` — the worked example, reachable via `/abyss summon`
+│       └── boy.rs              # `Boy` — the worked example, awaiting a caller
 ├── items/              # declared as `mod items` in `lib.rs`: the plugin's own items
-│   ├── item_builder.rs # `ItemBuilder` trait + the identity marker
-│   └── orthcoin.rs     # `Orthcoin` — the worked example, via `/abyss item orthcoin`
+│   ├── item_builder.rs # `ItemBuilder` — the chainable stack builder; no trait
+│   └── orthcoin.rs     # `Orthcoin` — the worked example, awaiting a caller
 ├── commands/
 │   ├── abyss.rs        # `/abyss` — ops teleport into a layer, curse-free
 │   └── command.rs      # `Command` trait — each command registers itself

@@ -132,9 +132,10 @@ mod entities {
 /// The plugin's own items, built on top of the vanilla ones.
 ///
 /// Like a custom mob, a custom item is a vanilla item wearing an identity: a base item, a
-/// visible name, whatever `apply` adds, and a marker in the stack's own persistent data.
-/// `item_builder` is the trait an item implements and where that marker is written and read
-/// back; `orthcoin` is the worked example, reachable in game through `/abyss item orthcoin`.
+/// visible name, whatever the kind's constructor sets, and a marker in the stack's own
+/// persistent data. `item_builder` is the chainable builder and where that marker is written
+/// and read back; `orthcoin` is the worked example, an inherent `stack()` rather than a trait
+/// impl — see `item_builder` for why there is no trait.
 mod items {
     pub(crate) mod item_builder;
     pub(crate) mod orthcoin;

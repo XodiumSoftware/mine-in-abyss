@@ -21,8 +21,6 @@
 | **Core API**      | [pumpkin-plugin-api](https://github.com/Pumpkin-MC/Pumpkin) | Minecraft server plugin API      |
 | **Language**      | Rust 2024                                                   | Systems language                 |
 | **Build Tool**    | Cargo                                                       | Build automation                 |
-| **Serialization** | serde + toml                                                | Config serialization             |
-| **Config**        | config                                                      | TOML config with merge semantics |
 | **Logging**       | tracing                                                     | Structured logging               |
 | **Docs**          | rustdoc (via `cargo doc`)                                   | API documentation                |
 
@@ -647,10 +645,8 @@ src/
   and `events`. A folder needs no file of its own: its `//!` docs, `pub mod` list and
   `pub use` re-exports all live in that block — never a `mod.rs`.
 - All Clippy warnings enabled; run with `-W clippy::pedantic -D warnings` to catch pedantic lints as errors. (`[lints.clippy] all = "warn"`)
-- Config structs: `Debug`, `Clone`, `Default`, `Serialize`, `Deserialize`
-- Config fields documented with `///` comments
 - Permission pattern: `{PLUGIN_ID}:command.{name}` (e.g., `mine_in_abyss:command.example`)
-- No config system
+- No config system: no `config.rs`, no `config.toml`, no `serde`/`toml` dependency
 - Event handlers return `EventData<T>` (may modify event)
 - Release profile: LTO + strip for minimal WASM size
 - **Before checking API availability, run `cargo update` to fetch the latest `pumpkin-plugin-api` revision.** The API is git-tracked and may have added new events or types since the last local checkout.
@@ -712,7 +708,6 @@ src/
 
 1. **rustdoc comments** — Add/update if you:
     - Add new modules or public APIs
-    - Change config fields or placeholders
     - Add commands or events
     - **Run `just doc`** to verify
 

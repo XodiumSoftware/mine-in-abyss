@@ -162,7 +162,6 @@ name = "mine-in-abyss"
 version = "0.0.1"
 dependencies = [
  "pumpkin-plugin-api",
- "serde",
  "strum",
  "tracing",
 ]

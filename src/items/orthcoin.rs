@@ -33,9 +33,8 @@ impl ItemBuilder for Orthcoin {
     }
 
     fn apply(stack: &ItemStack) {
-        stack.set_lore(vec![
-            TextComponent::text("Currency of Orth, the City on the Edge."),
-            TextComponent::text("It buys passage, and not much else."),
-        ]);
+        stack.set_lore(vec![TextComponent::text(
+            "Currency of Orth, the City on the Edge.",
+        )]);
     }
 }

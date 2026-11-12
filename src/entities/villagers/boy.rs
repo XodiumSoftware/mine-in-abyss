@@ -48,7 +48,6 @@ impl Boy {
     pub(crate) fn place(villager: &Villager<'_>) {
         VillagerBuilder::of(villager, VillagerProfession::Librarian)
             .name(TextComponent::text("Boy, Lord of Currency").color_rgb(rgb(0xF0, 0xC4, 0x38)))
-            .level(1)
             .build();
     }
 }

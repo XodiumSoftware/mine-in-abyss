@@ -25,7 +25,7 @@ impl ItemBuilder for Orthcoin {
     }
 
     fn id() -> u8 {
-        2
+        1
     }
 
     fn name() -> TextComponent {

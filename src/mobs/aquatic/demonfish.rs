@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A creature that lives in water, met in the fifth layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Demonfish;
+pub(crate) struct Demonfish;
 
 impl MobBuilder for Demonfish {
     fn base() -> EntityType {

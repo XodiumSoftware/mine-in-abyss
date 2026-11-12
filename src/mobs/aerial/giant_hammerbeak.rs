@@ -12,7 +12,7 @@ use crate::utils::rgb;
 
 /// The larger hammerbeak, and the one that ranges furthest down the Abyss.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct GiantHammerbeak;
+pub(crate) struct GiantHammerbeak;
 
 impl MobBuilder for GiantHammerbeak {
     fn base() -> EntityType {

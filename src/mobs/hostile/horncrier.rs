@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A creature that attacks players on sight, met in the fourth layer and the fifth layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Horncrier;
+pub(crate) struct Horncrier;
 
 impl MobBuilder for Horncrier {
     fn base() -> EntityType {

@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A creature that attacks players on sight, met in the second layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Inbyo;
+pub(crate) struct Inbyo;
 
 impl MobBuilder for Inbyo {
     fn base() -> EntityType {

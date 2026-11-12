@@ -14,7 +14,7 @@ use crate::Layer;
 ///
 /// Every caller returns quietly on `None`: one unavailable world must not take down an
 /// event handler or a repeating task that still has other layers to serve.
-pub fn world_for(server: &Server, layer: Layer, purpose: &str) -> Option<World> {
+pub(crate) fn world_for(server: &Server, layer: Layer, purpose: &str) -> Option<World> {
     let name = layer.world();
     let world = server.get_world_by_name(&name);
     if world.is_none() {
@@ -30,6 +30,6 @@ pub fn world_for(server: &Server, layer: Layer, purpose: &str) -> Option<World> 
 /// against [`Layer::world`](crate::Layer::world). Reading the world here rather than taking
 /// a name keeps callers from having to re-resolve it for a field they do not use.
 #[must_use]
-pub fn layer_of(player: &Player) -> Option<Layer> {
+pub(crate) fn layer_of(player: &Player) -> Option<Layer> {
     crate::layer_for_world(&player.get_world().get_name())
 }

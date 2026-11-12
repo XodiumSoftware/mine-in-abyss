@@ -6,7 +6,7 @@ use pumpkin_plugin_api::text::TextComponent;
 
 /// Builds an [`RgbColor`] from its channels, so palettes can be written inline.
 #[must_use]
-pub const fn rgb(r: u8, g: u8, b: u8) -> RgbColor {
+pub(crate) const fn rgb(r: u8, g: u8, b: u8) -> RgbColor {
     RgbColor { r, g, b }
 }
 
@@ -16,7 +16,7 @@ pub const fn rgb(r: u8, g: u8, b: u8) -> RgbColor {
 /// instance — rather than the plugin storing a formatted ordinal anywhere, so a renamed
 /// or reordered list cannot leave a stale suffix behind.
 #[must_use]
-pub fn ordinal(number: usize) -> String {
+pub(crate) fn ordinal(number: usize) -> String {
     let suffix = match number {
         11..=13 => "th",
         _ => match number % 10 {
@@ -34,6 +34,6 @@ pub fn ordinal(number: usize) -> String {
 /// The action bar rather than chat: these are answers to one interaction — a refused
 /// spawn point, a layer with nothing beside it — and should not clutter the log. `color`
 /// carries the meaning, red for a refusal and grey for a neutral explanation.
-pub fn tell(player: &Player, message: &str, color: NamedColor) {
+pub(crate) fn tell(player: &Player, message: &str, color: NamedColor) {
     player.show_actionbar(TextComponent::text(message).color_named(color));
 }

@@ -31,7 +31,7 @@ thread_local! {
 /// Use the returned value as a guard: only the caller that flipped the latch runs the
 /// transition, and it must release it with [`end_transition`].
 #[must_use]
-pub fn begin_transition(player: &Player) -> bool {
+pub(crate) fn begin_transition(player: &Player) -> bool {
     TRANSITING.with(|set| set.borrow_mut().insert(key(player)))
 }
 
@@ -46,7 +46,7 @@ pub fn begin_transition(player: &Player) -> bool {
 ///   successful transition. Releasing here rather than inside the move handler means the
 ///   moves that follow the teleport are still suppressed until the player is really in
 ///   the new world.
-pub fn end_transition(player: &Player) {
+pub(crate) fn end_transition(player: &Player) {
     TRANSITING.with(|set| set.borrow_mut().remove(&key(player)));
 }
 
@@ -59,6 +59,6 @@ pub fn end_transition(player: &Player) {
 /// **Dead** players are skipped too: the curse can kill inside the move handler, and the
 /// move events that follow a death must not teleport a corpse or re-apply the curse.
 #[must_use]
-pub fn ignores_transitions(player: &Player) -> bool {
+pub(crate) fn ignores_transitions(player: &Player) -> bool {
     exempt_gamemode(player) || is_dead(player)
 }

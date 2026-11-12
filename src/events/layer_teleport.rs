@@ -16,7 +16,7 @@ use crate::utils::{clear_fall, note_teleport};
 
 /// Notes the destination of every player teleport.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct LayerTeleport;
+pub(crate) struct LayerTeleport;
 
 impl Event for LayerTeleport {
     fn register(context: &Context) {

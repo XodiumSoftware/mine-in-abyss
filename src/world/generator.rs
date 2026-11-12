@@ -23,7 +23,7 @@ use tracing::warn;
 /// Registered once by [`Worlds::setup`](super::setup::Worlds::setup) and attached to every
 /// layer world, so all of them generate the same way.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Void;
+pub(crate) struct Void;
 
 /// The biome every generated chunk is assigned.
 ///

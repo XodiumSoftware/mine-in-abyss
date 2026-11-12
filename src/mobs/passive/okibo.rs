@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A big green sniffer-like creature, found in the city and just below it.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Okibo;
+pub(crate) struct Okibo;
 
 impl MobBuilder for Okibo {
     fn base() -> EntityType {

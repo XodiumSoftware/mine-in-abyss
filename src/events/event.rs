@@ -22,7 +22,7 @@ use pumpkin_plugin_api::events::EventPriority;
 /// concrete event, and an associated type would need a bound relating it to the
 /// `EventHandler` impl that nothing can express. Each `register` therefore names its own
 /// event, and only the settings *around* it are defaulted.
-pub trait Event {
+pub(crate) trait Event {
     /// The priority the host calls this handler at.
     ///
     /// Defaults to [`EventPriority::Normal`]. Override it only when the handler must run

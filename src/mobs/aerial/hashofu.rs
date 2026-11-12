@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A creature that moves through open air, met in the fourth layer and the fifth layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Hashofu;
+pub(crate) struct Hashofu;
 
 impl MobBuilder for Hashofu {
     fn base() -> EntityType {

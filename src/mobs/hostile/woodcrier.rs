@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A purple flyer that attacks players, unlike the splitjaw it resembles.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Woodcrier;
+pub(crate) struct Woodcrier;
 
 impl MobBuilder for Woodcrier {
     fn base() -> EntityType {

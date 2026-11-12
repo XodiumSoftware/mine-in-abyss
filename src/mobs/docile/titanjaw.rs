@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A peaceful creature that only fights when provoked, met in the fifth layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Titanjaw;
+pub(crate) struct Titanjaw;
 
 impl MobBuilder for Titanjaw {
     fn base() -> EntityType {

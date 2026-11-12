@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A creature that moves through open air, met in the second layer and the fourth layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Rohana;
+pub(crate) struct Rohana;
 
 impl MobBuilder for Rohana {
     fn base() -> EntityType {

@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A harmless creature, met in the fourth layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Shroombear;
+pub(crate) struct Shroombear;
 
 impl MobBuilder for Shroombear {
     fn base() -> EntityType {

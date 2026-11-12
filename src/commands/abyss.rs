@@ -63,7 +63,7 @@ use crate::mobs::mob_builder::{MobKind, id_of as mob_id_of};
 /// The struct is empty: it exists so the command can implement [`RegisterCommand`] and
 /// [`CommandHandler`], keeping both next to the tree they describe.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Abyss;
+pub(crate) struct Abyss;
 
 impl RegisterCommand for Abyss {
     fn names() -> &'static [&'static str] {
@@ -175,7 +175,7 @@ impl CommandHandler for Abyss {
 /// back off the stored stack. That round trip is the point: it proves the stack survives
 /// being written into an inventory slot and still reports its own kind.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct AbyssItem;
+pub(crate) struct AbyssItem;
 
 impl CommandHandler for AbyssItem {
     fn handle(
@@ -229,7 +229,7 @@ impl CommandHandler for AbyssItem {
 /// to live, and an operator command is not a reason to ignore it. To place one somewhere
 /// else on purpose, summon it in a layer it does list and let it be carried down.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct AbyssSummon;
+pub(crate) struct AbyssSummon;
 
 impl CommandHandler for AbyssSummon {
     fn handle(

@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A peaceful creature that only fights when provoked, met in the fifth layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Spikewalker;
+pub(crate) struct Spikewalker;
 
 impl MobBuilder for Spikewalker {
     fn base() -> EntityType {

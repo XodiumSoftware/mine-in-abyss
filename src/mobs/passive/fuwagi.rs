@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A small white rabbit, built on a rabbit so its skittish wandering comes for free.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Fuwagi;
+pub(crate) struct Fuwagi;
 
 impl MobBuilder for Fuwagi {
     fn base() -> EntityType {

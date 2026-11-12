@@ -33,7 +33,7 @@ const IDENTITY_KEY: &str = "item";
 /// a fixed table in this trait: the lore, enchantments, or anything else the API grows. An
 /// item that is only a renamed stack and one that carries lore and enchantments are both
 /// just different bodies for that method.
-pub trait ItemBuilder {
+pub(crate) trait ItemBuilder {
     /// The vanilla item this kind is built on, and the item actually created.
     fn base() -> Item;
 
@@ -86,7 +86,7 @@ pub trait ItemBuilder {
 /// The identity is written by [`ItemBuilder::create`], which is the only caller. The byte is
 /// signed, so a kind id has to fit in `i8`; a larger one is silently not written rather
 /// than wrapped into another kind's id.
-pub fn mark(stack: &ItemStack, id: u8) {
+pub(crate) fn mark(stack: &ItemStack, id: u8) {
     if let Ok(id) = i8::try_from(id) {
         stack.set_byte(PLUGIN_ID, IDENTITY_KEY, id);
     }
@@ -101,7 +101,7 @@ pub fn mark(stack: &ItemStack, id: u8) {
 /// The byte is stored signed, so a value above `127` comes back as `None`: an id that large
 /// is more likely a mistake than an intent.
 #[must_use]
-pub fn id_of(stack: &ItemStack) -> Option<u8> {
+pub(crate) fn id_of(stack: &ItemStack) -> Option<u8> {
     stack
         .get_byte(PLUGIN_ID, IDENTITY_KEY)
         .and_then(|id| u8::try_from(id).ok())

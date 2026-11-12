@@ -30,7 +30,7 @@ use crate::mobs::mob_builder::MobKind;
 
 /// Replaces a naturally spawned vanilla mob in a layer world with a custom kind.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct CreatureSpawn;
+pub(crate) struct CreatureSpawn;
 
 impl Event for CreatureSpawn {
     fn register(context: &Context) {

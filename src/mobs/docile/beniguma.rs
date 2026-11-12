@@ -19,7 +19,7 @@ use crate::utils::rgb;
 
 /// A docile wolf of the Top of the Abyss and the Forest of Temptation.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Beniguma;
+pub(crate) struct Beniguma;
 
 impl MobBuilder for Beniguma {
     fn base() -> EntityType {

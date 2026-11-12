@@ -47,7 +47,7 @@ use crate::utils::{
 
 /// Detects a player leaving a layer through its void or ceiling.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct LayerLeave;
+pub(crate) struct LayerLeave;
 
 impl Event for LayerLeave {
     fn register(context: &Context) {

@@ -45,7 +45,7 @@ fn effect(kind: StatusEffectType, seconds: u32, amplifier: u8) -> StatusEffectIn
 
 /// Returns the curse strain the player is currently carrying, `0` if unafflicted.
 #[must_use]
-pub fn strain(player: &Player) -> u8 {
+pub(crate) fn strain(player: &Player) -> u8 {
     player
         .get_byte(PLUGIN_ID, STRAIN_KEY)
         .and_then(|strain| u8::try_from(strain).ok())
@@ -66,7 +66,7 @@ fn store(player: &Player, strain: u8) {
 /// The severity comes from [`Layer::curse`], so it scales with depth without a
 /// table to keep in sync. It is added to the player's accumulated strain, which is
 /// what actually decides the symptoms.
-pub fn apply(player: &Player, from: Layer) {
+pub(crate) fn apply(player: &Player, from: Layer) {
     let strain = strain(player).saturating_add(from.curse()).min(MAX_STRAIN);
     store(player, strain);
     inflict(player, strain);
@@ -76,7 +76,7 @@ pub fn apply(player: &Player, from: Layer) {
 ///
 /// Called when a player reaches the surface, and when they respawn, so a death never
 /// leaves a permanent debuff behind.
-pub fn cure(player: &Player) {
+pub(crate) fn cure(player: &Player) {
     store(player, 0);
 }
 

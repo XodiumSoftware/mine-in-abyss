@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A blue squid, at home wherever a layer's map holds water.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Spiralsquid;
+pub(crate) struct Spiralsquid;
 
 impl MobBuilder for Spiralsquid {
     fn base() -> EntityType {

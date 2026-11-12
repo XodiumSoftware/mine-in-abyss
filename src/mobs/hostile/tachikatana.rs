@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A creature that attacks players on sight, met in the fourth layer and the fifth layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Tachikatana;
+pub(crate) struct Tachikatana;
 
 impl MobBuilder for Tachikatana {
     fn base() -> EntityType {

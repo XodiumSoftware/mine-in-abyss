@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A white creeper-shaped thing that hunts players among the vines.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Vineblaster;
+pub(crate) struct Vineblaster;
 
 impl MobBuilder for Vineblaster {
     fn base() -> EntityType {

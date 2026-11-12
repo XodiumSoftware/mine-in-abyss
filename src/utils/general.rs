@@ -9,7 +9,7 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::uuid;
 /// The `thread_local` records key on this rather than on the `Player` itself: a handle
 /// obtained from one event is not guaranteed to compare equal to one from another, but
 /// the UUID always is.
-pub fn key(player: &Player) -> String {
+pub(crate) fn key(player: &Player) -> String {
     uuid::to_string(player.get_id())
 }
 
@@ -19,7 +19,7 @@ pub fn key(player: &Player) -> String {
 /// one has to stop there: a corpse must not be teleported, cursed, or counted as landing
 /// a fall.
 #[must_use]
-pub fn is_dead(player: &Player) -> bool {
+pub(crate) fn is_dead(player: &Player) -> bool {
     player
         .as_entity()
         .as_living()
@@ -32,7 +32,7 @@ pub fn is_dead(player: &Player) -> bool {
 /// afflicted by the curse, so builders and onlookers can pass through the void and
 /// ceiling without being pulled around.
 #[must_use]
-pub fn exempt_gamemode(player: &Player) -> bool {
+pub(crate) fn exempt_gamemode(player: &Player) -> bool {
     matches!(
         player.get_gamemode(),
         GameMode::Creative | GameMode::Spectator

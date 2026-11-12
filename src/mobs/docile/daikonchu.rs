@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A peaceful creature that only fights when provoked, met in the third layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Daikonchu;
+pub(crate) struct Daikonchu;
 
 impl MobBuilder for Daikonchu {
     fn base() -> EntityType {

@@ -19,7 +19,7 @@ use crate::utils::{end_transition, ordinal, rgb};
 
 /// Handles a player joining a layer's world.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct LayerJoin;
+pub(crate) struct LayerJoin;
 
 impl Event for LayerJoin {
     fn register(context: &Context) {

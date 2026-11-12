@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A yellow flyer that hunts players in the first and second layers.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Silkfang;
+pub(crate) struct Silkfang;
 
 impl MobBuilder for Silkfang {
     fn base() -> EntityType {

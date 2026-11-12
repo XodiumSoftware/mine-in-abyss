@@ -39,7 +39,7 @@ struct FallCarry {
 ///
 /// The carry replaces any previous one: a player can only be in one fall at a time, and
 /// the most recent measurement is the one that belongs to the swap about to happen.
-pub fn carry_fall(player: &Player, distance: f32, layer: Layer) {
+pub(crate) fn carry_fall(player: &Player, distance: f32, layer: Layer) {
     FALL_CARRY.with(|map| {
         map.borrow_mut()
             .insert(key(player), FallCarry { distance, layer });
@@ -54,7 +54,7 @@ pub fn carry_fall(player: &Player, distance: f32, layer: Layer) {
 /// distance so far plus whatever the player has already fallen in this layer, so the
 /// landing is the one vanilla eventually sees. Callers apply it themselves.
 #[must_use]
-pub fn resume_fall(player: &Player, layer: Layer, y: f64) -> Option<f32> {
+pub(crate) fn resume_fall(player: &Player, layer: Layer, y: f64) -> Option<f32> {
     let distance = player.as_entity().get_fall_distance();
 
     if fall_landed(y) {
@@ -69,7 +69,7 @@ pub fn resume_fall(player: &Player, layer: Layer, y: f64) -> Option<f32> {
 ///
 /// Called where a descent cannot continue — a teleport, a respawn, or leaving the Abyss
 /// entirely — so a stale distance is never replayed onto a later, unrelated fall.
-pub fn clear_fall(player: &Player) {
+pub(crate) fn clear_fall(player: &Player) {
     take_fall(player);
 }
 

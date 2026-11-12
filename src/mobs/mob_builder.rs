@@ -193,7 +193,7 @@ pub trait MobBuilder {
 /// The identity is written by [`MobBuilder::spawn`], which is the only caller. The byte is signed,
 /// so a kind id has to fit in `i8`; a larger one is silently not written rather than
 /// wrapped into another kind's id.
-pub fn mark(entity: &Entity, id: u8) {
+pub(crate) fn mark(entity: &Entity, id: u8) {
     if let Ok(id) = i8::try_from(id) {
         entity.set_byte(PLUGIN_ID, IDENTITY_KEY, id);
     }
@@ -208,7 +208,7 @@ pub fn mark(entity: &Entity, id: u8) {
 /// The byte is stored signed, so a value above `127` comes back as `None`: a kind id that
 /// large is more likely a mistake than an intent.
 #[must_use]
-pub fn id_of(entity: &Entity) -> Option<u8> {
+pub(crate) fn id_of(entity: &Entity) -> Option<u8> {
     entity
         .get_byte(PLUGIN_ID, IDENTITY_KEY)
         .and_then(|id| u8::try_from(id).ok())

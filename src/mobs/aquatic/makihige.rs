@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A creature that lives in water, met in the fourth layer and the fifth layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Makihige;
+pub(crate) struct Makihige;
 
 impl MobBuilder for Makihige {
     fn base() -> EntityType {

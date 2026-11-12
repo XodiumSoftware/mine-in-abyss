@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A creature that moves through open air, met in the fifth layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct SporeManta;
+pub(crate) struct SporeManta;
 
 impl MobBuilder for SporeManta {
     fn base() -> EntityType {

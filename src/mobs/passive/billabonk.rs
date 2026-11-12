@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A harmless creature, met in the second layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Billabonk;
+pub(crate) struct Billabonk;
 
 impl MobBuilder for Billabonk {
     fn base() -> EntityType {

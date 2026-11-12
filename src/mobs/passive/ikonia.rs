@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A harmless creature, met in the fifth layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Ikonia;
+pub(crate) struct Ikonia;
 
 impl MobBuilder for Ikonia {
     fn base() -> EntityType {

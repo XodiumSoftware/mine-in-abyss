@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A creature that attacks players on sight, met in the third layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Yomotsubi;
+pub(crate) struct Yomotsubi;
 
 impl MobBuilder for Yomotsubi {
     fn base() -> EntityType {

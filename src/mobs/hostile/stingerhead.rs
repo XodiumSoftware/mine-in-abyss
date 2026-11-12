@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A creature that attacks players on sight, met in the fifth layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Stingerhead;
+pub(crate) struct Stingerhead;
 
 impl MobBuilder for Stingerhead {
     fn base() -> EntityType {

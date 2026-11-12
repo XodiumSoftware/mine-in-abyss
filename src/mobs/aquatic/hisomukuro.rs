@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A creature that lives in water, met in the fifth layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Hisomukuro;
+pub(crate) struct Hisomukuro;
 
 impl MobBuilder for Hisomukuro {
     fn base() -> EntityType {

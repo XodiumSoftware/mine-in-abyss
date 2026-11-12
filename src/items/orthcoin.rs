@@ -17,7 +17,7 @@ use crate::utils::rgb;
 
 /// A coin of Orth, built on a gold nugget.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Orthcoin;
+pub(crate) struct Orthcoin;
 
 impl ItemBuilder for Orthcoin {
     fn base() -> Item {

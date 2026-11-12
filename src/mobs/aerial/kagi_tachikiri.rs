@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A creature that moves through open air, met in the fifth layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct KagiTachikiri;
+pub(crate) struct KagiTachikiri;
 
 impl MobBuilder for KagiTachikiri {
     fn base() -> EntityType {

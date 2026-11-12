@@ -23,7 +23,7 @@ thread_local! {
 const TELEPORT_TOLERANCE: f64 = 2.0;
 
 /// Records that `player` was teleported to `y`, so the next move is not read as a climb.
-pub fn note_teleport(player: &Player, y: f64) {
+pub(crate) fn note_teleport(player: &Player, y: f64) {
     TELEPORTED.with(|map| map.borrow_mut().insert(key(player), y));
 }
 
@@ -31,7 +31,7 @@ pub fn note_teleport(player: &Player, y: f64) {
 ///
 /// Returns `None` when the player reached their position by moving normally.
 #[must_use]
-pub fn consume_teleport(player: &Player) -> Option<f64> {
+pub(crate) fn consume_teleport(player: &Player) -> Option<f64> {
     TELEPORTED.with(|map| map.borrow_mut().remove(&key(player)))
 }
 
@@ -42,7 +42,7 @@ pub fn consume_teleport(player: &Player) -> Option<f64> {
 /// record is consumed either way, so a genuine climb afterwards still counts; the Y
 /// comparison stops a stale record swallowing an unrelated move.
 #[must_use]
-pub fn arrived_by_teleport(player: &Player, y: f64) -> bool {
+pub(crate) fn arrived_by_teleport(player: &Player, y: f64) -> bool {
     consume_teleport(player)
         .is_some_and(|teleported_y| (teleported_y - y).abs() < TELEPORT_TOLERANCE)
 }

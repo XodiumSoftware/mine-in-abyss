@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A peaceful creature that only fights when provoked, met in the first layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Chimokami;
+pub(crate) struct Chimokami;
 
 impl MobBuilder for Chimokami {
     fn base() -> EntityType {

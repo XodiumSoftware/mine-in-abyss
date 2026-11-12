@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A harmless creature, met in the fifth layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Ashimite;
+pub(crate) struct Ashimite;
 
 impl MobBuilder for Ashimite {
     fn base() -> EntityType {

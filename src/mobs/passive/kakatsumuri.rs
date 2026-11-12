@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A harmless creature, met in the third layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Kakatsumuri;
+pub(crate) struct Kakatsumuri;
 
 impl MobBuilder for Kakatsumuri {
     fn base() -> EntityType {

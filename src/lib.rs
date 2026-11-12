@@ -13,8 +13,8 @@ mod layer;
 
 /// The `/abyss` command.
 mod commands {
-    pub mod abyss;
-    pub mod command;
+    pub(crate) mod abyss;
+    pub(crate) mod command;
 }
 
 /// The plugin's own mobs, built on top of the vanilla ones.
@@ -25,91 +25,91 @@ mod commands {
 /// written and read back; `docile::beniguma` is the worked example, filed in `docile`
 /// because that is the category it declares.
 mod mobs {
-    pub mod mob_builder;
+    pub(crate) mod mob_builder;
 
     /// Aerial mob kinds.
-    pub mod aerial {
-        pub mod buroguro;
-        pub mod corpse_weeper;
-        pub mod cyatoria;
-        pub mod dosetori;
-        pub mod giant_hammerbeak;
-        pub mod hashofu;
-        pub mod kagi_tachikiri;
-        pub mod madokajack;
-        pub mod onitsuchi;
-        pub mod rohana;
-        pub mod small_hammerbeak;
-        pub mod splitjaw;
-        pub mod spore_manta;
-        pub mod squidfly;
-        pub mod stinger;
+    pub(crate) mod aerial {
+        pub(crate) mod buroguro;
+        pub(crate) mod corpse_weeper;
+        pub(crate) mod cyatoria;
+        pub(crate) mod dosetori;
+        pub(crate) mod giant_hammerbeak;
+        pub(crate) mod hashofu;
+        pub(crate) mod kagi_tachikiri;
+        pub(crate) mod madokajack;
+        pub(crate) mod onitsuchi;
+        pub(crate) mod rohana;
+        pub(crate) mod small_hammerbeak;
+        pub(crate) mod splitjaw;
+        pub(crate) mod spore_manta;
+        pub(crate) mod squidfly;
+        pub(crate) mod stinger;
     }
 
     /// Aquatic mob kinds.
-    pub mod aquatic {
-        pub mod demonfish;
-        pub mod edusan;
-        pub mod hagamizukin;
-        pub mod hisomukuro;
-        pub mod ikenosuke;
-        pub mod kazura;
-        pub mod makihige;
-        pub mod spiralsquid;
+    pub(crate) mod aquatic {
+        pub(crate) mod demonfish;
+        pub(crate) mod edusan;
+        pub(crate) mod hagamizukin;
+        pub(crate) mod hisomukuro;
+        pub(crate) mod ikenosuke;
+        pub(crate) mod kazura;
+        pub(crate) mod makihige;
+        pub(crate) mod spiralsquid;
     }
 
     /// Docile mob kinds.
-    pub mod docile {
-        pub mod beniguma;
-        pub mod chimokami;
-        pub mod daikonchu;
-        pub mod hisoishi;
-        pub mod rinsipede;
-        pub mod rockwalker;
-        pub mod spikewalker;
-        pub mod titanjaw;
+    pub(crate) mod docile {
+        pub(crate) mod beniguma;
+        pub(crate) mod chimokami;
+        pub(crate) mod daikonchu;
+        pub(crate) mod hisoishi;
+        pub(crate) mod rinsipede;
+        pub(crate) mod rockwalker;
+        pub(crate) mod spikewalker;
+        pub(crate) mod titanjaw;
     }
 
     /// Hostile mob kinds.
-    pub mod hostile {
-        pub mod chikyuoebi;
-        pub mod himushi;
-        pub mod horncrier;
-        pub mod inbyo;
-        pub mod kuongatari;
-        pub mod man_toyer;
-        pub mod octoliar;
-        pub mod orb_piercer;
-        pub mod ottobas;
-        pub mod shiratsubi;
-        pub mod silkfang;
-        pub mod spittleshrub;
-        pub mod stingerhead;
-        pub mod swarmhoarder;
-        pub mod swarmshocker;
-        pub mod tachikatana;
-        pub mod uibuta;
-        pub mod vinebinder;
-        pub mod vineblaster;
-        pub mod vinepoofer;
-        pub mod virinsipede;
-        pub mod woodcrier;
-        pub mod yomotsubi;
+    pub(crate) mod hostile {
+        pub(crate) mod chikyuoebi;
+        pub(crate) mod himushi;
+        pub(crate) mod horncrier;
+        pub(crate) mod inbyo;
+        pub(crate) mod kuongatari;
+        pub(crate) mod man_toyer;
+        pub(crate) mod octoliar;
+        pub(crate) mod orb_piercer;
+        pub(crate) mod ottobas;
+        pub(crate) mod shiratsubi;
+        pub(crate) mod silkfang;
+        pub(crate) mod spittleshrub;
+        pub(crate) mod stingerhead;
+        pub(crate) mod swarmhoarder;
+        pub(crate) mod swarmshocker;
+        pub(crate) mod tachikatana;
+        pub(crate) mod uibuta;
+        pub(crate) mod vinebinder;
+        pub(crate) mod vineblaster;
+        pub(crate) mod vinepoofer;
+        pub(crate) mod virinsipede;
+        pub(crate) mod woodcrier;
+        pub(crate) mod yomotsubi;
     }
 
     /// Passive mob kinds.
-    pub mod passive {
-        pub mod abyssal_snail;
-        pub mod ashimite;
-        pub mod billabonk;
-        pub mod fuwagi;
-        pub mod ikonia;
-        pub mod kakatsumuri;
-        pub mod neritantan;
-        pub mod okibo;
-        pub mod sakuranbo;
-        pub mod shroombear;
-        pub mod tesuchi;
+    pub(crate) mod passive {
+        pub(crate) mod abyssal_snail;
+        pub(crate) mod ashimite;
+        pub(crate) mod billabonk;
+        pub(crate) mod fuwagi;
+        pub(crate) mod ikonia;
+        pub(crate) mod kakatsumuri;
+        pub(crate) mod neritantan;
+        pub(crate) mod okibo;
+        pub(crate) mod sakuranbo;
+        pub(crate) mod shroombear;
+        pub(crate) mod tesuchi;
     }
 }
 
@@ -120,8 +120,8 @@ mod mobs {
 /// `item_builder` is the trait an item implements and where that marker is written and read
 /// back; `orthcoin` is the worked example, reachable in game through `/abyss item orthcoin`.
 mod items {
-    pub mod item_builder;
-    pub mod orthcoin;
+    pub(crate) mod item_builder;
+    pub(crate) mod orthcoin;
 }
 
 /// The layer worlds, and the machinery that keeps them usable.
@@ -130,9 +130,9 @@ mod items {
 /// ([`setup`]), it has to generate empty until its authored map exists ([`generator`]),
 /// and it has to share the surface's clock with the rest of the Abyss ([`clock`]).
 mod world {
-    pub mod clock;
-    pub mod generator;
-    pub mod setup;
+    pub(crate) mod clock;
+    pub(crate) mod generator;
+    pub(crate) mod setup;
 }
 
 /// Small helpers shared across the plugin, split by what each module owns.
@@ -143,31 +143,31 @@ mod world {
 /// does not have to know which file a helper ended up in; reach for `utils::fall::…`
 /// directly only when the grouping is what you are looking for.
 mod utils {
-    pub mod fall;
-    pub mod general;
-    pub mod teleport;
-    pub mod text;
-    pub mod transition;
-    pub mod world;
+    pub(crate) mod fall;
+    pub(crate) mod general;
+    pub(crate) mod teleport;
+    pub(crate) mod text;
+    pub(crate) mod transition;
+    pub(crate) mod world;
 
-    pub use fall::{carry_fall, clear_fall, resume_fall};
-    pub use teleport::{arrived_by_teleport, note_teleport};
-    pub use text::{ordinal, rgb, tell};
-    pub use transition::{begin_transition, end_transition, ignores_transitions};
-    pub use world::{layer_of, world_for};
+    pub(crate) use fall::{carry_fall, clear_fall, resume_fall};
+    pub(crate) use teleport::{arrived_by_teleport, note_teleport};
+    pub(crate) use text::{ordinal, rgb, tell};
+    pub(crate) use transition::{begin_transition, end_transition, ignores_transitions};
+    pub(crate) use world::{layer_of, world_for};
 }
 
 /// Event handlers for `mine-in-abyss`.
 mod events {
-    pub mod bed_spawn;
-    pub mod creature_spawn;
-    pub mod curse;
-    pub mod event;
-    pub mod fall_damage;
-    pub mod layer_join;
-    pub mod layer_leave;
-    pub mod layer_respawn;
-    pub mod layer_teleport;
+    pub(crate) mod bed_spawn;
+    pub(crate) mod creature_spawn;
+    pub(crate) mod curse;
+    pub(crate) mod event;
+    pub(crate) mod fall_damage;
+    pub(crate) mod layer_join;
+    pub(crate) mod layer_leave;
+    pub(crate) mod layer_respawn;
+    pub(crate) mod layer_teleport;
 }
 
 pub use layer::*;
@@ -395,7 +395,7 @@ impl Plugin for MineInAbyss {
             version: env!("CARGO_PKG_VERSION").into(),
             authors: env!("CARGO_PKG_AUTHORS")
                 .split(',')
-                .map(std::string::ToString::to_string)
+                .map(ToString::to_string)
                 .collect(),
             description: env!("CARGO_PKG_DESCRIPTION").into(),
             dependencies: vec![],
@@ -420,4 +420,20 @@ impl Plugin for MineInAbyss {
     }
 }
 
-pumpkin_plugin_api::register_plugin!(MineInAbyss);
+/// The plugin entry point the host calls by export name.
+///
+/// The body is a macro expansion, so the generated `__init_plugin` cannot carry its
+/// own rustdoc. The expectation is scoped to this module rather than the invocation,
+/// because an attribute on a macro call does not reach what it expands to.
+///
+/// The module is `pub` because the expansion defines `pub extern "C" fn
+/// __init_plugin`, and the host calls it by export name.
+#[expect(
+    missing_docs,
+    reason = "the generated __init_plugin is documented by the macro, not here"
+)]
+pub mod entry {
+    use crate::MineInAbyss;
+
+    pumpkin_plugin_api::register_plugin!(MineInAbyss);
+}

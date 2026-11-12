@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A harmless creature, met in the fifth layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct AbyssalSnail;
+pub(crate) struct AbyssalSnail;
 
 impl MobBuilder for AbyssalSnail {
     fn base() -> EntityType {

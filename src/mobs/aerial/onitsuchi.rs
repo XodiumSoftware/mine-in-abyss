@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A creature that moves through open air, met in the fourth layer and the fifth layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Onitsuchi;
+pub(crate) struct Onitsuchi;
 
 impl MobBuilder for Onitsuchi {
     fn base() -> EntityType {

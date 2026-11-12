@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A peaceful creature that only fights when provoked, met in the second layer and the third layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Hisoishi;
+pub(crate) struct Hisoishi;
 
 impl MobBuilder for Hisoishi {
     fn base() -> EntityType {

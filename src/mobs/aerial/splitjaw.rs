@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A large purple flyer, met from the Top of the Abyss down to the Great Fault.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Splitjaw;
+pub(crate) struct Splitjaw;
 
 impl MobBuilder for Splitjaw {
     fn base() -> EntityType {

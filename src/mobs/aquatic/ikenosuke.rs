@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A creature that lives in water, met in the second layer and the third layer and the fourth layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Ikenosuke;
+pub(crate) struct Ikenosuke;
 
 impl MobBuilder for Ikenosuke {
     fn base() -> EntityType {

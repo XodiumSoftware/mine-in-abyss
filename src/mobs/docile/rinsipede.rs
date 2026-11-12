@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A peaceful creature that only fights when provoked, met in the third layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Rinsipede;
+pub(crate) struct Rinsipede;
 
 impl MobBuilder for Rinsipede {
     fn base() -> EntityType {

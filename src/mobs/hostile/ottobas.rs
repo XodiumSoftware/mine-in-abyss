@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A creature that attacks players on sight, met in the first layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Ottobas;
+pub(crate) struct Ottobas;
 
 impl MobBuilder for Ottobas {
     fn base() -> EntityType {

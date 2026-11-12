@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A creature that attacks players on sight, met in the fourth layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct OrbPiercer;
+pub(crate) struct OrbPiercer;
 
 impl MobBuilder for OrbPiercer {
     fn base() -> EntityType {

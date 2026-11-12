@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// The smaller of the two hammerbeaks, the one a player meets first.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct SmallHammerbeak;
+pub(crate) struct SmallHammerbeak;
 
 impl MobBuilder for SmallHammerbeak {
     fn base() -> EntityType {

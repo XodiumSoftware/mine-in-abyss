@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A creature that moves through open air, met in the second layer and the fourth layer and the fifth layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Stinger;
+pub(crate) struct Stinger;
 
 impl MobBuilder for Stinger {
     fn base() -> EntityType {

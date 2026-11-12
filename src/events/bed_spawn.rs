@@ -32,7 +32,7 @@ use crate::utils::tell;
 
 /// Refuses a player-set spawn point, leaving cleared and operator-set points alone.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct BedSpawn;
+pub(crate) struct BedSpawn;
 
 impl Event for BedSpawn {
     fn register(context: &Context) {

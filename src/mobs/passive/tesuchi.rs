@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A harmless creature, met in the first layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Tesuchi;
+pub(crate) struct Tesuchi;
 
 impl MobBuilder for Tesuchi {
     fn base() -> EntityType {

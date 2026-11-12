@@ -32,7 +32,7 @@ use crate::utils::{ignores_transitions, layer_of, resume_fall};
 
 /// Adds the fall distance a descent carried into the layer a player is landing in.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct FallDamage;
+pub(crate) struct FallDamage;
 
 impl Event for FallDamage {
     fn register(context: &Context) {

@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A cyan flying cat, at home in the upper layers.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Cyatoria;
+pub(crate) struct Cyatoria;
 
 impl MobBuilder for Cyatoria {
     fn base() -> EntityType {

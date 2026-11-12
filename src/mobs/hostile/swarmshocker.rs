@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A creature that attacks players on sight, met in the fourth layer and the fifth layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Swarmshocker;
+pub(crate) struct Swarmshocker;
 
 impl MobBuilder for Swarmshocker {
     fn base() -> EntityType {

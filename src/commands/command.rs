@@ -25,7 +25,7 @@ use crate::PLUGIN_ID;
 /// The names and the description live here, rather than as constants in each command's
 /// file, because the permission node is derived from the primary name: writing the name
 /// twice would let a renamed command keep its old node.
-pub trait Command {
+pub(crate) trait Command {
     /// The command's primary name followed by its aliases.
     ///
     /// The primary name is what the permission node is built from, and the whole slice is

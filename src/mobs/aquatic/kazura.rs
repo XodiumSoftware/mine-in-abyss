@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A creature that lives in water, met in the fourth layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Kazura;
+pub(crate) struct Kazura;
 
 impl MobBuilder for Kazura {
     fn base() -> EntityType {

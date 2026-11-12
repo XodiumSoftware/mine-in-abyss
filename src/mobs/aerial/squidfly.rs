@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A creature that moves through open air, met in the third layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Squidfly;
+pub(crate) struct Squidfly;
 
 impl MobBuilder for Squidfly {
     fn base() -> EntityType {

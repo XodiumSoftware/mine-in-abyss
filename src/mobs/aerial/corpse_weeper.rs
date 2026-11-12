@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A creature that moves through open air, met in the first layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct CorpseWeeper;
+pub(crate) struct CorpseWeeper;
 
 impl MobBuilder for CorpseWeeper {
     fn base() -> EntityType {

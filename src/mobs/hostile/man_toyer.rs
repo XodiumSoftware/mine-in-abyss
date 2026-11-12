@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A pale flyer that hunts players on the surface.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct ManToyer;
+pub(crate) struct ManToyer;
 
 impl MobBuilder for ManToyer {
     fn base() -> EntityType {

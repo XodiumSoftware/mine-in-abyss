@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A peaceful creature that only fights when provoked, met in the second layer and the third layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Rockwalker;
+pub(crate) struct Rockwalker;
 
 impl MobBuilder for Rockwalker {
     fn base() -> EntityType {

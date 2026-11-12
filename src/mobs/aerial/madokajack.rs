@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A creature that moves through open air, met in the third layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Madokajack;
+pub(crate) struct Madokajack;
 
 impl MobBuilder for Madokajack {
     fn base() -> EntityType {

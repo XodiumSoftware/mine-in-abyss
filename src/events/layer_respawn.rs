@@ -34,7 +34,7 @@ use crate::utils::{clear_fall, world_for};
 
 /// Returns a respawning player to `First`'s world spawn.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct LayerRespawn;
+pub(crate) struct LayerRespawn;
 
 impl Event for LayerRespawn {
     fn register(context: &Context) {

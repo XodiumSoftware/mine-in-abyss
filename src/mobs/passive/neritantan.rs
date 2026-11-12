@@ -11,7 +11,7 @@ use crate::utils::rgb;
 
 /// A harmless creature, met in the second layer and the third layer.
 #[derive(Debug, Default, Clone, Copy)]
-pub struct Neritantan;
+pub(crate) struct Neritantan;
 
 impl MobBuilder for Neritantan {
     fn base() -> EntityType {

@@ -57,8 +57,8 @@ audited `config.rs`, `enabled()` toggles and a `cmds()`/`perms()` trait; none of
 A mob or item kind is not a module like the others: it has a catalogue entry that a rename or
 a forgotten line can desynchronise. Check both directions.
 
-- **Mobs:** every folder under `src/mobs/<category>/` is declared in the matching `pub mod`
-  block of `mod mobs`, **and** appears exactly once in `mob_kinds()`. Flag the two failure
+- **Mobs:** every folder under `src/entities/mobs/<category>/` is declared in the matching `pub mod`
+  block of `mod entities { mod mobs { .. } }`, **and** appears exactly once in `mob_kinds()`. Flag the two failure
   modes separately: declared but absent from `mob_kinds()` (invisible to `/abyss summon`),
   and present in `mob_kinds()` with no file (a compile error).
 - Each mob's folder must match its own `category()`, since nothing enforces it at runtime.

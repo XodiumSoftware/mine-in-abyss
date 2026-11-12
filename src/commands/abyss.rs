@@ -25,7 +25,7 @@
 //! - `[count]` — how many to spawn, `1` … `16`, defaulting to one
 //!
 //! `/abyss summon` refuses a mob in a layer it does not list in
-//! [`MobBuilder::layers`](crate::mobs::mob_builder::MobBuilder::layers), so an operator cannot
+//! [`MobBuilder::layers`](crate::entities::mobs::mob_builder::MobBuilder::layers), so an operator cannot
 //! quietly fill a layer with something that was never meant to live there.
 //!
 //! Tab-completion for `<layer>` is implemented but disabled: the Pumpkin host panics on
@@ -53,10 +53,11 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::permission::{
 use pumpkin_plugin_api::{Context, Server};
 
 use crate::commands::command::Command as RegisterCommand;
+use crate::entities::entity_builder::id_of as mob_id_of;
+use crate::entities::mobs::mob_builder::MobKind;
 use crate::items::item_builder::{ItemBuilder, id_of};
 use crate::items::orthcoin::Orthcoin;
 use crate::layer::Layer;
-use crate::mobs::mob_builder::{MobKind, id_of as mob_id_of};
 
 /// The `/abyss` command, registration and executor.
 ///
@@ -224,7 +225,7 @@ impl CommandHandler for AbyssItem {
 /// The `/abyss summon <mob> [count]` executor.
 ///
 /// Spawns a custom mob at the sender's feet, refusing one whose
-/// [`layers`](crate::mobs::mob_builder::MobBuilder::layers) do not include the layer the
+/// [`layers`](crate::entities::mobs::mob_builder::MobBuilder::layers) do not include the layer the
 /// sender is standing in — the list exists to keep a kind out of places it was never meant
 /// to live, and an operator command is not a reason to ignore it. To place one somewhere
 /// else on purpose, summon it in a layer it does list and let it be carried down.
@@ -325,7 +326,7 @@ fn layer_list(layers: &[Layer]) -> String {
 /// Logs that a mob was spawned, including the identity the marker actually wrote.
 ///
 /// Reading the marker back here is the same check `/abyss item` makes: it catches a kind
-/// whose [`id`](crate::mobs::mob_builder::MobBuilder::id) is too large for the marker's
+/// whose [`id`](crate::entities::mobs::mob_builder::MobBuilder::id) is too large for the marker's
 /// signed byte at the moment of summoning, rather than leaving a mob that no handler will
 /// ever recognise.
 fn spawn_note(

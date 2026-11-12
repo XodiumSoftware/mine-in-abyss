@@ -16,13 +16,13 @@
 
 ## APIs & Tools
 
-| Category          | Technology                                                  | Purpose                          |
-| ----------------- | ----------------------------------------------------------- | -------------------------------- |
-| **Core API**      | [pumpkin-plugin-api](https://github.com/Pumpkin-MC/Pumpkin) | Minecraft server plugin API      |
-| **Language**      | Rust 2024                                                   | Systems language                 |
-| **Build Tool**    | Cargo                                                       | Build automation                 |
-| **Logging**       | tracing                                                     | Structured logging               |
-| **Docs**          | rustdoc (via `cargo doc`)                                   | API documentation                |
+| Category       | Technology                                                  | Purpose                     |
+| -------------- | ----------------------------------------------------------- | --------------------------- |
+| **Core API**   | [pumpkin-plugin-api](https://github.com/Pumpkin-MC/Pumpkin) | Minecraft server plugin API |
+| **Language**   | Rust 2024                                                   | Systems language            |
+| **Build Tool** | Cargo                                                       | Build automation            |
+| **Logging**    | tracing                                                     | Structured logging          |
+| **Docs**       | rustdoc (via `cargo doc`)                                   | API documentation           |
 
 ### Pumpkin API Resources
 
@@ -135,14 +135,14 @@ handler. `src/events/event.rs` holds the trait; `MineInAbyss::events` in `lib.rs
 every `register` and logs the count. Registering a handler therefore means adding its file,
 its submodule, its `impl Event`, and one entry in that array.
 
-| Handler         | Event                     | Behaviour                                                             |
-| --------------- | ------------------------- | --------------------------------------------------------------------- |
-| `LayerJoin`     | `PlayerChangedWorldEvent` | Shows the entered layer's gradient title; cures the curse in `Orth`   |
-| `LayerLeave`    | `PlayerMoveEvent`         | Void/ceiling detection, teleport, curse                               |
-| `FallDamage`    | `PlayerMoveEvent`         | Adds a carried descent to the fall distance in the layer arrived in   |
-| `BedSpawn`      | `PlayerSpawnChangeEvent`  | Refuses a spawn point a player sets, but keeps `/spawnpoint`          |
-| `LayerRespawn`  | `PlayerRespawnEvent`      | Clears the curse strain, then returns the player to `Orth`'s spawn    |
-| `LayerTeleport` | `PlayerTeleportEvent`     | Records where a teleport put the player, so it is not read as a climb |
+| Handler         | Event                     | Behaviour                                                              |
+| --------------- | ------------------------- | ---------------------------------------------------------------------- |
+| `LayerJoin`     | `PlayerChangedWorldEvent` | Shows the entered layer's gradient title; cures the curse in `Orth`    |
+| `LayerLeave`    | `PlayerMoveEvent`         | Void/ceiling detection, teleport, curse                                |
+| `FallDamage`    | `PlayerMoveEvent`         | Adds a carried descent to the fall distance in the layer arrived in    |
+| `BedSpawn`      | `PlayerSpawnChangeEvent`  | Refuses a spawn point a player sets, but keeps `/spawnpoint`           |
+| `LayerRespawn`  | `PlayerRespawnEvent`      | Clears the curse strain, then returns the player to `Orth`'s spawn     |
+| `LayerTeleport` | `PlayerTeleportEvent`     | Records where a teleport put the player, so it is not read as a climb  |
 | `CreatureSpawn` | `CreatureSpawnEvent`      | Replaces a naturally spawned vanilla mob with one of the layer's kinds |
 
 `LayerLeave` compares against the bounds shared by every layer
@@ -273,7 +273,7 @@ through [`Layer::from_id`], which reads both spellings off the variant so a reor
 cannot leave a stale alias behind. `Layer::id_list` renders the accepted names for the
 error message.
 It also carries `/abyss item <item>` and `/abyss summon <mob> [count]`, which are the callers
-that keep `mod items` and `mod mobs` reachable — see the two sections below.
+that keep `mod items` and `mod entities` reachable — see the two sections below.
 A player running it is always the one moved; `[player]` is only consulted from console.
 It teleports straight into the layer, so no curse strain is added — unlike a real ascent.
 
@@ -349,27 +349,38 @@ shared; nothing in vanilla depends on age and time of day agreeing.
 
 **Minecraft's entity types cannot be extended.** `entity-types.wit` exposes `entity-type` as
 a closed enum and there is no registration call anywhere in the plugin WIT, so a "custom
-mob" is always **a vanilla mob wearing an identity**. `src/mobs/` is the architecture for
-that, not a way around it:
+entity" is always **a vanilla entity wearing an identity**. `src/entities/` is the
+architecture for that, not a way around it, and it is split by what each trait answers:
 
-- `mob_builder.rs` — the [`MobBuilder`](src/mobs/mob_builder.rs) trait, plus the identity marker it writes. A kind
-  supplies its base `EntityType`, a stable `id` byte, its visible name, the layers it may
-  spawn in and a [`Category`](src/mobs/mob_builder.rs) (`Passive`/`Docile`/`Aerial`/`Aquatic`/`Hostile`),
-  and does everything else in **`MobBuilder::apply`**: the spawned `LivingEntity` is handed over and
-  the kind sets attributes with `set_attribute_base` and equips itself with `set_equipment`
-  per slot. Nothing is a fixed table, so a hand-only mob and a fully armoured one are just
-  different bodies for that method. `MobBuilder::spawn` creates the base type, calls `apply`, and
-  stamps the identity.
+- `entity_builder.rs` — the [`EntityBuilder`](src/entities/entity_builder.rs) core every
+  kind implements: its base `EntityType`, a stable `id` byte, its visible name, the
+  `apply` hook, and [`spawn`](src/entities/entity_builder.rs). `mark`/`id_of` live here too.
+- `mobs/mob_builder.rs` — [`MobBuilder`](src/entities/mobs/mob_builder.rs), which extends
+  `EntityBuilder` with what makes a creature a **mob**: its `Category`
+  (`Passive`/`Docile`/`Aerial`/`Aquatic`/`Hostile`) and the `layers()` it may spawn in.
+- `villagers/villager_builder.rs` — [`VillagerBuilder`](src/entities/villagers/villager_builder.rs),
+  which extends `EntityBuilder` with what makes a villager a **trader**: its profession and
+  the layers its shop stands in. See [Custom villagers](#custom-villagers).
+
+The identity marker is a **byte** in the entity's own persistent data under `PLUGIN_ID`
+(`set_byte`/`get_byte`, the same calls `curse.rs` uses), so it survives relogs and restarts
+and cannot collide with another plugin's data. It stores `EntityBuilder::id`, not the display
+name, so renaming a kind does not orphan entities already spawned. `id_of` returns `None` for
+anything this plugin did not spawn, so a handler must not assume every entity is custom. The
+number space is **shared by mobs and villagers**, because the marker is.
+
+A kind does everything else in **`EntityBuilder::apply`**: the spawned `LivingEntity` is
+handed over and the kind sets attributes with `set_attribute_base` and equips itself with
+`set_equipment` per slot. Nothing is a fixed table, so a hand-only mob and a fully armoured
+one are just different bodies for that method. `EntityBuilder::spawn` creates the base type,
+calls `apply`, and stamps the identity. A villager kind forwards `apply` to
+`villager_builder::prepare::<Self>`, which sets the profession and passes a `Villager` handle
+to `VillagerBuilder::apply`.
+
 - `Category` is _not_ derived from `EntityType`: the base type says what a mob looks like and
   how the host paths it, the category says what it is for. They usually agree and are allowed
   to disagree, and an unstated category defaults to `Passive` so a new kind is never silently
   treated as something that hunts players.
-- The marker itself is `mark`/`id_of`/`is` in the same file: a **byte** in the entity's own
-  persistent data under `PLUGIN_ID` (`set_byte`/`get_byte`, the same calls `curse.rs` uses),
-  so it survives relogs and restarts and cannot collide with another plugin's data. It
-  stores `MobBuilder::id`, not the display name, so renaming a kind does not orphan mobs already
-  spawned. `id_of` returns `None` for anything this plugin did not spawn, so a handler must
-  not assume every mob is custom.
 
 **Attributes are written to the base value**, matching how every kind sets its stats. The
 base is the template and the visible stat is derived from it, so setting a base is
@@ -384,17 +395,17 @@ idempotent and never compounds on a repeated call.
   a mob is not expressible.
 
 `MobKind`-style catalogues are the array in `mob_kinds()`, the same way `Layer` holds
-per-layer data and `MineInAbyss::events` lists every handler. Adding a kind means adding its
-file, its `pub mod` line in `lib.rs`, its `impl MobBuilder`, and one entry in `mob_kinds`.
-It is a function rather than a `const` because a trait method cannot be called in a constant.
-`beniguma` is the worked example.
+per-layer data and `MineInAbyss::events` lists every handler. Adding a mob means adding its
+file, its `pub mod` line in `lib.rs`, its `impl EntityBuilder`, its `impl MobBuilder`, and
+one entry in `mob_kinds`. It is a function rather than a `const` because a trait method
+cannot be called in a constant. `beniguma` is the worked example.
 
-**Kinds are filed by category.** `src/mobs/` holds `mob_builder.rs` plus one folder per
-[`Category`](src/mobs/mob_builder.rs) — `aerial`, `aquatic`, `docile`, `hostile`, `passive` —
-and a kind lives in the folder matching its own `category()`. The folder is organisation
-only: nothing reads it at runtime, so a kind whose category changes must be **moved** by hand
-to keep the two agreeing. There is no `mod.rs`; each folder's `pub mod` list lives inline in
-the `mod mobs` block in `lib.rs`, alongside the others.
+**Kinds are filed by category.** `src/entities/mobs/` holds `mob_builder.rs` plus one folder
+per [`Category`](src/entities/mobs/mob_builder.rs) — `aerial`, `aquatic`, `docile`, `hostile`,
+`passive` — and a kind lives in the folder matching its own `category()`. The folder is
+organisation only: nothing reads it at runtime, so a kind whose category changes must be
+**moved** by hand to keep the two agreeing. There is no `mod.rs`; each folder's `pub mod`
+list lives inline in the `mod entities` block in `lib.rs`.
 
 **The catalogue as it stands**, with ids and spawn layers:
 
@@ -475,7 +486,7 @@ rather than a `NamedColor`, which has only 16 entries and no cyan, brown or ligh
 
 **`/abyss summon <mob> [count]` is the caller**, so the module carries no
 `#[expect(dead_code)]`. It resolves a name through [`mob_kinds`](src/lib.rs), which builds a
-[`MobKind`](src/mobs/mob_builder.rs) per kind — id, name, base, layers, category and a spawn
+[`MobKind`](src/entities/mobs/mob_builder.rs) per kind — id, name, base, layers, category and a spawn
 fn pointer — because a kind's associated functions cannot be called through a trait object.
 `MobKind::of::<T>(label)` fills the entry from that kind's own methods, so a kind's values
 are still written in one place; the label is passed separately because `MobBuilder::name`
@@ -491,6 +502,38 @@ filling a layer with something that was never meant to live there.
 
 **Names match loosely**: case-insensitive, with spaces and hyphens ignored, so
 `small hammerbeak`, `Small Hammerbeak` and `SmallHammerbeak` all resolve.
+
+### Custom villagers
+
+A villager is **not** a mob, and deliberately not in `mob_kinds`. It is not a creature of the
+Abyss: it stands behind a counter on an authored map, it is not something a layer spawns, and
+`Category` answers a question nobody asks of a shopkeeper. So it has its own builder beside
+the mob one rather than a mob kind with an odd category.
+
+- `villager_builder.rs` — [`VillagerBuilder`](src/entities/villagers/villager_builder.rs)
+  extends `EntityBuilder` with a `profession()` and the `layers()` its shop stands in.
+- A kind implements **both** traits. `EntityBuilder` supplies `base()` (always
+  `EntityType::Villager`), `id()` (forwarded from `VillagerBuilder::id().get()`) and
+  `name()`; `VillagerBuilder` supplies the profession, the layers and `apply(&Villager)`. The
+  kind's `EntityBuilder::apply` forwards to `villager_builder::prepare::<Self>`, which sets the
+  profession and hands over the villager handle. `EntityBuilder::spawn` is inherited, so a
+  trader is placed by the same code as every other custom entity.
+- Numbers come from `villager_builder::ids`, a **newtype** `VillagerId` so the claimed numbers
+  are written in one place and a kind cannot take a mob's by mistyping a literal. The space is
+  **shared with the mobs** because the marker byte is: mobs hold `1`–`65`, so villagers start
+  above them. `Boy` is `66`.
+- **A trader is never a natural spawn.** `CreatureSpawn::choose` filters out any kind whose
+  base is `EntityType::Villager`, so a layer's wild spawns can never produce a shopkeeper.
+- **Trades cannot be authored yet.** The API reads and writes profession, level and
+  experience, but has no call that sets the offers, and `TradeSelect`/`VillagerAcquireTrade`
+  carry only an index. A kind therefore leaves its trade table out of `apply` and states only
+  the shape of the trader. The wiki's Orth trade table is the source for those offers once a
+  setter exists — do not invent a second table elsewhere.
+- The villager modules carry `#[expect(dead_code)]` until the command that places a trader
+  exists; drop it with that caller.
+
+`Boy` is the worked example: `Boy, Lord of Currency`, a librarian placed in `Orth`,
+built from the wiki's `Golden Bridge` counter.
 
 ### Custom items
 
@@ -515,13 +558,13 @@ plugin stores on an item.
 subcommand creates the stack, puts it in the sender's hand and reads the marker straight
 back off the stored stack, so it exercises the whole path until a real source of items
 (loot tables or crafting) exists. Because a caller exists, `mod items` carries no
-`#[expect(dead_code)]`, just as `mod mobs` does not — `/abyss summon` reaches a kind by name.
+`#[expect(dead_code)]`, just as `mod entities` does not — `/abyss summon` reaches a kind by name.
 
 **The catalogue as it stands**, with ids and base items:
 
-| Kind       | id  | Base        | Name       | Reachable via           |
-| ---------- | --- | ----------- | ---------- | ----------------------- |
-| `Orthcoin` | 2   | Gold Nugget | Orthcoin   | `/abyss item orthcoin`  |
+| Kind       | id  | Base        | Name     | Reachable via          |
+| ---------- | --- | ----------- | -------- | ---------------------- |
+| `Orthcoin` | 2   | Gold Nugget | Orthcoin | `/abyss item orthcoin` |
 
 Ids are permanent once shipped, for the same reason a mob id is: they are what tells two
 kinds on the same base item apart. A new item takes the next free number and never reuses
@@ -611,13 +654,18 @@ src/
 │   ├── setup.rs        # `Worlds` — one void world per layer, created on load
 │   ├── generator.rs    # `Void` chunk generator — layer worlds generate empty
 │   └── clock.rs        # Keeps every layer world on `Orth`'s clock
-├── mobs/               # declared as `mod mobs` in `lib.rs`: the plugin's own mobs
-│   ├── mob_builder.rs  # `MobBuilder` trait, `Category`, `MobKind` + the marker
-│   ├── aerial/         # one folder per category; a kind sits in its own
-│   ├── aquatic/        #   category's folder: aerial 15, aquatic 8, docile 8,
-│   ├── docile/         #   hostile 23, passive 12 — 65 kinds in all
-│   ├── hostile/
-│   └── passive/
+├── entities/           # declared as `mod entities` in `lib.rs`: the plugin's own entities
+│   ├── entity_builder.rs # `EntityBuilder` core trait + the identity marker
+│   ├── mobs/           # the creatures of the Abyss
+│   │   ├── mob_builder.rs # `MobBuilder` (category + layers), `Category`, `MobKind`
+│   │   ├── aerial/     # one folder per category; a kind sits in its own
+│   │   ├── aquatic/    #   category's folder: aerial 15, aquatic 8, docile 8,
+│   │   ├── docile/     #   hostile 23, passive 12 — 65 kinds in all
+│   │   ├── hostile/
+│   │   └── passive/
+│   └── villagers/      # the traders of Orth
+│       ├── villager_builder.rs # `VillagerBuilder` (profession + layers), `VillagerId`
+│       └── boy.rs    # `Boy` — the worked example, trades pending
 ├── items/              # declared as `mod items` in `lib.rs`: the plugin's own items
 │   ├── item_builder.rs # `ItemBuilder` trait + the identity marker
 │   └── orthcoin.rs     # `Orthcoin` — the worked example, via `/abyss item orthcoin`

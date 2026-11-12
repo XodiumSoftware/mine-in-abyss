@@ -40,7 +40,7 @@ If a code change would confuse someone reading the docs, update the docs. Trigge
 ## Steps
 
 0. **Discover the current structure first.** Read `src/lib.rs`, `src/layer.rs`, the event
-   handlers, and the `mobs/` and `items/` trees so you describe the real structure and names —
+   handlers, and the `entities/mobs/` and `items/` trees so you describe the real structure and names —
    don't rely on stale notes in this skill or in `AGENTS.md`. If they disagree with the code,
    the code wins and the docs need fixing.
 1. Identify the changed files (diff or ask the user).

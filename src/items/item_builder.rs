@@ -8,7 +8,7 @@
 //!
 //! The marker is [`ItemBuilder::id`] — a byte, not the display name — stored under
 //! [`PLUGIN_ID`](crate::PLUGIN_ID) with `set_byte`/`get_byte`, the same calls
-//! [`curse`](crate::events::curse) uses for players and [`mob_builder`](crate::mobs::mob_builder) for
+//! [`curse`](crate::events::curse) uses for players and [`entity_builder`](crate::entities::mobs::mob_builder) for
 //! entities. That keeps it from colliding with another plugin's data, lets it survive
 //! restarts, keeps two items built on the same vanilla item apart, and means renaming an
 //! item does not orphan the stacks already in the world.

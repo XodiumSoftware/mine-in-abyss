@@ -17,99 +17,123 @@ mod commands {
     pub(crate) mod command;
 }
 
-/// The plugin's own mobs, built on top of the vanilla ones.
+/// The plugin's own entities, built on top of the vanilla ones.
 ///
-/// Minecraft's mob types cannot be extended, so a mob here is a vanilla entity wearing an
-/// identity: a base type, a visible name, scaled attributes, and a marker in its own
-/// persistent data. `mob_builder` is the trait a kind implements and where that marker is
-/// written and read back; `docile::beniguma` is the worked example, filed in `docile`
-/// because that is the category it declares.
-mod mobs {
-    pub(crate) mod mob_builder;
+/// Minecraft's entity types cannot be extended, so an entity here is a vanilla entity
+/// wearing an identity: a base type, a visible name, scaled attributes, and a marker in its
+/// own persistent data. `entity_builder` is the core shared by every kind: it holds the
+/// [`EntityBuilder`] trait, where that marker is written and read back.
+///
+/// What an entity *is* and where it may appear are then each builder's own business.
+/// `mobs::mob_builder` adds a mob's [`MobBuilder`] with its [`Category`] and its layers, and
+/// `villagers::villager_builder` adds a villager's [`VillagerBuilder`] with its profession.
+/// Mobs are filed one folder per [`Category`], and `mobs::docile::beniguma` is the worked
+/// example; `villagers::boy` is the villager one.
+///
+/// The villager modules carry `dead_code` because no caller places a trader yet: the kinds
+/// are authored and their numbers reserved, but the command that puts one in the world is a
+/// separate change. The attribute goes away with that caller.
+mod entities {
+    pub(crate) mod entity_builder;
 
-    /// Aerial mob kinds.
-    pub(crate) mod aerial {
-        pub(crate) mod buroguro;
-        pub(crate) mod corpse_weeper;
-        pub(crate) mod cyatoria;
-        pub(crate) mod dosetori;
-        pub(crate) mod giant_hammerbeak;
-        pub(crate) mod hashofu;
-        pub(crate) mod kagi_tachikiri;
-        pub(crate) mod madokajack;
-        pub(crate) mod onitsuchi;
-        pub(crate) mod rohana;
-        pub(crate) mod small_hammerbeak;
-        pub(crate) mod splitjaw;
-        pub(crate) mod spore_manta;
-        pub(crate) mod squidfly;
-        pub(crate) mod stinger;
+    /// Mobs, the creatures of the Abyss.
+    pub(crate) mod mobs {
+        pub(crate) mod mob_builder;
+
+        /// Aerial mob kinds.
+        pub(crate) mod aerial {
+            pub(crate) mod buroguro;
+            pub(crate) mod corpse_weeper;
+            pub(crate) mod cyatoria;
+            pub(crate) mod dosetori;
+            pub(crate) mod giant_hammerbeak;
+            pub(crate) mod hashofu;
+            pub(crate) mod kagi_tachikiri;
+            pub(crate) mod madokajack;
+            pub(crate) mod onitsuchi;
+            pub(crate) mod rohana;
+            pub(crate) mod small_hammerbeak;
+            pub(crate) mod splitjaw;
+            pub(crate) mod spore_manta;
+            pub(crate) mod squidfly;
+            pub(crate) mod stinger;
+        }
+
+        /// Aquatic mob kinds.
+        pub(crate) mod aquatic {
+            pub(crate) mod demonfish;
+            pub(crate) mod edusan;
+            pub(crate) mod hagamizukin;
+            pub(crate) mod hisomukuro;
+            pub(crate) mod ikenosuke;
+            pub(crate) mod kazura;
+            pub(crate) mod makihige;
+            pub(crate) mod spiralsquid;
+        }
+
+        /// Docile mob kinds.
+        pub(crate) mod docile {
+            pub(crate) mod beniguma;
+            pub(crate) mod chimokami;
+            pub(crate) mod daikonchu;
+            pub(crate) mod hisoishi;
+            pub(crate) mod rinsipede;
+            pub(crate) mod rockwalker;
+            pub(crate) mod spikewalker;
+            pub(crate) mod titanjaw;
+        }
+
+        /// Hostile mob kinds.
+        pub(crate) mod hostile {
+            pub(crate) mod chikyuoebi;
+            pub(crate) mod himushi;
+            pub(crate) mod horncrier;
+            pub(crate) mod inbyo;
+            pub(crate) mod kuongatari;
+            pub(crate) mod man_toyer;
+            pub(crate) mod octoliar;
+            pub(crate) mod orb_piercer;
+            pub(crate) mod ottobas;
+            pub(crate) mod shiratsubi;
+            pub(crate) mod silkfang;
+            pub(crate) mod spittleshrub;
+            pub(crate) mod stingerhead;
+            pub(crate) mod swarmhoarder;
+            pub(crate) mod swarmshocker;
+            pub(crate) mod tachikatana;
+            pub(crate) mod uibuta;
+            pub(crate) mod vinebinder;
+            pub(crate) mod vineblaster;
+            pub(crate) mod vinepoofer;
+            pub(crate) mod virinsipede;
+            pub(crate) mod woodcrier;
+            pub(crate) mod yomotsubi;
+        }
+
+        /// Passive mob kinds.
+        pub(crate) mod passive {
+            pub(crate) mod abyssal_snail;
+            pub(crate) mod ashimite;
+            pub(crate) mod billabonk;
+            pub(crate) mod fuwagi;
+            pub(crate) mod ikonia;
+            pub(crate) mod kakatsumuri;
+            pub(crate) mod neritantan;
+            pub(crate) mod okibo;
+            pub(crate) mod sakuranbo;
+            pub(crate) mod shroombear;
+            pub(crate) mod tesuchi;
+        }
     }
 
-    /// Aquatic mob kinds.
-    pub(crate) mod aquatic {
-        pub(crate) mod demonfish;
-        pub(crate) mod edusan;
-        pub(crate) mod hagamizukin;
-        pub(crate) mod hisomukuro;
-        pub(crate) mod ikenosuke;
-        pub(crate) mod kazura;
-        pub(crate) mod makihige;
-        pub(crate) mod spiralsquid;
-    }
-
-    /// Docile mob kinds.
-    pub(crate) mod docile {
-        pub(crate) mod beniguma;
-        pub(crate) mod chimokami;
-        pub(crate) mod daikonchu;
-        pub(crate) mod hisoishi;
-        pub(crate) mod rinsipede;
-        pub(crate) mod rockwalker;
-        pub(crate) mod spikewalker;
-        pub(crate) mod titanjaw;
-    }
-
-    /// Hostile mob kinds.
-    pub(crate) mod hostile {
-        pub(crate) mod chikyuoebi;
-        pub(crate) mod himushi;
-        pub(crate) mod horncrier;
-        pub(crate) mod inbyo;
-        pub(crate) mod kuongatari;
-        pub(crate) mod man_toyer;
-        pub(crate) mod octoliar;
-        pub(crate) mod orb_piercer;
-        pub(crate) mod ottobas;
-        pub(crate) mod shiratsubi;
-        pub(crate) mod silkfang;
-        pub(crate) mod spittleshrub;
-        pub(crate) mod stingerhead;
-        pub(crate) mod swarmhoarder;
-        pub(crate) mod swarmshocker;
-        pub(crate) mod tachikatana;
-        pub(crate) mod uibuta;
-        pub(crate) mod vinebinder;
-        pub(crate) mod vineblaster;
-        pub(crate) mod vinepoofer;
-        pub(crate) mod virinsipede;
-        pub(crate) mod woodcrier;
-        pub(crate) mod yomotsubi;
-    }
-
-    /// Passive mob kinds.
-    pub(crate) mod passive {
-        pub(crate) mod abyssal_snail;
-        pub(crate) mod ashimite;
-        pub(crate) mod billabonk;
-        pub(crate) mod fuwagi;
-        pub(crate) mod ikonia;
-        pub(crate) mod kakatsumuri;
-        pub(crate) mod neritantan;
-        pub(crate) mod okibo;
-        pub(crate) mod sakuranbo;
-        pub(crate) mod shroombear;
-        pub(crate) mod tesuchi;
+    /// Villagers, the traders of Orth.
+    #[expect(
+        dead_code,
+        reason = "the kinds are authored; the command that places one is a later change"
+    )]
+    pub(crate) mod villagers {
+        pub(crate) mod boy;
+        pub(crate) mod villager_builder;
     }
 }
 
@@ -199,93 +223,222 @@ pub const LAYERS: [Layer; 8] = Layer::ALL;
 /// `MobBuilder` methods. Adding a kind therefore means adding it here, and `/abyss summon`
 /// can then reach it by name.
 ///
+/// Villagers are **not** listed here. They share the identity marker but not the question a
+/// mob catalogue answers — where a layer's wild life comes from — so a trader is placed on
+/// the map rather than drawn by the creature-spawn rule, and the villager kinds live under
+/// `entities::villagers`, each claiming its number from `villager_builder::ids`.
+///
 /// A function rather than a `const`: `MobKind::of` calls trait methods, which are not
 /// `const`, so the catalogue is built once at first use.
+///
+/// It is long by nature — one line per kind, and 66 of them — so the line limit is waived
+/// here rather than by splitting the list into several functions that would each still
+/// need this attribute.
+#[expect(
+    clippy::too_many_lines,
+    reason = "a catalogue is one entry per kind by design"
+)]
 #[must_use]
-pub fn mob_kinds() -> [mobs::mob_builder::MobKind; 65] {
+pub fn mob_kinds() -> [entities::mobs::mob_builder::MobKind; 65] {
     [
-        mobs::mob_builder::MobKind::of::<mobs::docile::beniguma::Beniguma>("Beniguma"),
-        mobs::mob_builder::MobKind::of::<mobs::aerial::cyatoria::Cyatoria>("Cyatoria"),
-        mobs::mob_builder::MobKind::of::<mobs::aerial::small_hammerbeak::SmallHammerbeak>(
-            "Small Hammerbeak",
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::docile::beniguma::Beniguma>(
+            "Beniguma",
         ),
-        mobs::mob_builder::MobKind::of::<mobs::aerial::giant_hammerbeak::GiantHammerbeak>(
-            "Giant Hammerbeak",
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::aerial::cyatoria::Cyatoria>(
+            "Cyatoria",
         ),
-        mobs::mob_builder::MobKind::of::<mobs::aerial::splitjaw::Splitjaw>("Splitjaw"),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::woodcrier::Woodcrier>("Woodcrier"),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::man_toyer::ManToyer>("Man-toyer"),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::silkfang::Silkfang>("Silkfang"),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::spittleshrub::Spittleshrub>("Spittleshrub"),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::vinebinder::Vinebinder>("Vinebinder"),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::vineblaster::Vineblaster>("Vineblaster"),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::vinepoofer::Vinepoofer>("Vinepoofer"),
-        mobs::mob_builder::MobKind::of::<mobs::passive::fuwagi::Fuwagi>("Fuwagi"),
-        mobs::mob_builder::MobKind::of::<mobs::passive::okibo::Okibo>("Okibo"),
-        mobs::mob_builder::MobKind::of::<mobs::aquatic::spiralsquid::Spiralsquid>("Spiralsquid"),
-        mobs::mob_builder::MobKind::of::<mobs::docile::chimokami::Chimokami>("Chimokami"),
-        mobs::mob_builder::MobKind::of::<mobs::aerial::corpse_weeper::CorpseWeeper>(
-            "Corpse-Weeper",
+        entities::mobs::mob_builder::MobKind::of::<
+            entities::mobs::aerial::small_hammerbeak::SmallHammerbeak,
+        >("Small Hammerbeak"),
+        entities::mobs::mob_builder::MobKind::of::<
+            entities::mobs::aerial::giant_hammerbeak::GiantHammerbeak,
+        >("Giant Hammerbeak"),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::aerial::splitjaw::Splitjaw>(
+            "Splitjaw",
         ),
-        mobs::mob_builder::MobKind::of::<mobs::aerial::dosetori::Dosetori>("Dosetori"),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::ottobas::Ottobas>("Ottobas"),
-        mobs::mob_builder::MobKind::of::<mobs::passive::tesuchi::Tesuchi>("Tesuchi"),
-        mobs::mob_builder::MobKind::of::<mobs::docile::hisoishi::Hisoishi>("Hisoishi"),
-        mobs::mob_builder::MobKind::of::<mobs::docile::rockwalker::Rockwalker>("Rockwalker"),
-        mobs::mob_builder::MobKind::of::<mobs::aerial::rohana::Rohana>("Rohana"),
-        mobs::mob_builder::MobKind::of::<mobs::aerial::stinger::Stinger>("Stinger"),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::inbyo::Inbyo>("Inbyo"),
-        mobs::mob_builder::MobKind::of::<mobs::passive::billabonk::Billabonk>("Billabonk"),
-        mobs::mob_builder::MobKind::of::<mobs::passive::neritantan::Neritantan>("Neritantan"),
-        mobs::mob_builder::MobKind::of::<mobs::aquatic::ikenosuke::Ikenosuke>("Ikenosuke"),
-        mobs::mob_builder::MobKind::of::<mobs::docile::daikonchu::Daikonchu>("Daikonchu"),
-        mobs::mob_builder::MobKind::of::<mobs::docile::rinsipede::Rinsipede>("Rinsipede"),
-        mobs::mob_builder::MobKind::of::<mobs::aerial::buroguro::Buroguro>("Buroguro"),
-        mobs::mob_builder::MobKind::of::<mobs::aerial::madokajack::Madokajack>("Madokajack"),
-        mobs::mob_builder::MobKind::of::<mobs::aerial::squidfly::Squidfly>("Squidfly"),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::himushi::Himushi>("Himushi"),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::yomotsubi::Yomotsubi>("Yomotsubi"),
-        mobs::mob_builder::MobKind::of::<mobs::passive::kakatsumuri::Kakatsumuri>("Kakatsumuri"),
-        mobs::mob_builder::MobKind::of::<mobs::passive::sakuranbo::Sakuranbo>("Sakuranbo"),
-        mobs::mob_builder::MobKind::of::<mobs::aerial::hashofu::Hashofu>("Hashofu"),
-        mobs::mob_builder::MobKind::of::<mobs::aerial::onitsuchi::Onitsuchi>("Onitsuchi"),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::horncrier::Horncrier>("Horncrier"),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::kuongatari::Kuongatari>("Kuongatari"),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::orb_piercer::OrbPiercer>("Orb Piercer"),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::swarmshocker::Swarmshocker>("Swarmshocker"),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::tachikatana::Tachikatana>("Tachikatana"),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::uibuta::Uibuta>("Uibuta"),
-        mobs::mob_builder::MobKind::of::<mobs::passive::shroombear::Shroombear>("Shroombear"),
-        mobs::mob_builder::MobKind::of::<mobs::aquatic::hagamizukin::Hagamizukin>("Hagamizukin"),
-        mobs::mob_builder::MobKind::of::<mobs::aquatic::kazura::Kazura>("Kazura"),
-        mobs::mob_builder::MobKind::of::<mobs::aquatic::makihige::Makihige>("Makihige"),
-        mobs::mob_builder::MobKind::of::<mobs::docile::spikewalker::Spikewalker>("Spikewalker"),
-        mobs::mob_builder::MobKind::of::<mobs::docile::titanjaw::Titanjaw>("Titanjaw"),
-        mobs::mob_builder::MobKind::of::<mobs::aerial::kagi_tachikiri::KagiTachikiri>(
-            "Kagi-Tachikiri",
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::hostile::woodcrier::Woodcrier>(
+            "Woodcrier",
         ),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::chikyuoebi::Chikyuoebi>("Chikyuoebi"),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::octoliar::Octoliar>("Octoliar"),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::stingerhead::Stingerhead>("Stingerhead"),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::swarmhoarder::Swarmhoarder>("Swarmhoarder"),
-        mobs::mob_builder::MobKind::of::<mobs::aerial::spore_manta::SporeManta>("Spore Manta"),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::virinsipede::Virinsipede>("Virinsipede"),
-        mobs::mob_builder::MobKind::of::<mobs::hostile::shiratsubi::Shiratsubi>("Shiratsubi"),
-        mobs::mob_builder::MobKind::of::<mobs::passive::abyssal_snail::AbyssalSnail>(
-            "Abyssal Snail",
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::hostile::man_toyer::ManToyer>(
+            "Man-toyer",
         ),
-        mobs::mob_builder::MobKind::of::<mobs::passive::ashimite::Ashimite>("Ashimite"),
-        mobs::mob_builder::MobKind::of::<mobs::passive::ikonia::Ikonia>("Ikonia"),
-        mobs::mob_builder::MobKind::of::<mobs::aquatic::demonfish::Demonfish>("Demonfish"),
-        mobs::mob_builder::MobKind::of::<mobs::aquatic::edusan::Edusan>("Edusan"),
-        mobs::mob_builder::MobKind::of::<mobs::aquatic::hisomukuro::Hisomukuro>("Hisomukuro"),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::hostile::silkfang::Silkfang>(
+            "Silkfang",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<
+            entities::mobs::hostile::spittleshrub::Spittleshrub,
+        >("Spittleshrub"),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::hostile::vinebinder::Vinebinder>(
+            "Vinebinder",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::hostile::vineblaster::Vineblaster>(
+            "Vineblaster",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::hostile::vinepoofer::Vinepoofer>(
+            "Vinepoofer",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::passive::fuwagi::Fuwagi>(
+            "Fuwagi",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::passive::okibo::Okibo>("Okibo"),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::aquatic::spiralsquid::Spiralsquid>(
+            "Spiralsquid",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::docile::chimokami::Chimokami>(
+            "Chimokami",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<
+            entities::mobs::aerial::corpse_weeper::CorpseWeeper,
+        >("Corpse-Weeper"),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::aerial::dosetori::Dosetori>(
+            "Dosetori",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::hostile::ottobas::Ottobas>(
+            "Ottobas",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::passive::tesuchi::Tesuchi>(
+            "Tesuchi",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::docile::hisoishi::Hisoishi>(
+            "Hisoishi",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::docile::rockwalker::Rockwalker>(
+            "Rockwalker",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::aerial::rohana::Rohana>(
+            "Rohana",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::aerial::stinger::Stinger>(
+            "Stinger",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::hostile::inbyo::Inbyo>("Inbyo"),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::passive::billabonk::Billabonk>(
+            "Billabonk",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::passive::neritantan::Neritantan>(
+            "Neritantan",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::aquatic::ikenosuke::Ikenosuke>(
+            "Ikenosuke",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::docile::daikonchu::Daikonchu>(
+            "Daikonchu",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::docile::rinsipede::Rinsipede>(
+            "Rinsipede",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::aerial::buroguro::Buroguro>(
+            "Buroguro",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::aerial::madokajack::Madokajack>(
+            "Madokajack",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::aerial::squidfly::Squidfly>(
+            "Squidfly",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::hostile::himushi::Himushi>(
+            "Himushi",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::hostile::yomotsubi::Yomotsubi>(
+            "Yomotsubi",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::passive::kakatsumuri::Kakatsumuri>(
+            "Kakatsumuri",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::passive::sakuranbo::Sakuranbo>(
+            "Sakuranbo",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::aerial::hashofu::Hashofu>(
+            "Hashofu",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::aerial::onitsuchi::Onitsuchi>(
+            "Onitsuchi",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::hostile::horncrier::Horncrier>(
+            "Horncrier",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::hostile::kuongatari::Kuongatari>(
+            "Kuongatari",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::hostile::orb_piercer::OrbPiercer>(
+            "Orb Piercer",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<
+            entities::mobs::hostile::swarmshocker::Swarmshocker,
+        >("Swarmshocker"),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::hostile::tachikatana::Tachikatana>(
+            "Tachikatana",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::hostile::uibuta::Uibuta>(
+            "Uibuta",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::passive::shroombear::Shroombear>(
+            "Shroombear",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::aquatic::hagamizukin::Hagamizukin>(
+            "Hagamizukin",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::aquatic::kazura::Kazura>(
+            "Kazura",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::aquatic::makihige::Makihige>(
+            "Makihige",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::docile::spikewalker::Spikewalker>(
+            "Spikewalker",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::docile::titanjaw::Titanjaw>(
+            "Titanjaw",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<
+            entities::mobs::aerial::kagi_tachikiri::KagiTachikiri,
+        >("Kagi-Tachikiri"),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::hostile::chikyuoebi::Chikyuoebi>(
+            "Chikyuoebi",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::hostile::octoliar::Octoliar>(
+            "Octoliar",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::hostile::stingerhead::Stingerhead>(
+            "Stingerhead",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<
+            entities::mobs::hostile::swarmhoarder::Swarmhoarder,
+        >("Swarmhoarder"),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::aerial::spore_manta::SporeManta>(
+            "Spore Manta",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::hostile::virinsipede::Virinsipede>(
+            "Virinsipede",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::hostile::shiratsubi::Shiratsubi>(
+            "Shiratsubi",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<
+            entities::mobs::passive::abyssal_snail::AbyssalSnail,
+        >("Abyssal Snail"),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::passive::ashimite::Ashimite>(
+            "Ashimite",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::passive::ikonia::Ikonia>(
+            "Ikonia",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::aquatic::demonfish::Demonfish>(
+            "Demonfish",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::aquatic::edusan::Edusan>(
+            "Edusan",
+        ),
+        entities::mobs::mob_builder::MobKind::of::<entities::mobs::aquatic::hisomukuro::Hisomukuro>(
+            "Hisomukuro",
+        ),
     ]
 }
 
 /// Returns the mob kind called `name`, matched case-insensitively against the display name
 /// and with spaces or hyphens interchangeable.
 #[must_use]
-pub(crate) fn mob_kind(name: &str) -> Option<mobs::mob_builder::MobKind> {
+pub(crate) fn mob_kind(name: &str) -> Option<entities::mobs::mob_builder::MobKind> {
     let wanted = normalise(name);
     mob_kinds()
         .into_iter()

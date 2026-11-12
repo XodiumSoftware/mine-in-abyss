@@ -8,15 +8,16 @@ description: Adds a custom mob to mine-in-abyss by writing a MobBuilder impl in 
 A custom mob **is a vanilla mob wearing an identity**. `EntityType` is a closed enum and the
 plugin WIT has no registration call, so there is no way to add a new entity type, model,
 texture or hitbox. What makes a mob "custom" is a `u8` marker in its own persistent data,
-written by [`MobBuilder::spawn`](../../../src/mobs/mob_builder.rs) and read by `id_of`.
+written by [`EntityBuilder::spawn`](../../../src/entities/entity_builder.rs) and read by `id_of`.
 
 For items, use the `add-item` skill instead — same idea, different trait and marker key.
 
 **Discover, don't assume.** Read these before writing anything:
 
-1. `src/mobs/mob_builder.rs` — the trait, `Category`, `MobKind`, `mark`/`id_of`.
-2. `src/mobs/docile/beniguma.rs` — the worked example; copy its structure.
-3. The `mod mobs` block **and** `mob_kinds()` in `src/lib.rs`.
+1. `src/entities/entity_builder.rs` — the shared `EntityBuilder` trait, `mark`/`id_of`.
+2. `src/entities/mobs/mob_builder.rs` — `MobBuilder` (adds `layers()`/`category()`), `Category`, `MobKind`.
+3. `src/entities/mobs/docile/beniguma.rs` — the worked example; copy its structure.
+4. The `mod entities` block **and** `mob_kinds()` in `src/lib.rs`.
 4. `AGENTS.md` § Custom mobs for the catalogue and the current highest id.
 
 ## Step 0 — Pick the five values
@@ -35,7 +36,7 @@ nothing above `127`.
 
 ## Step 1 — File it in its category's folder
 
-`src/mobs/` holds `mob_builder.rs` plus one folder per `Category`: `aerial`, `aquatic`,
+`src/entities/mobs/` holds `mob_builder.rs` plus one folder per `Category`: `aerial`, `aquatic`,
 `docile`, `hostile`, `passive`. A kind lives in the folder matching its **own `category()`**.
 
 The folder is organisation only — nothing reads it at runtime — so a kind whose category
@@ -43,7 +44,7 @@ changes must be **moved by hand** to keep the two agreeing.
 
 ## Step 2 — Write the kind
 
-`src/mobs/<category>/<snake_case_name>.rs`:
+`src/entities/mobs/<category>/<snake_case_name>.rs`:
 
 ```rust
 //! A docile wolf of the upper layers, showing what a custom mob can express.
@@ -56,15 +57,16 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
 use pumpkin_plugin_api::world::LivingEntity;
 
+use crate::entities::entity_builder::EntityBuilder;
+use crate::entities::mobs::mob_builder::{Category, MobBuilder};
 use crate::layer::Layer;
-use crate::mobs::mob_builder::{Category, MobBuilder};
 use crate::utils::rgb;
 
 /// A docile wolf of the Top of the Abyss and the Forest of Temptation.
 #[derive(Debug, Default, Clone, Copy)]
 pub struct Beniguma;
 
-impl MobBuilder for Beniguma {
+impl EntityBuilder for Beniguma {
     fn base() -> EntityType {
         EntityType::Wolf
     }
@@ -77,6 +79,13 @@ impl MobBuilder for Beniguma {
         TextComponent::text("Beniguma").color_rgb(rgb(0x82, 0x42, 0x43))
     }
 
+    fn apply(entity: &LivingEntity) {
+        entity.set_attribute_base(Attribute::MaxHealth, 16.0);
+        entity.set_health(16.0);
+    }
+}
+
+impl MobBuilder for Beniguma {
     fn layers() -> &'static [Layer] {
         &[Layer::First, Layer::Second]
     }
@@ -84,21 +93,16 @@ impl MobBuilder for Beniguma {
     fn category() -> Category {
         Category::Docile
     }
-
-    fn apply(entity: &LivingEntity) {
-        entity.set_attribute_base(Attribute::MaxHealth, 16.0);
-        entity.set_health(16.0);
-    }
 }
 ```
 
 ## Step 3 — Register it in two places
 
-1. **`pub mod <file>;`** in the matching category block of the `mod mobs` block in `lib.rs`.
+1. **`pub mod <file>;`** in the matching category block of the `mod entities { mod mobs { .. } }` block in `lib.rs`.
 2. **One entry in `mob_kinds()`** in `lib.rs`, in id order:
 
     ```rust
-    mobs::mob_builder::MobKind::of::<mobs::docile::beniguma::Beniguma>("Beniguma"),
+    entities::mobs::mob_builder::MobKind::of::<entities::mobs::docile::beniguma::Beniguma>("Beniguma"),
     ```
 
 The catalogue is a **function, not a `const`**, because `MobKind::of` calls trait methods,
@@ -138,7 +142,7 @@ Run `just validate` (lint + fmt-check + release build) and `just doc`. The relea
 required: debug builds fail to load in the Pumpkin runtime.
 
 Then update `AGENTS.md` § Custom mobs: the catalogue table (kind, id, base, category, layers,
-hearts, colour) and the per-category counts on the `src/mobs/` tree line. Add the file to the
+hearts, colour) and the per-category counts on the `src/entities/mobs/` tree line. Add the file to the
 § Project Structure tree.
 
 In game, `/abyss summon <name>` spawns it, refuses a layer it does not list, and logs if the

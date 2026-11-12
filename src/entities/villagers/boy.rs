@@ -11,9 +11,9 @@
 //! trades are the part of the [`VillagerBuilder`] chain `build` will grow once the host can be
 //! told about them.
 //!
-//! What it does set is the shape of the trader: a librarian, so its work sound is right, a
-//! name over its head so a player can tell it from a village villager, and a first trade
-//! level so one is available the moment it is placed.
+//! What it does set is the shape of the trader: a librarian, so its work sound is right, and a
+//! name over its head so a player can tell it from a village villager. The trade level and
+//! experience are deliberately left alone, so a villager keeps whatever it already had.
 //!
 //! # A trader is not an `EntityBuilder`
 //!
@@ -35,13 +35,13 @@ use crate::utils::rgb;
 pub(crate) struct Boy;
 
 impl Boy {
-    /// Makes `villager` into Boy: a librarian, named, at trade level one.
+    /// Makes `villager` into Boy: a librarian with his name over its head.
     ///
     /// The whole trader is one chain of [`VillagerBuilder`] calls, so nothing about him is
-    /// written anywhere else. Only the level is stated; the experience is left alone, so
-    /// whatever the villager already had survives being made into a trader. A caller that wants
-    /// a different `LivingEntity` converted first does that itself — this takes a [`Villager`]
-    /// and nothing else.
+    /// written anywhere else. The level and experience are not stated, so whatever the villager
+    /// already had survives being made into a trader. A caller that wants a different
+    /// `LivingEntity` converted first does that itself — this takes a [`Villager`] and nothing
+    /// else.
     ///
     /// Nothing calls this yet, so the tree carries `#[expect(dead_code)]`; the path is complete
     /// the moment something places a trader.

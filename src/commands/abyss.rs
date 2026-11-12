@@ -21,12 +21,15 @@
 //!   player sender is always moved themselves
 //! - `<item>` — `orthcoin`, case-insensitive; gives one to the sender
 //! - `<mob>` — a mob kind's display name, case-insensitive, spaces and hyphens ignored:
-//!   `small hammerbeak` and `SmallHammerbeak` both work
+//!   `small hammerbeak` and `SmallHammerbeak` both work. A villager kind resolves by the
+//!   same rule, so `boy, lord of currency` also works
 //! - `[count]` — how many to spawn, `1` … `16`, defaulting to one
 //!
 //! `/abyss summon` refuses a mob in a layer it does not list in
 //! [`MobBuilder::layers`](crate::entities::mobs::mob_builder::MobBuilder::layers), so an operator cannot
-//! quietly fill a layer with something that was never meant to live there.
+//! quietly fill a layer with something that was never meant to live there. Villagers are
+//! looked up after mobs, because no trader shares a mob's name, and are placed wherever the
+//! sender stands: a trader has no layer list of its own to check.
 //!
 //! Tab-completion for `<layer>` is implemented but disabled: the Pumpkin host panics on
 //! any suggestion request (see [`LayerSuggestions`]).
@@ -54,7 +57,6 @@ use pumpkin_plugin_api::{Context, Server};
 
 use crate::commands::command::Command as RegisterCommand;
 use crate::entities::entity_builder::id_of as mob_id_of;
-use crate::entities::mobs::mob_builder::MobKind;
 use crate::items::item_builder::{ItemBuilder, id_of};
 use crate::items::orthcoin::Orthcoin;
 use crate::layer::Layer;
@@ -248,48 +250,65 @@ impl CommandHandler for AbyssSummon {
             return Ok(0);
         };
 
-        let Some(kind) = crate::mob_kind(&name) else {
-            sender.send_error(TextComponent::text(&format!(
-                "Unknown mob '{name}'. See the catalogue in AGENTS.md."
-            )));
-            return Ok(0);
-        };
-
         let world = player.get_world();
         let Some(layer) = crate::layer_for_world(&world.get_name()) else {
             sender.send_error(TextComponent::text(
-                "You are not in an Abyss layer, so no mob may be summoned.",
+                "You are not in an Abyss layer, so nothing may be summoned.",
             ));
             return Ok(0);
         };
 
-        if !kind.spawns_in(layer) {
-            sender.send_error(TextComponent::text(&format!(
-                "{} does not spawn in {}. It lives in: {}.",
-                kind.name,
-                layer.name(),
-                layer_list(kind.layers)
-            )));
-            return Ok(0);
-        }
-
         let count = count_of(&args);
         let position = player.get_position();
 
-        for _ in 0..count {
-            let entity = (kind.spawn)(&world, position);
-
-            if let Some(living) = entity.as_living() {
-                spawn_note(&sender, &kind, &living);
+        if let Some(kind) = crate::mob_kind(&name) {
+            if !kind.spawns_in(layer) {
+                sender.send_error(TextComponent::text(&format!(
+                    "{} does not spawn in {}. It lives in: {}.",
+                    kind.name,
+                    layer.name(),
+                    layer_list(kind.layers)
+                )));
+                return Ok(0);
             }
+
+            for _ in 0..count {
+                let entity = (kind.spawn)(&world, position);
+
+                if let Some(living) = entity.as_living() {
+                    spawn_note(&sender, kind.name, kind.id, &living);
+                }
+            }
+
+            sender.send_message(TextComponent::text(&format!(
+                "Summoned {count} x {} in {}.",
+                kind.name,
+                layer.name()
+            )));
+            return Ok(1);
         }
 
-        sender.send_message(TextComponent::text(&format!(
-            "Summoned {count} x {} in {}.",
-            kind.name,
-            layer.name()
+        if let Some(kind) = crate::villager_kind(&name) {
+            for _ in 0..count {
+                let entity = (kind.spawn)(&world, position);
+
+                if let Some(living) = entity.as_living() {
+                    spawn_note(&sender, kind.name, kind.id, &living);
+                }
+            }
+
+            sender.send_message(TextComponent::text(&format!(
+                "Summoned {count} x {} in {}.",
+                kind.name,
+                layer.name()
+            )));
+            return Ok(1);
+        }
+
+        sender.send_error(TextComponent::text(&format!(
+            "Unknown mob '{name}'. See the catalogue in AGENTS.md."
         )));
-        Ok(1)
+        Ok(0)
     }
 }
 
@@ -323,24 +342,24 @@ fn layer_list(layers: &[Layer]) -> String {
         .join(", ")
 }
 
-/// Logs that a mob was spawned, including the identity the marker actually wrote.
+/// Logs that mobs were placed, including the identity the marker actually wrote.
 ///
 /// Reading the marker back here is the same check `/abyss item` makes: it catches a kind
-/// whose [`id`](crate::entities::mobs::mob_builder::MobBuilder::id) is too large for the marker's
-/// signed byte at the moment of summoning, rather than leaving a mob that no handler will
-/// ever recognise.
+/// whose [`id`](crate::entities::entity_builder::EntityBuilder::id) is too large for the
+/// marker's signed byte at the moment of summoning, rather than leaving an entity that no
+/// handler will ever recognise.
 fn spawn_note(
     sender: &CommandSender,
-    kind: &MobKind,
+    name: &str,
+    id: u8,
     living: &pumpkin_plugin_api::world::LivingEntity,
 ) {
-    if mob_id_of(&living.as_entity()) == Some(kind.id) {
+    if mob_id_of(&living.as_entity()) == Some(id) {
         return;
     }
 
     sender.send_error(TextComponent::text(&format!(
-        "{} spawned, but its marker did not read back.",
-        kind.name
+        "{name} spawned, but its marker did not read back."
     )));
 }
 

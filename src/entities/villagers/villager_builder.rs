@@ -34,7 +34,8 @@
 
 use pumpkin_plugin_api::Villager;
 use pumpkin_plugin_api::VillagerProfession;
-use pumpkin_plugin_api::world::LivingEntity;
+use pumpkin_plugin_api::World;
+use pumpkin_plugin_api::world::{Entity, LivingEntity};
 
 use crate::entities::entity_builder::EntityBuilder;
 
@@ -72,4 +73,42 @@ pub(crate) fn prepare<T: VillagerBuilder>(entity: &LivingEntity) {
 
     villager.set_profession(T::profession());
     <T as VillagerBuilder>::apply(&villager);
+}
+
+/// One entry of the villager catalogue: everything about a trader that can be read without an
+/// instance, plus the function that spawns it.
+///
+/// The same erasure [`MobKind`](crate::entities::mobs::mob_builder::MobKind) performs, for the
+/// same reason: a kind's associated functions cannot be called through a trait object, so the
+/// catalogue spells them out once and [`VillagerKind::of`] fills an entry from that kind's own
+/// trait methods.
+///
+/// It is deliberately smaller than `MobKind`: a trader has no category, and its profession and
+/// base type are set by `EntityBuilder::spawn` on the kind itself, so an entry only has to
+/// carry what a caller reads — the id to check the marker against, the name to report, and
+/// the function to call.
+#[derive(Debug, Clone, Copy)]
+pub(crate) struct VillagerKind {
+    /// The trader's stable identifier, from [`EntityBuilder::id`].
+    pub id: u8,
+    /// The name shown above the trader, from [`EntityBuilder::name`].
+    pub name: &'static str,
+    /// Spawns the trader, from [`EntityBuilder::spawn`].
+    pub spawn: fn(&World, (f64, f64, f64)) -> Entity,
+}
+
+impl VillagerKind {
+    /// Builds the catalogue entry for one trader.
+    ///
+    /// `label` is the trader's display text, passed separately for the same reason
+    /// [`MobKind::of`](crate::entities::mobs::mob_builder::MobKind::of) takes one:
+    /// [`EntityBuilder::name`] returns a [`TextComponent`](pumpkin_plugin_api::text::TextComponent)
+    /// that cannot be read back as a string.
+    pub(crate) fn of<T: VillagerBuilder>(label: &'static str) -> Self {
+        Self {
+            id: T::id(),
+            name: label,
+            spawn: <T as EntityBuilder>::spawn,
+        }
+    }
 }

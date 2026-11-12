@@ -29,10 +29,6 @@ mod commands {
 /// `villagers::villager_builder` adds a villager's [`VillagerBuilder`] with its profession.
 /// Mobs are filed one folder per [`Category`], and `mobs::docile::beniguma` is the worked
 /// example; `villagers::boy` is the villager one.
-///
-/// The villager modules carry `dead_code` because no caller places a trader yet: the kinds
-/// are authored and their numbers reserved, but the command that puts one in the world is a
-/// separate change. The attribute goes away with that caller.
 mod entities {
     pub(crate) mod entity_builder;
 
@@ -127,10 +123,6 @@ mod entities {
     }
 
     /// Villagers, the traders of Orth.
-    #[expect(
-        dead_code,
-        reason = "the kinds are authored; the command that places one is a later change"
-    )]
     pub(crate) mod villagers {
         pub(crate) mod boy;
         pub(crate) mod villager_builder;
@@ -441,6 +433,30 @@ pub fn mob_kinds() -> [entities::mobs::mob_builder::MobKind; 65] {
 pub(crate) fn mob_kind(name: &str) -> Option<entities::mobs::mob_builder::MobKind> {
     let wanted = normalise(name);
     mob_kinds()
+        .into_iter()
+        .find(|kind| normalise(kind.name) == wanted)
+}
+
+/// Every villager kind the plugin defines.
+///
+/// The trading counterpart of [`mob_kinds`](crate::mob_kinds), and the same shape: a
+/// `VillagerKind` per trader, filled from the kind's own trait methods. A villager's number
+/// is claimed from the shared marker space, so the ids here must not repeat any in
+/// `mob_kinds` — mobs hold `1`–`65`, and traders start above them.
+#[must_use]
+pub(crate) fn villager_kinds() -> [entities::villagers::villager_builder::VillagerKind; 1] {
+    [entities::villagers::villager_builder::VillagerKind::of::<
+        entities::villagers::boy::Boy,
+    >("Boy, Lord of Currency")]
+}
+
+/// Returns the villager kind called `name`, matched the same way [`mob_kind`] matches.
+#[must_use]
+pub(crate) fn villager_kind(
+    name: &str,
+) -> Option<entities::villagers::villager_builder::VillagerKind> {
+    let wanted = normalise(name);
+    villager_kinds()
         .into_iter()
         .find(|kind| normalise(kind.name) == wanted)
 }

@@ -274,6 +274,8 @@ cannot leave a stale alias behind. `Layer::id_list` renders the accepted names f
 error message.
 It also carries `/abyss item <item>` and `/abyss summon <mob> [count]`, which are the callers
 that keep `mod items` and `mod entities` reachable — see the two sections below.
+`/abyss summon` resolves a name against `mob_kinds()` first and then `villager_kinds()`, so a
+trader and a mob live in one namespace; `[count]` is capped at 16.
 A player running it is always the one moved; `[player]` is only consulted from console.
 It teleports straight into the layer, so no curse strain is added — unlike a real ascent.
 
@@ -511,17 +513,22 @@ Abyss: it stands behind a counter on an authored map, it is not something a laye
 the mob one rather than a mob kind with an odd category.
 
 - `villager_builder.rs` — [`VillagerBuilder`](src/entities/villagers/villager_builder.rs)
-  extends `EntityBuilder` with a `profession()` and the `layers()` its shop stands in.
-- A kind implements **both** traits. `EntityBuilder` supplies `base()` (always
-  `EntityType::Villager`), `id()` (forwarded from `VillagerBuilder::id().get()`) and
-  `name()`; `VillagerBuilder` supplies the profession, the layers and `apply(&Villager)`. The
-  kind's `EntityBuilder::apply` forwards to `villager_builder::prepare::<Self>`, which sets the
+  extends `EntityBuilder` with a `profession()` and `apply(&Villager)`. There is no separate
+  layer list: `EntityBuilder` is where an entity states what it is, and a trader has no
+  category to declare.
+- A kind implements **both** traits and writes each answer once. `EntityBuilder` supplies
+  `base()` (always `EntityType::Villager`), `id()` (a plain byte, like every mob) and
+  `name()`; `VillagerBuilder` supplies the profession and `apply(&Villager)`. The kind's
+  `EntityBuilder::apply` forwards to `villager_builder::prepare::<Self>`, which sets the
   profession and hands over the villager handle. `EntityBuilder::spawn` is inherited, so a
   trader is placed by the same code as every other custom entity.
-- Numbers come from `villager_builder::ids`, a **newtype** `VillagerId` so the claimed numbers
-  are written in one place and a kind cannot take a mob's by mistyping a literal. The space is
-  **shared with the mobs** because the marker byte is: mobs hold `1`–`65`, so villagers start
-  above them. `Boy` is `66`.
+- `VillagerKind` is the catalogue entry for one trader — id, name and the spawn fn pointer,
+  the same erasure `MobKind` performs. It is smaller than `MobKind` because a trader has no
+  category and its profession is applied by the spawn path, so an entry only carries what a
+  caller reads. `villager_kinds()` builds them and `villager_kind(name)` resolves one by name.
+- **The byte space is shared with the mobs**, so ids must not repeat across the two
+  catalogues: mobs hold `1`–`65`, and traders start above them. `Boy` is `66`. There is no
+  compile-time guard on this — check both tables when adding a kind.
 - **A trader is never a natural spawn.** `CreatureSpawn::choose` filters out any kind whose
   base is `EntityType::Villager`, so a layer's wild spawns can never produce a shopkeeper.
 - **Trades cannot be authored yet.** The API reads and writes profession, level and
@@ -529,8 +536,9 @@ the mob one rather than a mob kind with an odd category.
   carry only an index. A kind therefore leaves its trade table out of `apply` and states only
   the shape of the trader. The wiki's Orth trade table is the source for those offers once a
   setter exists — do not invent a second table elsewhere.
-- The villager modules carry `#[expect(dead_code)]` until the command that places a trader
-  exists; drop it with that caller.
+- `/abyss summon <name>` reaches a trader, looked up **after** the mobs and placed wherever
+  the sender stands: a trader has no layer list to refuse, because where a shop stands is a
+  property of the map, not of the kind.
 
 `Boy` is the worked example: `Boy, Lord of Currency`, a librarian placed in `Orth`,
 built from the wiki's `Golden Bridge` counter.
@@ -664,8 +672,8 @@ src/
 │   │   ├── hostile/
 │   │   └── passive/
 │   └── villagers/      # the traders of Orth
-│       ├── villager_builder.rs # `VillagerBuilder` (profession + layers), `VillagerId`
-│       └── boy.rs    # `Boy` — the worked example, trades pending
+│       ├── villager_builder.rs # `VillagerBuilder`, `VillagerKind`
+│       └── boy.rs              # `Boy` — the worked example, reachable via `/abyss summon`
 ├── items/              # declared as `mod items` in `lib.rs`: the plugin's own items
 │   ├── item_builder.rs # `ItemBuilder` trait + the identity marker
 │   └── orthcoin.rs     # `Orthcoin` — the worked example, via `/abyss item orthcoin`

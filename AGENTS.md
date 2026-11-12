@@ -530,8 +530,12 @@ filling a layer with something that was never meant to live there.
   [`ItemBuilder`](src/items/item_builder.rs): `of(&villager, profession)` opens it, `.name(..)`
   labels the trader, `.level(..)` and `.experience(..)` record what the chain wants,
   `.apply(|villager| ..)` reaches any setter the chain has not grown, and `.build()` writes the
-  profession, level and experience in one go. It borrows the `Villager` rather than owning it,
-  because `Villager<'_>` is a borrowed wrapper.
+  profession and whatever else was stated in one go. It borrows the `Villager` rather than
+  owning it, because `Villager<'_>` is a borrowed wrapper.
+- **`level()` and `experience()` are optional, and unset means untouched.** `of` starts with
+  neither, and `build` only writes the ones the chain actually stated, so a trader keeps
+  whatever level and experience the villager already had. Defaulting them to `1`/`0` would
+  silently demote a villager that was already a higher-level trader.
 - **`VillagerBuilder` is self-contained.** It knows only about `Villager`,
   `VillagerProfession` and `TextComponent` — no `EntityBuilder`, no `MobCategory`, no identity
   marker, no spawn. Handing it a villager is the caller's job, so it is usable from any code

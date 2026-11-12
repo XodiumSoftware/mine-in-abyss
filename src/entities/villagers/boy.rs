@@ -38,8 +38,10 @@ impl Boy {
     /// Makes `villager` into Boy: a librarian, named, at trade level one.
     ///
     /// The whole trader is one chain of [`VillagerBuilder`] calls, so nothing about him is
-    /// written anywhere else. A caller that wants a different `LivingEntity` converted first
-    /// does that itself — this takes a [`Villager`] and nothing else.
+    /// written anywhere else. Only the level is stated; the experience is left alone, so
+    /// whatever the villager already had survives being made into a trader. A caller that wants
+    /// a different `LivingEntity` converted first does that itself — this takes a [`Villager`]
+    /// and nothing else.
     ///
     /// Nothing calls this yet, so the tree carries `#[expect(dead_code)]`; the path is complete
     /// the moment something places a trader.
@@ -47,7 +49,6 @@ impl Boy {
         VillagerBuilder::of(villager, VillagerProfession::Librarian)
             .name(TextComponent::text("Boy, Lord of Currency").color_rgb(rgb(0xF0, 0xC4, 0x38)))
             .level(1)
-            .experience(0)
             .build();
     }
 }

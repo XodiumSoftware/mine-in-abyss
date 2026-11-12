@@ -40,15 +40,16 @@ use pumpkin_plugin_api::text::TextComponent;
 ///
 /// The chain records intent and [`build`](Self::build) is the only thing that touches the
 /// villager, mirroring [`ItemBuilder::build`](crate::items::item_builder::ItemBuilder::build):
-/// a later `level` overrides an earlier one, exactly as two direct calls would. The exceptions
-/// are [`name`](Self::name) and [`apply`](Self::apply), which write immediately because a
-/// `TextComponent` cannot be held until `build` and a closure is the caller's own code.
+/// a later `level` overrides an earlier one, and a level or experience never set is left alone
+/// rather than defaulted. The exceptions are [`name`](Self::name) and [`apply`](Self::apply),
+/// which write immediately because a `TextComponent` cannot be held until `build` and a closure
+/// is the caller's own code.
 #[derive(Clone, Copy)]
 pub(crate) struct VillagerBuilder<'a> {
     villager: &'a Villager<'a>,
     profession: VillagerProfession,
-    level: u8,
-    experience: u32,
+    level: Option<u8>,
+    experience: Option<u32>,
 }
 
 impl<'a> VillagerBuilder<'a> {
@@ -57,15 +58,15 @@ impl<'a> VillagerBuilder<'a> {
     /// Nothing is written here: [`build`](Self::build) applies every property at once, so the
     /// villager is only touched once the kind has said everything it wants to say.
     ///
-    /// The level starts at `1` and the experience at `0`, matching what
-    /// [`Villager::get_level`] reports for a villager that has never traded, so a kind that
-    /// omits either gets the vanilla starting trader rather than a level `0` one.
+    /// The level and experience are deliberately **unset**, not defaulted: a kind that says
+    /// nothing about them leaves whatever the villager already had, so a trader placed onto an
+    /// entity that was already a level `2` villager stays one instead of being silently reset.
     pub(crate) fn of(villager: &'a Villager<'a>, profession: VillagerProfession) -> Self {
         Self {
             villager,
             profession,
-            level: 1,
-            experience: 0,
+            level: None,
+            experience: None,
         }
     }
 
@@ -95,16 +96,22 @@ impl<'a> VillagerBuilder<'a> {
     }
 
     /// Sets the trading level, `1`–`5`.
+    ///
+    /// Omitted by a kind that does not care: [`of`](Self::of) leaves it unset, and `build` then
+    /// leaves the villager's own level alone rather than resetting it.
     #[must_use]
     pub(crate) fn level(mut self, level: u8) -> Self {
-        self.level = level;
+        self.level = Some(level);
         self
     }
 
     /// Sets the trading experience the trader starts with.
+    ///
+    /// Omitted by a kind that does not care, for the same reason as [`level`](Self::level):
+    /// unset means "whatever the villager already had", not `0`.
     #[must_use]
     pub(crate) fn experience(mut self, experience: u32) -> Self {
-        self.experience = experience;
+        self.experience = Some(experience);
         self
     }
 
@@ -121,15 +128,24 @@ impl<'a> VillagerBuilder<'a> {
         self
     }
 
-    /// Writes the profession, level and experience, finishing the trader.
+    /// Writes the profession and whatever else the chain stated, finishing the trader.
     ///
     /// This is the only method that has to be called for the chain to have any effect, so a
     /// caller that just wants a vanilla starting trader can open the builder and build it. It
     /// writes nothing else — no identity marker, no spawn — so it is safe to call on a villager
     /// whoever placed it.
+    ///
+    /// A level or experience the chain never set is **not** written, so a kind that says
+    /// nothing about them keeps what the villager already had.
     pub(crate) fn build(self) {
         self.villager.set_profession(self.profession);
-        self.villager.set_level(self.level);
-        self.villager.set_experience(self.experience);
+
+        if let Some(level) = self.level {
+            self.villager.set_level(level);
+        }
+
+        if let Some(experience) = self.experience {
+            self.villager.set_experience(experience);
+        }
     }
 }

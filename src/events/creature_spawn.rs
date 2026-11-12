@@ -5,10 +5,10 @@
 //! spawn in a layer world is therefore **cancelled**, and a custom kind is spawned in its
 //! place.
 //!
-//! Which kind is decided by [`MobBuilder::layers`](crate::entities::mobs::mob_builder::MobBuilder::layers):
-//! only a kind that lists the layer may appear there, so the same list that used to guard
-//! `/abyss summon` decides what lives where. A layer with no eligible kind stays empty,
-//! which is the honest answer — nothing was authored to live there yet.
+//! Which kind is decided by the `LAYERS` a kind declares beside its own `spawn`: only a kind
+//! that lists the layer may appear there, so the same list decides what lives where. A layer
+//! with no eligible kind stays empty, which is the honest answer — nothing was authored to
+//! live there yet.
 //!
 //! The replacement is placed at the event's own position and world, so it stands exactly where
 //! the vanilla mob would have: this handler changes *what* spawns, never *where*.
@@ -23,10 +23,9 @@
 use pumpkin_plugin_api::events::EventHandler;
 use pumpkin_plugin_api::events::entity::creature_spawn::CreatureSpawnEvent;
 use pumpkin_plugin_api::events_wit::CreatureSpawnEventData;
-use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
 use pumpkin_plugin_api::{Context, Server};
 
-use crate::entities::mobs::mob_builder::MobKind;
+use crate::entities::mobs::mob_kind::MobKind;
 use crate::events::event::Event;
 
 /// Replaces a naturally spawned vanilla mob in a layer world with a custom kind.
@@ -107,13 +106,12 @@ fn note_reason(reason: &str) {
 /// wrong in game. Only the kind list is consulted, never the world, so a layer with no
 /// eligible kind costs one comparison and stops.
 ///
-/// Villagers are excluded outright. A trader is placed where its shop stands, so a
-/// naturally spawned one would be a shopkeeper with no counter and no map data behind it —
-/// and a villager that never listed its layers would not be caught by the filter below.
+/// A trader is not in the catalogue at all, so a naturally spawned villager can never come
+/// from here — one would be a shopkeeper with no counter and no map data behind it.
 fn choose(layer: crate::Layer, position: &(f64, f64, f64)) -> Option<MobKind> {
     let eligible: Vec<MobKind> = crate::mob_kinds()
         .into_iter()
-        .filter(|kind| kind.spawns_in(layer) && kind.base != EntityType::Villager)
+        .filter(|kind| kind.spawns_in(layer))
         .collect();
 
     if eligible.is_empty() {

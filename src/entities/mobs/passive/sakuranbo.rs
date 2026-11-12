@@ -3,10 +3,9 @@
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
-use pumpkin_plugin_api::world::LivingEntity;
+use pumpkin_plugin_api::world::{Entity, World};
 
 use crate::entities::entity_builder::EntityBuilder;
-use crate::entities::mobs::mob_builder::MobBuilder;
 use crate::entities::mobs::mob_category::MobCategory;
 use crate::layer::Layer;
 use crate::utils::rgb;
@@ -15,31 +14,23 @@ use crate::utils::rgb;
 #[derive(Debug, Default, Clone, Copy)]
 pub(crate) struct Sakuranbo;
 
-impl EntityBuilder for Sakuranbo {
-    fn base() -> EntityType {
-        EntityType::Bee
-    }
+impl Sakuranbo {
+    /// The layers this kind may spawn in.
+    pub(crate) const LAYERS: &'static [Layer] = &[Layer::Third];
 
-    fn id() -> u8 {
-        37
-    }
+    /// How this kind behaves towards players.
+    pub(crate) const CATEGORY: MobCategory = MobCategory::Passive;
 
-    fn name() -> TextComponent {
-        TextComponent::text("Sakuranbo").color_rgb(rgb(0xFF, 0xB7, 0xC5))
-    }
-
-    fn apply(entity: &LivingEntity) {
-        entity.set_attribute_base(Attribute::MaxHealth, 10.0);
-        entity.set_health(10.0);
-    }
-}
-
-impl MobBuilder for Sakuranbo {
-    fn layers() -> &'static [Layer] {
-        &[Layer::Third]
-    }
-
-    fn category() -> MobCategory {
-        MobCategory::Passive
+    /// Spawns this kind in `world` at `position`.
+    pub(crate) fn spawn(world: &World, position: (f64, f64, f64)) -> Entity {
+        EntityBuilder::of(37, EntityType::Bee)
+            .name(TextComponent::text("Sakuranbo").color_rgb(rgb(0xFF, 0xB7, 0xC5)))
+            .apply(|entity| {
+                if let Some(living) = entity.as_living() {
+                    living.set_attribute_base(Attribute::MaxHealth, 10.0);
+                    living.set_health(10.0);
+                }
+            })
+            .build(world, position)
     }
 }

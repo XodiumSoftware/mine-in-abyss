@@ -355,40 +355,36 @@ shared; nothing in vanilla depends on age and time of day agreeing.
 **Minecraft's entity types cannot be extended.** `entity-types.wit` exposes `entity-type` as
 a closed enum and there is no registration call anywhere in the plugin WIT, so a "custom
 entity" is always **a vanilla entity wearing an identity**. `src/entities/` is the
-architecture for that, not a way around it, and it is split by what each trait answers:
+architecture for that, not a way around it:
 
-- `entity_builder.rs` — the [`EntityBuilder`](src/entities/entity_builder.rs) core every
-  kind implements: its base `EntityType`, a stable `id` byte, its visible name, the
-  `apply` hook, and [`spawn`](src/entities/entity_builder.rs). `mark`/`id_of` live here too.
-- `mobs/mob_builder.rs` — [`MobBuilder`](src/entities/mobs/mob_builder.rs), which extends
-  `EntityBuilder` with what makes a creature a **mob**: its
-  [`MobCategory`](src/entities/mobs/mob_category.rs)
-  (`Passive`/`Docile`/`Aerial`/`Aquatic`/`Hostile`) and the `layers()` it may spawn in.
-- `mobs/mob_category.rs` — `MobCategory`, the behaviour answer on its own, beside the trait that
-  returns it. It lives apart because it is also the folder layout of `src/entities/mobs`.
-- `villagers/villager_builder.rs` — [`VillagerBuilder`](src/entities/villagers/villager_builder.rs),
-  the chain a trader describes itself with: its name, profession, level and experience. It is
-  self-contained — no entity trait behind it — and a trader (`villagers/boy.rs`) is now a plain
-  constructor, not an `EntityBuilder`. See [Custom villagers](#custom-villagers).
+- `entity_builder.rs` — the [`EntityBuilder`](src/entities/entity_builder.rs) **struct** every
+  kind spawns itself with: `of(id, base)` → `.name(..)` → `.apply(|entity| ..)` →
+  `.build(&world, position)`. It states the base `EntityType`, the stable `id` byte, the visible
+  name, the `apply` hook, and spawns and stamps the entity. `mark`/`id_of` live here too.
+- `mobs/mob_kind.rs` — `MobKind`, the plain catalogue entry a spawn rule iterates over: the
+  kind's `LAYERS`, its `CATEGORY` and its `spawn` function.
+- `mobs/mob_category.rs` — `MobCategory`, the behaviour answer on its own. It lives apart
+  because it is also the folder layout of `src/entities/mobs`.
+- `villagers/boy.rs` — a trader, spawned through the same `EntityBuilder` by a plain
+  constructor. See [Custom villagers](#custom-villagers).
 
 The identity marker is a **byte** in the entity's own persistent data under `PLUGIN_ID`
 (`set_byte`/`get_byte`, the same calls `curse.rs` uses), so it survives relogs and restarts
-and cannot collide with another plugin's data. It stores `EntityBuilder::id`, not the display
-name, so renaming a kind does not orphan entities already spawned. `id_of` returns `None` for
-anything this plugin did not spawn, so a handler must not assume every entity is custom. The
-number space is **shared by mobs and villagers**, because the marker is.
+and cannot collide with another plugin's data. It stores the id passed to `EntityBuilder::of`,
+not the display name, so renaming a kind does not orphan entities already spawned. `id_of`
+returns `None` for anything this plugin did not spawn, so a handler must not assume every
+entity is custom. The number space is **shared by mobs and traders**, because the marker is.
 
-A kind does everything else in **`EntityBuilder::apply`**: the spawned `LivingEntity` is
-handed over and the kind sets attributes with `set_attribute_base` and equips itself with
+A kind does everything else in **`EntityBuilder::apply`**: the closure receives the spawned
+`Entity`, and the kind sets attributes with `set_attribute_base` and equips itself with
 `set_equipment` per slot. Nothing is a fixed table, so a hand-only mob and a fully armoured
-one are just different bodies for that method. `EntityBuilder::spawn` creates the base type,
-calls `apply`, and stamps the identity. A villager's `apply` turns the `LivingEntity` into a
-`Villager` and describes it with [`VillagerBuilder`](src/entities/villagers/villager_builder.rs).
+one are just different bodies for that closure. `EntityBuilder::build` spawns the base type,
+runs the closure, and stamps the identity. A mob reaches its `LivingEntity` with
+`entity.as_living()`, and a trader casts to `Villager` with `EntityCastExt::cast`.
 
 - `MobCategory` is _not_ derived from `EntityType`: the base type says what a mob looks like and
   how the host paths it, the category says what it is for. They usually agree and are allowed
-  to disagree, and an unstated category defaults to `Passive` so a new kind is never silently
-  treated as something that hunts players.
+  to disagree. It is declared per kind as a `CATEGORY` constant, and nothing filters on it yet.
 
 **Attributes are written to the base value**, matching how every kind sets its stats. The
 base is the template and the visible stat is derived from it, so setting a base is
@@ -402,15 +398,16 @@ idempotent and never compounds on a repeated call.
 - Status effects can only be applied to players, so a permanent glowing or speed effect on
   a mob is not expressible.
 
-`MobKind`-style catalogues are the array in `mob_kinds()`, the same way `Layer` holds
-per-layer data and `MineInAbyss::events` lists every handler. Adding a mob means adding its
-file, its `pub mod` line in `lib.rs`, its `impl EntityBuilder`, its `impl MobBuilder`, and
-one entry in `mob_kinds`. It is a function rather than a `const` because a trait method
-cannot be called in a constant. `beniguma` is the worked example.
+**A kind is a plain constructor.** It defines `LAYERS` and `CATEGORY` as associated constants
+and a `spawn(world, position) -> Entity` that chains `EntityBuilder` itself — the same shape as
+`Boy::entity` for traders and `Orthcoin::stack` for items. The catalogue in `mob_kinds()` names
+those three items per kind, so a kind's values are still written once, in its own file. Adding
+a mob means adding its file, its `pub mod` line in `lib.rs`, and one entry in `mob_kinds`.
+`beniguma` is the worked example.
 
-**Kinds are filed by category.** `src/entities/mobs/` holds `mob_builder.rs`, `mob_category.rs`
+**Kinds are filed by category.** `src/entities/mobs/` holds `mob_kind.rs`, `mob_category.rs`
 and one folder per [`MobCategory`](src/entities/mobs/mob_category.rs) — `aerial`, `aquatic`,
-`docile`, `hostile`, `passive` — and a kind lives in the folder matching its own `category()`.
+`docile`, `hostile`, `passive` — and a kind lives in the folder matching its own `CATEGORY`.
 The folder is organisation only: nothing reads it at runtime, so a kind whose category changes
 must be **moved** by hand to keep the two agreeing. There is no `mod.rs`; each folder's
 `pub mod` list lives inline in the `mod entities` block in `lib.rs`.
@@ -514,47 +511,27 @@ filling a layer with something that was never meant to live there.
 
 ### Custom villagers
 
-/// A villager is **not** a mob, and deliberately not in `mob_kinds`. It is not a creature of the
-/// Abyss: it stands behind a counter on an authored map, it is not something a layer spawns, and
-/// `MobCategory` answers a question nobody asks of a shopkeeper. So it is described by its own
-/// builder beside the mob one rather than by a mob kind with an odd category.
-///
-/// A trader is not even an `EntityBuilder` any more. It is a plain constructor over a `Villager`
-/// — `Boy::place`, the villager counterpart of `Orthcoin::stack` — because nothing spawns one:
-/// a trader stands where the authored map puts it, so there is no identity byte to stamp and no
-/// spawn path to inherit. That is the first step of moving traders off the entity traits.
--
+A villager is **not** a mob, and deliberately not in `mob_kinds`. It is not a creature of the
+Abyss: it stands behind a counter on an authored map, it is not something a layer spawns, and
+`MobCategory` answers a question nobody asks of a shopkeeper.
 
-- `villager_builder.rs` — [`VillagerBuilder`](src/entities/villagers/villager_builder.rs),
-  the chain a trader describes itself with, the same shape as
-  [`ItemBuilder`](src/items/item_builder.rs): `of(&villager, profession)` opens it, `.name(..)`
-  labels the trader, `.level(..)` and `.experience(..)` record what the chain wants,
-  `.apply(|villager| ..)` reaches any setter the chain has not grown, and `.build()` writes the
-  profession and whatever else was stated in one go. It borrows the `Villager` rather than
-  owning it, because `Villager<'_>` is a borrowed wrapper.
-- **`level()` and `experience()` are optional, and unset means untouched.** `of` starts with
-  neither, and `build` only writes the ones the chain actually stated, so a trader keeps
-  whatever level and experience the villager already had. Defaulting them to `1`/`0` would
-  silently demote a villager that was already a higher-level trader.
-- **`VillagerBuilder` is self-contained.** It knows only about `Villager`,
-  `VillagerProfession` and `TextComponent` — no `EntityBuilder`, no `MobCategory`, no identity
-  marker, no spawn. Handing it a villager is the caller's job, so it is usable from any code
-  that already holds a `Villager`.
-- **There is no villager trait, deliberately.** `VillagerBuilder` is a _struct_, not a trait, and
-  nothing is generic over trader kinds — there is no catalogue to erase them into — so a trait
-  would add an import and an indirection without giving a caller anything. `VillagerKind` went
-  with the name lookup that was its only consumer. It returns when a generic consumer does.
-- **`name()` and `apply()` write immediately; the rest wait for `build()`.** `TextComponent` is a
-  host resource that is neither `Copy` nor `Clone`, so a builder holding one could not stay
-  `Copy`; naming the trader therefore happens in the call, like `apply`'s closure does.
+- **A trader has no builder and no trait of its own.** `villagers/boy.rs` is a plain
+  constructor — `Boy::entity(world, position)` — that chains
+  [`EntityBuilder`](src/entities/entity_builder.rs) itself, exactly as an item kind chains
+  `ItemBuilder`. There is no `VillagerBuilder` and no villager trait: nothing is generic over
+  trader kinds, so both would be an indirection with no consumer.
+- **The downcast only happens for the villager-specific part.** `EntityBuilder::apply` hands the
+  closure a spawned `Entity`; `boy.rs` casts it with `EntityCastExt::cast::<Villager>()` and
+  sets the profession inside that `if let`. Everything else — base type, id, name, marker — the
+  builder already did.
 - **Trades cannot be authored yet.** The API reads and writes profession, level and
   experience, but has no call that sets the offers, and `TradeSelect`/`VillagerAcquireTrade`
-  carry only an index. A kind therefore leaves its trade table out of `place` and states only
+  carry only an index. A kind therefore leaves its trade table out of `entity` and states only
   the shape of the trader. The wiki's Orth trade table is the source for those offers once a
   setter exists — do not invent a second table elsewhere.
 - **Nothing places a trader yet**, so `mod villagers` carries `#[expect(dead_code)]`. When
-  something does — a map marker, a shop, a command — it converts the `LivingEntity` to a
-  `Villager` itself and calls the kind's constructor.
+  something does — a map marker, a shop, a command — it calls `Boy::entity` with the world and
+  position it wants.
 - **The byte space is shared with the mobs**, so ids must not repeat between the two trees:
   mobs hold `1`–`65`, so a trader starts above them. `Boy` is `66`. There is no compile-time
   guard on this — check the mob catalogue when adding a kind. A trader still claims an id even
@@ -581,8 +558,8 @@ item wearing an identity.
   something is _generic_ over it — a `[fn() -> ItemStack]` catalogue, a `give<T: Builder>`.
   Nothing is, and items are created by code that already knows the kind, so an inherent
   `stack()` is directly callable with no import of a trait. It comes back when a generic
-  consumer does; `VillagerBuilder` is the villager side of the same distinction — a builder
-  struct a plain `EntityBuilder` uses, with no trait behind it. The name sits beside
+  consumer does; a trader has no builder at all, and chains `EntityBuilder` directly. The name
+  sits beside
   [`EntityBuilder`](src/entities/entity_builder.rs), and the struct itself exists because an
   `ItemStack` cannot chain.
 - **`ItemBuilder` exists because `ItemStack` cannot chain.** The WIT setters return nothing
@@ -722,7 +699,6 @@ src/
 │   │   ├── hostile/
 │   │   └── passive/
 │   └── villagers/      # the traders of Orth
-│       ├── villager_builder.rs # `VillagerBuilder` — the chainable trader builder
 │       └── boy.rs              # `Boy` — a plain constructor, awaiting a caller
 ├── items/              # declared as `mod items` in `lib.rs`: the plugin's own items
 │   ├── item_builder.rs # `ItemBuilder` — the chainable stack builder; no trait

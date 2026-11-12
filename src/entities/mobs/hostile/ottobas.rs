@@ -3,10 +3,9 @@
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
-use pumpkin_plugin_api::world::LivingEntity;
+use pumpkin_plugin_api::world::{Entity, World};
 
 use crate::entities::entity_builder::EntityBuilder;
-use crate::entities::mobs::mob_builder::MobBuilder;
 use crate::entities::mobs::mob_category::MobCategory;
 use crate::layer::Layer;
 use crate::utils::rgb;
@@ -15,31 +14,23 @@ use crate::utils::rgb;
 #[derive(Debug, Default, Clone, Copy)]
 pub(crate) struct Ottobas;
 
-impl EntityBuilder for Ottobas {
-    fn base() -> EntityType {
-        EntityType::Ravager
-    }
+impl Ottobas {
+    /// The layers this kind may spawn in.
+    pub(crate) const LAYERS: &'static [Layer] = &[Layer::First];
 
-    fn id() -> u8 {
-        19
-    }
+    /// How this kind behaves towards players.
+    pub(crate) const CATEGORY: MobCategory = MobCategory::Hostile;
 
-    fn name() -> TextComponent {
-        TextComponent::text("Ottobas").color_rgb(rgb(0xD8, 0xD8, 0xD8))
-    }
-
-    fn apply(entity: &LivingEntity) {
-        entity.set_attribute_base(Attribute::MaxHealth, 90.0);
-        entity.set_health(90.0);
-    }
-}
-
-impl MobBuilder for Ottobas {
-    fn layers() -> &'static [Layer] {
-        &[Layer::First]
-    }
-
-    fn category() -> MobCategory {
-        MobCategory::Hostile
+    /// Spawns this kind in `world` at `position`.
+    pub(crate) fn spawn(world: &World, position: (f64, f64, f64)) -> Entity {
+        EntityBuilder::of(19, EntityType::Ravager)
+            .name(TextComponent::text("Ottobas").color_rgb(rgb(0xD8, 0xD8, 0xD8)))
+            .apply(|entity| {
+                if let Some(living) = entity.as_living() {
+                    living.set_attribute_base(Attribute::MaxHealth, 90.0);
+                    living.set_health(90.0);
+                }
+            })
+            .build(world, position)
     }
 }

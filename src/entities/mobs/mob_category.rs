@@ -1,9 +1,7 @@
 //! How a mob kind behaves towards players.
 //!
-//! Kept apart from [`MobBuilder`](crate::entities::mobs::mob_builder::MobBuilder) because it is
-//! a question about the kind's behaviour rather than about how a kind is built, and because it
-//! is the folder layout of `src/entities/mobs` — a kind lives in the folder matching its own
-//! `category()`.
+//! Kept apart from the traits that answer it because it is the folder layout of
+//! `src/entities/mobs`: a kind lives in the folder matching its own `CATEGORY`.
 
 use strum::{EnumIter, IntoStaticStr};
 

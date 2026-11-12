@@ -3,10 +3,9 @@
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
-use pumpkin_plugin_api::world::LivingEntity;
+use pumpkin_plugin_api::world::{Entity, World};
 
 use crate::entities::entity_builder::EntityBuilder;
-use crate::entities::mobs::mob_builder::MobBuilder;
 use crate::entities::mobs::mob_category::MobCategory;
 use crate::layer::Layer;
 use crate::utils::rgb;
@@ -15,31 +14,23 @@ use crate::utils::rgb;
 #[derive(Debug, Default, Clone, Copy)]
 pub(crate) struct Ikenosuke;
 
-impl EntityBuilder for Ikenosuke {
-    fn base() -> EntityType {
-        EntityType::TropicalFish
-    }
+impl Ikenosuke {
+    /// The layers this kind may spawn in.
+    pub(crate) const LAYERS: &'static [Layer] = &[Layer::Second, Layer::Third, Layer::Fourth];
 
-    fn id() -> u8 {
-        28
-    }
+    /// How this kind behaves towards players.
+    pub(crate) const CATEGORY: MobCategory = MobCategory::Aquatic;
 
-    fn name() -> TextComponent {
-        TextComponent::text("Ikenosuke").color_rgb(rgb(0x9F, 0xF3, 0xF3))
-    }
-
-    fn apply(entity: &LivingEntity) {
-        entity.set_attribute_base(Attribute::MaxHealth, 12.0);
-        entity.set_health(12.0);
-    }
-}
-
-impl MobBuilder for Ikenosuke {
-    fn layers() -> &'static [Layer] {
-        &[Layer::Second, Layer::Third, Layer::Fourth]
-    }
-
-    fn category() -> MobCategory {
-        MobCategory::Aquatic
+    /// Spawns this kind in `world` at `position`.
+    pub(crate) fn spawn(world: &World, position: (f64, f64, f64)) -> Entity {
+        EntityBuilder::of(28, EntityType::TropicalFish)
+            .name(TextComponent::text("Ikenosuke").color_rgb(rgb(0x9F, 0xF3, 0xF3)))
+            .apply(|entity| {
+                if let Some(living) = entity.as_living() {
+                    living.set_attribute_base(Attribute::MaxHealth, 12.0);
+                    living.set_health(12.0);
+                }
+            })
+            .build(world, position)
     }
 }

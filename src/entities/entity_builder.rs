@@ -31,7 +31,7 @@ use pumpkin_plugin_api::World;
 use pumpkin_plugin_api::persistent_data::PersistentDataHolder;
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
-use pumpkin_plugin_api::world::{Entity, LivingEntity};
+use pumpkin_plugin_api::world::Entity;
 
 use crate::PLUGIN_ID;
 
@@ -40,6 +40,9 @@ use crate::PLUGIN_ID;
 /// One key for every kind, mobs and traders alike: the id is what tells them apart, so a
 /// second key would only split the same answer across two places.
 const IDENTITY_KEY: &str = "entity";
+
+/// The closure [`EntityBuilder::apply`] stores, run against the spawned entity.
+type Extend = Box<dyn FnOnce(&Entity)>;
 
 /// A custom entity, built one property at a time, then spawned and stamped.
 ///
@@ -69,14 +72,13 @@ const IDENTITY_KEY: &str = "entity";
 /// stamp.
 ///
 /// It is named `EntityBuilder` to sit beside
-/// [`ItemBuilder`](crate::items::item_builder::ItemBuilder) and
-/// [`VillagerBuilder`](crate::entities::villagers::villager_builder::VillagerBuilder): all
-/// three are what a kind builds *with*, not things a caller holds.
+/// [`ItemBuilder`](crate::items::item_builder::ItemBuilder): both are what a kind builds *with*,
+/// not things a caller holds.
 pub(crate) struct EntityBuilder {
     id: u8,
     base: EntityType,
     name: Option<TextComponent>,
-    extend: Option<Box<dyn FnOnce(&LivingEntity)>>,
+    extend: Option<Extend>,
 }
 
 impl EntityBuilder {
@@ -118,6 +120,16 @@ impl EntityBuilder {
     /// equipment are set here, and it runs before [`build`](Self::build) stamps the identity,
     /// so it cannot disturb which kind the entity claims to be.
     ///
+    /// `extend` is handed the spawned [`Entity`], not its `LivingEntity`, so a kind that wants
+    /// a specialised wrapper downcasts it itself with `EntityCastExt::cast`:
+    ///
+    /// ```ignore
+    /// .apply(|entity| {
+    ///     let Some(villager) = entity.cast::<Villager>() else { return };
+    ///     villager.set_profession(VillagerProfession::Librarian);
+    /// })
+    /// ```
+    ///
     /// Set attributes through `set_attribute_base`, not the current value. The base is the
     /// template and the visible stat is derived from it, so setting a base is idempotent —
     /// repeated calls never compound. Raising `MaxHealth` also means raising `set_health` to
@@ -127,7 +139,7 @@ impl EntityBuilder {
     /// `set_equipment(EquipmentSlot::MainHand, ..)` and leaves the armour slots empty, and a
     /// fully dressed one sets each slot it wants. Every other slot stays vanilla.
     #[must_use]
-    pub(crate) fn apply(mut self, extend: impl FnOnce(&LivingEntity) + 'static) -> Self {
+    pub(crate) fn apply(mut self, extend: impl FnOnce(&Entity) + 'static) -> Self {
         self.extend = Some(Box::new(extend));
         self
     }
@@ -152,10 +164,8 @@ impl EntityBuilder {
             entity.set_custom_name_visible(true);
         }
 
-        if let Some(living) = entity.as_living()
-            && let Some(extend) = self.extend
-        {
-            extend(&living);
+        if let Some(extend) = self.extend {
+            extend(&entity);
         }
 
         mark(&entity, self.id);
@@ -184,8 +194,12 @@ pub(crate) fn mark(entity: &Entity, id: u8) {
 /// The byte is stored signed, so a value above `127` comes back as `None`: a kind id that
 /// large is more likely a mistake than an intent.
 ///
-/// No handler reads an identity while `/abyss summon` is gone, but the marker is still
-/// written on every spawn, so this stays the way to ask a spawned entity what it is.
+/// No handler reads an identity yet: the marker is written on every spawn, and nothing
+/// currently needs to ask what a spawned entity is, so this waits for the first such handler.
+#[expect(
+    dead_code,
+    reason = "the reader returns with the handler that needs it"
+)]
 #[must_use]
 pub(crate) fn id_of(entity: &Entity) -> Option<u8> {
     entity

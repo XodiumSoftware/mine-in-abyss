@@ -3,10 +3,9 @@
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
-use pumpkin_plugin_api::world::LivingEntity;
+use pumpkin_plugin_api::world::{Entity, World};
 
 use crate::entities::entity_builder::EntityBuilder;
-use crate::entities::mobs::mob_builder::MobBuilder;
 use crate::entities::mobs::mob_category::MobCategory;
 use crate::layer::Layer;
 use crate::utils::rgb;
@@ -15,31 +14,23 @@ use crate::utils::rgb;
 #[derive(Debug, Default, Clone, Copy)]
 pub(crate) struct Shiratsubi;
 
-impl EntityBuilder for Shiratsubi {
-    fn base() -> EntityType {
-        EntityType::Vex
-    }
+impl Shiratsubi {
+    /// The layers this kind may spawn in.
+    pub(crate) const LAYERS: &'static [Layer] = &[Layer::Fifth];
 
-    fn id() -> u8 {
-        59
-    }
+    /// How this kind behaves towards players.
+    pub(crate) const CATEGORY: MobCategory = MobCategory::Hostile;
 
-    fn name() -> TextComponent {
-        TextComponent::text("Shiratsubi").color_rgb(rgb(0x9C, 0x0F, 0x2C))
-    }
-
-    fn apply(entity: &LivingEntity) {
-        entity.set_attribute_base(Attribute::MaxHealth, 45.0);
-        entity.set_health(45.0);
-    }
-}
-
-impl MobBuilder for Shiratsubi {
-    fn layers() -> &'static [Layer] {
-        &[Layer::Fifth]
-    }
-
-    fn category() -> MobCategory {
-        MobCategory::Hostile
+    /// Spawns this kind in `world` at `position`.
+    pub(crate) fn spawn(world: &World, position: (f64, f64, f64)) -> Entity {
+        EntityBuilder::of(59, EntityType::Vex)
+            .name(TextComponent::text("Shiratsubi").color_rgb(rgb(0x9C, 0x0F, 0x2C)))
+            .apply(|entity| {
+                if let Some(living) = entity.as_living() {
+                    living.set_attribute_base(Attribute::MaxHealth, 45.0);
+                    living.set_health(45.0);
+                }
+            })
+            .build(world, position)
     }
 }

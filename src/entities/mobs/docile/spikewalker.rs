@@ -3,10 +3,9 @@
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
-use pumpkin_plugin_api::world::LivingEntity;
+use pumpkin_plugin_api::world::{Entity, World};
 
 use crate::entities::entity_builder::EntityBuilder;
-use crate::entities::mobs::mob_builder::MobBuilder;
 use crate::entities::mobs::mob_category::MobCategory;
 use crate::layer::Layer;
 use crate::utils::rgb;
@@ -15,31 +14,23 @@ use crate::utils::rgb;
 #[derive(Debug, Default, Clone, Copy)]
 pub(crate) struct Spikewalker;
 
-impl EntityBuilder for Spikewalker {
-    fn base() -> EntityType {
-        EntityType::Silverfish
-    }
+impl Spikewalker {
+    /// The layers this kind may spawn in.
+    pub(crate) const LAYERS: &'static [Layer] = &[Layer::Fifth];
 
-    fn id() -> u8 {
-        50
-    }
+    /// How this kind behaves towards players.
+    pub(crate) const CATEGORY: MobCategory = MobCategory::Docile;
 
-    fn name() -> TextComponent {
-        TextComponent::text("Spikewalker").color_rgb(rgb(0x75, 0x52, 0x37))
-    }
-
-    fn apply(entity: &LivingEntity) {
-        entity.set_attribute_base(Attribute::MaxHealth, 40.0);
-        entity.set_health(40.0);
-    }
-}
-
-impl MobBuilder for Spikewalker {
-    fn layers() -> &'static [Layer] {
-        &[Layer::Fifth]
-    }
-
-    fn category() -> MobCategory {
-        MobCategory::Docile
+    /// Spawns this kind in `world` at `position`.
+    pub(crate) fn spawn(world: &World, position: (f64, f64, f64)) -> Entity {
+        EntityBuilder::of(50, EntityType::Silverfish)
+            .name(TextComponent::text("Spikewalker").color_rgb(rgb(0x75, 0x52, 0x37)))
+            .apply(|entity| {
+                if let Some(living) = entity.as_living() {
+                    living.set_attribute_base(Attribute::MaxHealth, 40.0);
+                    living.set_health(40.0);
+                }
+            })
+            .build(world, position)
     }
 }

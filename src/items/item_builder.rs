@@ -71,8 +71,8 @@ const IDENTITY_KEY: &str = "item";
 /// thing a caller holds.
 #[derive(Debug)]
 pub(crate) struct ItemBuilder {
-    stack: ItemStack,
     id: u8,
+    stack: ItemStack,
 }
 
 impl ItemBuilder {
@@ -90,8 +90,8 @@ impl ItemBuilder {
     /// [`build`](Self::build) for what happens then.
     pub(crate) fn of(id: u8, base: Item) -> Self {
         Self {
-            stack: ItemStack::of(base, 1),
             id,
+            stack: ItemStack::of(base, 1),
         }
     }
 

@@ -1,23 +1,31 @@
-//! The trait every custom entity implements, whatever kind of entity it is.
+//! The chainable [`EntityBuilder`] a custom entity is spawned with, and the identity that is
+//! written onto it.
 //!
 //! Minecraft's entity types cannot be extended: an entity spawned through this plugin is a
-//! vanilla type to the server. The only thing that distinguishes it from a naturally
-//! spawned one is a marker in its own persistent data, written once at spawn and read by
-//! every handler that needs to know what it is looking at.
+//! vanilla type to the server. The only thing that distinguishes it from a naturally spawned
+//! one is a marker in its own persistent data, written once at spawn and read by every handler
+//! that needs to know what it is looking at.
 //!
-//! The marker is [`EntityBuilder::id`] — a byte, not the display name — stored under
-//! [`PLUGIN_ID`](crate::PLUGIN_ID) with `set_byte`/`get_byte`, the same calls
-//! [`curse`](crate::events::curse) uses. That keeps it from colliding with another plugin's
-//! data, lets it survive relogs and restarts, keeps two kinds built on the same vanilla type
-//! apart, and means renaming a kind does not orphan the entities already in the world.
+//! The marker is the id a caller passes to [`EntityBuilder::of`] — a byte, not the display name
+//! — stored under [`PLUGIN_ID`](crate::PLUGIN_ID) with `set_byte`/`get_byte`, the same calls
+//! [`curse`](crate::events::curse) uses for players and
+//! [`item_builder`](crate::items::item_builder) for items. That keeps it from colliding with
+//! another plugin's data, lets it survive relogs and restarts, keeps two kinds built on the
+//! same vanilla type apart, and means renaming a kind does not orphan the entities already in
+//! the world.
 //!
-//! This trait holds only what **every** kind shares: a base type, an identity, a name, the
-//! hook that customises a spawned entity, and [`spawn`](Self::spawn) itself. What a kind is
-//! for, and where it may appear, is the business of the builder that extends this one:
-//! [`MobBuilder`](crate::entities::mobs::mob_builder::MobBuilder) adds a category and a layer
-//! list, and a trader additionally describes itself through
-//! [`VillagerBuilder`](crate::entities::villagers::villager_builder::VillagerBuilder) inside
-//! its own `apply` — there is no second trait for it.
+//! There is deliberately no trait here. A kind is a constructor — an inherent function that
+//! returns a built [`Entity`], as a mob's own `spawn` does — because a trait only earns its keep
+//! when something is *generic* over it, and this builder gives a kind exactly what it needs
+//! without one. It returns when a generic over entity kinds appears.
+//!
+//! # What this builder does and does not decide
+//!
+//! An entity's identity, its base type and its name are stated here, by whoever spawns it.
+//! What a kind is *for* — a mob's category and layers, a trader's profession — is not the
+//! builder's business: a kind describes those itself after it is spawned, so a builder never
+//! has to know about [`MobCategory`](crate::entities::mobs::mob_category::MobCategory) or a
+//! profession.
 
 use pumpkin_plugin_api::World;
 use pumpkin_plugin_api::persistent_data::PersistentDataHolder;
@@ -29,51 +37,86 @@ use crate::PLUGIN_ID;
 
 /// Key under which a custom entity's identity is stored.
 ///
-/// One key for every kind, mobs and villagers alike: the [`id`](EntityBuilder::id) is what
-/// tells them apart, so a second key would only split the same answer across two places.
+/// One key for every kind, mobs and traders alike: the id is what tells them apart, so a
+/// second key would only split the same answer across two places.
 const IDENTITY_KEY: &str = "entity";
 
-/// The shape every custom entity shares, and the marker that identifies it.
+/// A custom entity, built one property at a time, then spawned and stamped.
 ///
-/// Implemented once per kind, so its base type and its name stay together. Nothing here
-/// registers anything with the host — the entity type is always a vanilla
-/// [`EntityType`] — so adding a kind means adding a file and its submodule in `lib.rs`.
+/// `Entity` is a host resource whose setters return nothing, so they cannot be chained
+/// directly. This type wraps the identity, the base type and the name and offers the same
+/// writes as consuming methods, which lets a caller write the whole spawn as one expression:
 ///
-/// Everything a kind does to the spawned entity goes through [`apply`](Self::apply), never
-/// through a fixed table in this trait: attributes, equipment, a profession, or anything else
-/// the API grows.
-pub trait EntityBuilder {
-    /// The vanilla entity this kind is built on, and the type actually spawned.
-    fn base() -> EntityType;
+/// ```ignore
+/// EntityBuilder::of(1, EntityType::Wolf)
+///     .name(TextComponent::text("Beniguma"))
+///     .apply(|entity| entity.set_health(16.0))
+///     .build(&world, position)
+/// ```
+///
+/// The identity is a parameter of [`of`](Self::of) rather than a method of its own, so a
+/// builder cannot exist without one: an entity cannot accidentally be spawned unmarked, and
+/// there is no way to claim an id twice. The base type is the other required answer, for the
+/// same reason — there is no sensible entity without a type to spawn.
+///
+/// It adds no capability of its own — every method is one `Entity` call, applied in the order
+/// the chain runs, so a later `name` overrides an earlier one exactly as two direct calls
+/// would. A caller needing a setter it has not grown yet reaches the live entity through
+/// [`apply`](Self::apply).
+///
+/// The chain ends at [`build`](Self::build), which spawns the entity and returns it with the
+/// identity marker already written, so a caller receives an `Entity` with nothing left to
+/// stamp.
+///
+/// It is named `EntityBuilder` to sit beside
+/// [`ItemBuilder`](crate::items::item_builder::ItemBuilder) and
+/// [`VillagerBuilder`](crate::entities::villagers::villager_builder::VillagerBuilder): all
+/// three are what a kind builds *with*, not things a caller holds.
+pub(crate) struct EntityBuilder {
+    id: u8,
+    base: EntityType,
+    name: Option<TextComponent>,
+    extend: Option<Box<dyn FnOnce(&LivingEntity)>>,
+}
 
-    /// This kind's stable numeric identifier.
+impl EntityBuilder {
+    /// Starts a spawn of `base`, claiming `id` as its identity.
     ///
-    /// Stored on the entity as a byte, so it must be unique **across every kind the plugin
-    /// ships**, mobs and villagers together, and must not change once players have one in the
-    /// world: it is what tells this kind apart from another built on the same
-    /// [`base`](Self::base), and several kinds sharing one base type is expected. The number
-    /// space is therefore shared, and a villager takes the next free number like any mob.
+    /// The marker is not written here — [`build`](Self::build) writes it last, after every
+    /// other property, so the identity on the spawned entity is the one this constructor was
+    /// given.
     ///
-    /// Unlike the display name, this is not shown to players, so renaming a kind leaves
-    /// existing entities still recognised as themselves.
-    fn id() -> u8;
+    /// The byte is signed, so an id above `127` cannot be stored: see
+    /// [`build`](Self::build) for what happens then.
+    pub(crate) fn of(id: u8, base: EntityType) -> Self {
+        Self {
+            id,
+            base,
+            name: None,
+            extend: None,
+        }
+    }
 
-    /// The name shown above the entity, as the component the host renders.
+    /// Sets the name shown above the entity.
     ///
-    /// A [`TextComponent`] rather than a `&'static str` so a kind can colour, style or
-    /// localise its name without [`spawn`](Self::spawn) growing a second, richer hook.
-    /// `TextComponent::text("Beniguma")` is the plain case.
+    /// A [`TextComponent`], so a kind can colour, style or localise it — the same idea as
+    /// [`ItemBuilder::name`](crate::items::item_builder::ItemBuilder::name).
     ///
-    /// The component is owned because it is a host resource and cannot be copied: build a
-    /// fresh one per call (`TextComponent::text(..)` is cheap) instead of trying to cache
-    /// and hand out a shared one.
-    fn name() -> TextComponent;
+    /// The name is made visible by [`build`](Self::build): without that a custom entity is
+    /// indistinguishable from the vanilla one it is built on, which is the whole point of
+    /// naming it.
+    #[must_use]
+    pub(crate) fn name(mut self, name: TextComponent) -> Self {
+        self.name = Some(name);
+        self
+    }
 
-    /// Makes `entity` into this kind of entity.
+    /// Runs `extend` over the spawned entity, once it exists.
     ///
-    /// Runs inside [`spawn`](Self::spawn), after the entity exists and before anything can
-    /// meet it, so this is where a kind sets its attributes and equips itself. The default
-    /// changes nothing, leaving the base type exactly as vanilla spawns it.
+    /// The escape hatch, matching
+    /// [`ItemBuilder::apply`](crate::items::item_builder::ItemBuilder::apply): attributes and
+    /// equipment are set here, and it runs before [`build`](Self::build) stamps the identity,
+    /// so it cannot disturb which kind the entity claims to be.
     ///
     /// Set attributes through `set_attribute_base`, not the current value. The base is the
     /// template and the visible stat is derived from it, so setting a base is idempotent —
@@ -83,32 +126,39 @@ pub trait EntityBuilder {
     /// Equipment is per slot, so a kind equips only what it means to: a hand-only mob calls
     /// `set_equipment(EquipmentSlot::MainHand, ..)` and leaves the armour slots empty, and a
     /// fully dressed one sets each slot it wants. Every other slot stays vanilla.
-    fn apply(_entity: &LivingEntity) {}
+    #[must_use]
+    pub(crate) fn apply(mut self, extend: impl FnOnce(&LivingEntity) + 'static) -> Self {
+        self.extend = Some(Box::new(extend));
+        self
+    }
 
-    /// Spawns this entity in `world` at `position` and stamps it with its identity.
+    /// Spawns the entity in `world` at `position`, stamped with the identity it was built
+    /// with, and returns it.
     ///
-    /// Returns the spawned entity, which is the vanilla [`base`](Self::base) type carrying
-    /// this kind's name, its customisations and its
-    /// [`EntityBuilder::id`] marker — not a new entity type.
+    /// Consumes the builder so the result cannot be modified through it afterwards — the
+    /// caller owns the entity from here.
     ///
-    /// Placement is not checked here: callers that spawn by rule should gate on the kind's
-    /// own layer list first (see
-    /// [`MobBuilder::spawns_in`](crate::entities::mobs::mob_builder::MobBuilder::spawns_in)),
-    /// and callers placing an entity deliberately may skip the check.
+    /// Returns the vanilla [`base`](Self::of) type carrying the name and the customisations,
+    /// and the marker — not a new entity type.
     ///
-    /// The name is set visible: without that a custom entity is indistinguishable from the
-    /// vanilla one it is built on.
-    fn spawn(world: &World, position: (f64, f64, f64)) -> Entity {
-        let entity = world.spawn_entity(Self::base(), position);
+    /// Placement is not checked here: callers that spawn by rule should gate on the kind's own
+    /// layer list first, and callers placing an entity deliberately may skip the check.
+    #[must_use]
+    pub(crate) fn build(self, world: &World, position: (f64, f64, f64)) -> Entity {
+        let entity = world.spawn_entity(self.base, position);
 
-        entity.set_custom_name(Self::name());
-        entity.set_custom_name_visible(true);
-
-        if let Some(living) = entity.as_living() {
-            Self::apply(&living);
+        if let Some(name) = self.name {
+            entity.set_custom_name(name);
+            entity.set_custom_name_visible(true);
         }
 
-        mark(&entity, Self::id());
+        if let Some(living) = entity.as_living()
+            && let Some(extend) = self.extend
+        {
+            extend(&living);
+        }
+
+        mark(&entity, self.id);
 
         entity
     }
@@ -116,9 +166,9 @@ pub trait EntityBuilder {
 
 /// Records that `entity` is a custom entity of kind `id`.
 ///
-/// The identity is written by [`EntityBuilder::spawn`], which is the only caller. The byte is
-/// signed, so a kind id has to fit in `i8`; a larger one is silently not written rather
-/// than wrapped into another kind's id.
+/// Written by [`EntityBuilder::build`], which is the only caller. The byte is signed, so a kind
+/// id has to fit in `i8`; a larger one is silently not written rather than wrapped into another
+/// kind's id.
 pub(crate) fn mark(entity: &Entity, id: u8) {
     if let Ok(id) = i8::try_from(id) {
         entity.set_byte(PLUGIN_ID, IDENTITY_KEY, id);
@@ -136,10 +186,6 @@ pub(crate) fn mark(entity: &Entity, id: u8) {
 ///
 /// No handler reads an identity while `/abyss summon` is gone, but the marker is still
 /// written on every spawn, so this stays the way to ask a spawned entity what it is.
-#[expect(
-    dead_code,
-    reason = "the reader returns with the handler that needs it"
-)]
 #[must_use]
 pub(crate) fn id_of(entity: &Entity) -> Option<u8> {
     entity

@@ -533,15 +533,61 @@ Abyss: it stands behind a counter on an authored map, it is not something a laye
   something does — a map marker, a shop, a command — it calls `Boy::entity` with the world and
   position it wants.
 - **The byte space is shared with the mobs**, so ids must not repeat between the two trees:
-  mobs hold `1`–`65`, so a trader starts above them. `Boy` is `66`. There is no compile-time
-  guard on this — check the mob catalogue when adding a kind. A trader still claims an id even
-  though nothing stamps one yet: it is reserved for the spawn path that comes next.
-- **A trader is never a natural spawn.** `CreatureSpawn::choose` filters out any kind whose
-  base is `EntityType::Villager`, so a layer's wild spawns can never produce a shopkeeper — and
-  there is no villager kind in `mob_kinds` for it to reach in the first place.
+  mobs hold `1`–`65`, so traders start above them at `66`. There is no compile-time guard on
+  this — check the mob catalogue when adding a kind.
+- **A trader is never a natural spawn.** `CreatureSpawn` only draws from `mob_kinds`, which
+  holds no trader, so a layer's wild spawns can never produce a shopkeeper.
+- **Every trader is a module of its own** under `src/entities/villagers/`, named after the
+  wiki page [Orth Trades](https://wiki.mineinabyss.com/w/Orth_Trades). They are authored from
+  that page's roster but carry **no coordinates and no trades**: a trader is placed wherever a
+  map marker puts it, and the offers cannot be delivered (see the next bullet).
+- **No trade is written anywhere.** The wiki lists roughly 450 offers; none are expressible,
+  because `villager-data` is only `{ profession, level, experience }` and there is no setter for
+  offers. `Boy`'s module docs say so explicitly, and every trader repeats the reason rather
+  than carrying a table nothing can deliver.
 
-`Boy` is the worked example: `Boy, Lord of Currency`, a librarian placed in `Orth`,
-built from the wiki's `Golden Bridge` counter.
+**The roster as it stands**, with ids, so a new trader takes the next free number:
+
+| Trader       | id  | District      | Profession    |
+| ------------ | --- | ------------- | ------------- |
+| `Boy`        | 66  | Golden Bridge | Librarian     |
+| `Benner`     | 67  | Golden Bridge | Librarian     |
+| `Odroy`      | 68  | Central       | Cleric        |
+| `John`       | 69  | Central       | Farmer        |
+| `Nereth`     | 70  | Central       | Mason         |
+| `Norah`      | 71  | Central       | Mason         |
+| `Gael`       | 72  | Central       | Mason         |
+| `Frank`      | 73  | Central       | Fisherman     |
+| `Cedric`     | 74  | Central       | Mason         |
+| `Murdock`    | 75  | Central       | Mason         |
+| `Larry`      | 76  | Central       | Mason         |
+| `Rutrix`     | 77  | Central       | Cartographer  |
+| `Headmaster` | 78  | Central       | Cartographer  |
+| `Cress`      | 79  | Residential   | Farmer        |
+| `Heath`      | 80  | Residential   | Mason         |
+| `Veris`      | 81  | Residential   | Mason         |
+| `Bob`        | 82  | Residential   | Toolsmith     |
+| `Evril`      | 83  | Residential   | Cleric        |
+| `Alistair`   | 84  | Residential   | Mason         |
+| `Dayne`      | 85  | Residential   | Leatherworker |
+| `MeatJohn`   | 86  | Residential   | Butcher       |
+| `Pete`       | 87  | Residential   | Cartographer  |
+| `BucketBill` | 88  | Residential   | Fisherman     |
+| `Berney`     | 89  | Tower         | Weaponsmith   |
+| `Bilton`     | 90  | Tower         | Armorer       |
+| `Mark`       | 91  | Tower         | Weaponsmith   |
+| `Siggy`      | 92  | Tower         | Weaponsmith   |
+| `Robert`     | 93  | Tower         | Weaponsmith   |
+| `Tags`       | 94  | Tower         | Weaponsmith   |
+| `Jacob`      | 95  | Tower         | Weaponsmith   |
+| `Jeff`       | 96  | Tower         | Weaponsmith   |
+| `Jag`        | 97  | Tower         | Armorer       |
+| `Hamilton`   | 98  | Tower         | Weaponsmith   |
+| `Quentin`    | 99  | Giant Tree    | Shepherd      |
+| `Issac`      | 100 | Giant Tree    | Mason         |
+| `BeeBill`    | 101 | Slums         | Farmer        |
+
+`Boy` is the worked example. Trades cannot be authored yet — see the bullets above.
 
 ### Custom items
 
@@ -698,8 +744,9 @@ src/
 │   │   ├── docile/     #   hostile 23, passive 12 — 65 kinds in all
 │   │   ├── hostile/
 │   │   └── passive/
-│   └── villagers/      # the traders of Orth
-│       └── boy.rs              # `Boy` — a plain constructor, awaiting a caller
+│   └── villagers/      # the traders of Orth, one module per counter (36 today)
+│       ├── boy.rs              # `Boy` — the worked example
+│       └── benner.rs … bill_bee.rs  # the rest of the Orth roster, all awaiting a caller
 ├── items/              # declared as `mod items` in `lib.rs`: the plugin's own items
 │   ├── item_builder.rs # `ItemBuilder` — the chainable stack builder; no trait
 │   └── orthcoin.rs     # `Orthcoin` — the worked example, awaiting a caller

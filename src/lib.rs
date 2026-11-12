@@ -133,7 +133,42 @@ mod entities {
         reason = "no caller places a trader until the summon subcommand returns"
     )]
     pub(crate) mod villagers {
+        pub(crate) mod alistair;
+        pub(crate) mod benner;
+        pub(crate) mod berney;
+        pub(crate) mod bill_bee;
+        pub(crate) mod bill_bucket;
+        pub(crate) mod bilton;
+        pub(crate) mod bob;
         pub(crate) mod boy;
+        pub(crate) mod cedric;
+        pub(crate) mod cress;
+        pub(crate) mod dayne;
+        pub(crate) mod evril;
+        pub(crate) mod frank;
+        pub(crate) mod gael;
+        pub(crate) mod hamilton;
+        pub(crate) mod headmaster;
+        pub(crate) mod heath;
+        pub(crate) mod issac;
+        pub(crate) mod jacob;
+        pub(crate) mod jag;
+        pub(crate) mod jeff;
+        pub(crate) mod john;
+        pub(crate) mod john_meat;
+        pub(crate) mod larry;
+        pub(crate) mod mark;
+        pub(crate) mod murdock;
+        pub(crate) mod nereth;
+        pub(crate) mod norah;
+        pub(crate) mod odroy;
+        pub(crate) mod pete;
+        pub(crate) mod quentin;
+        pub(crate) mod robert;
+        pub(crate) mod rutrix;
+        pub(crate) mod siggy;
+        pub(crate) mod tags;
+        pub(crate) mod veris;
     }
 }
 

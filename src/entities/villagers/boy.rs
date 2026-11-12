@@ -33,12 +33,12 @@ use pumpkin_plugin_api::world::Entity;
 use crate::entities::entity_builder::EntityBuilder;
 use crate::utils::rgb;
 
-/// Boy, Lord of Currency: the relic buyer of Orth, built on a librarian.
+/// Boy, Lord of Currency.
 #[derive(Debug, Default, Clone, Copy)]
 pub(crate) struct Boy;
 
 impl Boy {
-    /// Spawns Boy in `world` at `position`.
+    /// Spawns Boy, Lord of Currency in `world` at `position`.
     pub(crate) fn entity(world: &World, position: (f64, f64, f64)) -> Entity {
         EntityBuilder::of(1, EntityType::Villager)
             .name(TextComponent::text("Boy, Lord of Currency").color_rgb(rgb(0xF0, 0xC4, 0x38)))

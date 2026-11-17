@@ -188,8 +188,8 @@ added to the player's current strain (capped at 6):
 | `1`          | Nausea                                                 |
 | `2`          | Nausea, weakness                                       |
 | `3`          | Nausea, blindness, slowness                            |
-| `4`          | Nausea, blindness, weakness, minor magic damage        |
-| `5`          | Blindness, weakness, magic damage, health clamped to 1 |
+| `4`          | Nausea, blindness, weakness                            |
+| `5`          | Blindness, weakness, health clamped to 1               |
 | `6`          | Death                                                  |
 
 Ascending out of `Orth` adds nothing (index `0`) — there is nowhere above it. Ascending out

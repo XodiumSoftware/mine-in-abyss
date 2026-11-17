@@ -325,8 +325,8 @@ graph LR
     C -->|1| E["nausea"]
     C -->|2| F["nausea, weakness"]
     C -->|3| G["nausea, blindness, slowness"]
-    C -->|4| H["+ minor magic damage"]
-    C -->|5| I["+ health clamped to 1"]
+    C -->|4| H["nausea, blindness, weakness"]
+    C -->|5| I["blindness, weakness, health clamped to 1"]
     C -->|6 or more| J["death"]
     K["reach Orth"] --> L["cure"]
     M["respawn"] --> L

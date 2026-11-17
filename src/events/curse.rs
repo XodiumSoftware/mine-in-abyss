@@ -9,7 +9,6 @@
 //! up one. The strain is stored on the player as persistent data, so it survives a
 //! relog, and only reaching the surface — or dying — clears it.
 
-use pumpkin_plugin_api::damage_types_wit::DamageType;
 use pumpkin_plugin_api::persistent_data::PersistentDataHolder;
 use pumpkin_plugin_api::player::Player;
 use pumpkin_plugin_api::wit::pumpkin::plugin::status_effect::{
@@ -104,12 +103,10 @@ fn inflict(player: &Player, strain: u8) {
             player.add_effect(effect(StatusEffectType::Nausea, 15, 2));
             player.add_effect(effect(StatusEffectType::Blindness, 4, 0));
             player.add_effect(effect(StatusEffectType::Weakness, 12, 0));
-            player.damage(4.0, DamageType::Magic);
         }
         5 => {
             player.add_effect(effect(StatusEffectType::Blindness, 8, 0));
             player.add_effect(effect(StatusEffectType::Weakness, 20, 2));
-            player.damage(8.0, DamageType::Magic);
             player.set_health(player.get_health().min(1.0));
         }
         _ => {

@@ -353,18 +353,38 @@ a.card.recipe-card:hover {
   background-color: var(--sidebar-bg);
 }
 
+/* The map scrolls sideways inside this wrapper on a narrow screen, where it is
+   wider than the page. The map keeps the width it was drawn at so the wrapper has
+   something to scroll; width: 100% would let it shrink to fit instead. */
+.layer-map-scroll {
+  overflow-x: auto;
+}
+
 .layer-map {
   display: block;
-  width: 100%;
+  width: 898px;
+  max-width: none;
   height: auto;
-  max-width: 898px;
   margin: 1.5rem auto;
   border: 4px solid transparent;
   border-image: url("/img/gui/tooltip_frame.png") 2 / 4px / 0 stretch;
   position: relative;
-  /* Room for the arrow track and the coin marker, which reach outside the border. */
-  margin-right: calc(14rem + 1rem);
-  margin-left: 11rem;
+}
+
+/* Above the breakpoint there is nothing to scroll, and the map gives way to the
+   content column. The margins leave room for the coin marker and the rise track,
+   which sit outside the map's border. */
+@media only screen and (min-width: 621px) {
+  .layer-map-scroll {
+    overflow-x: visible;
+  }
+
+  .layer-map {
+    width: 100%;
+    max-width: 898px;
+    margin-right: calc(14rem + 1rem);
+    margin-left: 11rem;
+  }
 }
 
 .layer-map img {

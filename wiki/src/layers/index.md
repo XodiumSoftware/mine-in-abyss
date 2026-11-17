@@ -10,6 +10,7 @@ worsening the Curse.
 
 <p class="layer-map-hint">Hover over a layer to see its name. Click one for more detail.</p>
 
+<div class="layer-map-scroll">
 <div class="layer-map">
 <img src="../img/layer/layers.webp" alt="The layers of the Abyss, from the City on the Edge to the Final Maelstrom">
 <button class="hotspot" style="--top: 0%; --height: 5.39%" data-name="Orth"><span class="hotspot-tip"><img class="hotspot-icon" alt="" src="../img/layer/orth.png"><span class="hotspot-tip-text"><strong>Orth</strong> — The City on the Edge<dl class="hotspot-facts"><dt>Creatures</dt><dd>1</dd><dt>Spawning</dt><dd>Safe. Monsters do not spawn.</dd></dl><p class="hotspot-more">The surface layer, where every descent begins and every ascent ends. The Curse does not apply here, so arriving — or respawning — clears your strain entirely.</p></span></span></button>
@@ -32,4 +33,5 @@ worsening the Curse.
 <div class="rise" style="--at: 44.69%" title="Blindness, Weakness, 4 hearts, health to half a heart"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Blindness, Weakness, 4 hearts, health to half a heart</span></div>
 <div class="rise" style="--at: 70.7%" title="Death"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Death</span></div>
 </aside>
+</div>
 </div>

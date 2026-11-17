@@ -362,8 +362,9 @@ a.card.recipe-card:hover {
   border: 4px solid transparent;
   border-image: url("/img/gui/tooltip_frame.png") 2 / 4px / 0 stretch;
   position: relative;
-  /* Room for the arrow track beside the map, which reaches outside the border. */
+  /* Room for the arrow track and the coin marker, which reach outside the border. */
   margin-right: calc(14rem + 1rem);
+  margin-left: 11rem;
 }
 
 .layer-map img {
@@ -635,4 +636,53 @@ a.card.recipe-card:hover {
   font-size: 0.72rem;
   line-height: 1.25;
   text-shadow: 2px 2px 0 rgb(0 0 0 / 60%);
+}
+
+/* The Orthcoin marker sits on the left edge at Orth's height, naming the one
+   place the coin is traded. Its label follows the same frame as the arrows on
+   the right, and only appears on hover so the map stays readable. */
+.layer-map .coin-marker {
+  position: absolute;
+  top: var(--at);
+  right: 100%;
+  margin-right: 1.5rem;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 0.6rem;
+  transform: translateY(-50%);
+  pointer-events: auto;
+}
+
+.layer-map .coin-icon {
+  flex: none;
+  width: 2rem;
+  height: auto;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 4px rgb(240 196 56 / 60%));
+}
+
+.layer-map .coin-label {
+  width: max-content;
+  max-width: 14rem;
+  padding: 6px 10px;
+  color: #fff;
+  background-color: rgb(25 22 21 / 96%);
+  border: 4px solid transparent;
+  border-image: url("/img/gui/tooltip_frame.png") 2 / 4px / 0 stretch;
+  font-family: "Excalibur", monospace;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  text-shadow: 2px 2px 0 rgb(0 0 0 / 60%);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.12s ease,
+    visibility 0.12s ease;
+}
+
+.layer-map .coin-marker:hover .coin-label,
+.layer-map .coin-marker:focus-within .coin-label {
+  opacity: 1;
+  visibility: visible;
 }

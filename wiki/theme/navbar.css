@@ -126,7 +126,12 @@ html.sidebar-visible #mdbook-sidebar-toggle::after {
   border-image: url("/img/gui/tooltip_frame.png") 2 / 4px / 0 stretch;
 }
 
-.chrome-tooltip[data-chrome-tooltip] {
+/* Only elements that are not positioned already need a containing block for
+   the tooltip. The chapter arrows are position: fixed, so forcing relative on
+   them would drop them out of their viewport-sized layout. */
+.chrome-tooltip[data-chrome-tooltip]:not(.nav-chapters):not(
+    .mobile-nav-chapters
+  ) {
   position: relative;
 }
 

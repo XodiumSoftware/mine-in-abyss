@@ -1,6 +1,5 @@
 a.nav-chapters,
 a.mobile-nav-chapters {
-    display: inline-flex;
     align-items: center;
     justify-content: center;
     padding: 0.6rem;
@@ -8,7 +7,21 @@ a.mobile-nav-chapters {
     transition: transform 0.12s ease;
 }
 
-a.nav-chapters:hover,
+/* A fixed element is stretched by its top/bottom insets only when it is not an
+   inline-level box, so the side arrows have to be flex rather than inline-flex
+   to stay as tall as the viewport. */
+a.nav-chapters {
+    display: flex;
+}
+
+a.mobile-nav-chapters {
+    display: inline-flex;
+}
+
+a.nav-chapters:hover {
+    background-color: var(--theme-hover);
+}
+
 a.mobile-nav-chapters:hover {
     transform: translateY(-2px);
 }

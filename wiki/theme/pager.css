@@ -1,5 +1,3 @@
-/* Replace the default prev/next chevrons with the villager trade-arrow sprite. */
-
 a.nav-chapters,
 a.mobile-nav-chapters {
     display: inline-flex;
@@ -15,13 +13,11 @@ a.mobile-nav-chapters:hover {
     transform: translateY(-2px);
 }
 
-/* Hide the Font Awesome chevrons. */
 a.nav-chapters > .fa-svg,
 a.mobile-nav-chapters > .fa-svg {
     display: none;
 }
 
-/* Inject the trade-arrow sprite. */
 a.nav-chapters::after,
 a.mobile-nav-chapters::after {
     content: "";
@@ -34,7 +30,6 @@ a.mobile-nav-chapters::after {
     image-rendering: pixelated;
 }
 
-/* The sprite points right; flip it for the "previous" button. */
 a.nav-chapters.previous::after,
 a.mobile-nav-chapters.previous::after {
     transform: scaleX(-1);

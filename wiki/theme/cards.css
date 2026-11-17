@@ -1,6 +1,3 @@
-/* Minecraft item/method icons used in tables. */
-
-/* Tooltip-style outer border on tables. */
 table {
   border-collapse: separate;
   border-spacing: 0;
@@ -8,12 +5,10 @@ table {
   border-image: url("/img/gui/tooltip_frame.png") 2 / 4px / 0 stretch;
 }
 
-/* Code blocks embedded in table cells inherit inline-code color. */
 .content table td pre code {
   color: var(--inline-code-color);
 }
 
-/* Minecraft tooltip styling for blockquotes. */
 blockquote {
   border: 4px solid transparent;
   border-block-start: none;
@@ -21,8 +16,6 @@ blockquote {
   border-image: url("/img/gui/tooltip_frame.png") 2 / 4px / 0 stretch;
   padding: 1px 16px;
 }
-
-/* Centers Method/Input/Output (or Base Item/Catalyst) columns in icon-driven tables. */
 
 .recipe-table table td:nth-child(2),
 .recipe-table table td:nth-child(3),
@@ -45,8 +38,6 @@ blockquote {
   margin-right: 0.35em;
 }
 
-/* Sprite-strip atlases (e.g. ender_eye): show only the first frame. */
-/* cover scales the strip so one frame fills the box; top crops to frame 1. */
 .mc-icon-atlas,
 img.card-icon-atlas {
   object-fit: cover;
@@ -93,7 +84,6 @@ img.card-icon-atlas {
   margin-bottom: 0.4rem;
 }
 
-/* When the icon is next to the title, shrink it to an inline size. */
 .card .card-header .card-icon {
   display: block;
   font-size: 1.6rem;
@@ -144,12 +134,10 @@ img.card-icon-atlas {
   width: 100%;
 }
 
-/* Recipe cards are not links: they hold a recipe render as the description. */
 .card.recipe-card {
   cursor: default;
 }
 
-/* Recipe grid uses a fixed 4-column layout (not the auto-fill of Introduction). */
 .recipe-grid {
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
 }
@@ -167,37 +155,27 @@ a.card.recipe-card:hover {
 .card.recipe-card .card-title {
   font-family: "IllyriaRP", monospace;
   font-weight: normal;
-  /* Minecraft-style hard drop shadow */
   text-shadow: 2px 2px 0 rgb(0 0 0 / 60%);
   font-smooth: never;
   -webkit-font-smoothing: none;
   -moz-osx-font-smoothing: unset;
-  /* Divider between title and recipe */
   border-bottom: 2px solid var(--table-border-color);
   margin-bottom: 0.75rem;
   padding-bottom: 0.5rem;
   width: 100%;
-  /* Name on the left, the heart count flush right on the same baseline. */
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
 }
 
-/* The creature name, kept from squeezing against the heart count. */
 .card.recipe-card .card-title .title-name {
   min-width: 0;
   flex: 1 1 auto;
   overflow-wrap: anywhere;
-  /* `--kind-color` carries the kind's exact RGB from the plugin, set inline per
-     card. Many of those colours are dark enough to vanish on the card
-     background, so the name is mixed 45/55 toward white: the hue still
-     identifies the creature, and every name clears WCAG AA on all four mdBook
-     themes (rust, ayu, coal, navy). */
   color: color-mix(in srgb, var(--kind-color) 45%, white);
 }
 
-/* The heart total shown at the end of a creature card's title row. */
 .card.recipe-card .title-hearts {
   display: inline-flex;
   align-items: center;
@@ -213,8 +191,6 @@ a.card.recipe-card:hover {
   margin-right: 0;
 }
 
-/* The category icon leads the title row, before the name. It shares the layer
-   icon's tooltip styling, so only its size differs. */
 .card.recipe-card .category-icon {
   position: relative;
   display: inline-flex;
@@ -229,9 +205,6 @@ a.card.recipe-card:hover {
   image-rendering: pixelated;
 }
 
-/* Layer- and category-icon tooltips, sharing the resource-pack tooltip frame
-   the recipe pages already use. Hosted on the wrapper span, since <img> is a
-   replaced element and cannot host a pseudo-element. */
 .card.recipe-card .layer-icon[data-tooltip],
 .card.recipe-card .category-icon[data-tooltip] {
   cursor: help;
@@ -245,16 +218,13 @@ a.card.recipe-card:hover {
   left: 50%;
   bottom: calc(100% + 8px);
   transform: translateX(-50%);
-
   width: max-content;
   max-width: 400px;
   padding: 6px 10px;
-
   color: #fff;
   background: rgb(25 22 21 / 94%);
   border: 4px solid transparent;
   border-image: url("/img/gui/tooltip_frame.png") 2 / 4px / 0 stretch;
-
   font-family: "IllyriaRP", sans-serif;
   font-size: 0.9rem;
   line-height: 1.4;
@@ -264,7 +234,6 @@ a.card.recipe-card:hover {
   -webkit-font-smoothing: none;
   -moz-osx-font-smoothing: unset;
   text-shadow: 2px 2px 0 rgb(0 0 0 / 60%);
-
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -281,8 +250,6 @@ a.card.recipe-card:hover {
   visibility: visible;
 }
 
-/* The layer icons sit before the heart; a small gap keeps them from running
-   together, and the wrapper exists so each can host its tooltip. */
 .card.recipe-card .title-hearts .layer-icon {
   position: relative;
   display: inline-flex;
@@ -338,7 +305,6 @@ a.card.recipe-card:hover {
   text-align: left;
 }
 
-/* Footnote superscripts shrink inside the pixel font. */
 .card.recipe-card .card-title sup,
 .card.recipe-card .card-title .footnote-reference {
   font-size: 0.6em;
@@ -354,7 +320,6 @@ a.card.recipe-card:hover {
   color: #ffff55;
 }
 
-/* Rarity glow: a colored halo around the card frame, keyed per weapon rarity. */
 .rarity-rare {
   --rarity-color: #55aaff;
 }
@@ -367,7 +332,6 @@ a.card.recipe-card:hover {
   --rarity-color: #ffaa00;
 }
 
-/* Inline one-line legend above the grid. */
 .content .legend-rarity,
 .legend-rarity {
   color: var(--rarity-color);
@@ -375,7 +339,6 @@ a.card.recipe-card:hover {
   opacity: 1;
 }
 
-/* Keep the legend on its own line above the grid. */
 .content sub:has(.legend-rarity) {
   display: block;
   margin-bottom: 1rem;

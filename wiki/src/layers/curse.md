@@ -77,4 +77,4 @@ Ascending from Orth adds nothing — there is nowhere above it to climb from.
 - **A single ascent from the Sixth kills you outright.** If you are in the Capital of the
   Unreturned, there is no climbing out alive.
 - **Beds do not help you.** You cannot set a spawn point outside Orth — see
-  [Beds & Spawning](../gameplay/beds.md).
+  [Gameplay Changes](../gameplay/index.md).

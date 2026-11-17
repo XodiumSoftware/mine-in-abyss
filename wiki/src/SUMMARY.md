@@ -22,5 +22,3 @@
 # Gameplay Changes
 
 - [Overview](gameplay/index.md)
-- [Beds & Spawning](gameplay/beds.md)
-- [Time of Day](gameplay/time.md)

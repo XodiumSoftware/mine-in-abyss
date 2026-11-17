@@ -1,33 +1,41 @@
+<!-- markdownlint-disable MD013 -->
+
 # Gameplay Changes
 
-Rules that differ from vanilla survival, and why.
+Rules that differ from vanilla survival.
 
-<div class="card-grid">
+<div class="card-grid recipe-grid">
 
-<a class="card" href="beds.html">
+<div class="card recipe-card">
 <span class="card-header">
-<span class="card-title">Beds & Spawning</span>
-<img class="card-icon" alt="" src="../img/item/oak_door.png">
+<span class="card-title"><span class="title-name">Beds and Respawn Anchors</span></span>
+<img class="card-icon" alt="" src="../img/item/bed.png">
 </span>
-<span class="card-desc">Why you cannot set a spawn point below Orth</span>
-</a>
-
-<a class="card" href="time.html">
-<span class="card-header">
-<span class="card-title">Time of Day</span>
-<img class="card-icon" alt="" src="../img/item/flint_and_steel.png">
-</span>
-<span class="card-desc">Every layer shares Orth's clock</span>
-</a>
-
+<span class="card-desc">Cannot set a spawn point.</span>
 </div>
 
-## Summary
+<div class="card recipe-card">
+<span class="card-header">
+<span class="card-title"><span class="title-name">Dying</span></span>
+<img class="card-icon" alt="" src="../img/item/respawn_anchor.png">
+</span>
+<span class="card-desc">Sends you to Orth's world spawn.</span>
+</div>
 
-| Rule | Behaviour |
-| ---- | --------- |
-| Beds and respawn anchors | **Cannot set a spawn point** |
-| `/spawnpoint` | Works — operators keep the escape hatch |
-| Dying | Sends you to **Orth's world spawn** |
-| Time of day | Copied from Orth to every other layer once a minute |
-| Monster spawning | Disabled in Orth and the First |
+<div class="card recipe-card">
+<span class="card-header">
+<span class="card-title"><span class="title-name">Time of Day</span></span>
+<img class="card-icon" alt="" src="../img/item/clock.png">
+</span>
+<span class="card-desc">Copied from Orth to every other layer once a minute.</span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-header">
+<span class="card-title"><span class="title-name">Monster Spawning</span></span>
+<img class="card-icon" alt="" src="../img/item/zombie_spawn_egg.png">
+</span>
+<span class="card-desc">Disabled in Orth and the First.</span>
+</div>
+
+</div>

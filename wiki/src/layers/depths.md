@@ -5,61 +5,16 @@
 There are eight layers, from the surface down. Each is a hand-built map with its own creatures,
 and each one takes its turn worsening the Curse.
 
-<div class="icon-table">
+<p class="layer-map-hint">Hover over a layer to see its name.</p>
 
-|                                 #                                  | Layer                                     | Creatures |
-| :----------------------------------------------------------------: | :---------------------------------------- | :-------: |
-|    <img class="mc-icon" alt="Orth" src="../img/layer/orth.png">    | **Orth** — The City on the Edge           |     1     |
-|   <img class="mc-icon" alt="First" src="../img/layer/first.png">   | **First** — Depths of the Abyss           |    20     |
-|  <img class="mc-icon" alt="Second" src="../img/layer/second.png">  | **Second** — The Forest of Temptation     |    21     |
-|   <img class="mc-icon" alt="Third" src="../img/layer/third.png">   | **Third** — The Great Fault               |    14     |
-|  <img class="mc-icon" alt="Fourth" src="../img/layer/fourth.png">  | **Fourth** — The Goblets of Giants        |    18     |
-|   <img class="mc-icon" alt="Fifth" src="../img/layer/fifth.png">   | **Fifth** — The Sea of Corpses            |    26     |
-|   <img class="mc-icon" alt="Sixth" src="../img/layer/sixth.png">   | **Sixth** — The Capital of the Unreturned |     0     |
-| <img class="mc-icon" alt="Seventh" src="../img/layer/seventh.png"> | **Seventh** — The Final Maelstrom         |     0     |
-
+<div class="layer-map">
+<img src="../img/layer/layers.webp" alt="The layers of the Abyss, from the City on the Edge to the Final Maelstrom">
+<button class="hotspot" style="--top: 0%; --height: 5.39%" data-name="Orth" data-depth="0m"><span class="hotspot-tip"><strong>Orth</strong> — The City on the Edge</span></button>
+<button class="hotspot" style="--top: 5.39%; --height: 10.94%" data-name="First" data-depth="0~1350m"><span class="hotspot-tip"><strong>First layer</strong> — Depths of the Abyss</span></button>
+<button class="hotspot" style="--top: 16.33%; --height: 10.31%" data-name="Second" data-depth="1350~2600m"><span class="hotspot-tip"><strong>Second layer</strong> — The Forest of Temptation</span></button>
+<button class="hotspot" style="--top: 26.64%; --height: 6.72%" data-name="Third" data-depth="2600~7000m"><span class="hotspot-tip"><strong>Third layer</strong> — The Great Fault</span></button>
+<button class="hotspot" style="--top: 33.36%; --height: 11.33%" data-name="Fourth" data-depth="7000~12000m"><span class="hotspot-tip"><strong>Fourth layer</strong> — The Goblets of Giants</span></button>
+<button class="hotspot" style="--top: 44.69%; --height: 26.02%" data-name="Fifth" data-depth="12000~13000m"><span class="hotspot-tip"><strong>Fifth layer</strong> — The Sea of Corpses</span></button>
+<button class="hotspot" style="--top: 70.70%; --height: 8.67%" data-name="Sixth" data-depth="13000~15500m"><span class="hotspot-tip"><strong>Sixth layer</strong> — The Capital of the Unreturned</span></button>
+<button class="hotspot" style="--top: 79.38%; --height: 20.62%" data-name="Seventh" data-depth="15500m+"><span class="hotspot-tip"><strong>Seventh layer</strong> — The Final Maelstrom</span></button>
 </div>
-
-## Orth
-
-**The City on the Edge** is the surface layer, the place every descent begins and every ascent
-ends. It disables monster spawning, so it is a safe place to prepare.
-
-The Curse does not apply here. Arriving in Orth — or respawning after death — **cures your
-strain entirely**.
-
-## First — Depths of the Abyss
-
-The first layer proper. Twenty creatures live here across every category, from the harmless
-Fuwagi to the 45-heart Ottobas.
-
-Like Orth, monster spawning is disabled, so nothing hunts you by darkness alone.
-
-## Second — The Forest of Temptation
-
-The woodland layer, and the first with a full complement of hostile creatures. Twenty-one kinds
-live here.
-
-## Third — The Great Fault
-
-A broken landscape of stone and chasms. Fourteen kinds live here, including the Docile
-Daikonchu — forty hearts, and harmless unless provoked.
-
-## Fourth — The Goblets of Giants
-
-Home to eighteen creatures, including some of the largest aerial kinds in the Abyss. The Orb
-Piercer — ninety hearts — lives here.
-
-## Fifth — The Sea of Corpses
-
-The deepest layer with a full ecosystem: twenty-six kinds, from the 2.5-heart Kazura to the
-Stingerhead at 130 hearts.
-
-## Sixth & Seventh
-
-These layers have **no creatures at all**. Natural spawning is suppressed and nothing replaces
-it, so they are empty. This is deliberate — no creature has been authored for them yet — but it
-does mean a descent past the Fifth leaves you in silence.
-
-The Seventh, the Final Maelstrom, is the end of the Abyss. There is no layer beneath it: falling
-out of the bottom is handled by vanilla void damage rather than a descent.

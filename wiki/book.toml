@@ -1,0 +1,20 @@
+[book]
+title = "Mine in Abyss Wiki"
+authors = ["illyrius666"]
+language = "en"
+
+[preprocessor.variables.variables]
+discord_invite = "https://discord.gg/jusYH9aYUh"
+github_repo = "https://github.com/XodiumSoftware/mine-in-abyss"
+mc_version = "26.3"
+server_ip = "play.mine-in-abyss.cc"
+
+[output.html]
+site-url = "https://wiki.mine-in-abyss.cc/"
+git-repository-url = "https://github.com/XodiumSoftware/mine-in-abyss"
+edit-url-template = "https://github.com/XodiumSoftware/mine-in-abyss/edit/main/wiki/src/{path}"
+hash-files = true
+smart-punctuation = true
+default-theme = "rust"
+preferred-dark-theme = "ayu"
+additional-css = ["theme/cards.css","theme/recipe.css","theme/fonts.css","theme/pager.css","theme/navbar.css"]

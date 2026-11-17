@@ -66,9 +66,9 @@ There are **65 kinds** in all:
 
 | Category | Kinds |
 | :------: | :---: |
-| <img class="mc-icon" alt="Hostile" title="Hostile" src="../img/item/netherite_sword.png"> Hostile | 23 |
+| <img class="mc-icon" alt="Hostile" title="Hostile" src="../img/item/netherite_sword.png"> Hostile | 24 |
 | <img class="mc-icon" alt="Aerial" title="Aerial" src="../img/item/elytra.png"> Aerial | 15 |
-| <img class="mc-icon" alt="Passive" title="Passive" src="../img/item/bone.png"> Passive | 11 |
+| <img class="mc-icon" alt="Passive" title="Passive" src="../img/item/bone.png"> Passive | 12 |
 | <img class="mc-icon" alt="Docile" title="Docile" src="../img/item/leather.png"> Docile | 8 |
 | <img class="mc-icon" alt="Aquatic" title="Aquatic" src="../img/item/enchanted_book.png"> Aquatic | 8 |
 

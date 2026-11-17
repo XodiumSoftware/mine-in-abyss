@@ -40,7 +40,7 @@ pub(crate) struct Boy;
 impl Boy {
     /// Spawns Boy, Lord of Currency in `world` at `position`.
     pub(crate) fn entity(world: &World, position: (f64, f64, f64)) -> Entity {
-        EntityBuilder::of(1, EntityType::Villager)
+        EntityBuilder::of(66, EntityType::Villager)
             .name(TextComponent::text("Boy, Lord of Currency").color_rgb(rgb(0xF0, 0xC4, 0x38)))
             .apply(|entity| {
                 if let Some(villager) = entity.cast::<Villager>() {

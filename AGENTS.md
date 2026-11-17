@@ -1,4 +1,4 @@
-# mine-in-abyss — Claude Code Context
+# mine-in-abyss — Agent Context
 
 ## Project at a Glance
 
@@ -228,10 +228,10 @@ parser, so **never emit `MiniMessage` strings**. `color_named` and friends are
 consuming builders: reassign the result (`let t = TextComponent::text(..).color_named(..)`)
 
 **Vanilla mobs never spawn in a layer world.** `CreatureSpawn` cancels a natural spawn in any
-layer world and spawns a kind from [`mob_kinds`](src/lib.rs) whose `layers()` include that
-layer, at the event's own position and world. The same `layers()` list decides what lives
+layer world and spawns a kind from [`mob_kinds`](src/lib.rs) whose `spawns_in` returns true for
+that layer, at the event's own position and world. The kind's `LAYERS` decides what lives
 where, and is also what `/abyss summon` enforced while it existed — there is no second spawn
-table.
+table. (The catalogue no longer carries an id or a name: nothing but the spawn rule reads it.)
 
 Only reasons in `NATURAL_REASONS` count as natural. A spawner, breeding, a spawn egg or a
 command is left untouched, so this never removes a mob a player or operator asked for. The API
@@ -275,11 +275,11 @@ error message.
 A player running it is always the one moved; `[player]` is only consulted from console.
 It teleports straight into the layer, so no curse strain is added — unlike a real ascent.
 
-**The `item` and `summon` subcommands were removed.** They were the only callers that made
-`mod items` and the kind lookups live, so those now carry `#[expect(dead_code)]` and the
-villager tree is dormant. Nothing creates an item or places a custom mob outside
-[`CreatureSpawn`](src/events/creature_spawn.rs) until that changes — see § Custom items and
-§ Custom villagers for what restores them.
+**The `item` and `summon` subcommands were removed**, and `/abyss` now has none at all — its
+tree is the layer argument and nothing else. They were the only callers that made `mod items`,
+`mod villagers` and the summon path live, so both trees carry `#[expect(dead_code)]`. Nothing
+creates an item or places a custom mob outside [`CreatureSpawn`](src/events/creature_spawn.rs)
+until that changes — see § Custom items and § Custom villagers for what restores them.
 
 Tab-completion for `<layer>` is **disabled**: attaching it makes the Pumpkin host panic on
 the first suggestion request (`block_in_place` from the simulation thread, which has no
@@ -359,9 +359,12 @@ architecture for that, not a way around it:
 - `entity_builder.rs` — the [`EntityBuilder`](src/entities/entity_builder.rs) **struct** every
   kind spawns itself with: `of(id, base)` → `.name(..)` → `.apply(|entity| ..)` →
   `.build(&world, position)`. It states the base `EntityType`, the stable `id` byte, the visible
-  name, the `apply` hook, and spawns and stamps the entity. `mark`/`id_of` live here too.
-- `mobs/mob_kind.rs` — `MobKind`, the plain catalogue entry a spawn rule iterates over: the
-  kind's `LAYERS`, its `CATEGORY` and its `spawn` function.
+  name, the `apply` hook, and spawns and stamps the entity. `mark`/`id_of` live here too. There
+  is **no entity trait**; a kind is a constructor, not an impl.
+- `mobs/mob_kind.rs` — [`MobKind`](src/entities/mobs/mob_kind.rs), the plain catalogue entry
+  [`mob_kinds`](src/lib.rs) collects so the creature-spawn rule can iterate: the kind's
+  `layers`, its `category`, and its `spawn` fn pointer. It carries **no id, name or base** —
+  those belong to the spawned entity, and nothing outside the kind's own file reads them.
 - `mobs/mob_category.rs` — `MobCategory`, the behaviour answer on its own. It lives apart
   because it is also the folder layout of `src/entities/mobs`.
 - `villagers/boy.rs` — a trader, spawned through the same `EntityBuilder` by a plain
@@ -411,7 +414,8 @@ The folder is organisation only: nothing reads it at runtime, so a kind whose ca
 must be **moved** by hand to keep the two agreeing. There is no `mod.rs`; each folder's
 `pub mod` list lives inline in the `mod entities` block in `lib.rs`.
 
-**The catalogue as it stands**, with ids and spawn layers:
+**The catalogue as it stands**, with ids, spawn layers and hearts (hearts are half the
+`MaxHealth` the kind sets, which is the number the wiki lists):
 
 | Kind              | id  | Base         | Category | Layers                | Hearts | Colour    |
 | ----------------- | --- | ------------ | -------- | --------------------- | ------ | --------- |
@@ -488,25 +492,31 @@ apart — so a new kind takes the next free number and never reuses one.
 lists for each mob, so `name()` returns `TextComponent::text(..).color_rgb(rgb(..))`
 rather than a `NamedColor`, which has only 16 entries and no cyan, brown or light gray.
 
-**`/abyss summon <mob> [count]` used to be the caller**, and is removed for now, so the
-lookup carries `#[expect(dead_code)]`. It resolved a name through [`mob_kinds`](src/lib.rs),
-which builds a
-[`MobKind`](src/entities/mobs/mob_builder.rs) per kind — id, name, base, layers, category and a spawn
-fn pointer — because a kind's associated functions cannot be called through a trait object.
-`MobKind::of::<T>(label)` fills the entry from that kind's own methods, so a kind's values
-are still written in one place; the label is passed separately because `MobBuilder::name`
-returns a `TextComponent` that cannot be read back as a string.
+**Every kind also calls `set_health` beside `set_attribute_base`.** The base is the template
+and the current health is derived from it, exactly as for every other attribute: setting only
+the base leaves a freshly spawned entity on its old current health, and setting only the
+current health is undone by the next recalculation. Write both, with the same number.
 
-The catalogue is a **function, not a `const`**: `MobKind::of` calls trait methods, which are
-not `const`. Adding a kind means adding it to `mob_kinds` in `lib.rs` as well as to the
-module list.
+**The catalogue is the only reader of a kind's `LAYERS`.**
+[`CreatureSpawn`](src/events/creature_spawn.rs) filters [`mob_kinds`](src/lib.rs) through
+`MobKind::spawns_in(layer)` and picks from what is left, so a kind's list is written once and
+is the sole thing deciding what lives where. There is no second spawn table.
 
-**Summoning refuses a layer the kind does not list.** The layer guard is the point of
-`MobBuilder::layers` finally having a consumer, and it keeps an operator command from quietly
-filling a layer with something that was never meant to live there.
+**The catalogue is a `const`-built function, not a trait lookup.** `MobKind::of` takes the
+three values as arguments — `LAYERS`, `CATEGORY` and `spawn` — rather than being generic over
+the kind, because a kind's associated items cannot be reached through a trait object and a
+name cannot be read back out of a `TextComponent`. That is also why `mob_kinds` has no label
+argument: an id and a name are never looked up.
 
-**Names match loosely**: case-insensitive, with spaces and hyphens ignored, so
-`small hammerbeak`, `Small Hammerbeak` and `SmallHammerbeak` all resolve.
+**Nothing summons a mob on request.** `/abyss summon <mob> [count]` used to resolve a name
+through the catalogue and to enforce the layer list; it is removed for now, so
+[`CreatureSpawn`](src/events/creature_spawn.rs) is the **one** place a mob is created. It is
+also why `MobKind::category` carries `#[expect(dead_code)]` — no rule filters on a category
+yet.
+
+**`MobCategory` is not a difficulty knob.** It is filed per kind as a `CATEGORY` constant and
+copied into the catalogue, but no rule reads it: difficulty comes from the kind's own stats,
+not from its category.
 
 ### Custom villagers
 
@@ -532,14 +542,20 @@ Abyss: it stands behind a counter on an authored map, it is not something a laye
   something does — a map marker, a shop, a command — it calls `Boy::entity` with the world and
   position it wants.
 - **The byte space is shared with the mobs**, so ids must not repeat between the two trees:
-  mobs hold `1`–`65`, so traders start above them at `66`. There is no compile-time guard on
-  this — check the mob catalogue when adding a kind.
+  mobs hold `1`–`65`, so traders start above them at `66` — `Boy` is `66` and the roster runs
+  to `101`. There is no compile-time guard on this — check the mob catalogue when adding a
+  kind.
 - **A trader is never a natural spawn.** `CreatureSpawn` only draws from `mob_kinds`, which
   holds no trader, so a layer's wild spawns can never produce a shopkeeper.
 - **Every trader is a module of its own** under `src/entities/villagers/`, named after the
   wiki page [Orth Trades](https://wiki.mineinabyss.com/w/Orth_Trades). They are authored from
   that page's roster but carry **no coordinates and no trades**: a trader is placed wherever a
   map marker puts it, and the offers cannot be delivered (see the next bullet).
+- **The dead-code expectation is per module.** `mod villagers` carries an `#[expect(dead_code)]`
+  on the block, and every trader's `entity` carries its own
+  `#[expect(dead_code, reason = "no caller places a trader yet")]` — so a single trader that
+  gains a caller drops only its own expectation. Keep both in sync when the first caller
+  appears.
 - **No trade is written anywhere.** The wiki lists roughly 450 offers; none are expressible,
   because `villager-data` is only `{ profession, level, experience }` and there is no setter for
   offers. `Boy`'s module docs say so explicitly, and every trader repeats the reason rather
@@ -635,9 +651,8 @@ in the sender's hand and read the marker back off the stored stack; with that su
 removed there is **no caller**, so `mod items` carries `#[expect(dead_code)]` until a real
 source of items — loot tables, crafting, a shop — exists. The path itself is unchanged.
 
-**No caller exists now.** With `/abyss item` removed, nothing creates an item, so `mod items`
-carries `#[expect(dead_code)]` until a real source does. The path itself is unchanged: a kind
-still gets a stamped marker the moment something calls `Orthcoin::stack()`.
+That expectation lives on the `mod items` block, not on `Orthcoin::stack` — a kind is not
+expected to be dead on its own, the whole tree is. A real caller removes it from the block.
 
 **The catalogue as it stands**, with ids and base items:
 
@@ -734,18 +749,18 @@ src/
 │   ├── generator.rs    # `Void` chunk generator — layer worlds generate empty
 │   └── clock.rs        # Keeps every layer world on `Orth`'s clock
 ├── entities/           # declared as `mod entities` in `lib.rs`: the plugin's own entities
-│   ├── entity_builder.rs # `EntityBuilder` core trait + the identity marker
+│   ├── entity_builder.rs # `EntityBuilder` struct + the identity marker (no trait)
 │   ├── mobs/           # the creatures of the Abyss
-│   │   ├── mob_builder.rs # `MobBuilder` (category + layers), `MobKind`
+│   │   ├── mob_kind.rs # `MobKind` — layers, category, spawn fn pointer
 │   │   ├── mob_category.rs # `MobCategory` — passive, docile, aerial, aquatic, hostile
 │   │   ├── aerial/     # one folder per category; a kind sits in its own
 │   │   ├── aquatic/    #   category's folder: aerial 15, aquatic 8, docile 8,
-│   │   ├── docile/     #   hostile 23, passive 12 — 65 kinds in all
+│   │   ├── docile/     #   hostile 24, passive 12 — 65 kinds in all
 │   │   ├── hostile/
 │   │   └── passive/
 │   └── villagers/      # the traders of Orth, one module per counter (36 today)
 │       ├── boy.rs              # `Boy` — the worked example
-│       └── benner.rs … bill_bee.rs  # the rest of the Orth roster, all awaiting a caller
+│       └── benner.rs … veris.rs  # the rest of the Orth roster, all awaiting a caller
 ├── items/              # declared as `mod items` in `lib.rs`: the plugin's own items
 │   ├── item_builder.rs # `ItemBuilder` — the chainable stack builder; no trait
 │   └── orthcoin.rs     # `Orthcoin` — the worked example, awaiting a caller
@@ -814,7 +829,7 @@ src/
 - Pumpkin server must support WASM plugins (WASI Preview 2)
 - Plugin API is unstable and may change
 
-## Claude Code Workflow
+## Agent Workflow
 
 ### Task Management
 
@@ -829,6 +844,26 @@ src/
 **When all tasks in a worktree are complete:**
 
 - Ask the user if they want to git publish (push) the changes or adjust before publishing
+
+### Skills
+
+Reusable procedures live in `.agents/skills/`, one `SKILL.md` per task. Read the one whose
+`description` matches the job before starting work rather than reconstructing the procedure:
+
+| Skill                 | Use it to                                                     |
+| --------------------- | ------------------------------------------------------------- |
+| `add-command`         | Add a slash command to an existing feature                    |
+| `add-event`           | Add an event handler under `src/events`                       |
+| `add-item`            | Add a custom item and give it a caller                        |
+| `add-layer`           | Add a `Layer` variant, its palette and its world              |
+| `add-mob`             | Add a `MobKind` impl in its category folder and catalogue it  |
+| `add-persistent-data` | Add per-player or per-world state                             |
+| `add-util`            | Add a shared helper under `src/utils`                         |
+| `bootstrap-audit`     | Check every module, handler, command and kind is registered   |
+| `update-docs`         | Update rustdoc, `AGENTS.md`, `GUIDE.md` and `ARCHITECTURE.md` |
+
+Skills are the source of truth for those procedures; this file states the invariants they
+must not break. If a skill and this file disagree, follow this file and fix the skill.
 
 ### After Making Edits
 
@@ -865,4 +900,6 @@ To add a new layer, follow these steps:
 
 ## Memory System
 
-This project uses Claude Code's persistent memory in `.claude/memory/`. These files persist across sessions and different PCs. Review `MEMORY.md` for existing context about the user and project.
+There is no persistent memory directory in this repository. Durable context belongs in this
+file or in a skill under `.agents/skills/`, so it travels with the repo and is seen by every
+agent — not in tool-specific state that only one client reads.

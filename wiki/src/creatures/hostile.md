@@ -2,7 +2,7 @@
 
 # Hostile
 
-The creatures that hunt you. Twenty-three in all, and the deepest layers hold the worst of them.
+The creatures that hunt you. Twenty-four in all, and the deepest layers hold the worst of them.
 
 <div class="card-grid recipe-grid">
 
@@ -42,7 +42,7 @@ The creatures that hunt you. Twenty-three in all, and the deepest layers hold th
 </div>
 
 <div class="card recipe-card">
-<span class="card-title">Man-Toyer</span>
+<span class="card-title">Man-toyer</span>
 <span class="card-desc">The weakest hostile creature.</span>
 <hr>
 <span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">7.5</span> Hearts</li><li>Base: <span class="value-stat">Parrot</span></li><li><span class="value-stat">First</span></li></ul></div></span>
@@ -157,7 +157,7 @@ The creatures that hunt you. Twenty-three in all, and the deepest layers hold th
 <span class="card-title">Woodcrier</span>
 <span class="card-desc">A wailing hunter of the first two layers.</span>
 <hr>
-<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">30</span> Hearts</li><li>Base: <span class="value-stat">Parrot</span></li><li><span class="value-stat">First, Second</span></li></ul></div></span>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">15</span> Hearts</li><li>Base: <span class="value-stat">Parrot</span></li><li><span class="value-stat">First, Second</span></li></ul></div></span>
 </div>
 
 <div class="card recipe-card">
@@ -191,7 +191,10 @@ Piercer** are close behind, and both live in the Goblets of Giants.
   First and Second — and all three inherit Creeper explosion behaviour.
 - **Ottobas is a Ravager** and lives in the First, making it the most dangerous thing above the
   Second at 45 hearts.
-- **Man-Toyer is the weakest hostile creature** at 7.5 hearts, in the First.
+- **Man-toyer is the weakest hostile creature** at 7.5 hearts, in the First.
 - **Himushi is a Magma Cube**, so it brings vanilla Magma Cube behaviour to the Great Fault.
-- **The Bees are hostile here.** Swarmhoarder and Swarmshocker are built on Bees but are
-  creatures of the Abyss, not of a hive.
+- **The Bees of the Abyss.** Swarmhoarder and Swarmshocker are hostile Bees; the Aerial
+  Stinger and the Passive Sakuranbo share the same base — see [Aerial](aerial.md) and
+  [Passive](passive.md).
+- **Woodcrier is the tougher of the two Parrot hunters** of the first two layers, at 15 hearts
+  against Silkfang's 11.

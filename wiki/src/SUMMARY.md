@@ -19,6 +19,10 @@
 
 - [Overview](creatures/index.md)
 
+# Items
+
+- [Overview](items/index.md)
+
 # Gameplay Changes
 
 - [Overview](gameplay/index.md)

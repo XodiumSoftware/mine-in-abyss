@@ -569,3 +569,38 @@ a.card.recipe-card:hover {
 .layer-map .hotspot.expanded .hotspot-tip .hotspot-icon {
   margin-top: 0.15em;
 }
+
+/* Item cards put a large icon beside the name and description, spanning both
+   rows rather than sitting inline in the title. */
+.card.recipe-card.item-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.item-card-icon {
+  grid-row: span 2;
+  height: 3.5rem;
+  width: auto;
+  image-rendering: pixelated;
+}
+
+.item-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+  padding-left: 1rem;
+  border-left: 2px solid var(--table-border-color);
+}
+
+.card.recipe-card.item-card .card-title {
+  border-bottom: 0;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.card.recipe-card.item-card .card-desc {
+  justify-content: flex-start;
+}

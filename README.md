@@ -3,7 +3,7 @@
 <h1 align="center">
   <br />
     <a href="https://xodium.org/">
-        <img src="logo.svg" alt="mine-in-abyss Logo" width="200">
+        <img src="wiki/theme/favicon.png" alt="mine-in-abyss Logo" width="200">
     </a>
   <br /><br />
   mine-in-abyss

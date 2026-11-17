@@ -97,6 +97,29 @@ html.sidebar-visible #mdbook-sidebar-toggle::after {
   background-image: url("/img/gui/knowledge_book_open.png");
 }
 
+:root {
+  --menu-bar-height: 64px;
+}
+
+.menu-title {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.menu-title::before {
+  content: "";
+  display: block;
+  flex: 0 0 auto;
+  width: 3rem;
+  height: 3rem;
+  background-image: url("/img/logo.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
 .chapter li.part-title {
   margin-top: 2rem;
 }

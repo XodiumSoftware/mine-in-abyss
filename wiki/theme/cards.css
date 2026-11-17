@@ -177,6 +177,33 @@ a.card.recipe-card:hover {
   margin-bottom: 0.75rem;
   padding-bottom: 0.5rem;
   width: 100%;
+  /* Name on the left, the heart count flush right on the same baseline. */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+/* The creature name, kept from squeezing against the heart count. */
+.card.recipe-card .card-title .title-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* The heart total shown at the end of a creature card's title row. */
+.card.recipe-card .title-hearts {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+  margin-left: auto;
+  font-family: "IllyriaRP", monospace;
+  color: #ffff55;
+  text-shadow: 2px 2px 0 rgb(0 0 0 / 60%);
+}
+
+.card.recipe-card .title-hearts .mc-icon {
+  margin-right: 0;
 }
 
 .card-desc ul {

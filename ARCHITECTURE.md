@@ -138,8 +138,8 @@ graph TD
     E -->|"< -64"| F{"next()"}
     E -->|"> 320"| G{"prev()"}
     E -->|"inside"| Z
-    F -->|none| H["'nothing below'<br/>release latch"]
-    G -->|none| I["'nothing above'<br/>release latch"]
+    F -->|none| H["nothing below:<br/>release latch"]
+    G -->|none| I["nothing above:<br/>release latch"]
     F -->|some| J["down()"]
     G -->|some| K["up() + curse::apply"]
     J --> L["latch held,<br/>event cancelled"]

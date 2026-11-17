@@ -182,9 +182,8 @@ A successful transition also returns the move event with `cancelled: true`, so t
 server does not apply the original `to_position` — which would move the player back into
 the band of the world they just left.
 
-**Leaving the Abyss at either end tells the player.** Rising above `Orth` or falling
-below `Seventh` has nowhere to go, so `LayerLeave` sends a grey action bar message instead of
-silently doing nothing.
+**Leaving the Abyss at either end does nothing.** Rising above `Orth` or falling below
+`Seventh` has nowhere to go, so `LayerLeave` leaves the move alone and lets vanilla take over.
 
 **A descent carries its fall distance.** Changing world resets `get_fall_distance`, and a
 layer is only 384 blocks tall, so per-world falls would never reach a damaging distance.

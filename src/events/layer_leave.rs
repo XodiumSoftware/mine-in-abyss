@@ -27,12 +27,10 @@
 //! player leaves behind in the layer above stay there: what was chasing them does not
 //! follow, and the layer they land in holds only its own inhabitants.
 //!
-//! Leaving the Abyss at either end — above `Orth` or below `Seventh` — tells the player
-//! there is nowhere to go, rather than doing nothing. Below `Seventh` the carry is
-//! dropped instead: there is no layer for it to be resumed into, and vanilla's void
-//! damage is the death the drop already deserves.
+//! Leaving the Abyss at either end — above `Orth` or below `Seventh` — does nothing: there
+//! is no layer to move to. Below `Seventh` the carry is dropped instead, so the fall is
+//! handed to vanilla's void damage.
 
-use pumpkin_plugin_api::common::NamedColor;
 use pumpkin_plugin_api::events::EventHandler;
 use pumpkin_plugin_api::events::player::player_move::PlayerMoveEvent;
 use pumpkin_plugin_api::events_wit::PlayerMoveEventData;
@@ -42,7 +40,7 @@ use crate::events::event::Event;
 use crate::layer::Layer;
 use crate::utils::{
     arrived_by_teleport, begin_transition, carry_fall, clear_fall, ignores_transitions, layer_of,
-    tell, world_for,
+    world_for,
 };
 
 /// Detects a player leaving a layer through its void or ceiling.
@@ -90,11 +88,6 @@ impl EventHandler<PlayerMoveEvent> for LayerLeave {
                 if let Some(layer) = layer.next() {
                     down(&server, &event.player, layer)
                 } else {
-                    tell(
-                        &event.player,
-                        "There is nothing below the Abyss.",
-                        NamedColor::Gray,
-                    );
                     clear_fall(&event.player);
                     false
                 }
@@ -103,11 +96,6 @@ impl EventHandler<PlayerMoveEvent> for LayerLeave {
                 if let Some(layer) = layer.prev() {
                     up(&server, &event.player, layer)
                 } else {
-                    tell(
-                        &event.player,
-                        "There is nothing above the Abyss.",
-                        NamedColor::Gray,
-                    );
                     clear_fall(&event.player);
                     false
                 }

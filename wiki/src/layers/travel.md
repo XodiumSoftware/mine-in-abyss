@@ -7,12 +7,12 @@ X and Z coordinates, and the server picks the Y you arrive at.
 
 Fall past the bottom of a layer and you drop into the one below.
 
-| What happens | Detail |
-| ------------ | ------ |
-| Arrival height | Just below the ceiling of the layer below |
-| Horizontal position | Unchanged — the same X and Z |
-| Curse | **None.** Descending is always free |
-| Fall distance | **Carried.** The drop continues in the new layer |
+| What happens        | Detail                                           |
+| ------------------- | ------------------------------------------------ |
+| Arrival height      | Just below the ceiling of the layer below        |
+| Horizontal position | Unchanged — the same X and Z                     |
+| Curse               | **None.** Descending is always free              |
+| Fall distance       | **Carried.** The drop continues in the new layer |
 
 Because each layer is only 384 blocks tall, a fall that started in the layer above would
 otherwise never reach a damaging height. The server carries the distance across the boundary,
@@ -26,12 +26,12 @@ the last segment, not the whole descent.
 
 Climb past the top of a layer and you enter the one above.
 
-| What happens | Detail |
-| ------------ | ------ |
-| Arrival height | Just above the floor of the layer above |
-| Horizontal position | Unchanged — the same X and Z |
-| Curse | **Applied**, equal to the depth of the layer you left |
-| Monsters | Left behind |
+| What happens        | Detail                                                |
+| ------------------- | ----------------------------------------------------- |
+| Arrival height      | Just above the floor of the layer above               |
+| Horizontal position | Unchanged — the same X and Z                          |
+| Curse               | **Applied**, equal to the depth of the layer you left |
+| Monsters            | Left behind                                           |
 
 See [Curse of the Abyss](curse.md) for what the strain does to you.
 
@@ -50,11 +50,3 @@ the server recognises that the next position was a teleport rather than a jump, 
 
 A real climb immediately afterwards is still cursed. The exception covers the teleport itself,
 not the rest of your journey.
-
-## Leaving the Abyss at Either End
-
-There is nothing above Orth and nothing below the Seventh. At both ends you get a grey action-bar
-message instead of a transition:
-
-- Rising above Orth has nowhere to go
-- Falling below the Seventh has nowhere to go — vanilla void damage kills you

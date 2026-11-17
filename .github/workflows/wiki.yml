@@ -24,7 +24,7 @@ on:
 env:
   CARGO_TERM_COLOR: always
   # renovate: datasource=crate depName=mdbook
-  MDBOOK_VERSION: "0.5.2"
+  MDBOOK_VERSION: "0.5.4"
   # renovate: datasource=crate depName=mdbook-variables
   MDBOOK_VARIABLES_VERSION: "0.4.1"
 

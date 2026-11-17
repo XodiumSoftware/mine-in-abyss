@@ -48,7 +48,7 @@
 }
 
 .theme-popup .theme {
-  font-family: "IllyriaRP", "Open Sans", sans-serif;
+  font-family: "Excalibur", "Open Sans", sans-serif;
   color: var(--fg);
 }
 
@@ -60,7 +60,7 @@
 #mdbook-searchbar,
 #mdbook-searchresults-header,
 #mdbook-searchresults-outer {
-  font-family: "IllyriaRP", "Open Sans", sans-serif;
+  font-family: "Excalibur", "Open Sans", sans-serif;
   text-shadow: 2px 2px 0 rgb(0 0 0 / 60%);
 }
 
@@ -106,7 +106,7 @@ html.sidebar-visible #mdbook-sidebar-toggle::after {
 }
 
 .tooltiptext {
-  font-family: "IllyriaRP", "Open Sans", sans-serif;
+  font-family: "Excalibur", "Open Sans", sans-serif;
   border-radius: 0;
   border: 4px solid transparent;
   border-image: url("/img/gui/tooltip_frame.png") 2 / 4px / 0 stretch;
@@ -152,7 +152,7 @@ html.sidebar-visible #mdbook-sidebar-toggle::after {
   border: 4px solid transparent;
   border-image: url("/img/gui/tooltip_frame.png") 2 / 4px / 0 stretch;
 
-  font-family: "IllyriaRP", "Open Sans", sans-serif;
+  font-family: "Excalibur", "Open Sans", sans-serif;
   font-size: 0.85rem;
   line-height: 1.4;
   white-space: nowrap;

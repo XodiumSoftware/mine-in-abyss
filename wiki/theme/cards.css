@@ -134,7 +134,7 @@ a.card.recipe-card:hover {
 }
 
 .card.recipe-card .card-title {
-  font-family: "IllyriaRP", monospace;
+  font-family: "Excalibur", monospace;
   font-weight: normal;
   text-shadow: 2px 2px 0 rgb(0 0 0 / 60%);
   font-smooth: never;
@@ -163,7 +163,7 @@ a.card.recipe-card:hover {
   gap: 0.25rem;
   white-space: nowrap;
   margin-left: auto;
-  font-family: "IllyriaRP", monospace;
+  font-family: "Excalibur", monospace;
   color: #ffff55;
   text-shadow: 2px 2px 0 rgb(0 0 0 / 60%);
 }
@@ -206,7 +206,7 @@ a.card.recipe-card:hover {
   background: rgb(25 22 21 / 94%);
   border: 4px solid transparent;
   border-image: url("/img/gui/tooltip_frame.png") 2 / 4px / 0 stretch;
-  font-family: "IllyriaRP", sans-serif;
+  font-family: "Excalibur", sans-serif;
   font-size: 0.9rem;
   line-height: 1.4;
   text-align: left;
@@ -328,7 +328,7 @@ a.card.recipe-card:hover {
   border: 4px solid transparent;
   border-image: url("/img/gui/tooltip_frame.png") 2 / 4px / 0 stretch;
   border-radius: 0;
-  font-family: "IllyriaRP", monospace;
+  font-family: "Excalibur", monospace;
   font-size: 0.9rem;
   line-height: 1.2;
   cursor: pointer;
@@ -433,7 +433,7 @@ a.card.recipe-card:hover {
   background: rgb(25 22 21 / 96%);
   border: 4px solid transparent;
   border-image: url("/img/gui/tooltip_frame.png") 2 / 4px / 0 stretch;
-  font-family: "IllyriaRP", monospace;
+  font-family: "Excalibur", monospace;
   font-size: 0.9rem;
   line-height: 1.5;
   white-space: nowrap;
@@ -631,7 +631,7 @@ a.card.recipe-card:hover {
   background-color: rgb(25 22 21 / 96%);
   border: 4px solid transparent;
   border-image: url("/img/gui/tooltip_frame.png") 2 / 4px / 0 stretch;
-  font-family: "IllyriaRP", monospace;
+  font-family: "Excalibur", monospace;
   font-size: 0.72rem;
   line-height: 1.25;
   text-shadow: 2px 2px 0 rgb(0 0 0 / 60%);

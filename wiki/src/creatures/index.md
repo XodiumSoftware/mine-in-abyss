@@ -6,11 +6,19 @@ Every creature in the Abyss is a **vanilla entity wearing an identity**. The ser
 natural mob spawning in each layer with kinds authored for that layer, so what you meet is
 always something from the Abyss rather than a stock zombie.
 
-## Passive
+<div class="creature-sort" data-sort-for="creature-cards">
+<label class="sort-label" for="creature-sort-select">Sort by</label>
+<select id="creature-sort-select" class="sort-select">
+<option value="name-asc" selected>A–Z</option>
+<option value="name-desc">Z–A</option>
+<option value="layer-asc">Layer ascending</option>
+<option value="layer-desc">Layer descending</option>
+<option value="category-asc">Category ascending</option>
+<option value="category-desc">Category descending</option>
+</select>
+</div>
 
-Harmless creatures. They wander, they breed nothing, and they never fight back.
-
-<div class="card-grid recipe-grid">
+<div class="card-grid recipe-grid" id="creature-cards">
 
 <div class="card recipe-card">
 <span class="card-title"><span class="category-icon" data-tooltip="Passive" tabindex="0"><img class="mc-icon" alt="Passive" src="../img/category/passive.png"></span><span class="title-name" style="--kind-color: #785F34">Abyssal Snail</span><span class="title-hearts"><span class="layer-icon" data-tooltip="The Sea of Corpses" tabindex="0"><img class="mc-icon" alt="Fifth" src="../img/layer/fifth.png"></span><img class="mc-icon" alt="Hearts" src="../img/item/heart.png">20</span></span>
@@ -67,14 +75,6 @@ Harmless creatures. They wander, they breed nothing, and they never fight back.
 <span class="card-desc">A shelled wanderer of the Depths.</span>
 </div>
 
-</div>
-
-## Docile
-
-Calm creatures that leave you alone — until you give them a reason not to.
-
-<div class="card-grid recipe-grid">
-
 <div class="card recipe-card">
 <span class="card-title"><span class="category-icon" data-tooltip="Docile" tabindex="0"><img class="mc-icon" alt="Docile" src="../img/category/docile.png"></span><span class="title-name" style="--kind-color: #824243">Beniguma</span><span class="title-hearts"><span class="layer-icon" data-tooltip="Depths of the Abyss" tabindex="0"><img class="mc-icon" alt="First" src="../img/layer/first.png"></span><span class="layer-icon" data-tooltip="The Forest of Temptation" tabindex="0"><img class="mc-icon" alt="Second" src="../img/layer/second.png"></span><img class="mc-icon" alt="Hearts" src="../img/item/heart.png">8</span></span>
 <span class="card-desc">A wolf-like prowler of the first two layers.</span>
@@ -114,14 +114,6 @@ Calm creatures that leave you alone — until you give them a reason not to.
 <span class="card-title"><span class="category-icon" data-tooltip="Docile" tabindex="0"><img class="mc-icon" alt="Docile" src="../img/category/docile.png"></span><span class="title-name" style="--kind-color: #3C3B4A">Titanjaw</span><span class="title-hearts"><span class="layer-icon" data-tooltip="The Sea of Corpses" tabindex="0"><img class="mc-icon" alt="Fifth" src="../img/layer/fifth.png"></span><img class="mc-icon" alt="Hearts" src="../img/item/heart.png">30</span></span>
 <span class="card-desc">A shelled giant of the deepest inhabited layer.</span>
 </div>
-
-</div>
-
-## Aerial
-
-Flyers. Some circle overhead, some dive, and a few are the largest creatures in the Abyss.
-
-<div class="card-grid recipe-grid">
 
 <div class="card recipe-card">
 <span class="card-title"><span class="category-icon" data-tooltip="Flying" tabindex="0"><img class="mc-icon" alt="Aerial" src="../img/category/aerial.png"></span><span class="title-name" style="--kind-color: #A3F7A2">Buroguro</span><span class="title-hearts"><span class="layer-icon" data-tooltip="The Great Fault" tabindex="0"><img class="mc-icon" alt="Third" src="../img/layer/third.png"></span><img class="mc-icon" alt="Hearts" src="../img/item/heart.png">16</span></span>
@@ -198,15 +190,6 @@ Flyers. Some circle overhead, some dive, and a few are the largest creatures in 
 <span class="card-desc">A stinging flyer that ranges across three layers.</span>
 </div>
 
-</div>
-
-## Aquatic
-
-Water creatures. All of them are built on a vanilla aquatic base, so they move and behave like
-their model.
-
-<div class="card-grid recipe-grid">
-
 <div class="card recipe-card">
 <span class="card-title"><span class="category-icon" data-tooltip="Water" tabindex="0"><img class="mc-icon" alt="Aquatic" src="../img/category/aquatic.png"></span><span class="title-name" style="--kind-color: #1B91B5">Demonfish</span><span class="title-hearts"><span class="layer-icon" data-tooltip="The Sea of Corpses" tabindex="0"><img class="mc-icon" alt="Fifth" src="../img/layer/fifth.png"></span><img class="mc-icon" alt="Hearts" src="../img/item/heart.png">15</span></span>
 <span class="card-desc">A venomous fish of the Sea of Corpses.</span>
@@ -246,14 +229,6 @@ their model.
 <span class="card-title"><span class="category-icon" data-tooltip="Water" tabindex="0"><img class="mc-icon" alt="Aquatic" src="../img/category/aquatic.png"></span><span class="title-name" style="--kind-color: #1B91B5">Spiralsquid</span><span class="title-hearts"><span class="layer-icon" data-tooltip="Depths of the Abyss" tabindex="0"><img class="mc-icon" alt="First" src="../img/layer/first.png"></span><span class="layer-icon" data-tooltip="The Goblets of Giants" tabindex="0"><img class="mc-icon" alt="Fourth" src="../img/layer/fourth.png"></span><img class="mc-icon" alt="Hearts" src="../img/item/heart.png">4</span></span>
 <span class="card-desc">The only water creature above the Second.</span>
 </div>
-
-</div>
-
-## Hostile
-
-The creatures that hunt you. The deepest layers hold the worst of them.
-
-<div class="card-grid recipe-grid">
 
 <div class="card recipe-card">
 <span class="card-title"><span class="category-icon" data-tooltip="Hostile" tabindex="0"><img class="mc-icon" alt="Hostile" src="../img/category/hostile.png"></span><span class="title-name" style="--kind-color: #649984">Chikyuoebi</span><span class="title-hearts"><span class="layer-icon" data-tooltip="The Sea of Corpses" tabindex="0"><img class="mc-icon" alt="Fifth" src="../img/layer/fifth.png"></span><img class="mc-icon" alt="Hearts" src="../img/item/heart.png">42.5</span></span>
@@ -390,9 +365,9 @@ There are **65 kinds** in all:
 
 |                                             Category                                              | Kinds |
 | :-----------------------------------------------------------------------------------------------: | :---: |
-| <img class="mc-icon" alt="Hostile" title="Hostile" src="../img/item/netherite_sword.png"> Hostile |  24   |
+| <img class="mc-icon" alt="Hostile" title="Hostile" src="../img/item/netherite_sword.png"> Hostile |  23   |
 |       <img class="mc-icon" alt="Aerial" title="Aerial" src="../img/item/elytra.png"> Aerial       |  15   |
-|      <img class="mc-icon" alt="Passive" title="Passive" src="../img/item/bone.png"> Passive       |  12   |
+|      <img class="mc-icon" alt="Passive" title="Passive" src="../img/item/bone.png"> Passive       |  11   |
 |      <img class="mc-icon" alt="Docile" title="Docile" src="../img/item/leather.png"> Docile       |   8   |
 | <img class="mc-icon" alt="Aquatic" title="Aquatic" src="../img/item/enchanted_book.png"> Aquatic  |   8   |
 

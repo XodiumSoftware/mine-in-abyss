@@ -755,7 +755,7 @@ src/
 │   │   ├── mob_category.rs # `MobCategory` — passive, docile, aerial, aquatic, hostile
 │   │   ├── aerial/     # one folder per category; a kind sits in its own
 │   │   ├── aquatic/    #   category's folder: aerial 15, aquatic 8, docile 8,
-│   │   ├── docile/     #   hostile 24, passive 12 — 65 kinds in all
+│   │   ├── docile/     #   hostile 23, passive 11 — 65 kinds in all
 │   │   ├── hostile/
 │   │   └── passive/
 │   └── villagers/      # the traders of Orth, one module per counter (36 today)

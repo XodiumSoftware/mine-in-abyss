@@ -372,22 +372,6 @@ The creatures that hunt you. The deepest layers hold the worst of them.
 
 </div>
 
-## The Heavy Hitters
-
-<div class="icon-table">
-
-| Creature        | Hearts | Layer         |
-| :-------------- | -----: | :------------ |
-| **Stingerhead** |    130 | Fifth         |
-| **Tachikatana** |    110 | Fourth, Fifth |
-| **Orb Piercer** |     90 | Fourth        |
-| **Virinsipede** |     75 | Fifth         |
-
-</div>
-
-The **Stingerhead** is the strongest creature in the Abyss. The **Tachikatana** and **Orb
-Piercer** are close behind, and both live in the Goblets of Giants.
-
 ## How They Work
 
 - **Creatures never scale with depth.** A creature is exactly what its kind says, at every layer

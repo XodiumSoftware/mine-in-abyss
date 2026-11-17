@@ -2,6 +2,7 @@
 title = "Mine in Abyss Wiki"
 authors = ["illyrius666"]
 language = "en"
+description = "The official wiki for Mine in Abyss, the Made in Abyss recreation in Minecraft."
 
 [preprocessor.variables.variables]
 github_repo = "https://github.com/XodiumSoftware/mine-in-abyss"

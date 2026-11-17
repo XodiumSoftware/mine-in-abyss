@@ -1,5 +1,7 @@
 # Server Rules
 
+<p class="page-summary">The five rules enforced in-game, from respect and no griefing to no cheating.</p>
+
 The server rules are enforced in-game via the Rules command.
 
 |         Rule         | Meaning                                                |

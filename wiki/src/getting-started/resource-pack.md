@@ -1,5 +1,7 @@
 # Resource Pack
 
+<p class="page-summary">The required resource pack that textures every creature of the Abyss, served on join.</p>
+
 Mine in Abyss uses a custom resource pack for creature textures and UI elements.
 
 ## Automatic Installation

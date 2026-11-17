@@ -2,6 +2,8 @@
 
 # The Abyss
 
+<p class="page-summary">Eight layers, from the City on the Edge down to the Final Maelstrom. Hover a layer to see what lives there, what it drops you into, and how much the Curse takes for climbing out.</p>
+
 Mine in Abyss is built as a **vertical world**: eight layers, from the surface down. Each is its
 own Minecraft world and a hand-built map with its own creatures, and each one takes its turn
 worsening the Curse.

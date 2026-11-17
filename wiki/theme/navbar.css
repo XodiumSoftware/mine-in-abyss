@@ -124,6 +124,14 @@ html.sidebar-visible #mdbook-sidebar-toggle::after {
   margin-top: 2rem;
 }
 
+.page-summary {
+  max-width: 48rem;
+  margin: -0.5rem 0 1.5rem;
+  opacity: 0.85;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
 .chapter .chapter-item:has(> .part-title):first-of-type .part-title {
   margin-top: 0;
 }

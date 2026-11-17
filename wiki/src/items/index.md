@@ -2,7 +2,7 @@
 
 # Items
 
-Things that are not vanilla, even where the base item is.
+<p class="page-summary">Things that are not vanilla, even where the base item is: the items of the Abyss and what they do.</p>
 
 <div class="card-grid recipe-grid">
 

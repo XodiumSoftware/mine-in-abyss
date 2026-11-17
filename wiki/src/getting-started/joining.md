@@ -1,5 +1,7 @@
 # Joining the Server
 
+<p class="page-summary">The server address, the Minecraft version, and how to join the Made in Abyss recreation.</p>
+
 ## Server Information
 
 | Property    | Value                                                       |

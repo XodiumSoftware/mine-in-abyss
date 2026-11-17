@@ -2,7 +2,7 @@
 
 # Gameplay Changes
 
-Rules that differ from vanilla survival.
+<p class="page-summary">Rules that differ from vanilla survival, from beds and respawns to shared clocks and the Curse.</p>
 
 <div class="card-grid recipe-grid">
 

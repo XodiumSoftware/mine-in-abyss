@@ -5,18 +5,63 @@
 Water creatures. All of them are built on a vanilla aquatic base, so they move and behave like
 their model.
 
-<div class="recipe-table">
+<div class="card-grid recipe-grid">
 
-| Creature | Base | Hearts | Layers |
-| :------- | :--- | -----: | :----- |
-| **Demonfish** | Pufferfish | 15 | Fifth |
-| **Edusan** | Guardian | 40 | Fifth |
-| **Hagamizukin** | Cod | 25 | Fourth, Fifth |
-| **Hisomukuro** | Squid | 40 | Fifth |
-| **Ikenosuke** | Tropical Fish | 6 | Second, Third, Fourth |
-| **Kazura** | Glow Squid | 2.5 | Fourth |
-| **Makihige** | Squid | 30 | Fourth, Fifth |
-| **Spiralsquid** | Squid | 8 | First, Fourth |
+<div class="card recipe-card">
+<span class="card-title">Demonfish</span>
+<span class="card-desc">A venomous fish of the Sea of Corpses.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">15</span> Hearts</li><li>Base: <span class="value-stat">Pufferfish</span></li><li><span class="value-stat">Fifth</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Edusan</span>
+<span class="card-desc">A watchful guardian of the deep water.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">40</span> Hearts</li><li>Base: <span class="value-stat">Guardian</span></li><li><span class="value-stat">Fifth</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Hagamizukin</span>
+<span class="card-desc">A schooling fish of the lower layers.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">25</span> Hearts</li><li>Base: <span class="value-stat">Cod</span></li><li><span class="value-stat">Fourth, Fifth</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Hisomukuro</span>
+<span class="card-desc">A lurking shape in the deep water.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">40</span> Hearts</li><li>Base: <span class="value-stat">Squid</span></li><li><span class="value-stat">Fifth</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Ikenosuke</span>
+<span class="card-desc">The most widespread water creature.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">6</span> Hearts</li><li>Base: <span class="value-stat">Tropical Fish</span></li><li><span class="value-stat">Second, Third, Fourth</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Kazura</span>
+<span class="card-desc">A faint glow in the Goblets of Giants.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">2.5</span> Hearts</li><li>Base: <span class="value-stat">Glow Squid</span></li><li><span class="value-stat">Fourth</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Makihige</span>
+<span class="card-desc">A many-tentacled creature of the lower layers.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">30</span> Hearts</li><li>Base: <span class="value-stat">Squid</span></li><li><span class="value-stat">Fourth, Fifth</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Spiralsquid</span>
+<span class="card-desc">The only water creature above the Second.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">8</span> Hearts</li><li>Base: <span class="value-stat">Squid</span></li><li><span class="value-stat">First, Fourth</span></li></ul></div></span>
+</div>
 
 </div>
 

@@ -1,45 +1,49 @@
-# Mine in Abyss Wiki – justfile for common documentation tasks
-# Run `just` to see all available recipes
+# Install `just` once: https://github.com/casey/just
 
-# Default recipe (shows this list)
-list:
+[windows]
+set shell := ["powershell.exe", "-NoProfile", "-Command"]
+
+_default:
     @just --list
 
-# Build the wiki
 build:
     mdbook build
 
-# Build and open in browser
+[unix]
 open: build
-    xdg-open book/index.html 2>/dev/null || open book/index.html 2>/dev/null || start book/index.html
+    xdg-open book/index.html 2>/dev/null || open book/index.html 2>/dev/null || true
 
-# Serve with live-reload on port 3000
+[windows]
+open: build
+    Start-Process book/index.html
+
 serve:
     mdbook serve --open --port 3000
 
-# Lint all Markdown files
 lint:
     npx markdownlint-cli2 --config .markdownlint.json "src/**/*.md"
 
-# Fix linting issues automatically
 lint-fix:
     npx markdownlint-cli2 --config .markdownlint.json --fix "src/**/*.md"
 
-# Run link checker (requires lychee: cargo install lychee)
 check-links:
     lychee --config lychee.toml "src/**/*.md"
 
-# Full validation: lint + build
 check: lint build
 
-# Clean build artifacts
 clean:
     mdbook clean
 
-# Setup dependencies (requires cargo and npm)
+[unix]
 setup:
-    @echo "Installing mdBook..."
     cargo install mdbook
-    @echo "Installing markdownlint-cli2..."
+    cargo install mdbook-variables
     npm install -g markdownlint-cli2
-    @echo "✅ Setup complete!"
+    echo "✅ Setup complete!"
+
+[windows]
+setup:
+    cargo install mdbook
+    cargo install mdbook-variables
+    npm install -g markdownlint-cli2
+    Write-Host "✅ Setup complete!"

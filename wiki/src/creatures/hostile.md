@@ -4,33 +4,168 @@
 
 The creatures that hunt you. Twenty-three in all, and the deepest layers hold the worst of them.
 
-<div class="recipe-table">
+<div class="card-grid recipe-grid">
 
-| Creature | Base | Hearts | Layers |
-| :------- | :--- | -----: | :----- |
-| **Chikyuoebi** | Spider | 42.5 | Fifth |
-| **Himushi** | Magma Cube | 30 | Third |
-| **Horncrier** | Parrot | 30 | Fourth, Fifth |
-| **Inbyo** | Spider | 12.5 | Second |
-| **Kuongatari** | Spider | 15 | Fourth, Fifth |
-| **Man-Toyer** | Parrot | 7.5 | First |
-| **Octoliar** | Squid | 40 | Fifth |
-| **Orb Piercer** | Cave Spider | 90 | Fourth |
-| **Ottobas** | Ravager | 45 | First |
-| **Shiratsubi** | Vex | 22.5 | Fifth |
-| **Silkfang** | Parrot | 11 | First, Second |
-| **Spittleshrub** | Parrot | 10 | First, Second, Fourth |
-| **Stingerhead** | Phantom | 130 | Fifth |
-| **Swarmhoarder** | Bee | 35 | Fifth |
-| **Swarmshocker** | Bee | 10 | Fourth, Fifth |
-| **Tachikatana** | Spider | 110 | Fourth, Fifth |
-| **Uibuta** | Hoglin | 35 | Fourth, Fifth |
-| **Vinebinder** | Creeper | 10 | First, Second |
-| **Vineblaster** | Creeper | 8 | First, Second |
-| **Vinepoofer** | Creeper | 10 | First, Second |
-| **Virinsipede** | Silverfish | 75 | Fifth |
-| **Woodcrier** | Parrot | 30 | First, Second |
-| **Yomotsubi** | Vex | 20 | Third |
+<div class="card recipe-card">
+<span class="card-title">Chikyuoebi</span>
+<span class="card-desc">A plated hunter of the Sea of Corpses.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">42.5</span> Hearts</li><li>Base: <span class="value-stat">Spider</span></li><li><span class="value-stat">Fifth</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Himushi</span>
+<span class="card-desc">A burning mass of the Great Fault.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">30</span> Hearts</li><li>Base: <span class="value-stat">Magma Cube</span></li><li><span class="value-stat">Third</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Horncrier</span>
+<span class="card-desc">A shrieking hunter of the lower layers.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">30</span> Hearts</li><li>Base: <span class="value-stat">Parrot</span></li><li><span class="value-stat">Fourth, Fifth</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Inbyo</span>
+<span class="card-desc">A lurking spider of the Forest of Temptation.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">12.5</span> Hearts</li><li>Base: <span class="value-stat">Spider</span></li><li><span class="value-stat">Second</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Kuongatari</span>
+<span class="card-desc">A skittering spider of the Goblets of Giants.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">15</span> Hearts</li><li>Base: <span class="value-stat">Spider</span></li><li><span class="value-stat">Fourth, Fifth</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Man-Toyer</span>
+<span class="card-desc">The weakest hostile creature.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">7.5</span> Hearts</li><li>Base: <span class="value-stat">Parrot</span></li><li><span class="value-stat">First</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Octoliar</span>
+<span class="card-desc">A tentacled liar of the deep water.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">40</span> Hearts</li><li>Base: <span class="value-stat">Squid</span></li><li><span class="value-stat">Fifth</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Orb Piercer</span>
+<span class="card-desc">The terror of the Goblets of Giants.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">90</span> Hearts</li><li>Base: <span class="value-stat">Cave Spider</span></li><li><span class="value-stat">Fourth</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Ottobas</span>
+<span class="card-desc">The most dangerous creature above the Second.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">45</span> Hearts</li><li>Base: <span class="value-stat">Ravager</span></li><li><span class="value-stat">First</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Shiratsubi</span>
+<span class="card-desc">A pale stinger of the Sea of Corpses.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">22.5</span> Hearts</li><li>Base: <span class="value-stat">Vex</span></li><li><span class="value-stat">Fifth</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Silkfang</span>
+<span class="card-desc">A quiet hunter of the first two layers.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">11</span> Hearts</li><li>Base: <span class="value-stat">Parrot</span></li><li><span class="value-stat">First, Second</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Spittleshrub</span>
+<span class="card-desc">A spitting ambusher that ranges across three layers.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">10</span> Hearts</li><li>Base: <span class="value-stat">Parrot</span></li><li><span class="value-stat">First, Second, Fourth</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Stingerhead</span>
+<span class="card-desc">The strongest creature in the Abyss.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">130</span> Hearts</li><li>Base: <span class="value-stat">Phantom</span></li><li><span class="value-stat">Fifth</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Swarmhoarder</span>
+<span class="card-desc">A stinging swarm of the Sea of Corpses.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">35</span> Hearts</li><li>Base: <span class="value-stat">Bee</span></li><li><span class="value-stat">Fifth</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Swarmshocker</span>
+<span class="card-desc">A stinging swarm of the lower layers.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">10</span> Hearts</li><li>Base: <span class="value-stat">Bee</span></li><li><span class="value-stat">Fourth, Fifth</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Tachikatana</span>
+<span class="card-desc">A blade-limbed hunter second only to the Stingerhead.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">110</span> Hearts</li><li>Base: <span class="value-stat">Spider</span></li><li><span class="value-stat">Fourth, Fifth</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Uibuta</span>
+<span class="card-desc">A heavy brute of the lower layers.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">35</span> Hearts</li><li>Base: <span class="value-stat">Hoglin</span></li><li><span class="value-stat">Fourth, Fifth</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Vinebinder</span>
+<span class="card-desc">A creeping vine-horror of the upper layers.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">10</span> Hearts</li><li>Base: <span class="value-stat">Creeper</span></li><li><span class="value-stat">First, Second</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Vineblaster</span>
+<span class="card-desc">A bursting vine-horror of the upper layers.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">8</span> Hearts</li><li>Base: <span class="value-stat">Creeper</span></li><li><span class="value-stat">First, Second</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Vinepoofer</span>
+<span class="card-desc">A puffing vine-horror of the upper layers.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">10</span> Hearts</li><li>Base: <span class="value-stat">Creeper</span></li><li><span class="value-stat">First, Second</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Virinsipede</span>
+<span class="card-desc">A venomous crawler of the Sea of Corpses.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">75</span> Hearts</li><li>Base: <span class="value-stat">Silverfish</span></li><li><span class="value-stat">Fifth</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Woodcrier</span>
+<span class="card-desc">A wailing hunter of the first two layers.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">30</span> Hearts</li><li>Base: <span class="value-stat">Parrot</span></li><li><span class="value-stat">First, Second</span></li></ul></div></span>
+</div>
+
+<div class="card recipe-card">
+<span class="card-title">Yomotsubi</span>
+<span class="card-desc">A hovering menace of the Great Fault.</span>
+<hr>
+<span class="card-desc"><div class="stats-block"><span class="stats-title">Stats</span><ul><li><span class="value-stat">20</span> Hearts</li><li>Base: <span class="value-stat">Vex</span></li><li><span class="value-stat">Third</span></li></ul></div></span>
+</div>
 
 </div>
 
@@ -38,12 +173,12 @@ The creatures that hunt you. Twenty-three in all, and the deepest layers hold th
 
 <div class="icon-table">
 
-| Creature | Hearts | Layer |
-| :------- | -----: | :---- |
-| <img class="mc-icon" alt="Stingerhead" title="Stingerhead" src="../img/item/netherite_sword.png"> Stingerhead | 130 | Fifth |
-| <img class="mc-icon" alt="Tachikatana" title="Tachikatana" src="../img/item/netherite_sword.png"> Tachikatana | 110 | Fourth, Fifth |
-| <img class="mc-icon" alt="Orb Piercer" title="Orb Piercer" src="../img/item/netherite_sword.png"> Orb Piercer | 90 | Fourth |
-| <img class="mc-icon" alt="Virinsipede" title="Virinsipede" src="../img/item/netherite_sword.png"> Virinsipede | 75 | Fifth |
+| Creature        | Hearts | Layer         |
+| :-------------- | -----: | :------------ |
+| **Stingerhead** |    130 | Fifth         |
+| **Tachikatana** |    110 | Fourth, Fifth |
+| **Orb Piercer** |     90 | Fourth        |
+| **Virinsipede** |     75 | Fifth         |
 
 </div>
 

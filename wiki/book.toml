@@ -18,4 +18,4 @@ smart-punctuation = true
 default-theme = "rust"
 preferred-dark-theme = "ayu"
 additional-css = ["theme/cards.css","theme/fonts.css","theme/pager.css","theme/navbar.css"]
-additional-js = ["theme/creature-sort.js", "theme/chrome-tooltips.js", "theme/layer-panel.js"]
+additional-js = ["theme/creature-sort.js", "theme/chrome-tooltips.js", "theme/layer-panel.js", "theme/sidebar-mobile.js"]

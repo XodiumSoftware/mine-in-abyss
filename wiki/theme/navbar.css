@@ -120,6 +120,19 @@ html.sidebar-visible #mdbook-sidebar-toggle::after {
   background-position: center;
 }
 
+/* A phone keeps the logo and drops the words: the bar already spends its width
+   on the icon buttons, and the title is long enough to be cut to a few letters
+   with an ellipsis instead of being read. font-size: 0 collapses the text
+   without hiding the box, so the bar keeps its height and the logo stays
+   centred where it is. The title text itself stays in the page for search
+   engines and screen readers. */
+@media only screen and (max-width: 620px) {
+  .menu-title {
+    gap: 0;
+    font-size: 0;
+  }
+}
+
 .chapter li.part-title {
   margin-top: 2rem;
 }
@@ -149,6 +162,18 @@ html.sidebar-visible #mdbook-sidebar-toggle::after {
 .sidebar {
   border-right: 4px solid transparent;
   border-image: url("/img/gui/tooltip_frame.png") 2 / 4px / 0 stretch;
+}
+
+/* The sidebar has one width. mdBook sizes it from --sidebar-target-width,
+   which its resize handle rewrites as the reader drags; fixing the value and
+   dropping the handle leaves the page offset (which also reads the variable)
+   with nothing left to change. */
+:root {
+  --sidebar-target-width: 300px;
+}
+
+#mdbook-sidebar-resize-handle {
+  display: none;
 }
 
 [dir="rtl"] .sidebar {

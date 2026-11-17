@@ -82,7 +82,6 @@ jobs:
         name: Link Check
         uses: lycheeverse/lychee-action@v2
         with:
-          # Remap lives in lychee.toml at the wiki root.
           args: --verbose --no-progress 'src/**/*.md'
           fail: true
           workingDirectory: wiki
@@ -162,6 +161,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # The job runs from wiki/, so `book` is the downloaded artifact.
           workingDirectory: wiki
           command: pages deploy book --project-name=mine-in-abyss-wiki --branch=${{ github.ref_name }} --commit-dirty=true

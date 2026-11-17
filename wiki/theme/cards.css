@@ -372,8 +372,9 @@ a.card.recipe-card:hover {
 }
 
 /* Above the breakpoint there is nothing to scroll, and the map gives way to the
-   content column. The margins leave room for the coin marker and the rise track,
-   which sit outside the map's border. */
+   content column. The right margin leaves room for the rise track, which sits
+   outside the map's border; the coin marker is inside the map, so nothing is
+   needed on the left. */
 @media only screen and (min-width: 621px) {
   .layer-map-scroll {
     overflow-x: visible;
@@ -383,7 +384,6 @@ a.card.recipe-card:hover {
     width: 100%;
     max-width: 898px;
     margin-right: calc(14rem + 1rem);
-    margin-left: 11rem;
   }
 }
 
@@ -598,28 +598,30 @@ a.card.recipe-card:hover {
   text-shadow: 2px 2px 0 rgb(0 0 0 / 60%);
 }
 
-/* The Orthcoin marker sits on the left edge at Orth's height, naming the one
-   place the coin is traded. Its label follows the same frame as the arrows on
-   the right, and only appears on hover so the map stays readable. */
+/* The Orthcoin marker sits inside the map at Orth's height, naming the one
+   place the coin is traded. The icon stays on the left edge of that band and the
+   label opens to its right, over the map, so the marker needs no room outside
+   the border. The label only appears while the coin itself is hovered. */
 .layer-map .coin-marker {
   position: absolute;
   top: var(--at);
-  right: 100%;
-  margin-right: 1.5rem;
+  left: 1rem;
   display: flex;
-  flex-direction: row-reverse;
   align-items: center;
   gap: 0.6rem;
   transform: translateY(-50%);
-  pointer-events: auto;
+  pointer-events: none;
 }
 
+/* Only the coin is a target; the label must not count as one, or hovering it
+   would hold itself open. */
 .layer-map .coin-icon {
   flex: none;
   width: 2rem;
   height: auto;
   image-rendering: pixelated;
   filter: drop-shadow(0 0 4px rgb(240 196 56 / 60%));
+  pointer-events: auto;
 }
 
 .layer-map .coin-label {
@@ -641,7 +643,10 @@ a.card.recipe-card:hover {
     visibility 0.12s ease;
 }
 
-.layer-map .coin-marker:hover .coin-label,
+/* Only the icon opens the label. The marker is a flex box spanning the icon,
+   the gap and the label's own box, so hovering it would reveal the label while
+   the pointer is over empty space beside the coin. */
+.layer-map .coin-icon:hover ~ .coin-label,
 .layer-map .coin-marker:focus-within .coin-label {
   opacity: 1;
   visibility: visible;

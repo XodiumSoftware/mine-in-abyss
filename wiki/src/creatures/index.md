@@ -80,12 +80,12 @@ There are **65 kinds** in all:
 
 | Layer | Kinds |
 | :-------- | :---: |
-| <img class="mc-icon" alt="Orth" title="Orth" src="../img/item/emerald.png"> The City on the Edge | 1 |
-| <img class="mc-icon" alt="First" title="First" src="../img/item/oak_sapling.png"> Depths of the Abyss | 20 |
-| <img class="mc-icon" alt="Second" title="Second" src="../img/item/oak_sapling.png"> The Forest of Temptation | 21 |
-| <img class="mc-icon" alt="Third" title="Third" src="../img/item/oak_sapling.png"> The Great Fault | 14 |
-| <img class="mc-icon" alt="Fourth" title="Fourth" src="../img/item/oak_sapling.png"> The Goblets of Giants | 18 |
-| <img class="mc-icon" alt="Fifth" title="Fifth" src="../img/item/ender_eye.png"> The Sea of Corpses | 26 |
+| <img class="mc-icon" alt="Orth" title="Orth" src="../img/layer/orth.png"> The City on the Edge | 1 |
+| <img class="mc-icon" alt="First" title="First" src="../img/layer/first.png"> Depths of the Abyss | 20 |
+| <img class="mc-icon" alt="Second" title="Second" src="../img/layer/second.png"> The Forest of Temptation | 21 |
+| <img class="mc-icon" alt="Third" title="Third" src="../img/layer/third.png"> The Great Fault | 14 |
+| <img class="mc-icon" alt="Fourth" title="Fourth" src="../img/layer/fourth.png"> The Goblets of Giants | 18 |
+| <img class="mc-icon" alt="Fifth" title="Fifth" src="../img/layer/fifth.png"> The Sea of Corpses | 26 |
 | <img class="mc-icon" alt="Sixth" title="Sixth" src="../img/item/obsidian_block.png"> The Capital of the Unreturned | 0 |
 | <img class="mc-icon" alt="Seventh" title="Seventh" src="../img/item/dragon_egg.png"> The Final Maelstrom | 0 |
 

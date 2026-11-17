@@ -206,6 +206,13 @@ a.card.recipe-card:hover {
   margin-right: 0;
 }
 
+/* Layer icons sit before the heart; a small gap keeps them from running together. */
+.card.recipe-card .title-hearts .layer-icon {
+  height: 1.15em;
+  width: auto;
+  margin-right: 0.15rem;
+}
+
 .card-desc ul {
   list-style: none;
   padding-left: 0;

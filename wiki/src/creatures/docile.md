@@ -64,11 +64,3 @@ substantially tougher than the hostile creatures of the same layer.
 </div>
 
 </div>
-
-## Notes
-
-- **Daikonchu is the outlier.** At 80 hearts it outclasses every hostile creature in the Great
-  Fault, and it is Docile — leaving it alone is usually the right choice.
-- **Four of the eight are built on a Silverfish**, which makes them small, fast, and hard to hit.
-- **Chimokami** lives only in the First, and at 30 hearts is one of the toughest creatures that
-  far up.

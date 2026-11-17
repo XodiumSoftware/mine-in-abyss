@@ -84,11 +84,3 @@ Harmless creatures. They wander, they breed nothing, and they never fight back.
 </div>
 
 </div>
-
-## Notes
-
-- **The Okibo is the only creature in Orth.** It lives on the surface as well as in the First.
-- **Ikonia is the toughest passive creature** at 80 hearts, and lives in the Sea of Corpses.
-- **Kakatsumuri is the weakest creature in the Abyss** at 2.5 hearts.
-- Passive creatures are built on a vanilla base, so they inherit that base's movement: the Fuwagi
-  hops like a rabbit, the Billabonk swims like a frog.

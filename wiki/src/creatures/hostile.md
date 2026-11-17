@@ -184,17 +184,3 @@ The creatures that hunt you. Twenty-four in all, and the deepest layers hold the
 
 The **Stingerhead** is the strongest creature in the Abyss. The **Tachikatana** and **Orb
 Piercer** are close behind, and both live in the Goblets of Giants.
-
-## Notes
-
-- **The Vine family is built on Creepers.** Vinebinder, Vineblaster and Vinepoofer all share the
-  First and Second — and all three inherit Creeper explosion behaviour.
-- **Ottobas is a Ravager** and lives in the First, making it the most dangerous thing above the
-  Second at 45 hearts.
-- **Man-toyer is the weakest hostile creature** at 7.5 hearts, in the First.
-- **Himushi is a Magma Cube**, so it brings vanilla Magma Cube behaviour to the Great Fault.
-- **The Bees of the Abyss.** Swarmhoarder and Swarmshocker are hostile Bees; the Aerial
-  Stinger and the Passive Sakuranbo share the same base — see [Aerial](aerial.md) and
-  [Passive](passive.md).
-- **Woodcrier is the tougher of the two Parrot hunters** of the first two layers, at 15 hearts
-  against Silkfang's 11.

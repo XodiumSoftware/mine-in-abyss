@@ -112,15 +112,3 @@ Flyers. Some circle overhead, some dive, and a few are the largest creatures in 
 </div>
 
 </div>
-
-## Notes
-
-- **Splitjaw is the apex of the upper layers.** At 45 hearts it appears in the First, Second and
-  Third — the only creature other than the Hammerbeaks to span three layers.
-- **The Hammerbeaks come in two sizes.** Small Hammerbeak (9 hearts) and Giant Hammerbeak
-  (20 hearts) share the First and Second; the Giant also reaches the Fourth.
-- **Cyatoria is built on a Cat**, which means it is subject to cat behaviour — including its
-  avoidance of certain situations.
-- **Corpse-Weeper is a Phantom** — 17.5 hearts in the First, and the only aerial creature that
-  never leaves that layer.
-- **Rohana is the weakest aerial creature** at 5 hearts, in the Second and Fourth.

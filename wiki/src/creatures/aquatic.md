@@ -64,12 +64,3 @@ their model.
 </div>
 
 </div>
-
-## Notes
-
-- **The Guardians are the dangerous ones.** Edusan (40 hearts) is built on a Guardian, which
-  carries vanilla Guardian behaviour.
-- **Demonfish is a Pufferfish**, so its contact effect comes from the base entity.
-- **Ikenosuke is the most widespread** aquatic creature, spanning the Second, Third and Fourth.
-- **Kazura is the weakest creature in the Abyss** alongside the Kakatsumuri, at 2.5 hearts.
-- **Spiralsquid is the only aquatic creature above the Second**, living in the First.

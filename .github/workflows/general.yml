@@ -3,8 +3,32 @@ name: Lint, Build & Release CI/CD
 on:
   push:
     branches: [main]
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "rust-toolchain*"
+      - ".cargo/**"
+      - "justfile"
+      - "clippy.toml"
+      - "rustfmt.toml"
+      - "*.md"
+      - ".github/workflows/general.yml"
   pull_request:
     branches: [main]
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "rust-toolchain*"
+      - ".cargo/**"
+      - "justfile"
+      - "clippy.toml"
+      - "rustfmt.toml"
+      - "*.md"
+      - ".github/workflows/general.yml"
   workflow_dispatch:
 
 permissions:

@@ -372,9 +372,8 @@ a.card.recipe-card:hover {
 }
 
 /* Above the breakpoint there is nothing to scroll, and the map gives way to the
-   content column. The right margin leaves room for the rise track, which sits
-   outside the map's border; the coin marker is inside the map, so nothing is
-   needed on the left. */
+   content column. Both rails — the coin marker and the rise track — now sit
+   inside the map's border, so no margin is reserved for them. */
 @media only screen and (min-width: 621px) {
   .layer-map-scroll {
     overflow-x: visible;
@@ -383,7 +382,6 @@ a.card.recipe-card:hover {
   .layer-map {
     width: 100%;
     max-width: 898px;
-    margin-right: calc(14rem + 1rem);
   }
 }
 
@@ -477,11 +475,22 @@ a.card.recipe-card:hover {
   visibility: visible;
 }
 
+/* One line above the map, split into the same three zones it is read in: the
+   coin marker on the left, the layer bands in the middle, the rise arrows on the
+   right. Each third is centred within itself, so a hint sits above what it
+   describes. */
 .layer-map-hint {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
   max-width: 898px;
   margin: 0 auto 0.75rem;
   font-size: 0.9rem;
   opacity: 0.75;
+}
+
+.layer-map-hint > span {
+  text-align: center;
 }
 
 /* The facts and prose a hotspot carries are not shown: the tip is the short
@@ -529,17 +538,23 @@ a.card.recipe-card:hover {
 
 /* Upward arrows along the right edge of the map, one per boundary, naming what
    climbing out of that layer costs. --at is the boundary's position as a
-   percentage of the image height. */
+   percentage of the image height. The track sits inside the map's border, so the
+   arrows are read against the artwork rather than beside it, and nothing has to
+   be reserved outside the map for them. The track is inset 1rem from the edge,
+   matching the Orthcoin marker on the left. It is only as wide as an arrow: the
+   label opens out of it to the left, so a wide track would push the arrows
+   inwards instead of leaving them on the edge. */
 .rise-track {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 100%;
-  width: 14rem;
-  margin-left: 0.75rem;
+  right: 1rem;
+  width: 2rem;
   pointer-events: none;
 }
 
+/* --at marks the boundary itself, and the arrow hangs below it: it names what
+   climbing out of the layer costs, so it belongs to the side not yet reached. */
 .layer-map .rise {
   position: absolute;
   left: 0;
@@ -547,27 +562,30 @@ a.card.recipe-card:hover {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  transform: translateY(-100%);
-  padding-bottom: 2px;
+  padding-top: 2px;
+  /* Only the arrow is a target, so the label cannot hold itself open. */
+  pointer-events: none;
 }
 
 .layer-map .rise-arrow {
   position: relative;
   flex: none;
-  width: 1.5rem;
-  height: 1.15rem;
+  width: 2rem;
+  height: 2rem;
   color: #ff5555;
+  pointer-events: auto;
 }
 
 /* A shaft with a solid head, drawn in CSS so it reads at a glance and matches
-   the pixel art better than a text arrow. */
+   the pixel art better than a text arrow. The head sits at the top and the shaft
+   fills the rest of the box, so the arrow grows with the box it is drawn in. */
 .layer-map .rise-arrow::before {
   content: "";
   position: absolute;
   left: 50%;
+  top: 0.9rem;
   bottom: 0;
-  width: 3px;
-  height: 0.75rem;
+  width: 4px;
   transform: translateX(-50%);
   background-color: currentcolor;
 }
@@ -580,22 +598,41 @@ a.card.recipe-card:hover {
   width: 0;
   height: 0;
   transform: translateX(-50%);
-  border-left: 0.4rem solid transparent;
-  border-right: 0.4rem solid transparent;
-  border-bottom: 0.5rem solid currentcolor;
+  border-left: 0.6rem solid transparent;
+  border-right: 0.6rem solid transparent;
+  border-bottom: 0.9rem solid currentcolor;
 }
 
+/* The label opens to the left of the arrow, over the map, so the arrow stays
+   beside the boundary it marks. It appears only while that arrow is hovered, and
+   matches the Orthcoin label's type and frame so the map reads as one set. */
 .layer-map .rise-label {
-  max-width: 11rem;
-  padding: 2px 6px;
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  width: max-content;
+  max-width: 14rem;
+  margin-right: 0.5rem;
+  padding: 6px 10px;
+  transform: translateY(-50%);
   color: #fff;
   background-color: rgb(25 22 21 / 96%);
   border: 4px solid transparent;
   border-image: url("/img/gui/tooltip_frame.png") 2 / 4px / 0 stretch;
   font-family: "Excalibur", monospace;
-  font-size: 0.72rem;
-  line-height: 1.25;
+  font-size: 0.85rem;
+  line-height: 1.35;
   text-shadow: 2px 2px 0 rgb(0 0 0 / 60%);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.12s ease,
+    visibility 0.12s ease;
+}
+
+.layer-map .rise-arrow:hover ~ .rise-label {
+  opacity: 1;
+  visibility: visible;
 }
 
 /* The Orthcoin marker sits inside the map at Orth's height, naming the one

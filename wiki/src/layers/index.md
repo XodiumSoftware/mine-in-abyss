@@ -2,13 +2,13 @@
 
 # The Abyss
 
-<p class="page-summary">Eight layers, from the City on the Edge down to the Final Maelstrom. Hover a layer to see what lives there, what it drops you into, and how much the Curse takes for climbing out.</p>
+<p class="page-summary">Eight layers, from the City on the Edge down to the Final Maelstrom, each its own world with its own creatures and a worsening Curse.</p>
 
-Mine in Abyss is built as a **vertical world**: eight layers, from the surface down. Each is its
-own Minecraft world and a hand-built map with its own creatures, and each one takes its turn
-worsening the Curse.
-
-<p class="layer-map-hint">Hover over a layer to see its name.</p>
+<p class="layer-map-hint">
+<span class="layer-map-hint-left">Hover over an icon to see what it marks</span>
+<span class="layer-map-hint-center">Hover over a layer to see its name</span>
+<span class="layer-map-hint-right">Hover over an arrow to see the effects of climbing</span>
+</p>
 
 <div class="layer-map-scroll">
 <div class="layer-map">
@@ -26,11 +26,11 @@ worsening the Curse.
 <span class="coin-label">Orthcoin can be traded here</span>
 </div>
 <aside class="rise-track">
-<div class="rise" style="--at: 5.39%" title="Nausea"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Nausea</span></div>
-<div class="rise" style="--at: 16.33%" title="Nausea, Weakness"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Nausea, Weakness</span></div>
-<div class="rise" style="--at: 26.64%" title="Nausea, brief Blindness, Slowness"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Nausea, brief Blindness, Slowness</span></div>
-<div class="rise" style="--at: 33.36%" title="Nausea, Blindness, Weakness"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Nausea, Blindness, Weakness</span></div>
-<div class="rise" style="--at: 44.69%" title="Blindness, Weakness, health to half a heart"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Blindness, Weakness, health to half a heart</span></div>
+<div class="rise" style="--at: 5.39%" title="Nausea 5s"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Nausea (5s)</span></div>
+<div class="rise" style="--at: 16.33%" title="Nausea II 8s, Weakness 5s"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Nausea II (8s)<br>Weakness (5s)</span></div>
+<div class="rise" style="--at: 26.64%" title="Nausea II 12s, Blindness 2s, Slowness II 8s"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Nausea II (12s)<br>Blindness (2s)<br>Slowness II (8s)</span></div>
+<div class="rise" style="--at: 33.36%" title="Nausea II 15s, Blindness 4s, Weakness 12s"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Nausea II (15s)<br>Blindness (4s)<br>Weakness (12s)</span></div>
+<div class="rise" style="--at: 44.69%" title="Blindness 8s, Weakness II 20s, health to half a heart"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Blindness (8s)<br>Weakness II (20s)<br>health to half a heart</span></div>
 <div class="rise" style="--at: 70.7%" title="Death"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Death</span></div>
 </aside>
 </div>

@@ -4,10 +4,6 @@
 
 <p class="page-summary">Every creature in the Abyss, sorted by layer, name or category, with its base type, hearts and where it lives.</p>
 
-Every creature in the Abyss is a **vanilla entity wearing an identity**. The server replaces
-natural mob spawning in each layer with kinds authored for that layer, so what you meet is
-always something from the Abyss rather than a stock zombie.
-
 <div class="creature-sort" data-sort-for="creature-cards">
 <label class="sort-label" for="creature-sort-select">Sort by</label>
 <select id="creature-sort-select" class="sort-select">

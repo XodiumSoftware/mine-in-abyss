@@ -30,7 +30,7 @@
 <div class="rise" style="--at: 16.33%" title="Nausea II 8s, Weakness 5s"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Nausea II (8s)<br>Weakness (5s)</span></div>
 <div class="rise" style="--at: 26.64%" title="Nausea II 12s, Blindness 2s, Slowness II 8s"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Nausea II (12s)<br>Blindness (2s)<br>Slowness II (8s)</span></div>
 <div class="rise" style="--at: 33.36%" title="Nausea II 15s, Blindness 4s, Weakness 12s"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Nausea II (15s)<br>Blindness (4s)<br>Weakness (12s)</span></div>
-<div class="rise" style="--at: 44.69%" title="Blindness 8s, Weakness II 20s, health to half a heart"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Blindness (8s)<br>Weakness II (20s)<br>health to half a heart</span></div>
+<div class="rise" style="--at: 44.69%" title="Blindness 8s, Weakness II 20s, health capped to 0.5x"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Blindness (8s)<br>Weakness II (20s)<br>Health capped to 0.5x</span></div>
 <div class="rise" style="--at: 70.7%" title="Death"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Death</span></div>
 </aside>
 </div>

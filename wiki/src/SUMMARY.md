@@ -18,11 +18,6 @@
 # Creatures
 
 - [Overview](creatures/index.md)
-- [Passive](creatures/passive.md)
-- [Docile](creatures/docile.md)
-- [Aerial](creatures/aerial.md)
-- [Aquatic](creatures/aquatic.md)
-- [Hostile](creatures/hostile.md)
 
 # Gameplay Changes
 

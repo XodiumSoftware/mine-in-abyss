@@ -5,18 +5,18 @@
 There are eight layers, from the surface down. Each is a hand-built map with its own creatures,
 and each one takes its turn worsening the Curse.
 
-<div class="recipe-table">
+<div class="icon-table">
 
-| # | Layer                             | World    | Creatures |
-| :-: | :------------------------------ | :------- | :-------: |
-| 0 | <img class="mc-icon" alt="Orth" title="Orth" src="../img/item/emerald.png"> **Orth** — The City on the Edge | — | 1 |
-| 1 | <img class="mc-icon" alt="First" title="First" src="../img/item/oak_sapling.png"> **First** — Depths of the Abyss | — | 20 |
-| 2 | <img class="mc-icon" alt="Second" title="Second" src="../img/item/oak_sapling.png"> **Second** — The Forest of Temptation | — | 21 |
-| 3 | <img class="mc-icon" alt="Third" title="Third" src="../img/item/oak_sapling.png"> **Third** — The Great Fault | — | 14 |
-| 4 | <img class="mc-icon" alt="Fourth" title="Fourth" src="../img/item/oak_sapling.png"> **Fourth** — The Goblets of Giants | — | 18 |
-| 5 | <img class="mc-icon" alt="Fifth" title="Fifth" src="../img/item/ender_eye.png"> **Fifth** — The Sea of Corpses | — | 26 |
-| 6 | <img class="mc-icon" alt="Sixth" title="Sixth" src="../img/item/obsidian_block.png"> **Sixth** — The Capital of the Unreturned | — | 0 |
-| 7 | <img class="mc-icon" alt="Seventh" title="Seventh" src="../img/item/dragon_egg.png"> **Seventh** — The Final Maelstrom | — | 0 |
+|  #  | Layer                                     | Creatures |
+| :-: | :---------------------------------------- | :-------: |
+|  0  | **Orth** — The City on the Edge           |     1     |
+|  1  | **First** — Depths of the Abyss           |    20     |
+|  2  | **Second** — The Forest of Temptation     |    21     |
+|  3  | **Third** — The Great Fault               |    14     |
+|  4  | **Fourth** — The Goblets of Giants        |    18     |
+|  5  | **Fifth** — The Sea of Corpses            |    26     |
+|  6  | **Sixth** — The Capital of the Unreturned |     0     |
+|  7  | **Seventh** — The Final Maelstrom         |     0     |
 
 </div>
 

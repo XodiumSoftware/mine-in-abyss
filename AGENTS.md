@@ -846,7 +846,7 @@ src/
 
 GitHub Actions workflows in `.github/workflows/`:
 
-- **rust.yml** — Lints, builds the WASM plugin on push/PR, uploads the artifact and publishes the nightly release
+- **general.yml** — Lints, builds the WASM plugin on push/PR, uploads the artifact and publishes the nightly release
 - **enforce_pr_title.yml** — Validates PR titles follow conventional commits
 
 ## Adding a New Layer

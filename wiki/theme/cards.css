@@ -470,8 +470,7 @@ a.card.recipe-card:hover {
 }
 
 .layer-map .hotspot:hover .hotspot-tip,
-.layer-map .hotspot:focus-visible .hotspot-tip,
-.layer-map .hotspot.expanded .hotspot-tip {
+.layer-map .hotspot:focus-visible .hotspot-tip {
   opacity: 1;
   visibility: visible;
 }
@@ -483,73 +482,12 @@ a.card.recipe-card:hover {
   opacity: 0.75;
 }
 
-/* The details a hotspot reveals when clicked. Hidden until the hotspot is
-   expanded, and kept out of the hover tip's single line. */
+/* The facts and prose a hotspot carries are not shown: the tip is the short
+   hover label only. They stay in the markup so the page still spells out each
+   layer's creatures and spawning rule for search engines and screen readers. */
 .layer-map .hotspot-facts,
 .layer-map .hotspot-more {
   display: none;
-}
-
-.layer-map .hotspot.expanded .hotspot-facts {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: 0.2rem 0.9rem;
-  margin: 0.6rem 0 0.6rem;
-  font-size: 0.85em;
-  white-space: normal;
-}
-
-.layer-map .hotspot.expanded .hotspot-facts dt,
-.layer-map .hotspot.expanded .hotspot-facts dd {
-  margin: 0;
-  line-height: 1.5;
-}
-
-/* mdBook styles every definition after the first as a flex box, to make room for
-   its numbered counters. That drops the value off the key's baseline, so put
-   these back in normal flow. */
-.layer-map .hotspot.expanded .hotspot-facts dd,
-.layer-map .hotspot.expanded .hotspot-facts dd + dd,
-.layer-map .hotspot.expanded .hotspot-facts dd:has(+ dd) {
-  display: block;
-  align-items: initial;
-  counter-increment: none;
-}
-
-.layer-map .hotspot.expanded .hotspot-facts dd::before,
-.layer-map .hotspot.expanded .hotspot-facts dd + dd::before,
-.layer-map .hotspot.expanded .hotspot-facts dd:has(+ dd)::before {
-  content: none;
-}
-
-.layer-map .hotspot.expanded .hotspot-facts dt {
-  color: #9a958e;
-}
-
-.layer-map .hotspot.expanded .hotspot-facts dd {
-  color: #ffff55;
-}
-
-.layer-map .hotspot.expanded .hotspot-more {
-  display: block;
-  margin: 0;
-  max-width: 26rem;
-  font-size: 0.85em;
-  line-height: 1.5;
-  white-space: normal;
-}
-
-/* An expanded tip is a card rather than a single line, so it is allowed to
-   wrap and sits above the bands it describes. */
-.layer-map .hotspot.expanded .hotspot-tip {
-  z-index: 40;
-  align-items: flex-start;
-  max-width: 30rem;
-  white-space: normal;
-}
-
-.layer-map .hotspot.expanded .hotspot-tip .hotspot-icon {
-  margin-top: 0.15em;
 }
 
 /* Item cards put a large icon beside the name and description, spanning both

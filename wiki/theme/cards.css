@@ -441,9 +441,11 @@ a.card.recipe-card:hover {
 .layer-map .hotspot-tip {
   position: absolute;
   z-index: 20;
-  left: 1rem;
+  /* Centred on the band it describes: the offset is half the tip's own width,
+     so it stays centred whatever the layer's name turns out to be. */
+  left: 50%;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
   gap: 0.4rem;

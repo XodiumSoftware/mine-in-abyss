@@ -12,7 +12,6 @@ your character and survives logout, so it follows you until something cures it.
 <a class="card" href="travel.html">
 <span class="card-header">
 <span class="card-title">How strain is added</span>
-<img class="card-icon" alt="" src="../img/item/oak_sapling.png">
 </span>
 <span class="card-desc">Each layer has a curse value equal to its depth</span>
 </a>
@@ -20,7 +19,6 @@ your character and survives logout, so it follows you until something cures it.
 <a class="card" href="travel.html">
 <span class="card-header">
 <span class="card-title">How strain is cured</span>
-<img class="card-icon" alt="" src="../img/item/emerald.png">
 </span>
 <span class="card-desc">Reaching Orth, or dying, clears it completely</span>
 </a>

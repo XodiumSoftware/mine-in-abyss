@@ -8,7 +8,6 @@ move between them by descending past the bottom or climbing past the ceiling.
 <a class="card" href="depths.html">
 <span class="card-header">
 <span class="card-title">The Layers</span>
-<img class="card-icon" alt="" src="../img/item/dragon_egg.png">
 </span>
 <span class="card-desc">All eight layers, surface to Final Maelstrom</span>
 </a>
@@ -16,7 +15,6 @@ move between them by descending past the bottom or climbing past the ceiling.
 <a class="card" href="curse.html">
 <span class="card-header">
 <span class="card-title">Curse of the Abyss</span>
-<img class="card-icon" alt="" src="../img/item/amethyst_shard.png">
 </span>
 <span class="card-desc">What ascending costs you, and how it compounds</span>
 </a>
@@ -24,7 +22,6 @@ move between them by descending past the bottom or climbing past the ceiling.
 <a class="card" href="travel.html">
 <span class="card-header">
 <span class="card-title">Descending & Ascending</span>
-<img class="card-icon" alt="" src="../img/item/oak_sapling.png">
 </span>
 <span class="card-desc">How to move between layers, and what follows you</span>
 </a>

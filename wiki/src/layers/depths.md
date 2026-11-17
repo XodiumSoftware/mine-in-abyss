@@ -7,16 +7,16 @@ and each one takes its turn worsening the Curse.
 
 <div class="icon-table">
 
-|                                #                                 | Layer                                     | Creatures |
-| :--------------------------------------------------------------: | :---------------------------------------- | :-------: |
-|   <img class="mc-icon" alt="Orth" src="../img/layer/orth.png">   | **Orth** — The City on the Edge           |     1     |
-|  <img class="mc-icon" alt="First" src="../img/layer/first.png">  | **First** — Depths of the Abyss           |    20     |
-| <img class="mc-icon" alt="Second" src="../img/layer/second.png"> | **Second** — The Forest of Temptation     |    21     |
-|  <img class="mc-icon" alt="Third" src="../img/layer/third.png">  | **Third** — The Great Fault               |    14     |
-| <img class="mc-icon" alt="Fourth" src="../img/layer/fourth.png"> | **Fourth** — The Goblets of Giants        |    18     |
-|  <img class="mc-icon" alt="Fifth" src="../img/layer/fifth.png">  | **Fifth** — The Sea of Corpses            |    26     |
-|                                6                                 | **Sixth** — The Capital of the Unreturned |     0     |
-|                                7                                 | **Seventh** — The Final Maelstrom         |     0     |
+|                                 #                                  | Layer                                     | Creatures |
+| :----------------------------------------------------------------: | :---------------------------------------- | :-------: |
+|    <img class="mc-icon" alt="Orth" src="../img/layer/orth.png">    | **Orth** — The City on the Edge           |     1     |
+|   <img class="mc-icon" alt="First" src="../img/layer/first.png">   | **First** — Depths of the Abyss           |    20     |
+|  <img class="mc-icon" alt="Second" src="../img/layer/second.png">  | **Second** — The Forest of Temptation     |    21     |
+|   <img class="mc-icon" alt="Third" src="../img/layer/third.png">   | **Third** — The Great Fault               |    14     |
+|  <img class="mc-icon" alt="Fourth" src="../img/layer/fourth.png">  | **Fourth** — The Goblets of Giants        |    18     |
+|   <img class="mc-icon" alt="Fifth" src="../img/layer/fifth.png">   | **Fifth** — The Sea of Corpses            |    26     |
+|   <img class="mc-icon" alt="Sixth" src="../img/layer/sixth.png">   | **Sixth** — The Capital of the Unreturned |     0     |
+| <img class="mc-icon" alt="Seventh" src="../img/layer/seventh.png"> | **Seventh** — The Final Maelstrom         |     0     |
 
 </div>
 

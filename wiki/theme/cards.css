@@ -187,6 +187,7 @@ a.card.recipe-card:hover {
 /* The creature name, kept from squeezing against the heart count. */
 .card.recipe-card .card-title .title-name {
   min-width: 0;
+  flex: 1 1 auto;
   overflow-wrap: anywhere;
   /* `--kind-color` carries the kind's exact RGB from the plugin, set inline per
      card. Many of those colours are dark enough to vanish on the card
@@ -212,14 +213,32 @@ a.card.recipe-card:hover {
   margin-right: 0;
 }
 
-/* Layer-icon tooltips, sharing the resource-pack tooltip frame used by the
-   recipe pages. Hosted on the wrapper span, since <img> is a replaced element
-   and cannot host a pseudo-element. */
-.card.recipe-card .layer-icon[data-tooltip] {
+/* The category icon leads the title row, before the name. It shares the layer
+   icon's tooltip styling, so only its size differs. */
+.card.recipe-card .category-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
   cursor: help;
 }
 
-.card.recipe-card .layer-icon[data-tooltip]::after {
+.card.recipe-card .category-icon img {
+  height: 1.3rem;
+  width: auto;
+  image-rendering: pixelated;
+}
+
+/* Layer- and category-icon tooltips, sharing the resource-pack tooltip frame
+   the recipe pages already use. Hosted on the wrapper span, since <img> is a
+   replaced element and cannot host a pseudo-element. */
+.card.recipe-card .layer-icon[data-tooltip],
+.card.recipe-card .category-icon[data-tooltip] {
+  cursor: help;
+}
+
+.card.recipe-card .layer-icon[data-tooltip]::after,
+.card.recipe-card .category-icon[data-tooltip]::after {
   content: attr(data-tooltip);
   position: absolute;
   z-index: 1000;
@@ -255,7 +274,9 @@ a.card.recipe-card:hover {
 }
 
 .card.recipe-card .layer-icon[data-tooltip]:hover::after,
-.card.recipe-card .layer-icon[data-tooltip]:focus-visible::after {
+.card.recipe-card .layer-icon[data-tooltip]:focus-visible::after,
+.card.recipe-card .category-icon[data-tooltip]:hover::after,
+.card.recipe-card .category-icon[data-tooltip]:focus-visible::after {
   opacity: 1;
   visibility: visible;
 }

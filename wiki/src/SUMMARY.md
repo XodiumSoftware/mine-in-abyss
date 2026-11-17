@@ -11,9 +11,6 @@
 # The Abyss
 
 - [Overview](layers/index.md)
-- [The Layers](layers/depths.md)
-- [Curse of the Abyss](layers/curse.md)
-- [Descending & Ascending](layers/travel.md)
 
 # Creatures
 

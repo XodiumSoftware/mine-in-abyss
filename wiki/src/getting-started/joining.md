@@ -20,5 +20,4 @@
 Once you're in, here are some things to check out:
 
 - Read the [Server Rules](rules.md)
-- Learn about the [Curse of the Abyss](../layers/curse.md) before you descend
-- Look at [The Layers](../layers/depths.md) to see what waits below
+- Look at [The Abyss](../layers/index.md) to see what waits below, and what the Curse costs

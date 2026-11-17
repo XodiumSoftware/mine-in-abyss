@@ -161,5 +161,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: wiki
           command: pages deploy book --project-name=mine-in-abyss-wiki --branch=${{ github.ref_name }} --commit-dirty=true

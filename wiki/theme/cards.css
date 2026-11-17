@@ -539,12 +539,34 @@ a.card.recipe-card:hover {
   white-space: normal;
 }
 
+.layer-map .hotspot.expanded .hotspot-facts dt,
+.layer-map .hotspot.expanded .hotspot-facts dd {
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* mdBook styles every definition after the first as a flex box, to make room for
+   its numbered counters. That drops the value off the key's baseline, so put
+   these back in normal flow. */
+.layer-map .hotspot.expanded .hotspot-facts dd,
+.layer-map .hotspot.expanded .hotspot-facts dd + dd,
+.layer-map .hotspot.expanded .hotspot-facts dd:has(+ dd) {
+  display: block;
+  align-items: initial;
+  counter-increment: none;
+}
+
+.layer-map .hotspot.expanded .hotspot-facts dd::before,
+.layer-map .hotspot.expanded .hotspot-facts dd + dd::before,
+.layer-map .hotspot.expanded .hotspot-facts dd:has(+ dd)::before {
+  content: none;
+}
+
 .layer-map .hotspot.expanded .hotspot-facts dt {
   color: #9a958e;
 }
 
 .layer-map .hotspot.expanded .hotspot-facts dd {
-  margin: 0;
   color: #ffff55;
 }
 

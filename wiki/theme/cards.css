@@ -722,6 +722,19 @@ a.card.recipe-card:hover {
   justify-content: flex-start;
 }
 
+/* An item's source sits under its name like a trader's district, but an item card
+   stacks its text rather than laying it out across the card, so the district is not
+   pushed to the right and the meta line loses the spacing meant for a card with
+   trades below it. The sorter still finds `.card-district` here. */
+.card.recipe-card.item-card .card-meta {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.card.recipe-card.item-card .card-district {
+  margin-left: 0;
+}
+
 /* Upward arrows along the right edge of the map, one per boundary, naming what
    climbing out of that layer costs. --at is the boundary's position as a
    percentage of the image height. The track sits inside the map's border, so the

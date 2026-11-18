@@ -303,23 +303,42 @@ a.card.recipe-card:hover {
 
 .card.recipe-card .card-desc {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   opacity: 1;
 }
 
-.creature-sort {
+/* The meta line sits under the name and carries the two facts about where a
+   trader stands: its coordinates, then its district off to the right. The
+   district is what the sorter reads, so it must not be a tooltip or an icon alt -
+   the script looks for `.card-district` first. */
+.card.recipe-card .card-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+  margin-bottom: 0.6rem;
+  font-family: "Excalibur", monospace;
+  font-size: 0.8rem;
+  color: #9a958e;
+}
+
+.card.recipe-card .card-district {
+  margin-left: auto;
+}
+
+.card-sort {
   display: flex;
   align-items: center;
   gap: 0.6rem;
   margin: 1rem 0 1.5rem;
 }
 
-.creature-sort .sort-label {
+.card-sort .sort-label {
   font-size: 0.9rem;
   opacity: 0.75;
 }
 
-.creature-sort .sort-select {
+.card-sort .sort-select {
   appearance: none;
   -webkit-appearance: none;
   padding: 0.45rem 2.2rem 0.45rem 0.8rem;
@@ -342,13 +361,13 @@ a.card.recipe-card:hover {
     filter 0.12s ease;
 }
 
-.creature-sort .sort-select:hover,
-.creature-sort .sort-select:focus-visible {
+.card-sort .sort-select:hover,
+.card-sort .sort-select:focus-visible {
   color: var(--sidebar-active);
   filter: brightness(1.2);
 }
 
-.creature-sort .sort-select option {
+.card-sort .sort-select option {
   color: var(--sidebar-fg);
   background-color: var(--sidebar-bg);
 }
@@ -630,7 +649,8 @@ a.card.recipe-card:hover {
     visibility 0.12s ease;
 }
 
-.layer-map .rise-arrow:hover ~ .rise-label {
+.layer-map .rise-arrow:hover ~ .rise-label,
+.layer-map .rise-arrow:focus-visible ~ .rise-label {
   opacity: 1;
   visibility: visible;
 }

@@ -29,6 +29,13 @@ Welcome to the official wiki for **Mine in Abyss**, the Made in Abyss recreation
 <span class="card-desc">Every creature of the Abyss, layer by layer</span>
 </a>
 
+<a class="card" href="traders/index.html">
+<span class="card-header">
+<span class="card-title">Traders</span>
+</span>
+<span class="card-desc">The traders of Orth, district by district</span>
+</a>
+
 <a class="card" href="gameplay/index.html">
 <span class="card-header">
 <span class="card-title">Gameplay Changes</span>
@@ -43,6 +50,6 @@ Welcome to the official wiki for **Mine in Abyss**, the Made in Abyss recreation
 Mine in Abyss recreates the world of _Made in Abyss_ as a vertical adventure. Each layer is a
 hand-built map with its own creatures, its own dangers, and its own place in the Curse:
 
-- **Eight layers** — from the City on the Edge down to the Final Maelstrom
-- **The Curse of the Abyss** — ascending is what hurts, and it compounds
+- **Eight layers** - from the City on the Edge down to the Final Maelstrom
+- **The Curse of the Abyss** - ascending is what hurts, and it compounds
 - **65 creatures** that never leave the layer they were born in

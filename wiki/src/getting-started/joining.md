@@ -8,7 +8,7 @@
 | ----------- | ----------------------------------------------------------- |
 | Server IP   | <pre><code class="language-text">{{server_ip}}</code></pre> |
 | Version     | Java Edition {{mc_version}}                                 |
-| Client Mods | Optional — the server is fully playable without them        |
+| Client Mods | Optional - the server is fully playable without them        |
 
 ## How to Join
 

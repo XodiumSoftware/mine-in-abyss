@@ -16,6 +16,10 @@
 
 - [Overview](creatures/index.md)
 
+# Traders
+
+- [Overview](traders/index.md)
+
 # Items
 
 - [Overview](items/index.md)

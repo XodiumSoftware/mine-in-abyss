@@ -4,7 +4,7 @@
 
 <p class="page-summary">Every creature in the Abyss, sorted by layer, name or category, with its base type, hearts and where it lives.</p>
 
-<div class="creature-sort" data-sort-for="creature-cards">
+<div class="card-sort" data-sort-for="creature-cards">
 <label class="sort-label" for="creature-sort-select">Sort by</label>
 <select id="creature-sort-select" class="sort-select">
 <option value="name-asc" selected>A–Z</option>

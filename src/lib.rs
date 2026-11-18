@@ -274,6 +274,12 @@ mod items {
         pub(crate) mod hashofu_eye;
         pub(crate) mod hashofu_tail_raw;
     }
+    pub(crate) mod headmaster {
+        pub(crate) mod box_head;
+        pub(crate) mod chest_head;
+        pub(crate) mod furnace_head;
+        pub(crate) mod swirly_crate_head;
+    }
     pub(crate) mod himushi {
         pub(crate) mod himushi_core;
     }
@@ -308,6 +314,7 @@ mod items {
         pub(crate) mod kazura_squid_ink_sac;
     }
     pub(crate) mod kuongatari {
+        pub(crate) mod cooked_kuongatari_abdomen;
         pub(crate) mod kuongatari_abdomen;
         pub(crate) mod kuongatari_juice;
         pub(crate) mod kuongatari_silk;
@@ -350,6 +357,9 @@ mod items {
     }
     pub(crate) mod ottobas {
         pub(crate) mod ottobas_meat_raw;
+    }
+    pub(crate) mod pete {
+        pub(crate) mod pot_head;
     }
     pub(crate) mod rinsipede {
         pub(crate) mod rinsipede_segments;

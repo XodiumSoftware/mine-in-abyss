@@ -537,7 +537,10 @@ Abyss: it stands behind a counter on an authored map, it is not something a laye
   experience, but has no call that sets the offers, and `TradeSelect`/`VillagerAcquireTrade`
   carry only an index. A kind therefore leaves its trade table out of `entity` and states only
   the shape of the trader. The wiki's Orth trade table is the source for those offers once a
-  setter exists — do not invent a second table elsewhere.
+  setter exists — do not invent a second table elsewhere. **A good a trader sells is an item
+  kind**, though: `Headmaster`'s four heads and `Pete`'s `Pot Head` are built under
+  `src/items/headmaster/` and `src/items/pete/`, named after the trader's module and coloured
+  with its name colour, so the stack is ready even though no offer can deliver it yet.
 - **Nothing places a trader yet**, so `mod villagers` carries `#[expect(dead_code)]`. When
   something does — a map marker, a shop, a command — it calls `Boy::entity` with the world and
   position it wants.
@@ -712,6 +715,7 @@ expected to be dead on its own, the whole tree is. A real caller removes it from
 | `KuongatariJuice`           | 52  | Honey Bottle     | Kuongatari Juice            |
 | `KuongatariSilk`            | 53  | String           | Kuongatari Silk             |
 | `KuongatariAbdomen`         | 54  | Beef             | Kuongatari Abdomen          |
+| `CookedKuongatariAbdomen`   | 124 | Cooked Beef      | Cooked Kuongatari Abdomen   |
 | `MadokajackScales`          | 55  | Phantom Membrane | Madokajack Scales           |
 | `MadokajackBone`            | 56  | Bone             | Madokajack Bone             |
 | `MadokajackEye`             | 57  | Spider Eye       | Madokajack Eye              |
@@ -776,13 +780,26 @@ expected to be dead on its own, the whole tree is. A real caller removes it from
 | `WoodcrierHorn`             | 116 | Bone             | Woodcrier Horn              |
 | `YomotsubiWing`             | 117 | Phantom Membrane | Yomotsubi Wing              |
 | `YomotsubiAbdomen`          | 118 | Beef             | Yomotsubi Abdomen           |
+| `BoxHead`                   | 119 | Carved Pumpkin   | Box Head                    |
+| `ChestHead`                 | 120 | Carved Pumpkin   | Chest Head                  |
+| `FurnaceHead`               | 121 | Carved Pumpkin   | Furnace Head                |
+| `SwirlyCrateHead`           | 122 | Carved Pumpkin   | Swirly Crate Head           |
+| `PotHead`                   | 123 | Carved Pumpkin   | Pot Head                    |
 
 Every kind is reachable through **nothing yet**: nothing calls a `stack()` constructor,
 so the whole tree is covered by the `#[expect(dead_code)]` on `mod items`.
 
 Ids are permanent once shipped, for the same reason a mob id is: they are what tells two
 kinds on the same base item apart. A new item takes the next free number and never reuses
-one — the catalogue above runs `1`–`118` with no gaps, so the next kind is `119`.
+one — the catalogue above runs `1`–`124` with no gaps, so the next kind is `125`.
+
+**A bought good is filed by the villager that sells it.** The last five kinds are not drops but
+the wearable heads on the wiki's [Orth Trades](https://wiki.mineinabyss.com/w/Orth_Trades)
+page — the four sold by `Headmaster` (`headmaster/`) and the one sold by `Pete` (`pete/`), each
+built on a carved pumpkin, the vanilla wearable head. They take the trader's own name colour,
+the same rule as a drop taking its mob's, because the counter they are sold at is what tells a
+player where they came from. A good's folder is named after the **villager module** in
+`entities/villagers`, not after the creature.
 
 **A drop's colour is its mob's colour.** Every drop file sets `color_rgb` from the
 `--kind-color` of the creature in the wiki's creature list, so a stack reads as belonging
@@ -797,17 +814,18 @@ it wants, so a list would be a place to keep in sync for no reader. Adding an it
 means its file, its `pub mod` line in the `mod items` block in `lib.rs`, its inherent
 `stack()` constructor, and whatever ends up creating it.
 
-**Drops are filed by creature.** `src/items/` is `item_builder.rs` and `orthcoin.rs` at the
-root, then one folder per creature that drops something — `abyssal_snail/`,
-`giant_hammerbeak/`, `man_toyer/` — holding one module per drop, so a creature's drops sit
-together the way its mob kind does under `entities/mobs`. The folder is organisation only:
-nothing reads it at runtime, so a kind lives wherever its file is put and the `mod items`
+**Drops are filed by creature, goods by villager.** `src/items/` is `item_builder.rs` and
+`orthcoin.rs` at the root, then one folder per source of items — `abyssal_snail/`,
+`giant_hammerbeak/`, `man_toyer/` for the creatures that drop something, `headmaster/`,
+`pete/` for the counters that sell something — holding one module per kind, so one source's
+items sit together the way a mob kind does under `entities/mobs`. The folder is organisation
+only: nothing reads it at runtime, so a kind lives wherever its file is put and the `mod items`
 block is what actually declares it. There is no `mod.rs`; each folder's `pub mod` list lives
 inline in `lib.rs`.
 
 Two things stay at the root: `item_builder.rs`, which is machinery rather than a drop, and
-`orthcoin.rs`, a coin of Orth that belongs to the city rather than to a mob. A drop two
-creatures share — `Hammerbeak Beak`, `Plant Matter`, `Swarmshocker Charged Powder` — is filed
+`orthcoin.rs`, a coin of Orth that belongs to the city rather than to a mob. A kind two
+sources share — `Hammerbeak Beak`, `Plant Matter`, `Swarmshocker Charged Powder` — is filed
 under the first one that lists it, so it is still one kind in one place.
 
 **Items have no economy.** `Orthcoin` is a name, a colour, a lore line and a marker — it cannot
@@ -904,8 +922,9 @@ src/
 ├── items/              # declared as `mod items` in `lib.rs`: the plugin's own items
 │   ├── item_builder.rs # `ItemBuilder` — the chainable stack builder; no trait
 │   ├── orthcoin.rs     # `Orthcoin` — the city's coin, awaiting a caller
-│   └── <creature>/     # one folder per creature that drops something (60 folders,
-│                       #   118 kinds in all), a module per drop: `abyssal_snail/`,
+│   └── <source>/       # one folder per source of items: 60 creature folders (118
+│                       #   drop kinds) plus `headmaster/` and `pete/` (5 goods),
+│                       #   123 kinds in all; a module per kind: `abyssal_snail/`,
 │                       #   `giant_hammerbeak/`, `man_toyer/` … Each holds plain
 │                       #   `stack()` constructors, all awaiting a caller.
 ├── commands/

@@ -246,10 +246,10 @@
 <summary>4 trades</summary>
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Orthcoin" tabindex="0"><img class="mc-icon" alt="Orthcoin" src="../img/item/orth_coin.png"><span class="trade-count">12</span></span></td><td><span class="trade-item" data-tooltip="Furnace Head" tabindex="0"><img class="mc-icon" alt="Furnace Head" src="../img/item/unknown_item.png"></span></td></tr>
-<tr><td><span class="trade-item" data-tooltip="Orthcoin" tabindex="0"><img class="mc-icon" alt="Orthcoin" src="../img/item/orth_coin.png"><span class="trade-count">12</span></span></td><td><span class="trade-item" data-tooltip="Swirly Crate Head" tabindex="0"><img class="mc-icon" alt="Swirly Crate Head" src="../img/item/unknown_item.png"></span></td></tr>
-<tr><td><span class="trade-item" data-tooltip="Orthcoin" tabindex="0"><img class="mc-icon" alt="Orthcoin" src="../img/item/orth_coin.png"><span class="trade-count">12</span></span></td><td><span class="trade-item" data-tooltip="Box Head" tabindex="0"><img class="mc-icon" alt="Box Head" src="../img/item/unknown_item.png"></span></td></tr>
-<tr><td><span class="trade-item" data-tooltip="Orthcoin" tabindex="0"><img class="mc-icon" alt="Orthcoin" src="../img/item/orth_coin.png"><span class="trade-count">12</span></span></td><td><span class="trade-item" data-tooltip="Chest Head" tabindex="0"><img class="mc-icon" alt="Chest Head" src="../img/item/unknown_item.png"></span></td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Orthcoin" tabindex="0"><img class="mc-icon" alt="Orthcoin" src="../img/item/orth_coin.png"><span class="trade-count">12</span></span></td><td><span class="trade-item" data-tooltip="Furnace Head" tabindex="0"><img class="mc-icon" alt="Furnace Head" src="../img/item/furnace_head.png"></span></td></tr>
+<tr><td><span class="trade-item" data-tooltip="Orthcoin" tabindex="0"><img class="mc-icon" alt="Orthcoin" src="../img/item/orth_coin.png"><span class="trade-count">12</span></span></td><td><span class="trade-item" data-tooltip="Swirly Crate Head" tabindex="0"><img class="mc-icon" alt="Swirly Crate Head" src="../img/item/swirly_crate_head.png"></span></td></tr>
+<tr><td><span class="trade-item" data-tooltip="Orthcoin" tabindex="0"><img class="mc-icon" alt="Orthcoin" src="../img/item/orth_coin.png"><span class="trade-count">12</span></span></td><td><span class="trade-item" data-tooltip="Box Head" tabindex="0"><img class="mc-icon" alt="Box Head" src="../img/item/box_head.png"></span></td></tr>
+<tr><td><span class="trade-item" data-tooltip="Orthcoin" tabindex="0"><img class="mc-icon" alt="Orthcoin" src="../img/item/orth_coin.png"><span class="trade-count">12</span></span></td><td><span class="trade-item" data-tooltip="Chest Head" tabindex="0"><img class="mc-icon" alt="Chest Head" src="../img/item/chest_head.png"></span></td></tr>
 </tbody>
 </table></details>
 </div>
@@ -410,7 +410,7 @@
 <summary>2 trades</summary>
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Orthcoin" tabindex="0"><img class="mc-icon" alt="Orthcoin" src="../img/item/orth_coin.png"><span class="trade-count">10</span></span></td><td><span class="trade-item" data-tooltip="Box Head" tabindex="0"><img class="mc-icon" alt="Box Head" src="../img/item/unknown_item.png"></span></td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Orthcoin" tabindex="0"><img class="mc-icon" alt="Orthcoin" src="../img/item/orth_coin.png"><span class="trade-count">10</span></span></td><td><span class="trade-item" data-tooltip="Box Head" tabindex="0"><img class="mc-icon" alt="Box Head" src="../img/item/box_head.png"></span></td></tr>
 <tr><td><span class="trade-item" data-tooltip="Orthcoin" tabindex="0"><img class="mc-icon" alt="Orthcoin" src="../img/item/orth_coin.png"><span class="trade-count">10</span></span></td><td><span class="trade-item" data-tooltip="Pot Head" tabindex="0"><img class="mc-icon" alt="Pot Head" src="../img/item/flower_pot.png"></span></td></tr>
 </tbody>
 </table></details>

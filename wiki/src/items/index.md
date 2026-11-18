@@ -835,4 +835,46 @@
 <span class="card-desc">Dropped by the Yomotsubi.</span>
 </span>
 </div>
+<div class="card recipe-card item-card">
+<img class="item-card-icon" alt="" src="../img/item/box_head.png">
+<span class="item-card-text">
+<span class="card-title"><span class="title-name" style="--kind-color: #C0392B">Box Head</span></span>
+<span class="card-desc">A carved box shell worn over the head. Sold by the Headmaster.</span>
+</span>
+</div>
+<div class="card recipe-card item-card">
+<img class="item-card-icon" alt="" src="../img/item/chest_head.png">
+<span class="item-card-text">
+<span class="card-title"><span class="title-name" style="--kind-color: #C0392B">Chest Head</span></span>
+<span class="card-desc">A carved chest shell worn over the head. Sold by the Headmaster.</span>
+</span>
+</div>
+<div class="card recipe-card item-card">
+<img class="item-card-icon" alt="" src="../img/item/furnace_head.png">
+<span class="item-card-text">
+<span class="card-title"><span class="title-name" style="--kind-color: #C0392B">Furnace Head</span></span>
+<span class="card-desc">A carved furnace shell worn over the head. Sold by the Headmaster.</span>
+</span>
+</div>
+<div class="card recipe-card item-card">
+<img class="item-card-icon" alt="" src="../img/item/swirly_crate_head.png">
+<span class="item-card-text">
+<span class="card-title"><span class="title-name" style="--kind-color: #C0392B">Swirly Crate Head</span></span>
+<span class="card-desc">A carved crate shell worn over the head. Sold by the Headmaster.</span>
+</span>
+</div>
+<div class="card recipe-card item-card">
+<img class="item-card-icon" alt="" src="../img/item/pot_head.png">
+<span class="item-card-text">
+<span class="card-title"><span class="title-name" style="--kind-color: #D37A34">Pot Head</span></span>
+<span class="card-desc">A clay pot worn over the head. Sold by Pete.</span>
+</span>
+</div>
+<div class="card recipe-card item-card">
+<img class="item-card-icon" alt="" src="../img/item/cooked_kuongatari_abdomen.png">
+<span class="item-card-text">
+<span class="card-title"><span class="title-name" style="--kind-color: #1FB53D">Cooked Kuongatari Abdomen</span></span>
+<span class="card-desc">A cooked abdomen taken from a Kuongatari.</span>
+</span>
+</div>
 </div>

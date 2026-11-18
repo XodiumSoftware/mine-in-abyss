@@ -23,7 +23,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td><span class="trade-item" data-tooltip="Orthcoin" tabindex="0"><img class="mc-icon" alt="Orthcoin" src="../img/item/orth_coin.png"></span></td><td><span class="trade-item" data-tooltip="Magma Cream" tabindex="0"><img class="mc-icon" alt="Magma Cream" src="../img/item/magma_cream.png"><span class="trade-count">4</span></span></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -34,7 +35,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -45,7 +47,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -56,7 +59,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -67,7 +71,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -78,7 +83,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -89,7 +95,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -100,7 +107,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -111,7 +119,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -122,7 +131,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -133,7 +143,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -144,7 +155,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -155,7 +167,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -166,7 +179,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -177,7 +191,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -188,7 +203,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -199,7 +215,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -210,7 +227,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -221,7 +239,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -232,7 +251,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -243,7 +263,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -254,7 +275,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -265,7 +287,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -276,7 +299,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -287,7 +311,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -298,7 +323,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -309,7 +335,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -320,7 +347,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -331,7 +359,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -342,7 +371,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -353,7 +383,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -364,7 +395,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -375,7 +407,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -386,7 +419,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -397,7 +431,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 
@@ -408,7 +443,8 @@
 <hr class="card-sep">
 <table class="trader-trades">
 <thead><tr><th>Give</th><th>Receive</th></tr></thead>
-<tbody><tr><td></td><td></td></tr></tbody>
+<tbody><tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr></tbody>
 </table>
 </div>
 

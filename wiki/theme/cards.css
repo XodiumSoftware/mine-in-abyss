@@ -353,12 +353,96 @@ a.card.recipe-card:hover {
 .card.recipe-card .trader-trades th,
 .card.recipe-card .trader-trades td {
   padding: 0.3rem 0.4rem;
-  text-align: left;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .card.recipe-card .trader-trades th {
   font-weight: normal;
   color: #9a958e;
+  text-align: center;
+}
+
+/* An icon in a trade cell sits beside its quantity, and the item's name is not
+   repeated in the cell: it is the icon's tooltip, drawn in the same frame as the
+   layer and category icons. The span is the positioning context the tooltip needs,
+   since an absolutely positioned pseudo-element on the image would be clipped by
+   the table's cell. It also carries the site's frame, so the sprite reads as an
+   item in a slot rather than a loose picture. */
+.card.recipe-card .trade-item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  margin-right: 0.2rem;
+  --trade-slot: 3.5rem;
+  border: 4px solid transparent;
+  border-image: url("/img/gui/tooltip_frame.png") 2 / 4px / 0 stretch;
+  background-color: rgb(0 0 0 / 35%);
+  cursor: help;
+}
+
+/* One size for the whole slot: the sprite, the frame around it and the count on
+   its corner. The sprite is sized from --trade-slot, and the count's font size is a
+   fraction of it, so changing the one value grows the group in step instead of
+   leaving a small number floating over a big icon. */
+.card.recipe-card .trader-trades td .mc-icon {
+  vertical-align: middle;
+  height: var(--trade-slot);
+  width: var(--trade-slot);
+}
+
+/* The count is drawn over the bottom-right of the sprite, the way a stack size
+   sits in a Minecraft inventory slot, so the cell reads as a slot rather than as a
+   picture followed by a number. A stack of one carries no number at all, as in the
+   inventory, which is why the markup leaves the span out rather than writing 1. */
+.card.recipe-card .trade-count {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  font-family: "Excalibur", monospace;
+  font-size: calc(var(--trade-slot) * 0.4);
+  line-height: 1;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000;
+  pointer-events: none;
+}
+
+.card.recipe-card .trade-item[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  z-index: 1000;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 400px;
+  padding: 6px 10px;
+  color: #fff;
+  background: rgb(25 22 21 / 94%);
+  border: 4px solid transparent;
+  border-image: url("/img/gui/tooltip_frame.png") 2 / 4px / 0 stretch;
+  font-family: "Excalibur", sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  text-align: left;
+  white-space: pre-line;
+  font-smooth: never;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+  text-shadow: 2px 2px 0 rgb(0 0 0 / 60%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 80ms ease,
+    visibility 80ms ease;
+}
+
+.card.recipe-card .trade-item[data-tooltip]:hover::after,
+.card.recipe-card .trade-item[data-tooltip]:focus-visible::after {
+  opacity: 1;
+  visibility: visible;
 }
 
 /* The rule above the table already separates its header from the description. */

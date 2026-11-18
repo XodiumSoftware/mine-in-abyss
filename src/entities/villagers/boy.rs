@@ -5,11 +5,55 @@
 //! companion Benner are the **Lords of Currency**: they give one Orthcoin for a bundle of a
 //! single trophy, and that coin is what every other trader in the city charges.
 //!
-//! The wiki's trade table is deliberately **not** written here. The plugin API can read and
-//! write a villager's profession, level and experience, but it has no call that sets the
-//! offers behind them, so a table in this file would be data nothing could deliver. The trades
-//! are the part of [`entity`](Boy::entity) that will grow once the host can be told about them.
+//! The offers below are the wiki's, kept as the record to deliver once the plugin API gains a
+//! call that sets a villager's offers. Nothing reads them yet: `villager-data` carries only
+//! profession, level and experience, so a trade cannot be delivered.
 //!
+//! # Trades
+//!
+//! | Give | Receive |
+//! | ---- | ------- |
+//! | 7 × Orb Piercer Spike | 1 × Orthcoin |
+//! | 4 × Orb Piercer Face Fragments | 1 × Orthcoin |
+//! | 8 × Splitjaw Scales | 1 × Orthcoin |
+//! | 9 × Splitjaw Gunk | 1 × Orthcoin |
+//! | 6 × Tesuchi Scales | 1 × Orthcoin |
+//! | 8 × Silkfang Eye | 1 × Orthcoin |
+//! | 9 × Silkfang Silk | 1 × Orthcoin |
+//! | 10 × Cyatoria Feather | 1 × Orthcoin |
+//! | 10 × Rohana Tail | 1 × Orthcoin |
+//! | 14 × Rohana Powder | 1 × Orthcoin |
+//! | 12 × Dosetori Wing | 1 × Orthcoin |
+//! | 10 × Dosetori Bone | 1 × Orthcoin |
+//! | 8 × Corpse Weeper Eye | 1 × Orthcoin |
+//! | 10 × Corpse Weeper Feather | 1 × Orthcoin |
+//! | 8 × Hammerbeak Beak | 1 × Orthcoin |
+//! | 10 × Hammerbeak Feather | 1 × Orthcoin |
+//! | 9 × Onitsuchi Skull | 1 × Orthcoin |
+//! | 10 × Onitsuchi Feather | 1 × Orthcoin |
+//! | 8 × Kuongatari Abdomen | 1 × Orthcoin |
+//! | 8 × Cooked Kuongatari Abdomen | 1 × Orthcoin |
+//! | 8 × Kuongatari Juice | 1 × Orthcoin |
+//! | 12 × Madokajack Scales | 1 × Orthcoin |
+//! | 11 × Madokajack Bone | 1 × Orthcoin |
+//! | 10 × Madokajack Poop | 1 × Orthcoin |
+//! | 10 × Parasitic Watershrooms | 1 × Orthcoin |
+//! | 6 × Chimokami Tail | 1 × Orthcoin |
+//! | 6 × Chimokami Fang | 1 × Orthcoin |
+//! | 8 × Ashimite Antlers | 1 × Orthcoin |
+//! | 9 × Ashimite Hoof | 1 × Orthcoin |
+//! | 7 × Hashofu Body | 1 × Orthcoin |
+//! | 7 × Hashofu Eye | 1 × Orthcoin |
+//! | 7 × Abyssal Snail Gunk | 1 × Orthcoin |
+//! | 7 × Abyssal Snail Shell | 1 × Orthcoin |
+//! | 6 × Kakatsumuri Shell | 1 × Orthcoin |
+//! | 6 × Kagi Tachikiri Pincer | 1 × Orthcoin |
+//! | 5 × Titanjaw Pearl | 1 × Orthcoin |
+//! | 7 × Titanjaw Scale | 1 × Orthcoin |
+//! | 9 × Makihige Tentacle | 1 × Orthcoin |
+//! | 9 × Makihige Ink Sac | 1 × Orthcoin |
+//! | 10 × Kazura Squid Ink Sac | 1 × Orthcoin |
+//! | 5 × Sakuranbo Dust | 1 × Orthcoin |
 //! What it does set is the shape of the trader: a librarian, so its work sound is right, and a
 //! name over its head so a player can tell it from a village villager. The trade level and
 //! experience are deliberately left alone, so a villager keeps whatever it already had.

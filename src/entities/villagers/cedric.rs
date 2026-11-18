@@ -2,10 +2,33 @@
 //!
 //! The cementer of the **Central Orth District**, trading concrete powder.
 //!
-//! The wiki's trade table for this counter is deliberately **not** written here: the plugin API
-//! has no call that sets a villager's offers, so a table would be data nothing could deliver.
 //! What is stated is the shape of the trader - its profession, so the work sound and badge are
 //! right, and its name, so a player can tell it from a village villager.
+//!
+//! # Trades
+//!
+//! The wiki's offers for this counter, kept here as the record to deliver once the plugin API
+//! gains a call that sets a villager's offers. They are documentation only: nothing reads them,
+//! and a trade cannot be delivered yet.
+//!
+//! | Give | Receive |
+//! | ---- | ------- |
+//! | 1 × Orthcoin | 64 × White Concrete Powder |
+//! | 1 × Orthcoin | 64 × Light Gray Concrete Powder |
+//! | 1 × Orthcoin | 64 × Gray Concrete Powder |
+//! | 1 × Orthcoin | 64 × Black Concrete Powder |
+//! | 1 × Orthcoin | 64 × Red Concrete Powder |
+//! | 1 × Orthcoin | 64 × Orange Concrete Powder |
+//! | 1 × Orthcoin | 64 × Yellow Concrete Powder |
+//! | 1 × Orthcoin | 64 × Lime Concrete Powder |
+//! | 1 × Orthcoin | 64 × Green Concrete Powder |
+//! | 1 × Orthcoin | 64 × Cyan Concrete Powder |
+//! | 1 × Orthcoin | 64 × Light Blue Concrete Powder |
+//! | 1 × Orthcoin | 64 × Blue Concrete Powder |
+//! | 1 × Orthcoin | 64 × Purple Concrete Powder |
+//! | 1 × Orthcoin | 64 × Magenta Concrete Powder |
+//! | 1 × Orthcoin | 64 × Pink Concrete Powder |
+//! | 1 × Orthcoin | 64 × Brown Concrete Powder |
 
 use pumpkin_plugin_api::EntityType;
 use pumpkin_plugin_api::Villager;

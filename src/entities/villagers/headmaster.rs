@@ -2,10 +2,21 @@
 //!
 //! The head trader of the **Central Orth District**, selling heads.
 //!
-//! The wiki's trade table for this counter is deliberately **not** written here: the plugin API
-//! has no call that sets a villager's offers, so a table would be data nothing could deliver.
 //! What is stated is the shape of the trader - its profession, so the work sound and badge are
 //! right, and its name, so a player can tell it from a village villager.
+//!
+//! # Trades
+//!
+//! The wiki's offers for this counter, kept here as the record to deliver once the plugin API
+//! gains a call that sets a villager's offers. They are documentation only: nothing reads them,
+//! and a trade cannot be delivered yet.
+//!
+//! | Give | Receive |
+//! | ---- | ------- |
+//! | 12 × Orthcoin | 1 × Furnace Head |
+//! | 12 × Orthcoin | 1 × Swirly Crate Head |
+//! | 12 × Orthcoin | 1 × Box Head |
+//! | 12 × Orthcoin | 1 × Chest Head |
 
 use pumpkin_plugin_api::EntityType;
 use pumpkin_plugin_api::Villager;

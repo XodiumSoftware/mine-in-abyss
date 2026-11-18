@@ -2,10 +2,23 @@
 //!
 //! The banner weaver of the **Giant Tree District**.
 //!
-//! The wiki's trade table for this counter is deliberately **not** written here: the plugin API
-//! has no call that sets a villager's offers, so a table would be data nothing could deliver.
 //! What is stated is the shape of the trader - its profession, so the work sound and badge are
 //! right, and its name, so a player can tell it from a village villager.
+//!
+//! # Trades
+//!
+//! The wiki's offers for this counter, kept here as the record to deliver once the plugin API
+//! gains a call that sets a villager's offers. They are documentation only: nothing reads them,
+//! and a trade cannot be delivered yet.
+//!
+//! | Give | Receive |
+//! | ---- | ------- |
+//! | 4 × Orthcoin | 1 × Banner Pattern (Globe) |
+//! | 4 × Orthcoin | 1 × Banner Pattern (Creeper Charge) |
+//! | 4 × Orthcoin | 1 × Banner Pattern (Flower Charge) |
+//! | 4 × Orthcoin | 1 × Banner Pattern (Snout) |
+//! | 4 × Orthcoin | 1 × Banner Pattern (Skull Charge) |
+//! | 4 × Orthcoin | 1 × Banner Pattern (Thing) |
 
 use pumpkin_plugin_api::EntityType;
 use pumpkin_plugin_api::Villager;

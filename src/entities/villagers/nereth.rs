@@ -2,10 +2,24 @@
 //!
 //! The underworld merchant of the **Central Orth District**, trading nether goods.
 //!
-//! The wiki's trade table for this counter is deliberately **not** written here: the plugin API
-//! has no call that sets a villager's offers, so a table would be data nothing could deliver.
 //! What is stated is the shape of the trader - its profession, so the work sound and badge are
 //! right, and its name, so a player can tell it from a village villager.
+//!
+//! # Trades
+//!
+//! The wiki's offers for this counter, kept here as the record to deliver once the plugin API
+//! gains a call that sets a villager's offers. They are documentation only: nothing reads them,
+//! and a trade cannot be delivered yet.
+//!
+//! | Give | Receive |
+//! | ---- | ------- |
+//! | 1 × Orthcoin | 32 × Netherrack |
+//! | 1 × Orthcoin | 6 × Soul Sand |
+//! | 1 × Orthcoin | 6 × Soul Soil |
+//! | 1 × Orthcoin | 10 × Nether Quartz Ore |
+//! | 1 × Orthcoin | 16 × Magma Block |
+//! | 1 × Orthcoin | 7 × Bone Block |
+//! | 4 × Orthcoin | 29 × Nether Gold Ore |
 
 use pumpkin_plugin_api::EntityType;
 use pumpkin_plugin_api::Villager;

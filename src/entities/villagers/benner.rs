@@ -2,10 +2,31 @@
 //!
 //! Boy's companion at the **Golden Bridge**, and the other Lord of Currency.
 //!
-//! The wiki's trade table for this counter is deliberately **not** written here: the plugin API
-//! has no call that sets a villager's offers, so a table would be data nothing could deliver.
 //! What is stated is the shape of the trader - its profession, so the work sound and badge are
 //! right, and its name, so a player can tell it from a village villager.
+//!
+//! # Trades
+//!
+//! The wiki's offers for this counter, kept here as the record to deliver once the plugin API
+//! gains a call that sets a villager's offers. They are documentation only: nothing reads them,
+//! and a trade cannot be delivered yet.
+//!
+//! | Give | Receive |
+//! | ---- | ------- |
+//! | 10 × Mantoyer Horns | 1 × Orthcoin |
+//! | 10 × Woodcrier Horn | 1 × Orthcoin |
+//! | 14 × Rockwalker Mandible | 1 × Orthcoin |
+//! | 16 × Hisoishi Claw | 1 × Orthcoin |
+//! | 10 × Buroguro Stinger | 1 × Orthcoin |
+//! | 9 × Daikonchu Carapace | 1 × Orthcoin |
+//! | 9 × Stinger Horn | 1 × Orthcoin |
+//! | 7 × Spittleshrub Root | 1 × Orthcoin |
+//! | 6 × Edusan Whisker | 1 × Orthcoin |
+//! | 7 × Swarmshocker Jelly | 1 × Orthcoin |
+//! | 7 × Tachikatana Scale | 1 × Orthcoin |
+//! | 6 × Tachikatana Claw | 1 × Orthcoin |
+//! | 10 × Shiratsubi Wing | 1 × Orthcoin |
+//! | 10 × Spikewalker Meat | 1 × Orthcoin |
 
 use pumpkin_plugin_api::EntityType;
 use pumpkin_plugin_api::Villager;

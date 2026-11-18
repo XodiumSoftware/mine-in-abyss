@@ -26,12 +26,12 @@
 <span class="coin-label">Orthcoin can be traded here</span>
 </div>
 <aside class="rise-track">
-<div class="rise" style="--at: 5.39%" title="Nausea 5s"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Nausea (5s)</span></div>
-<div class="rise" style="--at: 16.33%" title="Nausea II 8s, Weakness 5s"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Nausea II (8s)<br>Weakness (5s)</span></div>
-<div class="rise" style="--at: 26.64%" title="Nausea II 12s, Blindness 2s, Slowness II 8s"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Nausea II (12s)<br>Blindness (2s)<br>Slowness II (8s)</span></div>
-<div class="rise" style="--at: 33.36%" title="Nausea II 15s, Blindness 4s, Weakness 12s"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Nausea II (15s)<br>Blindness (4s)<br>Weakness (12s)</span></div>
-<div class="rise" style="--at: 44.69%" title="Blindness 8s, Weakness II 20s, health capped to 1 HP"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Blindness (8s)<br>Weakness II (20s)<br>Health capped to 1 HP</span></div>
-<div class="rise" style="--at: 70.7%" title="Death"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Death</span></div>
+<div class="rise" style="--at: 5.39%"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Nausea (5s)</span></div>
+<div class="rise" style="--at: 16.33%"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Nausea II (8s)<br>Weakness (5s)</span></div>
+<div class="rise" style="--at: 26.64%"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Nausea II (12s)<br>Blindness (2s)<br>Slowness II (8s)</span></div>
+<div class="rise" style="--at: 33.36%"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Nausea II (15s)<br>Blindness (4s)<br>Weakness (12s)</span></div>
+<div class="rise" style="--at: 44.69%"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Blindness (8s)<br>Weakness II (20s)<br>Health capped to 1 HP</span></div>
+<div class="rise" style="--at: 70.7%"><span class="rise-arrow" aria-hidden="true"></span><span class="rise-label">Death</span></div>
 </aside>
 </div>
 </div>

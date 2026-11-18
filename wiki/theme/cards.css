@@ -345,29 +345,35 @@ a.card.recipe-card:hover {
 /* A trader's trades sit under a toggle, so a card shows its summary and only
    opens its table on request - Benner's card alone carries 41 offers, which would
    otherwise bury the next card several screens down. The summary reuses the card's
-   muted colour so it reads as a control rather than as a heading. */
-.card.recipe-card .trader-trades-toggle {
+   muted colour so it reads as a control rather than as a heading. A creature's
+   drops use the same treatment, so the two pages read alike. */
+.card.recipe-card .trader-trades-toggle,
+.card.recipe-card .creature-drops-toggle {
   width: 100%;
   font-family: "Excalibur", monospace;
   font-size: 0.8rem;
   color: #9a958e;
 }
 
-.card.recipe-card .trader-trades-toggle > summary {
+.card.recipe-card .trader-trades-toggle > summary,
+.card.recipe-card .creature-drops-toggle > summary {
   padding: 0.15rem 0;
   list-style-position: inside;
   cursor: pointer;
 }
 
-.card.recipe-card .trader-trades-toggle > summary:hover {
+.card.recipe-card .trader-trades-toggle > summary:hover,
+.card.recipe-card .creature-drops-toggle > summary:hover {
   color: var(--sidebar-fg);
 }
 
-.card.recipe-card .trader-trades-toggle[open] > summary {
+.card.recipe-card .trader-trades-toggle[open] > summary,
+.card.recipe-card .creature-drops-toggle[open] > summary {
   margin-bottom: 0.4rem;
 }
 
-.card.recipe-card .trader-trades {
+.card.recipe-card .trader-trades,
+.card.recipe-card .creature-drops {
   width: 100%;
   border-collapse: collapse;
   font-family: "Excalibur", monospace;
@@ -376,13 +382,22 @@ a.card.recipe-card:hover {
 }
 
 .card.recipe-card .trader-trades th,
-.card.recipe-card .trader-trades td {
+.card.recipe-card .trader-trades td,
+.card.recipe-card .creature-drops th,
+.card.recipe-card .creature-drops td {
   padding: 0.3rem 0.4rem;
   text-align: center;
   vertical-align: middle;
 }
 
-.card.recipe-card .trader-trades th {
+/* A drop slot stands as tall as a trader's, so its chance is set larger than the
+   table's default to stay in proportion with the icon beside it. */
+.card.recipe-card .creature-drops td {
+  font-size: 1.1rem;
+}
+
+.card.recipe-card .trader-trades th,
+.card.recipe-card .creature-drops th {
   font-weight: normal;
   color: #9a958e;
   text-align: center;
@@ -410,8 +425,10 @@ a.card.recipe-card:hover {
 /* One size for the whole slot: the sprite, the frame around it and the count on
    its corner. The sprite is sized from --trade-slot, and the count's font size is a
    fraction of it, so changing the one value grows the group in step instead of
-   leaving a small number floating over a big icon. */
-.card.recipe-card .trader-trades td .mc-icon {
+   leaving a small number floating over a big icon. The rule covers the creature
+   drop table too, so an item slot is the same size on both pages. */
+.card.recipe-card .trader-trades td .mc-icon,
+.card.recipe-card .creature-drops td .mc-icon {
   vertical-align: middle;
   height: var(--trade-slot);
   width: var(--trade-slot);
@@ -471,7 +488,8 @@ a.card.recipe-card:hover {
 }
 
 /* The rule above the table already separates its header from the description. */
-.card.recipe-card .trader-trades thead + tbody tr:first-child td {
+.card.recipe-card .trader-trades thead + tbody tr:first-child td,
+.card.recipe-card .creature-drops thead + tbody tr:first-child td {
   border-top: 1px solid var(--table-border-color);
 }
 

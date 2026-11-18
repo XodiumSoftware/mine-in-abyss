@@ -326,6 +326,46 @@ a.card.recipe-card:hover {
   margin-left: auto;
 }
 
+/* A trader's trades sit below its description, under a rule that keeps the two
+   parts of the card apart. The rule matches the one under the card title, so the
+   two read as the same kind of divider. It is its own element rather than a border
+   on the table's header, so it sits exactly between the description and the table -
+   a header border would be drawn inside the table and move with its padding. The
+   table is empty for now: the plugin cannot set a villager's offers yet, so there
+   is nothing to fill it with. */
+.card.recipe-card .card-sep {
+  align-self: stretch;
+  width: 100%;
+  height: 0;
+  margin: 0.75rem 0;
+  border: 0;
+  border-bottom: 2px solid var(--table-border-color);
+}
+
+.card.recipe-card .trader-trades {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Excalibur", monospace;
+  font-size: 0.8rem;
+  table-layout: fixed;
+}
+
+.card.recipe-card .trader-trades th,
+.card.recipe-card .trader-trades td {
+  padding: 0.3rem 0.4rem;
+  text-align: left;
+}
+
+.card.recipe-card .trader-trades th {
+  font-weight: normal;
+  color: #9a958e;
+}
+
+/* The rule above the table already separates its header from the description. */
+.card.recipe-card .trader-trades thead + tbody tr:first-child td {
+  border-top: 1px solid var(--table-border-color);
+}
+
 .card-sort {
   display: flex;
   align-items: center;

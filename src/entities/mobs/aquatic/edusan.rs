@@ -1,4 +1,15 @@
 //! The Edusan, an aquatic mob of the Abyss.
+//!
+//! # Drops
+//!
+//! The wiki's drop table for this kind, kept as the record to deliver once the
+//! plugin API can hook a death. Nothing reads it yet: the host owns the loot of the
+//! entity a kind spawns, and no call in the plugin WIT adds or replaces a drop.
+//!
+//! | Drop | Chance |
+//! | ---- | ------ |
+//! | Edusan Scale | 100% |
+//! | Edusan Whisker | 20% |
 
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;

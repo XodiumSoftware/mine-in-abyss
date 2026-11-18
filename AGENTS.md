@@ -656,19 +656,159 @@ expected to be dead on its own, the whole tree is. A real caller removes it from
 
 **The catalogue as it stands**, with ids and base items:
 
-| Kind       | id  | Base        | Name     | Reachable via |
-| ---------- | --- | ----------- | -------- | ------------- |
-| `Orthcoin` | 1   | Gold Nugget | Orthcoin | nothing yet   |
+| Kind                        | id  | Base             | Name                        |
+| --------------------------- | --- | ---------------- | --------------------------- |
+| `Orthcoin`                  | 1   | Gold Nugget      | Orthcoin                    |
+| `AbyssalSnailShell`         | 2   | Nautilus Shell   | Abyssal Snail Shell         |
+| `AbyssalSnailGunk`          | 3   | Slimeball        | Abyssal Snail Gunk          |
+| `AshimiteMeatRaw`           | 4   | Beef             | Ashimite Meat Raw           |
+| `AshimiteHoof`              | 5   | Bone             | Ashimite Hoof               |
+| `AshimiteAntlers`           | 6   | Phantom Membrane | Ashimite Antlers            |
+| `BenigumaFur`               | 7   | Phantom Membrane | Beniguma Fur                |
+| `BillabonkLegRaw`           | 8   | Beef             | Billabonk Leg Raw           |
+| `BuroguroLantern`           | 9   | Glowstone Dust   | Buroguro Lantern            |
+| `BuroguroStinger`           | 10  | Honeycomb        | Buroguro Stinger            |
+| `ChikyuoebiRaw`             | 11  | Salmon           | Chikyuoebi Raw              |
+| `ChimokamiTail`             | 12  | Rabbit Hide      | Chimokami Tail              |
+| `ChimokamiFang`             | 13  | Bone             | Chimokami Fang              |
+| `CorpseWeeperMeatRaw`       | 14  | Beef             | Corpse Weeper Meat Raw      |
+| `CorpseWeeperEye`           | 15  | Spider Eye       | Corpse Weeper Eye           |
+| `CorpseWeeperFeather`       | 16  | Feather          | Corpse Weeper Feather       |
+| `CyatoriaDrumstickRaw`      | 17  | Beef             | Cyatoria Drumstick Raw      |
+| `CyatoriaFeather`           | 18  | Feather          | Cyatoria Feather            |
+| `DaikonchuCarapace`         | 19  | Turtle Scute     | Daikonchu Carapace          |
+| `DaikonchuWing`             | 20  | Phantom Membrane | Daikonchu Wing              |
+| `DemonfishRaw`              | 21  | Salmon           | Demonfish Raw               |
+| `DosetoriMeatRaw`           | 22  | Beef             | Dosetori Meat Raw           |
+| `DosetoriWing`              | 23  | Phantom Membrane | Dosetori Wing               |
+| `DosetoriBone`              | 24  | Bone             | Dosetori Bone               |
+| `EdusanScale`               | 25  | Phantom Membrane | Edusan Scale                |
+| `EdusanWhisker`             | 26  | Phantom Membrane | Edusan Whisker              |
+| `FuwagiMeatRaw`             | 27  | Beef             | Fuwagi Meat Raw             |
+| `FuwagiFoot`                | 28  | Rabbit Foot      | Fuwagi Foot                 |
+| `FuwagiHide`                | 29  | Rabbit Hide      | Fuwagi Hide                 |
+| `HammerbeakWingRaw`         | 30  | Beef             | Hammerbeak Wing Raw         |
+| `HammerbeakBeak`            | 31  | Bone             | Hammerbeak Beak             |
+| `HammerbeakFeather`         | 32  | Feather          | Hammerbeak Feather          |
+| `HammerbeakEgg`             | 33  | Egg              | Hammerbeak Egg              |
+| `HagamizukinTooth`          | 34  | Bone             | Hagamizukin Tooth           |
+| `HagamizukinRaw`            | 35  | Salmon           | Hagamizukin Raw             |
+| `HashofuTailRaw`            | 36  | Salmon           | Hashofu Tail Raw            |
+| `HashofuEye`                | 37  | Spider Eye       | Hashofu Eye                 |
+| `HashofuBody`               | 38  | Beef             | Hashofu Body                |
+| `HimushiCore`               | 39  | String           | Himushi Core                |
+| `HisoishiClaw`              | 40  | Turtle Scute     | Hisoishi Claw               |
+| `HisoishiShell`             | 41  | Turtle Scute     | Hisoishi Shell              |
+| `HisomukuroRib`             | 42  | String           | Hisomukuro Rib              |
+| `HorncrierHorn`             | 43  | Bone             | Horncrier Horn              |
+| `IkenosukeRaw`              | 44  | Salmon           | Ikenosuke Raw               |
+| `IkoniaPlate`               | 45  | Turtle Scute     | Ikonia Plate                |
+| `InbyoMeatRaw`              | 46  | Beef             | Inbyo Meat Raw              |
+| `InbyoFur`                  | 47  | Phantom Membrane | Inbyo Fur                   |
+| `KagiTachikiriPincer`       | 48  | Turtle Scute     | Kagi Tachikiri Pincer       |
+| `KakatsumuriShell`          | 49  | Turtle Scute     | Kakatsumuri Shell           |
+| `KakatsumuriGlowingTip`     | 50  | Glow Berries     | Kakatsumuri Glowing Tip     |
+| `KazuraSquidInkSac`         | 51  | Ink Sac          | Kazura Squid Ink Sac        |
+| `KuongatariJuice`           | 52  | Honey Bottle     | Kuongatari Juice            |
+| `KuongatariSilk`            | 53  | String           | Kuongatari Silk             |
+| `KuongatariAbdomen`         | 54  | Beef             | Kuongatari Abdomen          |
+| `MadokajackScales`          | 55  | Phantom Membrane | Madokajack Scales           |
+| `MadokajackBone`            | 56  | Bone             | Madokajack Bone             |
+| `MadokajackEye`             | 57  | Spider Eye       | Madokajack Eye              |
+| `MadokajackPoop`            | 58  | Bone Meal        | Madokajack Poop             |
+| `MakihigeInkSac`            | 59  | Ink Sac          | Makihige Ink Sac            |
+| `MakihigeShell`             | 60  | Turtle Scute     | Makihige Shell              |
+| `MakihigeTentacle`          | 61  | Phantom Membrane | Makihige Tentacle           |
+| `MantoyerFur`               | 62  | Phantom Membrane | Mantoyer Fur                |
+| `MantoyerHorns`             | 63  | Bone             | Mantoyer Horns              |
+| `NeritantanMeatRaw`         | 64  | Beef             | Neritantan Meat Raw         |
+| `OctoliarInkSac`            | 65  | Ink Sac          | Octoliar Ink Sac            |
+| `OctoliarTentacle`          | 66  | Phantom Membrane | Octoliar Tentacle           |
+| `OkiboMeatRaw`              | 67  | Beef             | Okibo Meat Raw              |
+| `OkiboFur`                  | 68  | Phantom Membrane | Okibo Fur                   |
+| `OnitsuchiWingRaw`          | 69  | Beef             | Onitsuchi Wing Raw          |
+| `OnitsuchiSkull`            | 70  | Bone             | Onitsuchi Skull             |
+| `OnitsuchiFeather`          | 71  | Feather          | Onitsuchi Feather           |
+| `OnitsuchiEgg`              | 72  | Egg              | Onitsuchi Egg               |
+| `OrbPiercerFaceFragments`   | 73  | Gunpowder        | Orb Piercer Face Fragments  |
+| `OrbPiercerSpike`           | 74  | Flint            | Orb Piercer Spike           |
+| `OttobasMeatRaw`            | 75  | Beef             | Ottobas Meat Raw            |
+| `RinsipedeSegments`         | 76  | String           | Rinsipede Segments          |
+| `RockwalkerMandible`        | 77  | Flint            | Rockwalker Mandible         |
+| `RohanaPowder`              | 78  | Gunpowder        | Rohana Powder               |
+| `RohanaTail`                | 79  | Rabbit Hide      | Rohana Tail                 |
+| `SakuranboDust`             | 80  | Gunpowder        | Sakuranbo Dust              |
+| `ShiratsubiWing`            | 81  | Phantom Membrane | Shiratsubi Wing             |
+| `YomotsubiAbdomenRaw`       | 82  | Beef             | Yomotsubi Abdomen Raw       |
+| `ShroombearMeatRaw`         | 83  | Beef             | Shroombear Meat Raw         |
+| `ParasiticWatershrooms`     | 84  | Glow Berries     | Parasitic Watershrooms      |
+| `SilkfangEye`               | 85  | Spider Eye       | Silkfang Eye                |
+| `SilkfangSilk`              | 86  | String           | Silkfang Silk               |
+| `BundleOfSilkfangSilk`      | 87  | String           | Bundle Of Silkfang Silk     |
+| `SpikewalkerSpike`          | 88  | Flint            | Spikewalker Spike           |
+| `SpikewalkerMeat`           | 89  | Beef             | Spikewalker Meat            |
+| `SpiralsquidRaw`            | 90  | Salmon           | Spiralsquid Raw             |
+| `PlantMatter`               | 91  | Glow Berries     | Plant Matter                |
+| `SpittleshrubRoot`          | 92  | Glow Berries     | Spittleshrub Root           |
+| `SplitjawScales`            | 93  | Phantom Membrane | Splitjaw Scales             |
+| `SplitjawGunk`              | 94  | Slime Ball       | Splitjaw Gunk               |
+| `SporeMantaWing`            | 95  | Phantom Membrane | Spore Manta Wing            |
+| `SporeMantaPowder`          | 96  | Gunpowder        | Spore Manta Powder          |
+| `SquidflyBrainRaw`          | 97  | Salmon           | Squidfly Brain Raw          |
+| `StingerWing`               | 98  | Phantom Membrane | Stinger Wing                |
+| `StingerHorn`               | 99  | Bone             | Stinger Horn                |
+| `StingerheadScale`          | 100 | Phantom Membrane | Stingerhead Scale           |
+| `StingerheadFlesh`          | 101 | Beef             | Stingerhead Flesh           |
+| `StingerheadEye`            | 102 | Spider Eye       | Stingerhead Eye             |
+| `SwarmshockerChargedPowder` | 103 | Gunpowder        | Swarmshocker Charged Powder |
+| `SwarmshockerJelly`         | 104 | Slime Ball       | Swarmshocker Jelly          |
+| `TachikatanaLeg`            | 105 | Beef             | Tachikatana Leg             |
+| `TachikatanaClaw`           | 106 | Turtle Scute     | Tachikatana Claw            |
+| `TachikatanaScale`          | 107 | Phantom Membrane | Tachikatana Scale           |
+| `TesuchiTail`               | 108 | Rabbit Hide      | Tesuchi Tail                |
+| `TesuchiScales`             | 109 | Phantom Membrane | Tesuchi Scales              |
+| `TitanjawPearl`             | 110 | Ender Pearl      | Titanjaw Pearl              |
+| `TitanjawScale`             | 111 | Phantom Membrane | Titanjaw Scale              |
+| `UibutaMeatRaw`             | 112 | Beef             | Uibuta Meat Raw             |
+| `UibutaTooth`               | 113 | Bone             | Uibuta Tooth                |
+| `VirinsipedeSegments`       | 114 | String           | Virinsipede Segments        |
+| `VirinsipedeAntlers`        | 115 | Phantom Membrane | Virinsipede Antlers         |
+| `WoodcrierHorn`             | 116 | Bone             | Woodcrier Horn              |
+| `YomotsubiWing`             | 117 | Phantom Membrane | Yomotsubi Wing              |
+| `YomotsubiAbdomen`          | 118 | Beef             | Yomotsubi Abdomen           |
+
+Every kind is reachable through **nothing yet**: nothing calls a `stack()` constructor,
+so the whole tree is covered by the `#[expect(dead_code)]` on `mod items`.
 
 Ids are permanent once shipped, for the same reason a mob id is: they are what tells two
 kinds on the same base item apart. A new item takes the next free number and never reuses
-one — `Orthcoin` is `1`.
+one — the catalogue above runs `1`–`118` with no gaps, so the next kind is `119`.
+
+**A drop's colour is its mob's colour.** Every drop file sets `color_rgb` from the
+`--kind-color` of the creature in the wiki's creature list, so a stack reads as belonging
+to the mob it came from. The base item is chosen by what the drop is (meat → beef, wing
+→ phantom membrane, shell → turtle scute), never by what its icon looks like. A drop
+two mobs share — `Hammerbeak Beak`, `Plant Matter`, `Swarmshocker Charged Powder` — is
+**one kind**, filed under the first mob that lists it.
 
 There is no `item_kinds()` catalogue function, unlike [`mob_kinds`](src/lib.rs). A catalogue
 exists so a **name** can be looked up; items are created by code that already knows which kind
 it wants, so a list would be a place to keep in sync for no reader. Adding an item therefore
 means its file, its `pub mod` line in the `mod items` block in `lib.rs`, its inherent
 `stack()` constructor, and whatever ends up creating it.
+
+**Drops are filed by creature.** `src/items/` is `item_builder.rs` and `orthcoin.rs` at the
+root, then one folder per creature that drops something — `abyssal_snail/`,
+`giant_hammerbeak/`, `man_toyer/` — holding one module per drop, so a creature's drops sit
+together the way its mob kind does under `entities/mobs`. The folder is organisation only:
+nothing reads it at runtime, so a kind lives wherever its file is put and the `mod items`
+block is what actually declares it. There is no `mod.rs`; each folder's `pub mod` list lives
+inline in `lib.rs`.
+
+Two things stay at the root: `item_builder.rs`, which is machinery rather than a drop, and
+`orthcoin.rs`, a coin of Orth that belongs to the city rather than to a mob. A drop two
+creatures share — `Hammerbeak Beak`, `Plant Matter`, `Swarmshocker Charged Powder` — is filed
+under the first one that lists it, so it is still one kind in one place.
 
 **Items have no economy.** `Orthcoin` is a name, a colour, a lore line and a marker — it cannot
 be spent, minted from anything, or counted by the plugin. That is deliberate: a currency with
@@ -763,7 +903,11 @@ src/
 │       └── benner.rs … veris.rs  # the rest of the Orth roster, all awaiting a caller
 ├── items/              # declared as `mod items` in `lib.rs`: the plugin's own items
 │   ├── item_builder.rs # `ItemBuilder` — the chainable stack builder; no trait
-│   └── orthcoin.rs     # `Orthcoin` — the worked example, awaiting a caller
+│   ├── orthcoin.rs     # `Orthcoin` — the city's coin, awaiting a caller
+│   └── <creature>/     # one folder per creature that drops something (60 folders,
+│                       #   118 kinds in all), a module per drop: `abyssal_snail/`,
+│                       #   `giant_hammerbeak/`, `man_toyer/` … Each holds plain
+│                       #   `stack()` constructors, all awaiting a caller.
 ├── commands/
 │   ├── abyss.rs        # `/abyss` — ops teleport into a layer, curse-free
 │   └── command.rs      # `Command` trait — each command registers itself

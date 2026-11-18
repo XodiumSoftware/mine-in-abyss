@@ -180,6 +180,18 @@ mod entities {
 /// and read back; `orthcoin` is the worked example, an inherent `stack()` rather than a trait
 /// impl — see `item_builder` for why there is no trait.
 ///
+/// Every other kind is a drop of a creature of the Abyss, filed in a folder named after the
+/// creature that leaves it behind — `abyssal_snail/abyssal_snail_gunk.rs`, and so on — so a
+/// creature's drops sit together the way its mob kind does under `entities/mobs`. A drop's name
+/// colour is its mob's, so a stack reads as belonging to the creature it came from. Ids run
+/// from `2` upward in the order the catalogue below lists them — the number space is shared
+/// with the mobs' and must not repeat.
+///
+/// `item_builder` and `orthcoin` stay at the root: the builder is machinery rather than a
+/// creature's drop, and a coin of Orth belongs to the city, not to a mob. A drop two creatures
+/// share — `Hammerbeak Beak`, `Plant Matter`, `Swarmshocker Charged Powder` — is filed under the
+/// first one that lists it.
+///
 /// Nothing creates an item yet. `/abyss item`, which gave one to the sender so the path could
 /// be exercised end to end, has been removed, so the tree is kept whole but unused until a
 /// real source of items — loot tables, crafting, a shop — exists.
@@ -190,6 +202,244 @@ mod entities {
 mod items {
     pub(crate) mod item_builder;
     pub(crate) mod orthcoin;
+
+    pub(crate) mod abyssal_snail {
+        pub(crate) mod abyssal_snail_gunk;
+        pub(crate) mod abyssal_snail_shell;
+    }
+    pub(crate) mod ashimite {
+        pub(crate) mod ashimite_antlers;
+        pub(crate) mod ashimite_hoof;
+        pub(crate) mod ashimite_meat_raw;
+    }
+    pub(crate) mod beniguma {
+        pub(crate) mod beniguma_fur;
+    }
+    pub(crate) mod billabonk {
+        pub(crate) mod billabonk_leg_raw;
+    }
+    pub(crate) mod buroguro {
+        pub(crate) mod buroguro_lantern;
+        pub(crate) mod buroguro_stinger;
+    }
+    pub(crate) mod chikyuoebi {
+        pub(crate) mod chikyuoebi_raw;
+    }
+    pub(crate) mod chimokami {
+        pub(crate) mod chimokami_fang;
+        pub(crate) mod chimokami_tail;
+    }
+    pub(crate) mod corpse_weeper {
+        pub(crate) mod corpse_weeper_eye;
+        pub(crate) mod corpse_weeper_feather;
+        pub(crate) mod corpse_weeper_meat_raw;
+    }
+    pub(crate) mod cyatoria {
+        pub(crate) mod cyatoria_drumstick_raw;
+        pub(crate) mod cyatoria_feather;
+    }
+    pub(crate) mod daikonchu {
+        pub(crate) mod daikonchu_carapace;
+        pub(crate) mod daikonchu_wing;
+    }
+    pub(crate) mod demonfish {
+        pub(crate) mod demonfish_raw;
+    }
+    pub(crate) mod dosetori {
+        pub(crate) mod dosetori_bone;
+        pub(crate) mod dosetori_meat_raw;
+        pub(crate) mod dosetori_wing;
+    }
+    pub(crate) mod edusan {
+        pub(crate) mod edusan_scale;
+        pub(crate) mod edusan_whisker;
+    }
+    pub(crate) mod fuwagi {
+        pub(crate) mod fuwagi_foot;
+        pub(crate) mod fuwagi_hide;
+        pub(crate) mod fuwagi_meat_raw;
+    }
+    pub(crate) mod giant_hammerbeak {
+        pub(crate) mod hammerbeak_beak;
+        pub(crate) mod hammerbeak_egg;
+        pub(crate) mod hammerbeak_feather;
+        pub(crate) mod hammerbeak_wing_raw;
+    }
+    pub(crate) mod hagamizukin {
+        pub(crate) mod hagamizukin_raw;
+        pub(crate) mod hagamizukin_tooth;
+    }
+    pub(crate) mod hashofu {
+        pub(crate) mod hashofu_body;
+        pub(crate) mod hashofu_eye;
+        pub(crate) mod hashofu_tail_raw;
+    }
+    pub(crate) mod himushi {
+        pub(crate) mod himushi_core;
+    }
+    pub(crate) mod hisoishi {
+        pub(crate) mod hisoishi_claw;
+        pub(crate) mod hisoishi_shell;
+    }
+    pub(crate) mod hisomukuro {
+        pub(crate) mod hisomukuro_rib;
+    }
+    pub(crate) mod horncrier {
+        pub(crate) mod horncrier_horn;
+    }
+    pub(crate) mod ikenosuke {
+        pub(crate) mod ikenosuke_raw;
+    }
+    pub(crate) mod ikonia {
+        pub(crate) mod ikonia_plate;
+    }
+    pub(crate) mod inbyo {
+        pub(crate) mod inbyo_fur;
+        pub(crate) mod inbyo_meat_raw;
+    }
+    pub(crate) mod kagi_tachikiri {
+        pub(crate) mod kagi_tachikiri_pincer;
+    }
+    pub(crate) mod kakatsumuri {
+        pub(crate) mod kakatsumuri_glowing_tip;
+        pub(crate) mod kakatsumuri_shell;
+    }
+    pub(crate) mod kazura {
+        pub(crate) mod kazura_squid_ink_sac;
+    }
+    pub(crate) mod kuongatari {
+        pub(crate) mod kuongatari_abdomen;
+        pub(crate) mod kuongatari_juice;
+        pub(crate) mod kuongatari_silk;
+    }
+    pub(crate) mod madokajack {
+        pub(crate) mod madokajack_bone;
+        pub(crate) mod madokajack_eye;
+        pub(crate) mod madokajack_poop;
+        pub(crate) mod madokajack_scales;
+    }
+    pub(crate) mod makihige {
+        pub(crate) mod makihige_ink_sac;
+        pub(crate) mod makihige_shell;
+        pub(crate) mod makihige_tentacle;
+    }
+    pub(crate) mod man_toyer {
+        pub(crate) mod mantoyer_fur;
+        pub(crate) mod mantoyer_horns;
+    }
+    pub(crate) mod neritantan {
+        pub(crate) mod neritantan_meat_raw;
+    }
+    pub(crate) mod octoliar {
+        pub(crate) mod octoliar_ink_sac;
+        pub(crate) mod octoliar_tentacle;
+    }
+    pub(crate) mod okibo {
+        pub(crate) mod okibo_fur;
+        pub(crate) mod okibo_meat_raw;
+    }
+    pub(crate) mod onitsuchi {
+        pub(crate) mod onitsuchi_egg;
+        pub(crate) mod onitsuchi_feather;
+        pub(crate) mod onitsuchi_skull;
+        pub(crate) mod onitsuchi_wing_raw;
+    }
+    pub(crate) mod orb_piercer {
+        pub(crate) mod orb_piercer_face_fragments;
+        pub(crate) mod orb_piercer_spike;
+    }
+    pub(crate) mod ottobas {
+        pub(crate) mod ottobas_meat_raw;
+    }
+    pub(crate) mod rinsipede {
+        pub(crate) mod rinsipede_segments;
+    }
+    pub(crate) mod rockwalker {
+        pub(crate) mod rockwalker_mandible;
+    }
+    pub(crate) mod rohana {
+        pub(crate) mod rohana_powder;
+        pub(crate) mod rohana_tail;
+    }
+    pub(crate) mod sakuranbo {
+        pub(crate) mod sakuranbo_dust;
+    }
+    pub(crate) mod shiratsubi {
+        pub(crate) mod shiratsubi_wing;
+    }
+    pub(crate) mod shroombear {
+        pub(crate) mod parasitic_watershrooms;
+        pub(crate) mod shroombear_meat_raw;
+    }
+    pub(crate) mod silkfang {
+        pub(crate) mod bundle_of_silkfang_silk;
+        pub(crate) mod silkfang_eye;
+        pub(crate) mod silkfang_silk;
+    }
+    pub(crate) mod spikewalker {
+        pub(crate) mod spikewalker_meat;
+        pub(crate) mod spikewalker_spike;
+    }
+    pub(crate) mod spiralsquid {
+        pub(crate) mod spiralsquid_raw;
+    }
+    pub(crate) mod spittleshrub {
+        pub(crate) mod plant_matter;
+        pub(crate) mod spittleshrub_root;
+    }
+    pub(crate) mod splitjaw {
+        pub(crate) mod splitjaw_gunk;
+        pub(crate) mod splitjaw_scales;
+    }
+    pub(crate) mod spore_manta {
+        pub(crate) mod spore_manta_powder;
+        pub(crate) mod spore_manta_wing;
+    }
+    pub(crate) mod squidfly {
+        pub(crate) mod squidfly_brain_raw;
+    }
+    pub(crate) mod stinger {
+        pub(crate) mod stinger_horn;
+        pub(crate) mod stinger_wing;
+    }
+    pub(crate) mod stingerhead {
+        pub(crate) mod stingerhead_eye;
+        pub(crate) mod stingerhead_flesh;
+        pub(crate) mod stingerhead_scale;
+    }
+    pub(crate) mod swarmshocker {
+        pub(crate) mod swarmshocker_charged_powder;
+        pub(crate) mod swarmshocker_jelly;
+    }
+    pub(crate) mod tachikatana {
+        pub(crate) mod tachikatana_claw;
+        pub(crate) mod tachikatana_leg;
+        pub(crate) mod tachikatana_scale;
+    }
+    pub(crate) mod tesuchi {
+        pub(crate) mod tesuchi_scales;
+        pub(crate) mod tesuchi_tail;
+    }
+    pub(crate) mod titanjaw {
+        pub(crate) mod titanjaw_pearl;
+        pub(crate) mod titanjaw_scale;
+    }
+    pub(crate) mod uibuta {
+        pub(crate) mod uibuta_meat_raw;
+        pub(crate) mod uibuta_tooth;
+    }
+    pub(crate) mod virinsipede {
+        pub(crate) mod virinsipede_antlers;
+        pub(crate) mod virinsipede_segments;
+    }
+    pub(crate) mod woodcrier {
+        pub(crate) mod woodcrier_horn;
+    }
+    pub(crate) mod yomotsubi {
+        pub(crate) mod yomotsubi_abdomen;
+        pub(crate) mod yomotsubi_abdomen_raw;
+        pub(crate) mod yomotsubi_wing;
+    }
 }
 
 /// The layer worlds, and the machinery that keeps them usable.

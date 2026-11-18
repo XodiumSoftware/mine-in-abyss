@@ -26,8 +26,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Abyssal Snail Shell" tabindex="0"><img class="mc-icon" alt="Abyssal Snail Shell" src="../img/item/unknown_item.png"></span></td><td>70%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Abyssal Snail Gunk" tabindex="0"><img class="mc-icon" alt="Abyssal Snail Gunk" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>70%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Abyssal Snail Shell" tabindex="0"><img class="mc-icon" alt="Abyssal Snail Shell" src="../img/item/abyssal_snail_shell.png"></span></td><td>70%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Abyssal Snail Gunk" tabindex="0"><img class="mc-icon" alt="Abyssal Snail Gunk" src="../img/item/abyssal_snail_gunk.png"><span class="trade-count">1-2</span></span></td><td>70%</td></tr>
 </tbody>
 </table>
 </details>
@@ -41,9 +41,9 @@
 <summary>3 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Ashimite Meat Raw" tabindex="0"><img class="mc-icon" alt="Ashimite Meat Raw" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Ashimite Hoof" tabindex="0"><img class="mc-icon" alt="Ashimite Hoof" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>30%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Ashimite Antlers" tabindex="0"><img class="mc-icon" alt="Ashimite Antlers" src="../img/item/unknown_item.png"></span></td><td>30%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Ashimite Meat Raw" tabindex="0"><img class="mc-icon" alt="Ashimite Meat Raw" src="../img/item/ashimite_meat_raw.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Ashimite Hoof" tabindex="0"><img class="mc-icon" alt="Ashimite Hoof" src="../img/item/ashimite_hoof.png"><span class="trade-count">1-2</span></span></td><td>30%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Ashimite Antlers" tabindex="0"><img class="mc-icon" alt="Ashimite Antlers" src="../img/item/ashimite_antlers.png"></span></td><td>30%</td></tr>
 </tbody>
 </table>
 </details>
@@ -57,7 +57,7 @@
 <summary>1 drop</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Billabonk Leg Raw" tabindex="0"><img class="mc-icon" alt="Billabonk Leg Raw" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Billabonk Leg Raw" tabindex="0"><img class="mc-icon" alt="Billabonk Leg Raw" src="../img/item/billabonk_leg_raw.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
 </tbody>
 </table>
 </details>
@@ -71,9 +71,9 @@
 <summary>3 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Fuwagi Meat Raw" tabindex="0"><img class="mc-icon" alt="Fuwagi Meat Raw" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Fuwagi Foot" tabindex="0"><img class="mc-icon" alt="Fuwagi Foot" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>30%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Fuwagi Hide" tabindex="0"><img class="mc-icon" alt="Fuwagi Hide" src="../img/item/unknown_item.png"></span></td><td>70%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Fuwagi Meat Raw" tabindex="0"><img class="mc-icon" alt="Fuwagi Meat Raw" src="../img/item/fuwagi_meat_raw.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Fuwagi Foot" tabindex="0"><img class="mc-icon" alt="Fuwagi Foot" src="../img/item/fuwagi_foot.png"><span class="trade-count">1-2</span></span></td><td>30%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Fuwagi Hide" tabindex="0"><img class="mc-icon" alt="Fuwagi Hide" src="../img/item/fuwagi_hide.png"></span></td><td>70%</td></tr>
 </tbody>
 </table>
 </details>
@@ -87,7 +87,7 @@
 <summary>1 drop</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Ikonia Plate" tabindex="0"><img class="mc-icon" alt="Ikonia Plate" src="../img/item/unknown_item.png"><span class="trade-count">1-1</span></span></td><td>50%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Ikonia Plate" tabindex="0"><img class="mc-icon" alt="Ikonia Plate" src="../img/item/ikonia_plate.png"><span class="trade-count">1-1</span></span></td><td>50%</td></tr>
 </tbody>
 </table>
 </details>
@@ -101,8 +101,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Kakatsumuri Shell" tabindex="0"><img class="mc-icon" alt="Kakatsumuri Shell" src="../img/item/unknown_item.png"></span></td><td>80%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Kakatsumuri Glowing Tip" tabindex="0"><img class="mc-icon" alt="Kakatsumuri Glowing Tip" src="../img/item/unknown_item.png"></span></td><td>90%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Kakatsumuri Shell" tabindex="0"><img class="mc-icon" alt="Kakatsumuri Shell" src="../img/item/kakatsumuri_shell.png"></span></td><td>80%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Kakatsumuri Glowing Tip" tabindex="0"><img class="mc-icon" alt="Kakatsumuri Glowing Tip" src="../img/item/kakatsumuri_glowing_tip.png"></span></td><td>90%</td></tr>
 </tbody>
 </table>
 </details>
@@ -116,7 +116,7 @@
 <summary>5 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Neritantan Meat Raw" tabindex="0"><img class="mc-icon" alt="Neritantan Meat Raw" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Neritantan Meat Raw" tabindex="0"><img class="mc-icon" alt="Neritantan Meat Raw" src="../img/item/neritantan_meat_raw.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
 <tr><td><span class="trade-item" data-tooltip="Beetroot Seeds" tabindex="0"><img class="mc-icon" alt="Beetroot Seeds" src="../img/item/beetroot_seeds.png"><span class="trade-count">1-2</span></span></td><td>30%</td></tr>
 <tr><td><span class="trade-item" data-tooltip="Melon Seeds" tabindex="0"><img class="mc-icon" alt="Melon Seeds" src="../img/item/melon_seeds.png"><span class="trade-count">1-2</span></span></td><td>30%</td></tr>
 <tr><td><span class="trade-item" data-tooltip="Pumpkin Seeds" tabindex="0"><img class="mc-icon" alt="Pumpkin Seeds" src="../img/item/pumpkin_seeds.png"><span class="trade-count">1-2</span></span></td><td>30%</td></tr>
@@ -134,8 +134,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Okibo Meat Raw" tabindex="0"><img class="mc-icon" alt="Okibo Meat Raw" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Okibo Fur" tabindex="0"><img class="mc-icon" alt="Okibo Fur" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>70%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Okibo Meat Raw" tabindex="0"><img class="mc-icon" alt="Okibo Meat Raw" src="../img/item/okibo_meat_raw.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Okibo Fur" tabindex="0"><img class="mc-icon" alt="Okibo Fur" src="../img/item/okibo_fur.png"><span class="trade-count">1-2</span></span></td><td>70%</td></tr>
 </tbody>
 </table>
 </details>
@@ -149,7 +149,7 @@
 <summary>1 drop</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Sakuranbo Dust" tabindex="0"><img class="mc-icon" alt="Sakuranbo Dust" src="../img/item/unknown_item.png"><span class="trade-count">1-3</span></span></td><td>90%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Sakuranbo Dust" tabindex="0"><img class="mc-icon" alt="Sakuranbo Dust" src="../img/item/sakuranbo_dust.png"><span class="trade-count">1-3</span></span></td><td>90%</td></tr>
 </tbody>
 </table>
 </details>
@@ -163,8 +163,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Shroombear Meat Raw" tabindex="0"><img class="mc-icon" alt="Shroombear Meat Raw" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Parasitic Watershrooms" tabindex="0"><img class="mc-icon" alt="Parasitic Watershrooms" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Shroombear Meat Raw" tabindex="0"><img class="mc-icon" alt="Shroombear Meat Raw" src="../img/item/shroombear_meat_raw.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Parasitic Watershrooms" tabindex="0"><img class="mc-icon" alt="Parasitic Watershrooms" src="../img/item/parasitic_watershrooms.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
 </tbody>
 </table>
 </details>
@@ -178,8 +178,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Tesuchi Tail" tabindex="0"><img class="mc-icon" alt="Tesuchi Tail" src="../img/item/unknown_item.png"></span></td><td>100%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Tesuchi Scales" tabindex="0"><img class="mc-icon" alt="Tesuchi Scales" src="../img/item/unknown_item.png"><span class="trade-count">1-3</span></span></td><td>80%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Tesuchi Tail" tabindex="0"><img class="mc-icon" alt="Tesuchi Tail" src="../img/item/tesuchi_tail.png"></span></td><td>100%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Tesuchi Scales" tabindex="0"><img class="mc-icon" alt="Tesuchi Scales" src="../img/item/tesuchi_scales.png"><span class="trade-count">1-3</span></span></td><td>80%</td></tr>
 </tbody>
 </table>
 </details>
@@ -193,7 +193,7 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Beniguma Fur" tabindex="0"><img class="mc-icon" alt="Beniguma Fur" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Beniguma Fur" tabindex="0"><img class="mc-icon" alt="Beniguma Fur" src="../img/item/beniguma_fur.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
 <tr><td><span class="trade-item" data-tooltip="Sweet Berries" tabindex="0"><img class="mc-icon" alt="Sweet Berries" src="../img/item/sweet_berries.png"><span class="trade-count">1-3</span></span></td><td>60%</td></tr>
 </tbody>
 </table>
@@ -208,8 +208,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Chimokami Tail" tabindex="0"><img class="mc-icon" alt="Chimokami Tail" src="../img/item/unknown_item.png"><span class="trade-count">1-3</span></span></td><td>80%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Chimokami Fang" tabindex="0"><img class="mc-icon" alt="Chimokami Fang" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>70%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Chimokami Tail" tabindex="0"><img class="mc-icon" alt="Chimokami Tail" src="../img/item/chimokami_tail.png"><span class="trade-count">1-3</span></span></td><td>80%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Chimokami Fang" tabindex="0"><img class="mc-icon" alt="Chimokami Fang" src="../img/item/chimokami_fang.png"><span class="trade-count">1-2</span></span></td><td>70%</td></tr>
 </tbody>
 </table>
 </details>
@@ -223,8 +223,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Daikonchu Carapace" tabindex="0"><img class="mc-icon" alt="Daikonchu Carapace" src="../img/item/unknown_item.png"></span></td><td>40%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Daikonchu Wing" tabindex="0"><img class="mc-icon" alt="Daikonchu Wing" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>30%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Daikonchu Carapace" tabindex="0"><img class="mc-icon" alt="Daikonchu Carapace" src="../img/item/daikonchu_carapace.png"></span></td><td>40%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Daikonchu Wing" tabindex="0"><img class="mc-icon" alt="Daikonchu Wing" src="../img/item/daikonchu_wing.png"><span class="trade-count">1-2</span></span></td><td>30%</td></tr>
 </tbody>
 </table>
 </details>
@@ -238,8 +238,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Hisoishi Claw" tabindex="0"><img class="mc-icon" alt="Hisoishi Claw" src="../img/item/unknown_item.png"><span class="trade-count">1-3</span></span></td><td>80%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Hisoishi Shell" tabindex="0"><img class="mc-icon" alt="Hisoishi Shell" src="../img/item/unknown_item.png"></span></td><td>20%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Hisoishi Claw" tabindex="0"><img class="mc-icon" alt="Hisoishi Claw" src="../img/item/hisoishi_claw.png"><span class="trade-count">1-3</span></span></td><td>80%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Hisoishi Shell" tabindex="0"><img class="mc-icon" alt="Hisoishi Shell" src="../img/item/hisoishi_shell.png"></span></td><td>20%</td></tr>
 </tbody>
 </table>
 </details>
@@ -253,7 +253,7 @@
 <summary>1 drop</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Rinsipede Segments" tabindex="0"><img class="mc-icon" alt="Rinsipede Segments" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>80%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Rinsipede Segments" tabindex="0"><img class="mc-icon" alt="Rinsipede Segments" src="../img/item/rinsipede_segments.png"><span class="trade-count">1-2</span></span></td><td>80%</td></tr>
 </tbody>
 </table>
 </details>
@@ -267,7 +267,7 @@
 <summary>1 drop</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Rockwalker Mandible" tabindex="0"><img class="mc-icon" alt="Rockwalker Mandible" src="../img/item/unknown_item.png"><span class="trade-count">1-4</span></span></td><td>80%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Rockwalker Mandible" tabindex="0"><img class="mc-icon" alt="Rockwalker Mandible" src="../img/item/rockwalker_mandible.png"><span class="trade-count">1-4</span></span></td><td>80%</td></tr>
 </tbody>
 </table>
 </details>
@@ -281,8 +281,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Spikewalker Spike" tabindex="0"><img class="mc-icon" alt="Spikewalker Spike" src="../img/item/unknown_item.png"><span class="trade-count">1-3</span></span></td><td>80%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Spikewalker Meat" tabindex="0"><img class="mc-icon" alt="Spikewalker Meat" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Spikewalker Spike" tabindex="0"><img class="mc-icon" alt="Spikewalker Spike" src="../img/item/spikewalker_spike.png"><span class="trade-count">1-3</span></span></td><td>80%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Spikewalker Meat" tabindex="0"><img class="mc-icon" alt="Spikewalker Meat" src="../img/item/spikewalker_meat.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
 </tbody>
 </table>
 </details>
@@ -296,8 +296,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Titanjaw Pearl" tabindex="0"><img class="mc-icon" alt="Titanjaw Pearl" src="../img/item/unknown_item.png"></span></td><td>20%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Titanjaw Scale" tabindex="0"><img class="mc-icon" alt="Titanjaw Scale" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Titanjaw Pearl" tabindex="0"><img class="mc-icon" alt="Titanjaw Pearl" src="../img/item/titanjaw_pearl.png"></span></td><td>20%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Titanjaw Scale" tabindex="0"><img class="mc-icon" alt="Titanjaw Scale" src="../img/item/titanjaw_scale.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
 </tbody>
 </table>
 </details>
@@ -311,8 +311,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Buroguro Lantern" tabindex="0"><img class="mc-icon" alt="Buroguro Lantern" src="../img/item/unknown_item.png"></span></td><td>30%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Buroguro Stinger" tabindex="0"><img class="mc-icon" alt="Buroguro Stinger" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Buroguro Lantern" tabindex="0"><img class="mc-icon" alt="Buroguro Lantern" src="../img/item/buroguro_lantern.png"></span></td><td>30%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Buroguro Stinger" tabindex="0"><img class="mc-icon" alt="Buroguro Stinger" src="../img/item/buroguro_stinger.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
 </tbody>
 </table>
 </details>
@@ -326,9 +326,9 @@
 <summary>3 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Corpse Weeper Meat Raw" tabindex="0"><img class="mc-icon" alt="Corpse Weeper Meat Raw" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>100%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Corpse Weeper Eye" tabindex="0"><img class="mc-icon" alt="Corpse Weeper Eye" src="../img/item/unknown_item.png"><span class="trade-count">2</span></span></td><td>30%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Corpse Weeper Feather" tabindex="0"><img class="mc-icon" alt="Corpse Weeper Feather" src="../img/item/unknown_item.png"><span class="trade-count">1-3</span></span></td><td>90%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Corpse Weeper Meat Raw" tabindex="0"><img class="mc-icon" alt="Corpse Weeper Meat Raw" src="../img/item/corpse_weeper_meat_raw.png"><span class="trade-count">1-2</span></span></td><td>100%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Corpse Weeper Eye" tabindex="0"><img class="mc-icon" alt="Corpse Weeper Eye" src="../img/item/corpse_weeper_eye.png"><span class="trade-count">2</span></span></td><td>30%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Corpse Weeper Feather" tabindex="0"><img class="mc-icon" alt="Corpse Weeper Feather" src="../img/item/corpse_weeper_feather.png"><span class="trade-count">1-3</span></span></td><td>90%</td></tr>
 </tbody>
 </table>
 </details>
@@ -342,8 +342,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Cyatoria Drumstick Raw" tabindex="0"><img class="mc-icon" alt="Cyatoria Drumstick Raw" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>100%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Cyatoria Feather" tabindex="0"><img class="mc-icon" alt="Cyatoria Feather" src="../img/item/unknown_item.png"><span class="trade-count">1-4</span></span></td><td>70%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Cyatoria Drumstick Raw" tabindex="0"><img class="mc-icon" alt="Cyatoria Drumstick Raw" src="../img/item/cyatoria_drumstick_raw.png"><span class="trade-count">1-2</span></span></td><td>100%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Cyatoria Feather" tabindex="0"><img class="mc-icon" alt="Cyatoria Feather" src="../img/item/cyatoria_feather.png"><span class="trade-count">1-4</span></span></td><td>70%</td></tr>
 </tbody>
 </table>
 </details>
@@ -357,9 +357,9 @@
 <summary>3 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Dosetori Meat Raw" tabindex="0"><img class="mc-icon" alt="Dosetori Meat Raw" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>100%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Dosetori Wing" tabindex="0"><img class="mc-icon" alt="Dosetori Wing" src="../img/item/unknown_item.png"><span class="trade-count">1-3</span></span></td><td>70%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Dosetori Bone" tabindex="0"><img class="mc-icon" alt="Dosetori Bone" src="../img/item/unknown_item.png"><span class="trade-count">1-3</span></span></td><td>80%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Dosetori Meat Raw" tabindex="0"><img class="mc-icon" alt="Dosetori Meat Raw" src="../img/item/dosetori_meat_raw.png"><span class="trade-count">1-2</span></span></td><td>100%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Dosetori Wing" tabindex="0"><img class="mc-icon" alt="Dosetori Wing" src="../img/item/dosetori_wing.png"><span class="trade-count">1-3</span></span></td><td>70%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Dosetori Bone" tabindex="0"><img class="mc-icon" alt="Dosetori Bone" src="../img/item/dosetori_bone.png"><span class="trade-count">1-3</span></span></td><td>80%</td></tr>
 </tbody>
 </table>
 </details>
@@ -373,10 +373,10 @@
 <summary>4 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Hammerbeak Wing Raw" tabindex="0"><img class="mc-icon" alt="Hammerbeak Wing Raw" src="../img/item/unknown_item.png"><span class="trade-count">1-3</span></span></td><td>100%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Hammerbeak Beak" tabindex="0"><img class="mc-icon" alt="Hammerbeak Beak" src="../img/item/unknown_item.png"></span></td><td>60%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Hammerbeak Feather" tabindex="0"><img class="mc-icon" alt="Hammerbeak Feather" src="../img/item/unknown_item.png"><span class="trade-count">1-3</span></span></td><td>70%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Hammerbeak Egg" tabindex="0"><img class="mc-icon" alt="Hammerbeak Egg" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>50%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Hammerbeak Wing Raw" tabindex="0"><img class="mc-icon" alt="Hammerbeak Wing Raw" src="../img/item/hammerbeak_wing_raw.png"><span class="trade-count">1-3</span></span></td><td>100%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Hammerbeak Beak" tabindex="0"><img class="mc-icon" alt="Hammerbeak Beak" src="../img/item/hammerbeak_beak.png"></span></td><td>60%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Hammerbeak Feather" tabindex="0"><img class="mc-icon" alt="Hammerbeak Feather" src="../img/item/hammerbeak_feather.png"><span class="trade-count">1-3</span></span></td><td>70%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Hammerbeak Egg" tabindex="0"><img class="mc-icon" alt="Hammerbeak Egg" src="../img/item/hammerbeak_egg.png"><span class="trade-count">1-2</span></span></td><td>50%</td></tr>
 </tbody>
 </table>
 </details>
@@ -390,9 +390,9 @@
 <summary>3 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Hashofu Tail Raw" tabindex="0"><img class="mc-icon" alt="Hashofu Tail Raw" src="../img/item/unknown_item.png"></span></td><td>80%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Hashofu Eye" tabindex="0"><img class="mc-icon" alt="Hashofu Eye" src="../img/item/unknown_item.png"><span class="trade-count">2</span></span></td><td>65%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Hashofu Body" tabindex="0"><img class="mc-icon" alt="Hashofu Body" src="../img/item/unknown_item.png"><span class="trade-count">1-3</span></span></td><td>100%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Hashofu Tail Raw" tabindex="0"><img class="mc-icon" alt="Hashofu Tail Raw" src="../img/item/hashofu_tail_raw.png"></span></td><td>80%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Hashofu Eye" tabindex="0"><img class="mc-icon" alt="Hashofu Eye" src="../img/item/hashofu_eye.png"><span class="trade-count">2</span></span></td><td>65%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Hashofu Body" tabindex="0"><img class="mc-icon" alt="Hashofu Body" src="../img/item/hashofu_body.png"><span class="trade-count">1-3</span></span></td><td>100%</td></tr>
 </tbody>
 </table>
 </details>
@@ -406,7 +406,7 @@
 <summary>1 drop</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Kagi Tachikiri Pincer" tabindex="0"><img class="mc-icon" alt="Kagi Tachikiri Pincer" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>70%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Kagi Tachikiri Pincer" tabindex="0"><img class="mc-icon" alt="Kagi Tachikiri Pincer" src="../img/item/kagi_tachikiri_pincer.png"><span class="trade-count">1-2</span></span></td><td>70%</td></tr>
 </tbody>
 </table>
 </details>
@@ -420,10 +420,10 @@
 <summary>4 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Madokajack Scales" tabindex="0"><img class="mc-icon" alt="Madokajack Scales" src="../img/item/unknown_item.png"><span class="trade-count">1-4</span></span></td><td>70%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Madokajack Bone" tabindex="0"><img class="mc-icon" alt="Madokajack Bone" src="../img/item/unknown_item.png"></span></td><td>30%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Madokajack Eye" tabindex="0"><img class="mc-icon" alt="Madokajack Eye" src="../img/item/unknown_item.png"><span class="trade-count">2</span></span></td><td>30%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Madokajack Poop" tabindex="0"><img class="mc-icon" alt="Madokajack Poop" src="../img/item/unknown_item.png"></span></td><td>30%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Madokajack Scales" tabindex="0"><img class="mc-icon" alt="Madokajack Scales" src="../img/item/madokajack_scales.png"><span class="trade-count">1-4</span></span></td><td>70%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Madokajack Bone" tabindex="0"><img class="mc-icon" alt="Madokajack Bone" src="../img/item/madokajack_bone.png"></span></td><td>30%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Madokajack Eye" tabindex="0"><img class="mc-icon" alt="Madokajack Eye" src="../img/item/madokajack_eye.png"><span class="trade-count">2</span></span></td><td>30%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Madokajack Poop" tabindex="0"><img class="mc-icon" alt="Madokajack Poop" src="../img/item/madokajack_poop.png"></span></td><td>30%</td></tr>
 </tbody>
 </table>
 </details>
@@ -437,10 +437,10 @@
 <summary>4 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Onitsuchi Wing Raw" tabindex="0"><img class="mc-icon" alt="Onitsuchi Wing Raw" src="../img/item/unknown_item.png"><span class="trade-count">1-3</span></span></td><td>100%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Onitsuchi Skull" tabindex="0"><img class="mc-icon" alt="Onitsuchi Skull" src="../img/item/unknown_item.png"></span></td><td>60%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Onitsuchi Feather" tabindex="0"><img class="mc-icon" alt="Onitsuchi Feather" src="../img/item/unknown_item.png"><span class="trade-count">1-3</span></span></td><td>100%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Onitsuchi Egg" tabindex="0"><img class="mc-icon" alt="Onitsuchi Egg" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>50%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Onitsuchi Wing Raw" tabindex="0"><img class="mc-icon" alt="Onitsuchi Wing Raw" src="../img/item/onitsuchi_wing_raw.png"><span class="trade-count">1-3</span></span></td><td>100%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Onitsuchi Skull" tabindex="0"><img class="mc-icon" alt="Onitsuchi Skull" src="../img/item/onitsuchi_skull.png"></span></td><td>60%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Onitsuchi Feather" tabindex="0"><img class="mc-icon" alt="Onitsuchi Feather" src="../img/item/onitsuchi_feather.png"><span class="trade-count">1-3</span></span></td><td>100%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Onitsuchi Egg" tabindex="0"><img class="mc-icon" alt="Onitsuchi Egg" src="../img/item/onitsuchi_egg.png"><span class="trade-count">1-2</span></span></td><td>50%</td></tr>
 </tbody>
 </table>
 </details>
@@ -454,8 +454,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Rohana Powder" tabindex="0"><img class="mc-icon" alt="Rohana Powder" src="../img/item/unknown_item.png"><span class="trade-count">2</span></span></td><td>80%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Rohana Tail" tabindex="0"><img class="mc-icon" alt="Rohana Tail" src="../img/item/unknown_item.png"><span class="trade-count">2</span></span></td><td>40%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Rohana Powder" tabindex="0"><img class="mc-icon" alt="Rohana Powder" src="../img/item/rohana_powder.png"><span class="trade-count">2</span></span></td><td>80%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Rohana Tail" tabindex="0"><img class="mc-icon" alt="Rohana Tail" src="../img/item/rohana_tail.png"><span class="trade-count">2</span></span></td><td>40%</td></tr>
 </tbody>
 </table>
 </details>
@@ -469,9 +469,9 @@
 <summary>3 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Hammerbeak Wing Raw" tabindex="0"><img class="mc-icon" alt="Hammerbeak Wing Raw" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>100%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Hammerbeak Beak" tabindex="0"><img class="mc-icon" alt="Hammerbeak Beak" src="../img/item/unknown_item.png"></span></td><td>60%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Hammerbeak Feather" tabindex="0"><img class="mc-icon" alt="Hammerbeak Feather" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>50%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Hammerbeak Wing Raw" tabindex="0"><img class="mc-icon" alt="Hammerbeak Wing Raw" src="../img/item/hammerbeak_wing_raw.png"><span class="trade-count">1-2</span></span></td><td>100%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Hammerbeak Beak" tabindex="0"><img class="mc-icon" alt="Hammerbeak Beak" src="../img/item/hammerbeak_beak.png"></span></td><td>60%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Hammerbeak Feather" tabindex="0"><img class="mc-icon" alt="Hammerbeak Feather" src="../img/item/hammerbeak_feather.png"><span class="trade-count">1-2</span></span></td><td>50%</td></tr>
 </tbody>
 </table>
 </details>
@@ -485,8 +485,8 @@
 <summary>5 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Splitjaw Scales" tabindex="0"><img class="mc-icon" alt="Splitjaw Scales" src="../img/item/unknown_item.png"><span class="trade-count">1-3</span></span></td><td>70%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Splitjaw Gunk" tabindex="0"><img class="mc-icon" alt="Splitjaw Gunk" src="../img/item/unknown_item.png"><span class="trade-count">2</span></span></td><td>70%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Splitjaw Scales" tabindex="0"><img class="mc-icon" alt="Splitjaw Scales" src="../img/item/splitjaw_scales.png"><span class="trade-count">1-3</span></span></td><td>70%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Splitjaw Gunk" tabindex="0"><img class="mc-icon" alt="Splitjaw Gunk" src="../img/item/splitjaw_gunk.png"><span class="trade-count">2</span></span></td><td>70%</td></tr>
 <tr><td><span class="trade-item" data-tooltip="Diamond" tabindex="0"><img class="mc-icon" alt="Diamond" src="../img/item/diamond.png"></span></td><td>10%</td></tr>
 <tr><td><span class="trade-item" data-tooltip="Gold Ingot" tabindex="0"><img class="mc-icon" alt="Gold Ingot" src="../img/item/gold_ingot.png"></span></td><td>15%</td></tr>
 <tr><td><span class="trade-item" data-tooltip="Emerald" tabindex="0"><img class="mc-icon" alt="Emerald" src="../img/item/emerald.png"></span></td><td>10%</td></tr>
@@ -503,8 +503,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Spore Manta Wing" tabindex="0"><img class="mc-icon" alt="Spore Manta Wing" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>50%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Spore Manta Powder" tabindex="0"><img class="mc-icon" alt="Spore Manta Powder" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>70%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Spore Manta Wing" tabindex="0"><img class="mc-icon" alt="Spore Manta Wing" src="../img/item/spore_manta_wing.png"><span class="trade-count">1-2</span></span></td><td>50%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Spore Manta Powder" tabindex="0"><img class="mc-icon" alt="Spore Manta Powder" src="../img/item/spore_manta_powder.png"><span class="trade-count">1-2</span></span></td><td>70%</td></tr>
 </tbody>
 </table>
 </details>
@@ -518,7 +518,7 @@
 <summary>1 drop</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Squidfly Brain Raw" tabindex="0"><img class="mc-icon" alt="Squidfly Brain Raw" src="../img/item/unknown_item.png"></span></td><td>80%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Squidfly Brain Raw" tabindex="0"><img class="mc-icon" alt="Squidfly Brain Raw" src="../img/item/squidfly_brain_raw.png"></span></td><td>80%</td></tr>
 </tbody>
 </table>
 </details>
@@ -532,8 +532,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Stinger Wing" tabindex="0"><img class="mc-icon" alt="Stinger Wing" src="../img/item/unknown_item.png"></span></td><td>50%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Stinger Horn" tabindex="0"><img class="mc-icon" alt="Stinger Horn" src="../img/item/unknown_item.png"></span></td><td>20%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Stinger Wing" tabindex="0"><img class="mc-icon" alt="Stinger Wing" src="../img/item/stinger_wing.png"></span></td><td>50%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Stinger Horn" tabindex="0"><img class="mc-icon" alt="Stinger Horn" src="../img/item/stinger_horn.png"></span></td><td>20%</td></tr>
 </tbody>
 </table>
 </details>
@@ -547,7 +547,7 @@
 <summary>1 drop</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Demonfish Raw" tabindex="0"><img class="mc-icon" alt="Demonfish Raw" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Demonfish Raw" tabindex="0"><img class="mc-icon" alt="Demonfish Raw" src="../img/item/demonfish_raw.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
 </tbody>
 </table>
 </details>
@@ -561,8 +561,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Edusan Scale" tabindex="0"><img class="mc-icon" alt="Edusan Scale" src="../img/item/unknown_item.png"><span class="trade-count">4-8</span></span></td><td>100%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Edusan Whisker" tabindex="0"><img class="mc-icon" alt="Edusan Whisker" src="../img/item/unknown_item.png"></span></td><td>20%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Edusan Scale" tabindex="0"><img class="mc-icon" alt="Edusan Scale" src="../img/item/edusan_scale.png"><span class="trade-count">4-8</span></span></td><td>100%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Edusan Whisker" tabindex="0"><img class="mc-icon" alt="Edusan Whisker" src="../img/item/edusan_whisker.png"></span></td><td>20%</td></tr>
 </tbody>
 </table>
 </details>
@@ -576,8 +576,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Hagamizukin Tooth" tabindex="0"><img class="mc-icon" alt="Hagamizukin Tooth" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Hagamizukin Raw" tabindex="0"><img class="mc-icon" alt="Hagamizukin Raw" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Hagamizukin Tooth" tabindex="0"><img class="mc-icon" alt="Hagamizukin Tooth" src="../img/item/hagamizukin_tooth.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Hagamizukin Raw" tabindex="0"><img class="mc-icon" alt="Hagamizukin Raw" src="../img/item/hagamizukin_raw.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
 </tbody>
 </table>
 </details>
@@ -591,7 +591,7 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Hisomukuro Rib" tabindex="0"><img class="mc-icon" alt="Hisomukuro Rib" src="../img/item/unknown_item.png"><span class="trade-count">2-6</span></span></td><td>70%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Hisomukuro Rib" tabindex="0"><img class="mc-icon" alt="Hisomukuro Rib" src="../img/item/hisomukuro_rib.png"><span class="trade-count">2-6</span></span></td><td>70%</td></tr>
 <tr><td><span class="trade-item" data-tooltip="Bone" tabindex="0"><img class="mc-icon" alt="Bone" src="../img/item/bone.png"><span class="trade-count">0-5</span></span></td><td>100%</td></tr>
 </tbody>
 </table>
@@ -606,7 +606,7 @@
 <summary>1 drop</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Ikenosuke Raw" tabindex="0"><img class="mc-icon" alt="Ikenosuke Raw" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Ikenosuke Raw" tabindex="0"><img class="mc-icon" alt="Ikenosuke Raw" src="../img/item/ikenosuke_raw.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
 </tbody>
 </table>
 </details>
@@ -620,7 +620,7 @@
 <summary>1 drop</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Kazura Squid Ink Sac" tabindex="0"><img class="mc-icon" alt="Kazura Squid Ink Sac" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>80%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Kazura Squid Ink Sac" tabindex="0"><img class="mc-icon" alt="Kazura Squid Ink Sac" src="../img/item/kazura_squid_ink_sac.png"><span class="trade-count">1-2</span></span></td><td>80%</td></tr>
 </tbody>
 </table>
 </details>
@@ -634,9 +634,9 @@
 <summary>3 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Makihige Ink Sac" tabindex="0"><img class="mc-icon" alt="Makihige Ink Sac" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Makihige Shell" tabindex="0"><img class="mc-icon" alt="Makihige Shell" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>30%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Makihige Tentacle" tabindex="0"><img class="mc-icon" alt="Makihige Tentacle" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>40%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Makihige Ink Sac" tabindex="0"><img class="mc-icon" alt="Makihige Ink Sac" src="../img/item/makihige_ink_sac.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Makihige Shell" tabindex="0"><img class="mc-icon" alt="Makihige Shell" src="../img/item/makihige_shell.png"><span class="trade-count">1-2</span></span></td><td>30%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Makihige Tentacle" tabindex="0"><img class="mc-icon" alt="Makihige Tentacle" src="../img/item/makihige_tentacle.png"><span class="trade-count">1-2</span></span></td><td>40%</td></tr>
 </tbody>
 </table>
 </details>
@@ -650,7 +650,7 @@
 <summary>1 drop</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Spiralsquid Raw" tabindex="0"><img class="mc-icon" alt="Spiralsquid Raw" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Spiralsquid Raw" tabindex="0"><img class="mc-icon" alt="Spiralsquid Raw" src="../img/item/spiralsquid_raw.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
 </tbody>
 </table>
 </details>
@@ -664,7 +664,7 @@
 <summary>3 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Chikyuoebi Raw" tabindex="0"><img class="mc-icon" alt="Chikyuoebi Raw" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Chikyuoebi Raw" tabindex="0"><img class="mc-icon" alt="Chikyuoebi Raw" src="../img/item/chikyuoebi_raw.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
 <tr><td><span class="trade-item" data-tooltip="Soul Sand" tabindex="0"><img class="mc-icon" alt="Soul Sand" src="../img/item/soul_sand.png"><span class="trade-count">2-4</span></span></td><td>60%</td></tr>
 <tr><td><span class="trade-item" data-tooltip="Diamond" tabindex="0"><img class="mc-icon" alt="Diamond" src="../img/item/diamond.png"></span></td><td>50%</td></tr>
 </tbody>
@@ -680,7 +680,7 @@
 <summary>3 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Himushi Core" tabindex="0"><img class="mc-icon" alt="Himushi Core" src="../img/item/unknown_item.png"></span></td><td>100%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Himushi Core" tabindex="0"><img class="mc-icon" alt="Himushi Core" src="../img/item/himushi_core.png"></span></td><td>100%</td></tr>
 <tr><td><span class="trade-item" data-tooltip="Soul Sand" tabindex="0"><img class="mc-icon" alt="Soul Sand" src="../img/item/soul_sand.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
 <tr><td><span class="trade-item" data-tooltip="Magma Block" tabindex="0"><img class="mc-icon" alt="Magma Block" src="../img/item/magma.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
 </tbody>
@@ -696,7 +696,7 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Horncrier Horn" tabindex="0"><img class="mc-icon" alt="Horncrier Horn" src="../img/item/unknown_item.png"></span></td><td>0.1%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Horncrier Horn" tabindex="0"><img class="mc-icon" alt="Horncrier Horn" src="../img/item/horncrier_horn.png"></span></td><td>0.1%</td></tr>
 <tr><td><span class="trade-item" data-tooltip="White Wool" tabindex="0"><img class="mc-icon" alt="White Wool" src="../img/item/white_wool.png"><span class="trade-count">1-3</span></span></td><td>60%</td></tr>
 </tbody>
 </table>
@@ -711,8 +711,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Inbyo Meat Raw" tabindex="0"><img class="mc-icon" alt="Inbyo Meat Raw" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Inbyo Fur" tabindex="0"><img class="mc-icon" alt="Inbyo Fur" src="../img/item/unknown_item.png"><span class="trade-count">1-3</span></span></td><td>60%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Inbyo Meat Raw" tabindex="0"><img class="mc-icon" alt="Inbyo Meat Raw" src="../img/item/inbyo_meat_raw.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Inbyo Fur" tabindex="0"><img class="mc-icon" alt="Inbyo Fur" src="../img/item/inbyo_fur.png"><span class="trade-count">1-3</span></span></td><td>60%</td></tr>
 </tbody>
 </table>
 </details>
@@ -726,9 +726,9 @@
 <summary>3 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Kuongatari Juice" tabindex="0"><img class="mc-icon" alt="Kuongatari Juice" src="../img/item/unknown_item.png"></span></td><td>30%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Kuongatari Silk" tabindex="0"><img class="mc-icon" alt="Kuongatari Silk" src="../img/item/unknown_item.png"></span></td><td>30%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Kuongatari Abdomen" tabindex="0"><img class="mc-icon" alt="Kuongatari Abdomen" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>35%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Kuongatari Juice" tabindex="0"><img class="mc-icon" alt="Kuongatari Juice" src="../img/item/kuongatari_juice.png"></span></td><td>30%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Kuongatari Silk" tabindex="0"><img class="mc-icon" alt="Kuongatari Silk" src="../img/item/kuongatari_silk.png"></span></td><td>30%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Kuongatari Abdomen" tabindex="0"><img class="mc-icon" alt="Kuongatari Abdomen" src="../img/item/kuongatari_abdomen.png"><span class="trade-count">1-2</span></span></td><td>35%</td></tr>
 </tbody>
 </table>
 </details>
@@ -742,8 +742,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Mantoyer Fur" tabindex="0"><img class="mc-icon" alt="Mantoyer Fur" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Mantoyer Horns" tabindex="0"><img class="mc-icon" alt="Mantoyer Horns" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Mantoyer Fur" tabindex="0"><img class="mc-icon" alt="Mantoyer Fur" src="../img/item/mantoyer_fur.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Mantoyer Horns" tabindex="0"><img class="mc-icon" alt="Mantoyer Horns" src="../img/item/mantoyer_horns.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
 </tbody>
 </table>
 </details>
@@ -757,8 +757,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Octoliar Ink Sac" tabindex="0"><img class="mc-icon" alt="Octoliar Ink Sac" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Octoliar Tentacle" tabindex="0"><img class="mc-icon" alt="Octoliar Tentacle" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Octoliar Ink Sac" tabindex="0"><img class="mc-icon" alt="Octoliar Ink Sac" src="../img/item/octoliar_ink_sac.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Octoliar Tentacle" tabindex="0"><img class="mc-icon" alt="Octoliar Tentacle" src="../img/item/octoliar_tentacle.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
 </tbody>
 </table>
 </details>
@@ -772,8 +772,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Orb Piercer Face Fragments" tabindex="0"><img class="mc-icon" alt="Orb Piercer Face Fragments" src="../img/item/unknown_item.png"><span class="trade-count">1-1</span></span></td><td>100%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Orb Piercer Spike" tabindex="0"><img class="mc-icon" alt="Orb Piercer Spike" src="../img/item/unknown_item.png"><span class="trade-count">2-6</span></span></td><td>100%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Orb Piercer Face Fragments" tabindex="0"><img class="mc-icon" alt="Orb Piercer Face Fragments" src="../img/item/orb_piercer_face_fragments.png"><span class="trade-count">1-1</span></span></td><td>100%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Orb Piercer Spike" tabindex="0"><img class="mc-icon" alt="Orb Piercer Spike" src="../img/item/orb_piercer_spike.png"><span class="trade-count">2-6</span></span></td><td>100%</td></tr>
 </tbody>
 </table>
 </details>
@@ -787,7 +787,7 @@
 <summary>1 drop</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Ottobas Meat Raw" tabindex="0"><img class="mc-icon" alt="Ottobas Meat Raw" src="../img/item/unknown_item.png"><span class="trade-count">4-15</span></span></td><td>100%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Ottobas Meat Raw" tabindex="0"><img class="mc-icon" alt="Ottobas Meat Raw" src="../img/item/ottobas_meat_raw.png"><span class="trade-count">4-15</span></span></td><td>100%</td></tr>
 </tbody>
 </table>
 </details>
@@ -801,8 +801,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Shiratsubi Wing" tabindex="0"><img class="mc-icon" alt="Shiratsubi Wing" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Yomotsubi Abdomen Raw" tabindex="0"><img class="mc-icon" alt="Yomotsubi Abdomen Raw" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>70%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Shiratsubi Wing" tabindex="0"><img class="mc-icon" alt="Shiratsubi Wing" src="../img/item/shiratsubi_wing.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Yomotsubi Abdomen Raw" tabindex="0"><img class="mc-icon" alt="Yomotsubi Abdomen Raw" src="../img/item/yomotsubi_abdomen_raw.png"><span class="trade-count">1-2</span></span></td><td>70%</td></tr>
 </tbody>
 </table>
 </details>
@@ -816,9 +816,9 @@
 <summary>3 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Silkfang Eye" tabindex="0"><img class="mc-icon" alt="Silkfang Eye" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Silkfang Silk" tabindex="0"><img class="mc-icon" alt="Silkfang Silk" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Bundle Of Silkfang Silk" tabindex="0"><img class="mc-icon" alt="Bundle Of Silkfang Silk" src="../img/item/unknown_item.png"></span></td><td>20%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Silkfang Eye" tabindex="0"><img class="mc-icon" alt="Silkfang Eye" src="../img/item/silkfang_eye.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Silkfang Silk" tabindex="0"><img class="mc-icon" alt="Silkfang Silk" src="../img/item/silkfang_silk.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Bundle Of Silkfang Silk" tabindex="0"><img class="mc-icon" alt="Bundle Of Silkfang Silk" src="../img/item/bundle_of_silkfang_silk.png"></span></td><td>20%</td></tr>
 </tbody>
 </table>
 </details>
@@ -832,8 +832,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Plant Matter" tabindex="0"><img class="mc-icon" alt="Plant Matter" src="../img/item/unknown_item.png"><span class="trade-count">1-3</span></span></td><td>60%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Spittleshrub Root" tabindex="0"><img class="mc-icon" alt="Spittleshrub Root" src="../img/item/unknown_item.png"></span></td><td>20%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Plant Matter" tabindex="0"><img class="mc-icon" alt="Plant Matter" src="../img/item/plant_matter.png"><span class="trade-count">1-3</span></span></td><td>60%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Spittleshrub Root" tabindex="0"><img class="mc-icon" alt="Spittleshrub Root" src="../img/item/spittleshrub_root.png"></span></td><td>20%</td></tr>
 </tbody>
 </table>
 </details>
@@ -847,9 +847,9 @@
 <summary>3 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Stingerhead Scale" tabindex="0"><img class="mc-icon" alt="Stingerhead Scale" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>100%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Stingerhead Flesh" tabindex="0"><img class="mc-icon" alt="Stingerhead Flesh" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>100%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Stingerhead Eye" tabindex="0"><img class="mc-icon" alt="Stingerhead Eye" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>40%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Stingerhead Scale" tabindex="0"><img class="mc-icon" alt="Stingerhead Scale" src="../img/item/stingerhead_scale.png"><span class="trade-count">1-2</span></span></td><td>100%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Stingerhead Flesh" tabindex="0"><img class="mc-icon" alt="Stingerhead Flesh" src="../img/item/stingerhead_flesh.png"><span class="trade-count">1-2</span></span></td><td>100%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Stingerhead Eye" tabindex="0"><img class="mc-icon" alt="Stingerhead Eye" src="../img/item/stingerhead_eye.png"><span class="trade-count">1-2</span></span></td><td>40%</td></tr>
 </tbody>
 </table>
 </details>
@@ -863,8 +863,8 @@
 <summary>3 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Swarmshocker Charged Powder" tabindex="0"><img class="mc-icon" alt="Swarmshocker Charged Powder" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Swarmshocker Jelly" tabindex="0"><img class="mc-icon" alt="Swarmshocker Jelly" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Swarmshocker Charged Powder" tabindex="0"><img class="mc-icon" alt="Swarmshocker Charged Powder" src="../img/item/swarmshocker_charged_powder.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Swarmshocker Jelly" tabindex="0"><img class="mc-icon" alt="Swarmshocker Jelly" src="../img/item/swarmshocker_jelly.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
 <tr><td><span class="trade-item" data-tooltip="Soul Sand" tabindex="0"><img class="mc-icon" alt="Soul Sand" src="../img/item/soul_sand.png"></span></td><td>100%</td></tr>
 </tbody>
 </table>
@@ -879,7 +879,7 @@
 <summary>1 drop</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Swarmshocker Charged Powder" tabindex="0"><img class="mc-icon" alt="Swarmshocker Charged Powder" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>30%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Swarmshocker Charged Powder" tabindex="0"><img class="mc-icon" alt="Swarmshocker Charged Powder" src="../img/item/swarmshocker_charged_powder.png"><span class="trade-count">1-2</span></span></td><td>30%</td></tr>
 </tbody>
 </table>
 </details>
@@ -893,9 +893,9 @@
 <summary>3 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Tachikatana Leg" tabindex="0"><img class="mc-icon" alt="Tachikatana Leg" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>80%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Tachikatana Claw" tabindex="0"><img class="mc-icon" alt="Tachikatana Claw" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>80%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Tachikatana Scale" tabindex="0"><img class="mc-icon" alt="Tachikatana Scale" src="../img/item/unknown_item.png"><span class="trade-count">2-8</span></span></td><td>80%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Tachikatana Leg" tabindex="0"><img class="mc-icon" alt="Tachikatana Leg" src="../img/item/tachikatana_leg.png"><span class="trade-count">1-2</span></span></td><td>80%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Tachikatana Claw" tabindex="0"><img class="mc-icon" alt="Tachikatana Claw" src="../img/item/tachikatana_claw.png"><span class="trade-count">1-2</span></span></td><td>80%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Tachikatana Scale" tabindex="0"><img class="mc-icon" alt="Tachikatana Scale" src="../img/item/tachikatana_scale.png"><span class="trade-count">2-8</span></span></td><td>80%</td></tr>
 </tbody>
 </table>
 </details>
@@ -909,8 +909,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Uibuta Meat Raw" tabindex="0"><img class="mc-icon" alt="Uibuta Meat Raw" src="../img/item/unknown_item.png"><span class="trade-count">2-5</span></span></td><td>100%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Uibuta Tooth" tabindex="0"><img class="mc-icon" alt="Uibuta Tooth" src="../img/item/unknown_item.png"><span class="trade-count">1-3</span></span></td><td>75%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Uibuta Meat Raw" tabindex="0"><img class="mc-icon" alt="Uibuta Meat Raw" src="../img/item/uibuta_meat_raw.png"><span class="trade-count">2-5</span></span></td><td>100%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Uibuta Tooth" tabindex="0"><img class="mc-icon" alt="Uibuta Tooth" src="../img/item/uibuta_tooth.png"><span class="trade-count">1-3</span></span></td><td>75%</td></tr>
 </tbody>
 </table>
 </details>
@@ -924,7 +924,7 @@
 <summary>1 drop</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Plant Matter" tabindex="0"><img class="mc-icon" alt="Plant Matter" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Plant Matter" tabindex="0"><img class="mc-icon" alt="Plant Matter" src="../img/item/plant_matter.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
 </tbody>
 </table>
 </details>
@@ -938,7 +938,7 @@
 <summary>1 drop</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Plant Matter" tabindex="0"><img class="mc-icon" alt="Plant Matter" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Plant Matter" tabindex="0"><img class="mc-icon" alt="Plant Matter" src="../img/item/plant_matter.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
 </tbody>
 </table>
 </details>
@@ -952,7 +952,7 @@
 <summary>1 drop</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Plant Matter" tabindex="0"><img class="mc-icon" alt="Plant Matter" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Plant Matter" tabindex="0"><img class="mc-icon" alt="Plant Matter" src="../img/item/plant_matter.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
 </tbody>
 </table>
 </details>
@@ -966,8 +966,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Virinsipede Segments" tabindex="0"><img class="mc-icon" alt="Virinsipede Segments" src="../img/item/unknown_item.png"><span class="trade-count">4-10</span></span></td><td>80%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Virinsipede Antlers" tabindex="0"><img class="mc-icon" alt="Virinsipede Antlers" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>30%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Virinsipede Segments" tabindex="0"><img class="mc-icon" alt="Virinsipede Segments" src="../img/item/virinsipede_segments.png"><span class="trade-count">4-10</span></span></td><td>80%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Virinsipede Antlers" tabindex="0"><img class="mc-icon" alt="Virinsipede Antlers" src="../img/item/virinsipede_antlers.png"><span class="trade-count">1-2</span></span></td><td>30%</td></tr>
 </tbody>
 </table>
 </details>
@@ -981,7 +981,7 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Woodcrier Horn" tabindex="0"><img class="mc-icon" alt="Woodcrier Horn" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Woodcrier Horn" tabindex="0"><img class="mc-icon" alt="Woodcrier Horn" src="../img/item/woodcrier_horn.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
 <tr><td><span class="trade-item" data-tooltip="Brown Wool" tabindex="0"><img class="mc-icon" alt="Brown Wool" src="../img/item/brown_wool.png"><span class="trade-count">1-3</span></span></td><td>60%</td></tr>
 </tbody>
 </table>
@@ -996,8 +996,8 @@
 <summary>2 drops</summary>
 <table class="creature-drops">
 <thead><tr><th>Drop</th><th>Chance</th></tr></thead>
-<tbody><tr><td><span class="trade-item" data-tooltip="Yomotsubi Wing" tabindex="0"><img class="mc-icon" alt="Yomotsubi Wing" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
-<tr><td><span class="trade-item" data-tooltip="Yomotsubi Abdomen" tabindex="0"><img class="mc-icon" alt="Yomotsubi Abdomen" src="../img/item/unknown_item.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tbody><tr><td><span class="trade-item" data-tooltip="Yomotsubi Wing" tabindex="0"><img class="mc-icon" alt="Yomotsubi Wing" src="../img/item/yomotsubi_wing.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
+<tr><td><span class="trade-item" data-tooltip="Yomotsubi Abdomen" tabindex="0"><img class="mc-icon" alt="Yomotsubi Abdomen" src="../img/item/yomotsubi_abdomen.png"><span class="trade-count">1-2</span></span></td><td>60%</td></tr>
 </tbody>
 </table>
 </details>

@@ -17,6 +17,11 @@
 3. Enter the server address
 4. Join and accept the resource pack prompt
 
+## Resource Pack
+
+> The pack is **automatically served** when you join and applies on every join, so there is nothing to
+> install. It **is required**: rejecting it means you cannot play.
+
 ## First Steps
 
 Once you're in, here are some things to check out:

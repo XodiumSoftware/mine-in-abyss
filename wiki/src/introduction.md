@@ -12,7 +12,7 @@ Welcome to the official wiki for **Mine in Abyss**, the Made in Abyss recreation
 <span class="card-header">
 <span class="card-title">Getting Started</span>
 </span>
-<span class="card-desc">How to connect, server rules, and the resource pack</span>
+<span class="card-desc">How to connect - address, version and the resource pack - and the server rules</span>
 </a>
 
 <a class="card" href="layers/index.html">

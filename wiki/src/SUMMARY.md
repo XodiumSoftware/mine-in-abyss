@@ -6,7 +6,6 @@
 
 - [Joining the Server](getting-started/joining.md)
 - [Server Rules](getting-started/rules.md)
-- [Resource Pack](getting-started/resource-pack.md)
 
 # The Abyss
 

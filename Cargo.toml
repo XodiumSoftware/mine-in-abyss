@@ -1,9 +1,9 @@
 [package]
 name = "mine-in-abyss"
-version = "0.0.1"
 edition = "2024"
 authors = ["Xodium"]
 description = "The recreation of 'Made In Abyss' into Minecraft."
+publish = false
 
 [lib]
 crate-type = ["cdylib"]

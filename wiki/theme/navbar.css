@@ -160,6 +160,12 @@ html.sidebar-visible #mdbook-sidebar-toggle::after {
   --sidebar-target-width: 300px;
 }
 
+/* Half the icon button's height plus a gap: the button centres its icon in the
+   bar, so this clears the icon by the same margin from whichever host draws it. */
+:root {
+  --tooltip-offset: 20px;
+}
+
 #mdbook-sidebar-resize-handle {
   display: none;
 }
@@ -184,7 +190,11 @@ html.sidebar-visible #mdbook-sidebar-toggle::after {
   position: absolute;
   z-index: 1000;
   left: 50%;
-  top: calc(100% + 8px);
+  /* Each host is a different height: the sidebar toggle is a flex label as tall
+     as the bar, a link in the right group is only its icon. Hanging the tooltip
+     off the host's own bottom would drop one under the other, so it hangs off
+     the host's centre instead and every bar tooltip shares one line. */
+  top: calc(50% + var(--tooltip-offset));
   transform: translateX(-50%);
 
   width: max-content;
@@ -210,6 +220,28 @@ html.sidebar-visible #mdbook-sidebar-toggle::after {
   transition:
     opacity 0.12s ease,
     visibility 0.12s ease;
+}
+
+/* A centred tooltip hangs off the page wherever its host sits near an edge, and
+   the html element clips the overhang rather than scrolling it into view. The
+   script marks such a host with an alignment, which moves the box back inside
+   and lets a long label wrap instead of standing wider than the page. */
+.chrome-tooltip[data-chrome-tooltip-align="end"]::before {
+  right: 0;
+  left: auto;
+  transform: none;
+}
+
+.chrome-tooltip[data-chrome-tooltip-align="start"]::before {
+  right: auto;
+  left: 0;
+  transform: none;
+}
+
+.chrome-tooltip[data-chrome-tooltip-align]::before {
+  width: max-content;
+  max-width: min(260px, calc(100vw - 32px));
+  white-space: normal;
 }
 
 .chrome-tooltip[data-chrome-tooltip]:hover::before,

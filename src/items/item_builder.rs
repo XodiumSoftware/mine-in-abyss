@@ -53,6 +53,7 @@ impl ItemBuilder {
     /// It runs where it sits in the chain, and before [`build`](Self::build) writes the
     /// identity, so it cannot disturb which kind the stack claims to be.
     #[must_use]
+    #[expect(dead_code, reason = "no kind needs a setter the chain lacks yet")]
     pub(crate) fn apply(mut self, extend: impl FnOnce(&mut ItemStack)) -> Self {
         extend(&mut self.stack);
         self
@@ -79,7 +80,9 @@ pub(crate) fn mark(stack: &ItemStack, id: u8) {
 /// Returns the identifier of the custom item `stack` is, if it is one.
 ///
 /// `None` means this plugin did not create it, so a handler must not assume every stack is
-/// custom.
+/// custom. Nothing reads it yet: `/abyss item` gives a stack away but never has one handed
+/// back to it.
+#[expect(dead_code, reason = "no handler reads an item identity yet")]
 #[must_use]
 pub(crate) fn id_of(stack: &ItemStack) -> Option<u8> {
     stack

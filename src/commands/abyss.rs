@@ -1,20 +1,23 @@
 //! The `/abyss` command.
 //!
-//! Moves a player into any layer of the Abyss directly, without ascending through the
-//! Abyss in between, so the Curse of the Abyss is never inflicted.
+//! Moves a player into any layer of the Abyss directly, without ascending through the Abyss in
+//! between, so the Curse of the Abyss is never inflicted. `item` gives the sender one custom
+//! item, so the item path can be exercised before anything else produces one.
 //!
 //! # Usage
 //!
 //! ```text
 //! /abyss <layer> [player]
+//! /abyss item <item>
 //! ```
 //!
 //! - `<layer>` — `orth`, `first` … `seventh`, or `1` … `8`, case-insensitive
 //! - `[player]` — who to move; only used when the command comes from **console**, since a
 //!   player sender is always moved themselves
+//! - `<item>` — a custom item's display name, case-insensitive, e.g. `beniguma fur`
 //!
-//! Tab-completion for `<layer>` is implemented but disabled: the Pumpkin host panics on
-//! any suggestion request (see [`LayerSuggestions`]).
+//! Tab-completion is implemented but disabled, for the same reason for both arguments: the
+//! Pumpkin host panics on any suggestion request (see [`LayerSuggestions`]).
 //!
 //! # Permissions
 //!
@@ -37,6 +40,7 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::permission::{
 use pumpkin_plugin_api::{Context, Server};
 
 use crate::commands::command::Command as RegisterCommand;
+use crate::items::catalogue;
 use crate::layer::Layer;
 
 /// The `/abyss` command, registration and executor.
@@ -64,9 +68,16 @@ impl RegisterCommand for Abyss {
             CommandNode::argument("layer", &ArgumentType::String(StringType::SingleWord));
         let player = CommandNode::argument("player", &ArgumentType::String(StringType::SingleWord));
 
+        let item = CommandNode::argument("item", &ArgumentType::String(StringType::Greedy));
+
         let command = Command::new(&names, Self::description())
             .then(layer_with_player.then(player).execute(Abyss))
             .then(layer_leaf.execute(Abyss))
+            .then(
+                CommandNode::literal("item")
+                    .then(item.execute(Abyss))
+                    .execute(Abyss),
+            )
             .execute(Abyss);
 
         context.register_command(command, &Self::permission_node());
@@ -89,6 +100,10 @@ impl CommandHandler for Abyss {
         server: Server,
         args: ConsumedArgs,
     ) -> Result<i32, CommandError> {
+        if let Arg::Simple(item) = args.get_value("item") {
+            return Ok(give(&sender, &item));
+        }
+
         let Arg::Simple(layer) = args.get_value("layer") else {
             return Err(CommandError::InvalidConsumption(None));
         };
@@ -134,17 +149,49 @@ impl CommandHandler for Abyss {
     }
 }
 
+/// Gives the sender one item named `name`.
+///
+/// Only a player can be given one: the console has no inventory, and the argument names an
+/// item rather than a recipient, so there is nothing to hand it to.
+///
+/// The first empty slot is filled rather than a fixed one, so repeated use does not overwrite
+/// what was given before. A full inventory is reported rather than silently dropping the item.
+fn give(sender: &CommandSender, name: &str) -> i32 {
+    let Some(player) = sender.as_player() else {
+        sender.send_error(TextComponent::text("Only a player can be given an item."));
+        return 0;
+    };
+
+    let Some(stack) = catalogue::stack(name) else {
+        sender.send_error(TextComponent::text(&format!(
+            "Unknown item '{name}'. Expected one of: {}.",
+            catalogue::NAMES.join(", "),
+        )));
+        return 0;
+    };
+
+    let inventory = player.get_inventory().as_inventory();
+    let empty = (0..inventory.get_size()).find(|slot| inventory.get_item(*slot).is_none());
+
+    let Some(slot) = empty else {
+        sender.send_error(TextComponent::text("Your inventory is full."));
+        return 0;
+    };
+
+    inventory.set_item(slot, Some(stack));
+
+    sender.send_message(TextComponent::text(&format!("Gave one {name}.")));
+    1
+}
+
 /// Suggests layer names for the `<layer>` argument.
 ///
 /// **Disabled.** Attaching this with `CommandNode::suggest` makes the server panic on the
 /// first tab-completion request: Pumpkin's host calls `block_in_place` from the
 /// `Simulation` thread, which has no Tokio reactor, and panics before the plugin is
-/// reached. The handler is kept, and gated behind `cfg(any())` — which is never true — so
-/// it still compiles as part of `cargo check`, and enabling it is a matter of restoring
-/// the two `.suggest(LayerSuggestions)` calls in [`Abyss`]'s `register` and dropping the
-/// gates.
-///
-/// It cannot be exercised until the host is fixed. See the notes in `AGENTS.md`.
+/// reached. The handler is kept, gated behind `cfg(any())` — which is never true — so it
+/// still compiles as part of `cargo check`; enabling it means restoring the
+/// `.suggest(LayerSuggestions)` calls in [`Abyss`]'s `register` and dropping the gates.
 #[cfg(any())]
 #[derive(Debug, Default, Clone, Copy)]
 struct LayerSuggestions;

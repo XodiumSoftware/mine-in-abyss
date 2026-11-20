@@ -181,14 +181,9 @@ mod entities {
 /// share — `Hammerbeak Beak`, `Plant Matter`, `Swarmshocker Charged Powder` — is filed under the
 /// first one that lists it.
 ///
-/// Nothing creates an item yet. `/abyss item`, which gave one to the sender so the path could
-/// be exercised end to end, has been removed, so the tree is kept whole but unused until a
-/// real source of items — loot tables, crafting, a shop — exists.
-#[expect(
-    dead_code,
-    reason = "no caller creates an item until a real item source exists"
-)]
+/// [`catalogue`] is the only caller of a kind's `stack`, and is what `/abyss item` reads.
 mod items {
+    pub(crate) mod catalogue;
     pub(crate) mod item_builder;
     pub(crate) mod orthcoin;
 

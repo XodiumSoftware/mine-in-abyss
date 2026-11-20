@@ -17,7 +17,6 @@ pub(crate) struct Issac;
 
 impl Issac {
     /// Spawns Issac, the Intricate Glazer in `world` at `position`.
-    #[expect(dead_code, reason = "no caller places a trader yet")]
     pub(crate) fn entity(world: &World, position: (f64, f64, f64)) -> Entity {
         EntityBuilder::of(100, EntityType::Villager)
             .name(

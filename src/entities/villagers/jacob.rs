@@ -17,7 +17,6 @@ pub(crate) struct Jacob;
 
 impl Jacob {
     /// Spawns Jacob, Archer in `world` at `position`.
-    #[expect(dead_code, reason = "no caller places a trader yet")]
     pub(crate) fn entity(world: &World, position: (f64, f64, f64)) -> Entity {
         EntityBuilder::of(95, EntityType::Villager)
             .name(TextComponent::text("Jacob, Archer").color_rgb(rgb(0x2E, 0x8B, 0x57)))

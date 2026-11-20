@@ -17,7 +17,6 @@ pub(crate) struct Tags;
 
 impl Tags {
     /// Spawns Tags, Weaponsmith in `world` at `position`.
-    #[expect(dead_code, reason = "no caller places a trader yet")]
     pub(crate) fn entity(world: &World, position: (f64, f64, f64)) -> Entity {
         EntityBuilder::of(94, EntityType::Villager)
             .name(TextComponent::text("Tags, Weaponsmith").color_rgb(rgb(0xE6, 0x7E, 0x22)))

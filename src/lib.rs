@@ -114,13 +114,8 @@ mod entities {
 
     /// Villagers, the traders of Orth.
     ///
-    /// Kept whole while `/abyss summon` is gone: the kinds are authored and their numbers
-    /// reserved, but nothing places one until a trader has a caller again — a map marker, or
-    /// a command of its own.
-    #[expect(
-        dead_code,
-        reason = "no caller places a trader until the summon subcommand returns"
-    )]
+    /// [`catalogue`] is the only caller of a trader's `entity` constructor, and is what
+    /// `/abyss spawn` reads.
     pub(crate) mod villagers {
         pub(crate) mod alistair;
         pub(crate) mod benner;
@@ -130,6 +125,7 @@ mod entities {
         pub(crate) mod bilton;
         pub(crate) mod bob;
         pub(crate) mod boy;
+        pub(crate) mod catalogue;
         pub(crate) mod cedric;
         pub(crate) mod cress;
         pub(crate) mod dayne;
@@ -524,326 +520,391 @@ pub const LAYERS: [Layer; 8] = Layer::ALL;
 pub(crate) fn mob_kinds() -> [entities::mobs::mob_kind::MobKind; 65] {
     [
         entities::mobs::mob_kind::MobKind::of(
+            "Beniguma",
             entities::mobs::docile::beniguma::Beniguma::LAYERS,
             entities::mobs::docile::beniguma::Beniguma::CATEGORY,
             entities::mobs::docile::beniguma::Beniguma::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Cyatoria",
             entities::mobs::aerial::cyatoria::Cyatoria::LAYERS,
             entities::mobs::aerial::cyatoria::Cyatoria::CATEGORY,
             entities::mobs::aerial::cyatoria::Cyatoria::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Small Hammerbeak",
             entities::mobs::aerial::small_hammerbeak::SmallHammerbeak::LAYERS,
             entities::mobs::aerial::small_hammerbeak::SmallHammerbeak::CATEGORY,
             entities::mobs::aerial::small_hammerbeak::SmallHammerbeak::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Giant Hammerbeak",
             entities::mobs::aerial::giant_hammerbeak::GiantHammerbeak::LAYERS,
             entities::mobs::aerial::giant_hammerbeak::GiantHammerbeak::CATEGORY,
             entities::mobs::aerial::giant_hammerbeak::GiantHammerbeak::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Splitjaw",
             entities::mobs::aerial::splitjaw::Splitjaw::LAYERS,
             entities::mobs::aerial::splitjaw::Splitjaw::CATEGORY,
             entities::mobs::aerial::splitjaw::Splitjaw::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Woodcrier",
             entities::mobs::hostile::woodcrier::Woodcrier::LAYERS,
             entities::mobs::hostile::woodcrier::Woodcrier::CATEGORY,
             entities::mobs::hostile::woodcrier::Woodcrier::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Man-toyer",
             entities::mobs::hostile::man_toyer::ManToyer::LAYERS,
             entities::mobs::hostile::man_toyer::ManToyer::CATEGORY,
             entities::mobs::hostile::man_toyer::ManToyer::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Silkfang",
             entities::mobs::hostile::silkfang::Silkfang::LAYERS,
             entities::mobs::hostile::silkfang::Silkfang::CATEGORY,
             entities::mobs::hostile::silkfang::Silkfang::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Spittleshrub",
             entities::mobs::hostile::spittleshrub::Spittleshrub::LAYERS,
             entities::mobs::hostile::spittleshrub::Spittleshrub::CATEGORY,
             entities::mobs::hostile::spittleshrub::Spittleshrub::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Vinebinder",
             entities::mobs::hostile::vinebinder::Vinebinder::LAYERS,
             entities::mobs::hostile::vinebinder::Vinebinder::CATEGORY,
             entities::mobs::hostile::vinebinder::Vinebinder::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Vineblaster",
             entities::mobs::hostile::vineblaster::Vineblaster::LAYERS,
             entities::mobs::hostile::vineblaster::Vineblaster::CATEGORY,
             entities::mobs::hostile::vineblaster::Vineblaster::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Vinepoofer",
             entities::mobs::hostile::vinepoofer::Vinepoofer::LAYERS,
             entities::mobs::hostile::vinepoofer::Vinepoofer::CATEGORY,
             entities::mobs::hostile::vinepoofer::Vinepoofer::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Fuwagi",
             entities::mobs::passive::fuwagi::Fuwagi::LAYERS,
             entities::mobs::passive::fuwagi::Fuwagi::CATEGORY,
             entities::mobs::passive::fuwagi::Fuwagi::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Okibo",
             entities::mobs::passive::okibo::Okibo::LAYERS,
             entities::mobs::passive::okibo::Okibo::CATEGORY,
             entities::mobs::passive::okibo::Okibo::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Spiralsquid",
             entities::mobs::aquatic::spiralsquid::Spiralsquid::LAYERS,
             entities::mobs::aquatic::spiralsquid::Spiralsquid::CATEGORY,
             entities::mobs::aquatic::spiralsquid::Spiralsquid::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Chimokami",
             entities::mobs::docile::chimokami::Chimokami::LAYERS,
             entities::mobs::docile::chimokami::Chimokami::CATEGORY,
             entities::mobs::docile::chimokami::Chimokami::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Corpse-Weeper",
             entities::mobs::aerial::corpse_weeper::CorpseWeeper::LAYERS,
             entities::mobs::aerial::corpse_weeper::CorpseWeeper::CATEGORY,
             entities::mobs::aerial::corpse_weeper::CorpseWeeper::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Dosetori",
             entities::mobs::aerial::dosetori::Dosetori::LAYERS,
             entities::mobs::aerial::dosetori::Dosetori::CATEGORY,
             entities::mobs::aerial::dosetori::Dosetori::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Ottobas",
             entities::mobs::hostile::ottobas::Ottobas::LAYERS,
             entities::mobs::hostile::ottobas::Ottobas::CATEGORY,
             entities::mobs::hostile::ottobas::Ottobas::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Tesuchi",
             entities::mobs::passive::tesuchi::Tesuchi::LAYERS,
             entities::mobs::passive::tesuchi::Tesuchi::CATEGORY,
             entities::mobs::passive::tesuchi::Tesuchi::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Hisoishi",
             entities::mobs::docile::hisoishi::Hisoishi::LAYERS,
             entities::mobs::docile::hisoishi::Hisoishi::CATEGORY,
             entities::mobs::docile::hisoishi::Hisoishi::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Rockwalker",
             entities::mobs::docile::rockwalker::Rockwalker::LAYERS,
             entities::mobs::docile::rockwalker::Rockwalker::CATEGORY,
             entities::mobs::docile::rockwalker::Rockwalker::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Rohana",
             entities::mobs::aerial::rohana::Rohana::LAYERS,
             entities::mobs::aerial::rohana::Rohana::CATEGORY,
             entities::mobs::aerial::rohana::Rohana::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Stinger",
             entities::mobs::aerial::stinger::Stinger::LAYERS,
             entities::mobs::aerial::stinger::Stinger::CATEGORY,
             entities::mobs::aerial::stinger::Stinger::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Inbyo",
             entities::mobs::hostile::inbyo::Inbyo::LAYERS,
             entities::mobs::hostile::inbyo::Inbyo::CATEGORY,
             entities::mobs::hostile::inbyo::Inbyo::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Billabonk",
             entities::mobs::passive::billabonk::Billabonk::LAYERS,
             entities::mobs::passive::billabonk::Billabonk::CATEGORY,
             entities::mobs::passive::billabonk::Billabonk::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Neritantan",
             entities::mobs::passive::neritantan::Neritantan::LAYERS,
             entities::mobs::passive::neritantan::Neritantan::CATEGORY,
             entities::mobs::passive::neritantan::Neritantan::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Ikenosuke",
             entities::mobs::aquatic::ikenosuke::Ikenosuke::LAYERS,
             entities::mobs::aquatic::ikenosuke::Ikenosuke::CATEGORY,
             entities::mobs::aquatic::ikenosuke::Ikenosuke::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Daikonchu",
             entities::mobs::docile::daikonchu::Daikonchu::LAYERS,
             entities::mobs::docile::daikonchu::Daikonchu::CATEGORY,
             entities::mobs::docile::daikonchu::Daikonchu::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Rinsipede",
             entities::mobs::docile::rinsipede::Rinsipede::LAYERS,
             entities::mobs::docile::rinsipede::Rinsipede::CATEGORY,
             entities::mobs::docile::rinsipede::Rinsipede::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Buroguro",
             entities::mobs::aerial::buroguro::Buroguro::LAYERS,
             entities::mobs::aerial::buroguro::Buroguro::CATEGORY,
             entities::mobs::aerial::buroguro::Buroguro::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Madokajack",
             entities::mobs::aerial::madokajack::Madokajack::LAYERS,
             entities::mobs::aerial::madokajack::Madokajack::CATEGORY,
             entities::mobs::aerial::madokajack::Madokajack::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Squidfly",
             entities::mobs::aerial::squidfly::Squidfly::LAYERS,
             entities::mobs::aerial::squidfly::Squidfly::CATEGORY,
             entities::mobs::aerial::squidfly::Squidfly::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Himushi",
             entities::mobs::hostile::himushi::Himushi::LAYERS,
             entities::mobs::hostile::himushi::Himushi::CATEGORY,
             entities::mobs::hostile::himushi::Himushi::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Yomotsubi",
             entities::mobs::hostile::yomotsubi::Yomotsubi::LAYERS,
             entities::mobs::hostile::yomotsubi::Yomotsubi::CATEGORY,
             entities::mobs::hostile::yomotsubi::Yomotsubi::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Kakatsumuri",
             entities::mobs::passive::kakatsumuri::Kakatsumuri::LAYERS,
             entities::mobs::passive::kakatsumuri::Kakatsumuri::CATEGORY,
             entities::mobs::passive::kakatsumuri::Kakatsumuri::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Sakuranbo",
             entities::mobs::passive::sakuranbo::Sakuranbo::LAYERS,
             entities::mobs::passive::sakuranbo::Sakuranbo::CATEGORY,
             entities::mobs::passive::sakuranbo::Sakuranbo::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Hashofu",
             entities::mobs::aerial::hashofu::Hashofu::LAYERS,
             entities::mobs::aerial::hashofu::Hashofu::CATEGORY,
             entities::mobs::aerial::hashofu::Hashofu::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Onitsuchi",
             entities::mobs::aerial::onitsuchi::Onitsuchi::LAYERS,
             entities::mobs::aerial::onitsuchi::Onitsuchi::CATEGORY,
             entities::mobs::aerial::onitsuchi::Onitsuchi::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Horncrier",
             entities::mobs::hostile::horncrier::Horncrier::LAYERS,
             entities::mobs::hostile::horncrier::Horncrier::CATEGORY,
             entities::mobs::hostile::horncrier::Horncrier::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Kuongatari",
             entities::mobs::hostile::kuongatari::Kuongatari::LAYERS,
             entities::mobs::hostile::kuongatari::Kuongatari::CATEGORY,
             entities::mobs::hostile::kuongatari::Kuongatari::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Orb Piercer",
             entities::mobs::hostile::orb_piercer::OrbPiercer::LAYERS,
             entities::mobs::hostile::orb_piercer::OrbPiercer::CATEGORY,
             entities::mobs::hostile::orb_piercer::OrbPiercer::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Swarmshocker",
             entities::mobs::hostile::swarmshocker::Swarmshocker::LAYERS,
             entities::mobs::hostile::swarmshocker::Swarmshocker::CATEGORY,
             entities::mobs::hostile::swarmshocker::Swarmshocker::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Tachikatana",
             entities::mobs::hostile::tachikatana::Tachikatana::LAYERS,
             entities::mobs::hostile::tachikatana::Tachikatana::CATEGORY,
             entities::mobs::hostile::tachikatana::Tachikatana::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Uibuta",
             entities::mobs::hostile::uibuta::Uibuta::LAYERS,
             entities::mobs::hostile::uibuta::Uibuta::CATEGORY,
             entities::mobs::hostile::uibuta::Uibuta::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Shroombear",
             entities::mobs::passive::shroombear::Shroombear::LAYERS,
             entities::mobs::passive::shroombear::Shroombear::CATEGORY,
             entities::mobs::passive::shroombear::Shroombear::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Hagamizukin",
             entities::mobs::aquatic::hagamizukin::Hagamizukin::LAYERS,
             entities::mobs::aquatic::hagamizukin::Hagamizukin::CATEGORY,
             entities::mobs::aquatic::hagamizukin::Hagamizukin::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Kazura",
             entities::mobs::aquatic::kazura::Kazura::LAYERS,
             entities::mobs::aquatic::kazura::Kazura::CATEGORY,
             entities::mobs::aquatic::kazura::Kazura::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Makihige",
             entities::mobs::aquatic::makihige::Makihige::LAYERS,
             entities::mobs::aquatic::makihige::Makihige::CATEGORY,
             entities::mobs::aquatic::makihige::Makihige::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Spikewalker",
             entities::mobs::docile::spikewalker::Spikewalker::LAYERS,
             entities::mobs::docile::spikewalker::Spikewalker::CATEGORY,
             entities::mobs::docile::spikewalker::Spikewalker::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Titanjaw",
             entities::mobs::docile::titanjaw::Titanjaw::LAYERS,
             entities::mobs::docile::titanjaw::Titanjaw::CATEGORY,
             entities::mobs::docile::titanjaw::Titanjaw::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Kagi-Tachikiri",
             entities::mobs::aerial::kagi_tachikiri::KagiTachikiri::LAYERS,
             entities::mobs::aerial::kagi_tachikiri::KagiTachikiri::CATEGORY,
             entities::mobs::aerial::kagi_tachikiri::KagiTachikiri::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Chikyuoebi",
             entities::mobs::hostile::chikyuoebi::Chikyuoebi::LAYERS,
             entities::mobs::hostile::chikyuoebi::Chikyuoebi::CATEGORY,
             entities::mobs::hostile::chikyuoebi::Chikyuoebi::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Octoliar",
             entities::mobs::hostile::octoliar::Octoliar::LAYERS,
             entities::mobs::hostile::octoliar::Octoliar::CATEGORY,
             entities::mobs::hostile::octoliar::Octoliar::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Stingerhead",
             entities::mobs::hostile::stingerhead::Stingerhead::LAYERS,
             entities::mobs::hostile::stingerhead::Stingerhead::CATEGORY,
             entities::mobs::hostile::stingerhead::Stingerhead::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Swarmhoarder",
             entities::mobs::hostile::swarmhoarder::Swarmhoarder::LAYERS,
             entities::mobs::hostile::swarmhoarder::Swarmhoarder::CATEGORY,
             entities::mobs::hostile::swarmhoarder::Swarmhoarder::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Spore Manta",
             entities::mobs::aerial::spore_manta::SporeManta::LAYERS,
             entities::mobs::aerial::spore_manta::SporeManta::CATEGORY,
             entities::mobs::aerial::spore_manta::SporeManta::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Virinsipede",
             entities::mobs::hostile::virinsipede::Virinsipede::LAYERS,
             entities::mobs::hostile::virinsipede::Virinsipede::CATEGORY,
             entities::mobs::hostile::virinsipede::Virinsipede::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Shiratsubi",
             entities::mobs::hostile::shiratsubi::Shiratsubi::LAYERS,
             entities::mobs::hostile::shiratsubi::Shiratsubi::CATEGORY,
             entities::mobs::hostile::shiratsubi::Shiratsubi::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Abyssal Snail",
             entities::mobs::passive::abyssal_snail::AbyssalSnail::LAYERS,
             entities::mobs::passive::abyssal_snail::AbyssalSnail::CATEGORY,
             entities::mobs::passive::abyssal_snail::AbyssalSnail::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Ashimite",
             entities::mobs::passive::ashimite::Ashimite::LAYERS,
             entities::mobs::passive::ashimite::Ashimite::CATEGORY,
             entities::mobs::passive::ashimite::Ashimite::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Ikonia",
             entities::mobs::passive::ikonia::Ikonia::LAYERS,
             entities::mobs::passive::ikonia::Ikonia::CATEGORY,
             entities::mobs::passive::ikonia::Ikonia::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Demonfish",
             entities::mobs::aquatic::demonfish::Demonfish::LAYERS,
             entities::mobs::aquatic::demonfish::Demonfish::CATEGORY,
             entities::mobs::aquatic::demonfish::Demonfish::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Edusan",
             entities::mobs::aquatic::edusan::Edusan::LAYERS,
             entities::mobs::aquatic::edusan::Edusan::CATEGORY,
             entities::mobs::aquatic::edusan::Edusan::spawn,
         ),
         entities::mobs::mob_kind::MobKind::of(
+            "Hisomukuro",
             entities::mobs::aquatic::hisomukuro::Hisomukuro::LAYERS,
             entities::mobs::aquatic::hisomukuro::Hisomukuro::CATEGORY,
             entities::mobs::aquatic::hisomukuro::Hisomukuro::spawn,

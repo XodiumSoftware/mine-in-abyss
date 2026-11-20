@@ -17,7 +17,6 @@ pub(crate) struct BucketBill;
 
 impl BucketBill {
     /// Spawns `BucketBill`, Bucket Trader in `world` at `position`.
-    #[expect(dead_code, reason = "no caller places a trader yet")]
     pub(crate) fn entity(world: &World, position: (f64, f64, f64)) -> Entity {
         EntityBuilder::of(88, EntityType::Villager)
             .name(TextComponent::text("BucketBill, Bucket Trader").color_rgb(rgb(0x2E, 0x86, 0xC1)))

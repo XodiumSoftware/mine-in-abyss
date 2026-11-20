@@ -17,7 +17,6 @@ pub(crate) struct Alistair;
 
 impl Alistair {
     /// Spawns Alistair, Geomancy Enjoyer in `world` at `position`.
-    #[expect(dead_code, reason = "no caller places a trader yet")]
     pub(crate) fn entity(world: &World, position: (f64, f64, f64)) -> Entity {
         EntityBuilder::of(84, EntityType::Villager)
             .name(

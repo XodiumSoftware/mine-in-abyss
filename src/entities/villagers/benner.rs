@@ -17,7 +17,6 @@ pub(crate) struct Benner;
 
 impl Benner {
     /// Spawns Benner, Also Lord of Currency in `world` at `position`.
-    #[expect(dead_code, reason = "no caller places a trader yet")]
     pub(crate) fn entity(world: &World, position: (f64, f64, f64)) -> Entity {
         EntityBuilder::of(67, EntityType::Villager)
             .name(

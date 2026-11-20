@@ -17,7 +17,6 @@ pub(crate) struct Veris;
 
 impl Veris {
     /// Spawns Veris, Gem Lover in `world` at `position`.
-    #[expect(dead_code, reason = "no caller places a trader yet")]
     pub(crate) fn entity(world: &World, position: (f64, f64, f64)) -> Entity {
         EntityBuilder::of(81, EntityType::Villager)
             .name(TextComponent::text("Veris, Gem Lover").color_rgb(rgb(0x9C, 0x27, 0xB0)))

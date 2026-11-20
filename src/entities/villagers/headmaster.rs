@@ -17,7 +17,6 @@ pub(crate) struct Headmaster;
 
 impl Headmaster {
     /// Spawns Headmaster, The Head Trader in `world` at `position`.
-    #[expect(dead_code, reason = "no caller places a trader yet")]
     pub(crate) fn entity(world: &World, position: (f64, f64, f64)) -> Entity {
         EntityBuilder::of(78, EntityType::Villager)
             .name(

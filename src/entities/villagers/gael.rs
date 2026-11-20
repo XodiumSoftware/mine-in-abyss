@@ -17,7 +17,6 @@ pub(crate) struct Gael;
 
 impl Gael {
     /// Spawns Gael, Glass Master in `world` at `position`.
-    #[expect(dead_code, reason = "no caller places a trader yet")]
     pub(crate) fn entity(world: &World, position: (f64, f64, f64)) -> Entity {
         EntityBuilder::of(72, EntityType::Villager)
             .name(TextComponent::text("Gael, Glass Master").color_rgb(rgb(0xA8, 0xD8, 0xE8)))

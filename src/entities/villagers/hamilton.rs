@@ -17,7 +17,6 @@ pub(crate) struct Hamilton;
 
 impl Hamilton {
     /// Spawns Hamilton, Weaponsmith in `world` at `position`.
-    #[expect(dead_code, reason = "no caller places a trader yet")]
     pub(crate) fn entity(world: &World, position: (f64, f64, f64)) -> Entity {
         EntityBuilder::of(98, EntityType::Villager)
             .name(TextComponent::text("Hamilton, Weaponsmith").color_rgb(rgb(0x35, 0x7A, 0xBD)))

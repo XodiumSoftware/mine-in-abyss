@@ -17,7 +17,6 @@ pub(crate) struct Odroy;
 
 impl Odroy {
     /// Spawns Odroy, The Apothecary in `world` at `position`.
-    #[expect(dead_code, reason = "no caller places a trader yet")]
     pub(crate) fn entity(world: &World, position: (f64, f64, f64)) -> Entity {
         EntityBuilder::of(68, EntityType::Villager)
             .name(TextComponent::text("Odroy, The Apothecary").color_rgb(rgb(0x66, 0xCC, 0x66)))

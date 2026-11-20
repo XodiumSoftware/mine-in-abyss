@@ -40,6 +40,7 @@ use pumpkin_plugin_api::wit::pumpkin::plugin::permission::{
 use pumpkin_plugin_api::{Context, Server};
 
 use crate::commands::command::Command as RegisterCommand;
+use crate::entities::villagers::catalogue as traders;
 use crate::items::catalogue;
 use crate::layer::Layer;
 
@@ -70,12 +71,19 @@ impl RegisterCommand for Abyss {
 
         let item = CommandNode::argument("item", &ArgumentType::String(StringType::Greedy));
 
+        let entity = CommandNode::argument("entity", &ArgumentType::String(StringType::Greedy));
+
         let command = Command::new(&names, Self::description())
             .then(layer_with_player.then(player).execute(Abyss))
             .then(layer_leaf.execute(Abyss))
             .then(
                 CommandNode::literal("item")
                     .then(item.execute(Abyss))
+                    .execute(Abyss),
+            )
+            .then(
+                CommandNode::literal("spawn")
+                    .then(entity.execute(Abyss))
                     .execute(Abyss),
             )
             .execute(Abyss);
@@ -102,6 +110,10 @@ impl CommandHandler for Abyss {
     ) -> Result<i32, CommandError> {
         if let Arg::Simple(item) = args.get_value("item") {
             return Ok(give(&sender, &item));
+        }
+
+        if let Arg::Simple(entity) = args.get_value("entity") {
+            return Ok(spawn(&sender, &entity));
         }
 
         let Arg::Simple(layer) = args.get_value("layer") else {
@@ -182,6 +194,54 @@ fn give(sender: &CommandSender, name: &str) -> i32 {
 
     sender.send_message(TextComponent::text(&format!("Gave one {name}.")));
     1
+}
+
+/// Spawns a mob or trader named `name` in front of the sender.
+///
+/// Mobs come from [`mob_kinds`](crate::mob_kinds), which already knows every kind, and
+/// traders from their own table, since they have no catalogue. A mob kind's `LAYERS` is not
+/// consulted: this places one wherever the sender stands, deliberately, the way a spawn egg
+/// or `/summon` would — the layer list only gates the natural spawn rule.
+///
+/// The entity is placed two blocks in front of the sender's facing, so it does not appear
+/// inside them.
+fn spawn(sender: &CommandSender, name: &str) -> i32 {
+    let Some(player) = sender.as_player() else {
+        sender.send_error(TextComponent::text("Only a player can spawn an entity."));
+        return 0;
+    };
+
+    let world = player.as_entity().get_world();
+
+    let (x, y, z) = player.get_position();
+    let position = (x + 2.0, y, z + 2.0);
+
+    if let Some(kind) = crate::mob_kinds().into_iter().find(|k| k.is_named(name)) {
+        (kind.spawn)(&world, position);
+        sender.send_message(TextComponent::text(&format!("Spawned {}.", kind.name)));
+        return 1;
+    }
+
+    if let Some(constructor) = traders::spawn(name) {
+        constructor(&world, position);
+        sender.send_message(TextComponent::text(&format!("Spawned {name}.")));
+        return 1;
+    }
+
+    sender.send_error(TextComponent::text(&format!(
+        "Unknown entity '{name}'. Expected a mob ({}) or a trader ({}).",
+        mob_names().join(", "),
+        traders::NAMES.join(", "),
+    )));
+    0
+}
+
+/// Every mob name `/abyss spawn` accepts, for the unknown-entity message.
+fn mob_names() -> Vec<&'static str> {
+    crate::mob_kinds()
+        .into_iter()
+        .map(|kind| kind.name)
+        .collect()
 }
 
 /// Suggests layer names for the `<layer>` argument.

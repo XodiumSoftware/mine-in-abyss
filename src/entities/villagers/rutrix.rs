@@ -17,7 +17,6 @@ pub(crate) struct Rutrix;
 
 impl Rutrix {
     /// Spawns Rutrix, DJ in `world` at `position`.
-    #[expect(dead_code, reason = "no caller places a trader yet")]
     pub(crate) fn entity(world: &World, position: (f64, f64, f64)) -> Entity {
         EntityBuilder::of(77, EntityType::Villager)
             .name(TextComponent::text("Rutrix, DJ").color_rgb(rgb(0x9B, 0x30, 0xD8)))

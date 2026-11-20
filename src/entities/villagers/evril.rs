@@ -17,7 +17,6 @@ pub(crate) struct Evril;
 
 impl Evril {
     /// Spawns Evril, Void Seeker in `world` at `position`.
-    #[expect(dead_code, reason = "no caller places a trader yet")]
     pub(crate) fn entity(world: &World, position: (f64, f64, f64)) -> Entity {
         EntityBuilder::of(83, EntityType::Villager)
             .name(TextComponent::text("Evril, Void Seeker").color_rgb(rgb(0x5B, 0x2C, 0x6F)))

@@ -17,7 +17,6 @@ pub(crate) struct Quentin;
 
 impl Quentin {
     /// Spawns Quentin, Keen Weaver in `world` at `position`.
-    #[expect(dead_code, reason = "no caller places a trader yet")]
     pub(crate) fn entity(world: &World, position: (f64, f64, f64)) -> Entity {
         EntityBuilder::of(99, EntityType::Villager)
             .name(TextComponent::text("Quentin, Keen Weaver").color_rgb(rgb(0xE0, 0x91, 0x3D)))

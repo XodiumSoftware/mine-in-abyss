@@ -18,6 +18,11 @@ use crate::layer::Layer;
 /// Everything about a mob kind a spawn rule reads, plus the function that spawns it.
 #[derive(Debug, Clone, Copy)]
 pub(crate) struct MobKind {
+    /// The kind's display name, as its own `spawn` sets it.
+    ///
+    /// Carried here so `/abyss spawn` can look a kind up by name without a second table; the
+    /// spawn rule ignores it.
+    pub(crate) name: &'static str,
     /// The layers the kind may spawn in, from the kind's `LAYERS`.
     pub(crate) layers: &'static [Layer],
     /// How the kind behaves towards players, from the kind's `CATEGORY`.
@@ -33,15 +38,23 @@ pub(crate) struct MobKind {
 impl MobKind {
     /// Builds the catalogue entry for one kind.
     pub(crate) const fn of(
+        name: &'static str,
         layers: &'static [Layer],
         category: MobCategory,
         spawn: fn(&World, (f64, f64, f64)) -> Entity,
     ) -> Self {
         Self {
+            name,
             layers,
             category,
             spawn,
         }
+    }
+
+    /// Returns whether this kind answers to `name`, case-insensitively.
+    #[must_use]
+    pub(crate) fn is_named(&self, name: &str) -> bool {
+        self.name.eq_ignore_ascii_case(name)
     }
 
     /// Returns whether this kind may spawn in `layer`.

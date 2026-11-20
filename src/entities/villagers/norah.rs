@@ -17,7 +17,6 @@ pub(crate) struct Norah;
 
 impl Norah {
     /// Spawns Norah, The Warped in `world` at `position`.
-    #[expect(dead_code, reason = "no caller places a trader yet")]
     pub(crate) fn entity(world: &World, position: (f64, f64, f64)) -> Entity {
         EntityBuilder::of(71, EntityType::Villager)
             .name(TextComponent::text("Norah, The Warped").color_rgb(rgb(0x2E, 0x8B, 0x8B)))

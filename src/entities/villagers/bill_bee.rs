@@ -17,7 +17,6 @@ pub(crate) struct BeeBill;
 
 impl BeeBill {
     /// Spawns `BeeBill`, Bee Keeper in `world` at `position`.
-    #[expect(dead_code, reason = "no caller places a trader yet")]
     pub(crate) fn entity(world: &World, position: (f64, f64, f64)) -> Entity {
         EntityBuilder::of(101, EntityType::Villager)
             .name(TextComponent::text("BeeBill, Bee Keeper").color_rgb(rgb(0xE8, 0xB9, 0x23)))

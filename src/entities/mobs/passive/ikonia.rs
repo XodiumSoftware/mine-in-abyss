@@ -30,6 +30,8 @@ impl Ikonia {
                     living.set_attribute_base(Attribute::MaxHealth, 160.0);
                     living.set_health(160.0);
                 }
+
+                Ikonia::CATEGORY.apply_ai(entity);
             })
             .build(world, position)
     }

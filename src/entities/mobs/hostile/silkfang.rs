@@ -30,6 +30,8 @@ impl Silkfang {
                     living.set_attribute_base(Attribute::MaxHealth, 22.0);
                     living.set_health(22.0);
                 }
+
+                Silkfang::CATEGORY.apply_ai(entity);
             })
             .build(world, position)
     }

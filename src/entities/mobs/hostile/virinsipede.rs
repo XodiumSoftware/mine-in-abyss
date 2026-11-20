@@ -30,6 +30,8 @@ impl Virinsipede {
                     living.set_attribute_base(Attribute::MaxHealth, 150.0);
                     living.set_health(150.0);
                 }
+
+                Virinsipede::CATEGORY.apply_ai(entity);
             })
             .build(world, position)
     }

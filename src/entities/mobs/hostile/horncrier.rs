@@ -30,6 +30,8 @@ impl Horncrier {
                     living.set_attribute_base(Attribute::MaxHealth, 60.0);
                     living.set_health(60.0);
                 }
+
+                Horncrier::CATEGORY.apply_ai(entity);
             })
             .build(world, position)
     }

@@ -30,6 +30,8 @@ impl Yomotsubi {
                     living.set_attribute_base(Attribute::MaxHealth, 40.0);
                     living.set_health(40.0);
                 }
+
+                Yomotsubi::CATEGORY.apply_ai(entity);
             })
             .build(world, position)
     }

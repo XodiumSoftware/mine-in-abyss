@@ -30,6 +30,8 @@ impl Tachikatana {
                     living.set_attribute_base(Attribute::MaxHealth, 220.0);
                     living.set_health(220.0);
                 }
+
+                Tachikatana::CATEGORY.apply_ai(entity);
             })
             .build(world, position)
     }

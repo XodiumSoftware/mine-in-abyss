@@ -30,6 +30,8 @@ impl Spittleshrub {
                     living.set_attribute_base(Attribute::MaxHealth, 20.0);
                     living.set_health(20.0);
                 }
+
+                Spittleshrub::CATEGORY.apply_ai(entity);
             })
             .build(world, position)
     }

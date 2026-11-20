@@ -8,7 +8,7 @@
 use pumpkin_plugin_api::text::TextComponent;
 use pumpkin_plugin_api::wit::pumpkin::plugin::attributes::Attribute;
 use pumpkin_plugin_api::wit::pumpkin::plugin::entity_types::EntityType;
-use pumpkin_plugin_api::world::{BuiltinAiGoal, Entity, PathNodeType, World};
+use pumpkin_plugin_api::world::{Entity, World};
 
 use crate::entities::entity_builder::EntityBuilder;
 use crate::entities::mobs::mob_category::MobCategory;
@@ -28,8 +28,8 @@ impl Beniguma {
 
     /// Spawns this kind in `world` at `position`.
     ///
-    /// The wolf's goals are cleared before this kind's are added: the pathfinding maluses
-    /// then keep it out of fire, lava and fences.
+    /// Its goals and pathfinding come from the shared `Docile` pass in
+    /// [`MobCategory::apply_ai`], so they stay identical to every other docile kind.
     #[must_use]
     pub(crate) fn spawn(world: &World, position: (f64, f64, f64)) -> Entity {
         EntityBuilder::of(1, EntityType::Wolf)
@@ -43,18 +43,7 @@ impl Beniguma {
                     living.set_attribute_base(Attribute::FollowRange, 32.0);
                 }
 
-                if let Some(mob) = entity.as_mob() {
-                    mob.clear_ai_goals();
-                    mob.add_ai_goal(0, BuiltinAiGoal::EscapeDanger(1.2));
-                    mob.add_ai_goal(1, BuiltinAiGoal::WanderAround(0.6));
-                    mob.add_ai_goal(2, BuiltinAiGoal::LookAtPlayer(8.0));
-                    mob.add_ai_goal(3, BuiltinAiGoal::LookAround);
-
-                    mob.set_pathfinding_malus(PathNodeType::DangerFire, 16.0);
-                    mob.set_pathfinding_malus(PathNodeType::DamageFire, 16.0);
-                    mob.set_pathfinding_malus(PathNodeType::Lava, 32.0);
-                    mob.set_pathfinding_malus(PathNodeType::Fence, 8.0);
-                }
+                Beniguma::CATEGORY.apply_ai(entity);
             })
             .build(world, position)
     }

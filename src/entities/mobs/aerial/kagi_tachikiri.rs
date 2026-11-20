@@ -30,6 +30,8 @@ impl KagiTachikiri {
                     living.set_attribute_base(Attribute::MaxHealth, 50.0);
                     living.set_health(50.0);
                 }
+
+                KagiTachikiri::CATEGORY.apply_ai(entity);
             })
             .build(world, position)
     }

@@ -30,6 +30,8 @@ impl Stingerhead {
                     living.set_attribute_base(Attribute::MaxHealth, 260.0);
                     living.set_health(260.0);
                 }
+
+                Stingerhead::CATEGORY.apply_ai(entity);
             })
             .build(world, position)
     }

@@ -30,6 +30,8 @@ impl Kakatsumuri {
                     living.set_attribute_base(Attribute::MaxHealth, 5.0);
                     living.set_health(5.0);
                 }
+
+                Kakatsumuri::CATEGORY.apply_ai(entity);
             })
             .build(world, position)
     }

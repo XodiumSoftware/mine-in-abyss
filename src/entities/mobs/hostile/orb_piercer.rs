@@ -30,6 +30,8 @@ impl OrbPiercer {
                     living.set_attribute_base(Attribute::MaxHealth, 180.0);
                     living.set_health(180.0);
                 }
+
+                OrbPiercer::CATEGORY.apply_ai(entity);
             })
             .build(world, position)
     }

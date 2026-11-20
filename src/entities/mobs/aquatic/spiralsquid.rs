@@ -30,6 +30,8 @@ impl Spiralsquid {
                     living.set_attribute_base(Attribute::MaxHealth, 8.0);
                     living.set_health(8.0);
                 }
+
+                Spiralsquid::CATEGORY.apply_ai(entity);
             })
             .build(world, position)
     }

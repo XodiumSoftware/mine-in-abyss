@@ -30,6 +30,8 @@ impl Rockwalker {
                     living.set_attribute_base(Attribute::MaxHealth, 25.0);
                     living.set_health(25.0);
                 }
+
+                Rockwalker::CATEGORY.apply_ai(entity);
             })
             .build(world, position)
     }

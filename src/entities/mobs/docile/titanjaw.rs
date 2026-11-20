@@ -30,6 +30,8 @@ impl Titanjaw {
                     living.set_attribute_base(Attribute::MaxHealth, 60.0);
                     living.set_health(60.0);
                 }
+
+                Titanjaw::CATEGORY.apply_ai(entity);
             })
             .build(world, position)
     }

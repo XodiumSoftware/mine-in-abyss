@@ -30,6 +30,8 @@ impl Squidfly {
                     living.set_attribute_base(Attribute::MaxHealth, 16.0);
                     living.set_health(16.0);
                 }
+
+                Squidfly::CATEGORY.apply_ai(entity);
             })
             .build(world, position)
     }

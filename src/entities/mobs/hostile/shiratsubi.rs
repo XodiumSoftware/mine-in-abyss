@@ -30,6 +30,8 @@ impl Shiratsubi {
                     living.set_attribute_base(Attribute::MaxHealth, 45.0);
                     living.set_health(45.0);
                 }
+
+                Shiratsubi::CATEGORY.apply_ai(entity);
             })
             .build(world, position)
     }

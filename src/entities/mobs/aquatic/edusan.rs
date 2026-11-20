@@ -30,6 +30,8 @@ impl Edusan {
                     living.set_attribute_base(Attribute::MaxHealth, 80.0);
                     living.set_health(80.0);
                 }
+
+                Edusan::CATEGORY.apply_ai(entity);
             })
             .build(world, position)
     }

@@ -30,6 +30,8 @@ impl Ashimite {
                     living.set_attribute_base(Attribute::MaxHealth, 35.0);
                     living.set_health(35.0);
                 }
+
+                Ashimite::CATEGORY.apply_ai(entity);
             })
             .build(world, position)
     }

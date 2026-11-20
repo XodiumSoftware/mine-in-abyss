@@ -30,6 +30,8 @@ impl ManToyer {
                     living.set_attribute_base(Attribute::MaxHealth, 15.0);
                     living.set_health(15.0);
                 }
+
+                ManToyer::CATEGORY.apply_ai(entity);
             })
             .build(world, position)
     }

@@ -1,16 +1,4 @@
-//! The Squidfly Brain Raw, and the
-//! [`ItemBuilder`](crate::items::item_builder::ItemBuilder) kind that builds it.
-//!
-//! The Squidfly leaves this behind. To the server it is a salmon — the closest vanilla
-//! item for what it is — but it carries a name, a colour and lore that make it
-//! unmistakable, and its identity marker lets a handler tell it apart from any other
-//! salmon a player is carrying.
-//!
-//! It builds itself in one chain of [`ItemBuilder`](crate::items::item_builder::ItemBuilder) calls
-//! inside [`stack`](SquidflyBrainRaw::stack), starting with a salmon and its number — which is
-//! how every kind defines itself. Nothing in the plugin creates it yet — the host owns the
-//! loot of the entity a kind spawns, and no call in the plugin WIT adds or replaces a drop
-//! — so this kind exists to be given, held, recognised and traded.
+//! The Squidfly Brain Raw.
 
 use pumpkin_plugin_api::item::Item;
 use pumpkin_plugin_api::text::TextComponent;

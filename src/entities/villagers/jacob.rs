@@ -1,21 +1,4 @@
 //! Jacob, Archer, a trader of Orth.
-//!
-//! A book trader of the **Tower District**.
-//!
-//! What is stated is the shape of the trader - its profession, so the work sound and badge are
-//! right, and its name, so a player can tell it from a village villager.
-//!
-//! # Trades
-//!
-//! The wiki's offers for this counter, kept here as the record to deliver once the plugin API
-//! gains a call that sets a villager's offers. They are documentation only: nothing reads them,
-//! and a trade cannot be delivered yet.
-//!
-//! | Give | Receive |
-//! | ---- | ------- |
-//! | 10 × Orthcoin | 1 × Infinity |
-//! | 13 × Orthcoin | 1 × Power V |
-//! | 9 × Orthcoin | 1 × Punch II |
 
 use pumpkin_plugin_api::EntityType;
 use pumpkin_plugin_api::Villager;

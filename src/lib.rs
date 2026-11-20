@@ -1,12 +1,8 @@
-//! `mine-in-abyss` is a [Pumpkin](https://github.com/Pumpkin-MC/Pumpkin) Minecraft plugin written in
-//! Rust that recreates ***Made in Abyss*** inside Minecraft.
+//! `mine-in-abyss` recreates ***Made in Abyss*** inside Minecraft as a
+//! [Pumpkin](https://github.com/Pumpkin-MC/Pumpkin) plugin.
 //!
-//! Each layer of the Abyss is its own Minecraft world, and players descend by falling
-//! through the void of the layer above. Layers are [`Layer`] variants, which carry
-//! their identifier, display name and palette; gameplay content for individual layers is
-//! still a stub, but the Curse of the Abyss and layer transitions are implemented.
-//!
-//! See [`GUIDE.md`](../GUIDE.md) for installation.
+//! Each layer of the Abyss is its own Minecraft world, and players descend by falling through
+//! the void of the layer above. See [`GUIDE.md`](../GUIDE.md) for installation.
 #![allow(clippy::must_use_candidate)]
 
 mod layer;
@@ -19,16 +15,9 @@ mod commands {
 
 /// The plugin's own entities, built on top of the vanilla ones.
 ///
-/// Minecraft's entity types cannot be extended, so an entity here is a vanilla entity
-/// wearing an identity: a base type, a visible name, scaled attributes, and a marker in its
-/// own persistent data. `entity_builder` is the core shared by every kind: it holds the
-/// [`EntityBuilder`] a kind spawns itself with, where that marker is written and read back.
-///
-/// What an entity *is* and where it may appear are then each kind's own business: a mob
-/// declares its `LAYERS` and `CATEGORY` beside its own `spawn`, and `mobs::mob_kind` is the
-/// plain entry [`mob_kinds`] collects for the creature-spawn rule. A trader has neither —
-/// `villagers::boy` is a plain constructor over a spawned entity. Mobs are filed one folder
-/// per [`MobCategory`].
+/// An entity here is a vanilla entity wearing an identity: a base type, a name, attributes and
+/// a marker in its persistent data. Each kind declares its own `LAYERS` and `CATEGORY` beside
+/// its `spawn`, and mobs are filed one folder per [`MobCategory`].
 mod entities {
     pub(crate) mod entity_builder;
 

@@ -113,7 +113,8 @@ priority, the blocking flag and the `register` body; `MineInAbyss::events` calls
 Run `just validate` and `just doc`. The release build is required: debug builds fail to load in
 the Pumpkin runtime.
 
-Then add the handler to the Events table in `AGENTS.md`.
+Then add the handler to `MineInAbyss::events` in `lib.rs`. Do not edit `AGENTS.md` or any
+other doc as part of this change — see its Documentation Rule.
 
 Event behaviour can only be confirmed in a running Pumpkin server, so state in the summary
 which assumptions are untested.

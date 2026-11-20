@@ -19,14 +19,14 @@ For items, use the `add-item` skill instead — same idea, a different marker ke
 3. `src/entities/mobs/mob_category.rs` — `MobCategory`.
 4. `src/entities/mobs/docile/beniguma.rs` — the worked example; copy its structure.
 5. The `mod entities` block **and** `mob_kinds()` in `src/lib.rs`.
-6. `AGENTS.md` § Custom mobs for the catalogue and the current highest id.
+6. The existing mob folders, to find the next free id.
 
 ## Step 0 — Pick the five values
 
 | Value      | Rule                                                                                  |
 | ---------- | ------------------------------------------------------------------------------------- |
 | base       | A vanilla `EntityType` variant, the first argument to `EntityBuilder::of`.            |
-| id         | The **next free number**, never a used one again. Check the catalogue in `AGENTS.md`. |
+| id         | The **next free number**, never a used one again. Grep the source folders for used ids. |
 | name       | `TextComponent::text(..).color_rgb(rgb(..))` — exact RGB, not a `NamedColor`.         |
 | `CATEGORY` | One of `Passive`, `Docile`, `Aerial`, `Aquatic`, `Hostile` (`MobCategory`).           |
 | `LAYERS`   | Which layers it may spawn in. **There is no default — a kind must state this.**       |
@@ -149,9 +149,8 @@ Everything the kind does to the spawned entity goes here — there is no fixed t
 Run `just validate` (lint + fmt + release build) and `just doc`. The release build is
 required: debug builds fail to load in the Pumpkin runtime.
 
-Then update `AGENTS.md` § Custom mobs: the catalogue table (kind, id, base, category, layers,
-hearts, colour), the per-category counts on the `src/entities/mobs/` tree line, and the file in
-the § Project Structure tree. Hearts are **half** the `MaxHealth` the kind sets.
+Do not edit `AGENTS.md` or any other doc as part of this change — see its Documentation Rule.
+Hearts are **half** the `MaxHealth` the kind sets.
 
 In game, a kind appears in a layer whose game rules allow natural spawning, through
 `CreatureSpawn`. There is no summon command at present, so that spawn rule is the only way to

@@ -1,26 +1,4 @@
 //! Larry, Sculk Lord, a trader of Orth.
-//!
-//! The sculk lord of the **Central Orth District**.
-//!
-//! What is stated is the shape of the trader - its profession, so the work sound and badge are
-//! right, and its name, so a player can tell it from a village villager.
-//!
-//! # Trades
-//!
-//! The wiki's offers for this counter, kept here as the record to deliver once the plugin API
-//! gains a call that sets a villager's offers. They are documentation only: nothing reads them,
-//! and a trade cannot be delivered yet.
-//!
-//! | Give | Receive |
-//! | ---- | ------- |
-//! | 4 × Orthcoin | 64 × Sculk |
-//! | 4 × Orthcoin | 64 × Sculk Catalyst |
-//! | 4 × Orthcoin | 64 × Sculk Vein |
-//! | 8 × Orthcoin | 32 × Sculk Sensor |
-//! | 8 × Orthcoin | 4 × Sculk Shrieker |
-//! | 4 × Orthcoin | 64 × Ochre Froglight |
-//! | 4 × Orthcoin | 64 × Verdant Froglight |
-//! | 4 × Orthcoin | 64 × Pearlescent Froglight |
 
 use pumpkin_plugin_api::EntityType;
 use pumpkin_plugin_api::Villager;

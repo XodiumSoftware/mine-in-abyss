@@ -1,36 +1,4 @@
 //! Frank, Ocean Fanatic, a trader of Orth.
-//!
-//! The ocean fanatic of the **Central Orth District**, trading coral and prismarine.
-//!
-//! What is stated is the shape of the trader - its profession, so the work sound and badge are
-//! right, and its name, so a player can tell it from a village villager.
-//!
-//! # Trades
-//!
-//! The wiki's offers for this counter, kept here as the record to deliver once the plugin API
-//! gains a call that sets a villager's offers. They are documentation only: nothing reads them,
-//! and a trade cannot be delivered yet.
-//!
-//! | Give | Receive |
-//! | ---- | ------- |
-//! | 2 × Orthcoin | 64 × Prismarine |
-//! | 4 × Orthcoin | 64 × Prismarine Bricks |
-//! | 6 × Orthcoin | 64 × Dark Prismarine |
-//! | 4 × Orthcoin | 16 × Brain Coral Block |
-//! | 4 × Orthcoin | 16 × Brain Coral |
-//! | 4 × Orthcoin | 16 × Brain Coral Fan |
-//! | 4 × Orthcoin | 16 × Bubble Coral Block |
-//! | 4 × Orthcoin | 16 × Bubble Coral |
-//! | 4 × Orthcoin | 16 × Bubble Coral Fan |
-//! | 4 × Orthcoin | 16 × Fire Coral Block |
-//! | 4 × Orthcoin | 16 × Fire Coral |
-//! | 4 × Orthcoin | 16 × Fire Coral Fan |
-//! | 4 × Orthcoin | 16 × Tube Coral Block |
-//! | 4 × Orthcoin | 16 × Tube Coral |
-//! | 4 × Orthcoin | 16 × Tube Coral Fan |
-//! | 4 × Orthcoin | 16 × Horn Coral Block |
-//! | 4 × Orthcoin | 16 × Horn Coral |
-//! | 4 × Orthcoin | 16 × Horn Coral Fan |
 
 use pumpkin_plugin_api::EntityType;
 use pumpkin_plugin_api::Villager;

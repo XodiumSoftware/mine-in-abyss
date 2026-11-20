@@ -1,22 +1,4 @@
 //! Murdock, Mudboy, a trader of Orth.
-//!
-//! The mudboy of the **Central Orth District**.
-//!
-//! What is stated is the shape of the trader - its profession, so the work sound and badge are
-//! right, and its name, so a player can tell it from a village villager.
-//!
-//! # Trades
-//!
-//! The wiki's offers for this counter, kept here as the record to deliver once the plugin API
-//! gains a call that sets a villager's offers. They are documentation only: nothing reads them,
-//! and a trade cannot be delivered yet.
-//!
-//! | Give | Receive |
-//! | ---- | ------- |
-//! | 1 × Orthcoin | 64 × Mud |
-//! | 1 × Orthcoin | 64 × Muddy Mangrove Roots |
-//! | 1 × Orthcoin | 64 × Packed Mud |
-//! | 1 × Orthcoin | 64 × Mud Bricks |
 
 use pumpkin_plugin_api::EntityType;
 use pumpkin_plugin_api::Villager;

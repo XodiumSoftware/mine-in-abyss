@@ -112,8 +112,8 @@ and `curse.rs` already do.
 Run `just validate` (lint + fmt-check + release build) and `just doc`. The release build is
 required: debug builds fail to load in the Pumpkin runtime.
 
-Then update `AGENTS.md` § Custom items: the catalogue table (kind, id, base, name, how to
-reach it). Add the file to the § Project Structure tree too.
+Do not edit `AGENTS.md` or any other doc as part of this change — see its Documentation Rule.
+Take the next free id from the existing item folders in the source, not from a table.
 
 The marker can only be confirmed in a running Pumpkin server, by reading the stack back with
 `id_of` after it has been through an inventory slot. With no command that creates an item,

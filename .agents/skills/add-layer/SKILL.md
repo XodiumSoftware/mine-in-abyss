@@ -64,12 +64,12 @@ Self::Second => &[(GameRule::SpawnMonsters, GameRuleValue::Bool(false))],
 Run `just validate` and `just doc`. The release build is required: debug builds fail to load in
 the Pumpkin runtime.
 
-Then update `AGENTS.md` (§ Layer System, § Adding a New Layer) if the tables changed.
+A new layer also resizes anything fixed to the current count: `Layer::ALL` and `LAYERS` in
+`lib.rs` are both `[Layer; 8]` and must change length together. Grep for `[Layer; ` rather
+than trusting any doc.
 
-Note that a new layer also shifts several things sized to the current eight: `Layer::ALL`
-and `LAYERS` in `lib.rs` are both `[Layer; 8]` and must change length together, and
-`AGENTS.md` spells the count out in a few places (Layer System, Active Layers, Time of day).
-Grep for "eight" and "seven" rather than trusting the tables alone.
+Do not edit `AGENTS.md`, `GUIDE.md`, `ARCHITECTURE.md` or any other doc as part of this
+change — see the Documentation Rule in `AGENTS.md`.
 
 **A ninth layer touches the curse.** `Layer::curse()` is the depth index, and `MAX_STRAIN` in
 `src/events/curse.rs` is fixed at 6. Adding a layer below `Seventh` makes the deepest severity

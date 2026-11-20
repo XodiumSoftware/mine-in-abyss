@@ -1,24 +1,10 @@
 //! Replaces the vanilla mobs that spawn in a layer with the Abyss's own.
 //!
-//! Every layer world is a hand-built map of the Abyss, so a plain zombie or cow wandering
-//! into it would be an artefact of the generator rather than a part of the setting. A natural
-//! spawn in a layer world is therefore **cancelled**, and a custom kind is spawned in its
-//! place.
-//!
-//! Which kind is decided by the `LAYERS` a kind declares beside its own `spawn`: only a kind
-//! that lists the layer may appear there, so the same list decides what lives where. A layer
-//! with no eligible kind stays empty, which is the honest answer — nothing was authored to
-//! live there yet.
-//!
-//! The replacement is placed at the event's own position and world, so it stands exactly where
-//! the vanilla mob would have: this handler changes *what* spawns, never *where*.
-//!
-//! Only the spawn reasons that mean "the world decided to spawn this" are considered. A
-//! spawner, a breeding pair, a spawn egg or a command is a deliberate act and is left alone,
-//! so this cannot interfere with a player or an operator placing a mob on purpose.
-//!
-//! Entities do not descend between layers, so a mob spawned here stays in the layer it was
-//! born in for its whole life — see the notes in `AGENTS.md`.
+//! A natural spawn in a layer world is cancelled and a kind from [`mob_kinds`](crate::mob_kinds)
+//! spawned in its place, at the event's own position and world — this changes *what* spawns,
+//! never *where*. A kind is eligible only if its `LAYERS` lists the layer, so that list is the
+//! single answer to what lives where; a layer with no eligible kind stays empty. Only natural
+//! spawn reasons count, so a spawner, breeding, a spawn egg or a command is left alone.
 
 use pumpkin_plugin_api::events::EventHandler;
 use pumpkin_plugin_api::events::entity::creature_spawn::CreatureSpawnEvent;

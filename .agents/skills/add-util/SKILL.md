@@ -111,9 +111,9 @@ how `general` stays private.
 Run `just validate` (lint + fmt-check + release build) and `just doc`. The release build is
 required: debug builds fail to load in the Pumpkin runtime.
 
-Then update `AGENTS.md` § Project Structure: the `src/utils/` tree lists every module with a
-one-line description, so add the new file there. If the helper changes an invariant that a
-handler depends on (as the latch and the carried fall do), say so in `ARCHITECTURE.md` too.
+Do not edit `AGENTS.md` or any other doc as part of this change — see its Documentation Rule.
+If the helper changes an invariant a handler depends on (as the latch and the carried fall do),
+a short note in the handler is enough.
 
 Helper behaviour can only be confirmed in a running Pumpkin server, so state in the summary
 which assumptions are untested.

@@ -1,17 +1,10 @@
 //! The chunk generator used by every layer world.
 //!
-//! A layer world is empty: the Abyss is a vertical world built from authored maps, so a
-//! freshly created world must not come with terrain of its own. Generation therefore
-//! writes nothing but air, and does so from the first chunk of the world's life, so no
-//! terrain or structure is ever saved to disk to begin with.
-//!
-//! # Why the air is written explicitly
-//!
-//! The two surface and feature phases are left at their no-op defaults, which is what
-//! keeps grass, ores, trees and structures out of the result. The noise phase is *not*
-//! left empty: the buffer a phase receives is reused state, and a buffer that has
-//! already been written to would otherwise keep whatever it held. Filling each layer
-//! with air makes the empty result independent of whatever the buffer arrived as.
+//! A layer world is empty: the Abyss is built from authored maps, so a fresh world must not
+//! arrive with terrain of its own. Leaving the surface and feature phases at their no-op
+//! defaults keeps grass, ores, trees and structures out; the noise phase fills each chunk with
+//! air explicitly, because the buffer a phase receives is reused state and would otherwise
+//! keep whatever it held.
 
 use pumpkin_plugin_api::wit::pumpkin::plugin::biomes::Biome;
 use pumpkin_plugin_api::wit::pumpkin::plugin::world::Block;
@@ -21,17 +14,12 @@ use tracing::warn;
 /// Generates empty chunks, one air block at a time.
 ///
 /// Registered once by [`Worlds::setup`](super::setup::Worlds::setup) and attached to every
-/// layer world, so all of them generate the same way.
+/// layer world.
 #[derive(Debug, Default, Clone, Copy)]
 pub(crate) struct Void;
 
-/// The biome every generated chunk is assigned.
-///
-/// The biome decides the fog, ambient sound and sky colour a player sees while standing
-/// in an otherwise-empty chunk, so the void biome is used: it is the one Minecraft itself
-/// pairs with an empty world, and it does not claim the layer is a plains or a forest it
-/// has no terrain for. Layers that want their own biome will eventually get it from their
-/// authored maps, not from this generator.
+/// The biome every generated chunk is assigned: the one Minecraft pairs with an empty world,
+/// so the fog and sky do not claim terrain the layer has none of.
 const EMPTY_BIOME: Biome = Biome::TheVoid;
 
 impl ChunkGenerator for Void {

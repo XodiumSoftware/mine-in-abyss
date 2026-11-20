@@ -1,27 +1,4 @@
 //! `MeatJohn`, Meat Slinger, a trader of Orth.
-//!
-//! The meat slinger of the **Residential District**.
-//!
-//! What is stated is the shape of the trader - its profession, so the work sound and badge are
-//! right, and its name, so a player can tell it from a village villager.
-//!
-//! # Trades
-//!
-//! The wiki's offers for this counter, kept here as the record to deliver once the plugin API
-//! gains a call that sets a villager's offers. They are documentation only: nothing reads them,
-//! and a trade cannot be delivered yet.
-//!
-//! | Give | Receive |
-//! | ---- | ------- |
-//! | 1 × Orthcoin | 10 × Cooked Chicken |
-//! | 1 × Orthcoin | 12 × Cooked Beef |
-//! | 1 × Orthcoin | 32 × Bread |
-//! | 3 × Orthcoin | 1 × Golden Apple |
-//! | 16 × Orthcoin | 1 × Enchanted Golden Apple |
-//! | 1 × Orthcoin | 8 × Golden Carrot |
-//! | 1 × Orthcoin | 1 × Cake |
-//! | 1 × Orthcoin | 11 × Raw Billabonk Leg |
-//! | 1 × Orthcoin | 17 × Raw Corpse Weeper Meat |
 
 use pumpkin_plugin_api::EntityType;
 use pumpkin_plugin_api::Villager;

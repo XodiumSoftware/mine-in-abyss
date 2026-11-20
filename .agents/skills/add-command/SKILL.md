@@ -59,12 +59,13 @@ one array.
   `Err`, so the failure reads as a message instead of a command error.
 - Return `Ok(1)` on success, matching `abyss.rs`.
 
-## Docs & Verification
+## Verification
 
-1. Add the command to the `### Commands` table in `AGENTS.md`.
-2. Run `just validate` and `just doc`. The release build is required: debug builds fail to
-   load in the Pumpkin runtime.
-3. A command can only be confirmed in a running server — state in the summary if that has not
-   been done.
+Run `just validate` and `just doc`. The release build is required: debug builds fail to
+load in the Pumpkin runtime.
+
+Do not edit `AGENTS.md` or any other doc as part of this change — see its Documentation Rule.
+A command can only be confirmed in a running server — state in the summary if that has not
+been done.
 
 After finishing, summarize the changes and ask the user whether to commit.

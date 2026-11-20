@@ -1,16 +1,4 @@
-//! The Hammerbeak Egg, and the
-//! [`ItemBuilder`](crate::items::item_builder::ItemBuilder) kind that builds it.
-//!
-//! The Giant Hammerbeak leaves this behind. To the server it is a egg — the closest vanilla
-//! item for what it is — but it carries a name, a colour and lore that make it
-//! unmistakable, and its identity marker lets a handler tell it apart from any other
-//! egg a player is carrying.
-//!
-//! It builds itself in one chain of [`ItemBuilder`](crate::items::item_builder::ItemBuilder) calls
-//! inside [`stack`](HammerbeakEgg::stack), starting with a egg and its number — which is
-//! how every kind defines itself. Nothing in the plugin creates it yet — the host owns the
-//! loot of the entity a kind spawns, and no call in the plugin WIT adds or replaces a drop
-//! — so this kind exists to be given, held, recognised and traded.
+//! The Hammerbeak Egg.
 
 use pumpkin_plugin_api::item::Item;
 use pumpkin_plugin_api::text::TextComponent;

@@ -1,34 +1,4 @@
 //! Rutrix, DJ, a trader of Orth.
-//!
-//! The disc trader of the **Central Orth District**.
-//!
-//! What is stated is the shape of the trader - its profession, so the work sound and badge are
-//! right, and its name, so a player can tell it from a village villager.
-//!
-//! # Trades
-//!
-//! The wiki's offers for this counter, kept here as the record to deliver once the plugin API
-//! gains a call that sets a villager's offers. They are documentation only: nothing reads them,
-//! and a trade cannot be delivered yet.
-//!
-//! | Give | Receive |
-//! | ---- | ------- |
-//! | 10 × Orthcoin | 1 × Pigstep |
-//! | 10 × Orthcoin | 1 × 5 |
-//! | 10 × Orthcoin | 1 × otherside |
-//! | 10 × Orthcoin | 1 × relic |
-//! | 10 × Orthcoin | 1 × ward |
-//! | 10 × Orthcoin | 1 × strad |
-//! | 10 × Orthcoin | 1 × 13 |
-//! | 10 × Orthcoin | 1 × stal |
-//! | 10 × Orthcoin | 1 × mellohi |
-//! | 10 × Orthcoin | 1 × mall |
-//! | 10 × Orthcoin | 1 × chirp |
-//! | 10 × Orthcoin | 1 × far |
-//! | 10 × Orthcoin | 1 × blocks |
-//! | 10 × Orthcoin | 1 × cat |
-//! | 10 × Orthcoin | 1 × wait |
-//! | 10 × Orthcoin | 1 × 11 |
 
 use pumpkin_plugin_api::EntityType;
 use pumpkin_plugin_api::Villager;

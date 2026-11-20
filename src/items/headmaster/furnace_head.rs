@@ -1,17 +1,4 @@
 //! The Furnace Head, sold at the counter of Headmaster.
-//!
-//! The [`ItemBuilder`](crate::items::item_builder::ItemBuilder) kind behind one row of that
-//! trader's offers: to the server it is a carved pumpkin — the closest vanilla item for a wearable
-//! head — but it carries a name, a colour and lore that make it unmistakable, and its identity
-//! marker lets a handler tell it apart from any other carved pumpkin a player is carrying.
-//!
-//! It builds itself in one chain of [`ItemBuilder`](crate::items::item_builder::ItemBuilder)
-//! calls inside [`stack`](FurnaceHead::stack), starting with a carved pumpkin and its number — which
-//! is how every kind defines itself. Nothing in the plugin creates it yet — the plugin WIT has
-//! no call that sets a villager's offers, so no trade can deliver it — so this kind exists to be
-//! given, held and recognised.
-//!
-//! 12 Orthcoin buys it.
 
 use pumpkin_plugin_api::item::Item;
 use pumpkin_plugin_api::text::TextComponent;

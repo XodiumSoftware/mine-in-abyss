@@ -19,25 +19,13 @@
   image-rendering: pixelated;
 }
 
-#mdbook-theme-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#mdbook-theme-toggle > .fa-svg {
+/* mdBook always draws its theme button, and book.toml cannot remove it, so it is
+   hidden here. The popup stays in the DOM because mdBook's theme code reads it
+   without a null check; it is styled to the site frame in case it is ever
+   reachable again. */
+#mdbook-theme-toggle,
+#mdbook-theme-list {
   display: none;
-}
-
-#mdbook-theme-toggle::after {
-  content: "";
-  display: block;
-  width: 24px;
-  height: 24px;
-  background-image: url("/img/gui/brush.png");
-  background-repeat: no-repeat;
-  background-size: contain;
-  image-rendering: pixelated;
 }
 
 .theme-popup {
